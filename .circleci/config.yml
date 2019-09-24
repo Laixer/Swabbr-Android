@@ -13,6 +13,12 @@ jobs:
       JVM_OPTS: -Xmx4g
     steps:
       - checkout
+      - run:
+          name: Download Dependencies
+          command: ./gradlew dependencies
+      - run:
+          name: Build
+          command: ./gradlew assembleDebugUnittest
       - restore_cache:
           key: gradle-{{ checksum "build.gradle" }}-{{ checksum  "buildSrc/src/main/java/Dependencies.kt" }}-{{ checksum  "gradle/wrapper/gradle-wrapper.properties" }}
       - run:
