@@ -1,0 +1,66 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
+
+android {
+    compileSdkVersion Versions.compileSdk
+    defaultConfig {
+        applicationId ApplicationId.id
+        minSdkVersion Versions.minSdk
+        targetSdkVersion Versions.targetSdk
+        versionCode Releases.versionCode
+        versionName Releases.versionName
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+        }
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+    dynamicFeatures = [Modules.sample]
+}
+
+dependencies {
+    implementation project(Modules.cache)
+    implementation project(Modules.network)
+    implementation project(Modules.navigation)
+    implementation project(Modules.presentation)
+
+    implementation Libraries.kotlin
+    implementation FirebaseLibraries.analytics
+    implementation FirebaseLibraries.messaging
+    implementation Libraries.crashlytics
+
+    implementation 'com.microsoft.azure:notification-hubs-android-sdk:0.6@aar'
+
+    implementation SupportLibraries.design
+    implementation SupportLibraries.cardview
+    implementation SupportLibraries.appcompat
+    implementation SupportLibraries.recyclerview
+
+    implementation Libraries.koinAndroid
+    implementation Libraries.koinViewModel
+
+    implementation Libraries.lifecycleExtensions
+
+    implementation Libraries.rxjava
+    implementation Libraries.rxkotlin
+
+    implementation Libraries.moshiConverter
+    implementation Libraries.workmanager
+    implementation Libraries.workmanagerRxjava // RxJava2 compatibility
+
+    debugImplementation Libraries.leakCanaryAndroid
+}
+
+repositories {
+    google()
+}
+
+apply plugin: 'com.google.gms.google-services'

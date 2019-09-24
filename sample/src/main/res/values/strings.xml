@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Vlogs</string>
+    <string name="screen_vlog_details_title">Vlog Details</string>
+    <string name="screen_vlog_list_title">Vlog List</string>
+    <string name="screen_user_details_title">User Details</string>
+    <string name="error">Error</string>
+    <string name="retry">Retry</string>
+
+    <string name="user_name">Name: %1$s</string>
+    <string name="user_username">Username: @%1$s</string>
+    <string name="user_email">Email: %1$s</string>
+    <string name="user_phone">Phone: %1$s</string>
+    <string name="user_address">%1$s, %2$s, %3$s</string>
+    <string name="user_website">Website: %1$s</string>
+    <string name="user_company">Company: %1$s</string>
+</resources>
