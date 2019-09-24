@@ -24,7 +24,7 @@ class VlogListAdapter constructor(private val itemClick: (VlogItem) -> Unit) :
         RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_vlog)) {
 
         fun bind(item: VlogItem) {
-            itemView.userAvatar.loadAvatar(item.email)
+            itemView.userAvatar.loadAvatar(item.userId)
             itemView.userUsername.text = "@${item.nickname}"
             itemView.userName.text = "${item.firstName} ${item.lastName}"
             itemView.vlogDuration.text = item.duration
