@@ -16,4 +16,4 @@ data class User(
     val birthdate: String,
     val longitude: Double,
     val latitude: Double
-    )
+)

@@ -1,6 +1,5 @@
 package com.laixer.sample.presentation.vloglist
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.laixer.sample.presentation.model.mapToPresentation

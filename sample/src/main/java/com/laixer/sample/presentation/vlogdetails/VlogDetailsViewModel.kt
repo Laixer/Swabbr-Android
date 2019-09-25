@@ -2,7 +2,6 @@ package com.laixer.sample.presentation.vlogdetails
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.laixer.sample.domain.usecase.ReactionsUseCase
 import com.laixer.sample.presentation.model.mapToPresentation
 import com.laixer.presentation.Resource
 import com.laixer.presentation.setError

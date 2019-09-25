@@ -34,6 +34,8 @@ object Versions {
     val firebaseAnalytics = "17.2.0"
     val firebaseMessaging = "20.0.0"
 
+    val notificationsHub = "0.6@aar"
+
     val fabric = "1.30.0"
 
     val appcompat = "1.0.2"
@@ -115,6 +117,10 @@ object SupportLibraries {
 object GoogleLibraries {
     val auth = "com.google.android.gms:play-services-auth:${Versions.googleAuth}"
     val playCore = "com.google.android.play:core:${Versions.playCore}"
+}
+
+object MicrosoftLibraries {
+    val notificationshub = "com.microsoft.azure:notification-hubs-android-sdk:${Versions.notificationsHub}"
 }
 
 object FirebaseLibraries {

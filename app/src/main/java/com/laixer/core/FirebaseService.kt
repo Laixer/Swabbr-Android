@@ -13,7 +13,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-
+import java.lang.UnsupportedOperationException
 
 class FirebaseService : FirebaseMessagingService() {
 
@@ -60,8 +60,6 @@ class FirebaseService : FirebaseMessagingService() {
             sendNotification("${it.body}")
         }
 
-
-
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
     }
@@ -79,10 +77,9 @@ class FirebaseService : FirebaseMessagingService() {
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        sendRegistrationToServer(token)
+        // sendRegistrationToServer(token)
     }
     // [END on_new_token]
-
 
     /**
      * Schedule async work using WorkManager.
@@ -101,7 +98,6 @@ class FirebaseService : FirebaseMessagingService() {
         Log.d(TAG, "Short lived task is done.")
     }
 
-
     /**
      * Persist token to third-party servers.
      *
@@ -111,7 +107,7 @@ class FirebaseService : FirebaseMessagingService() {
      * @param token The new token.
      */
     private fun sendRegistrationToServer(token: String?) {
-        // TODO: Implement this method to send token to your app server.
+        throw UnsupportedOperationException(token)
     }
 
     /**
@@ -122,8 +118,10 @@ class FirebaseService : FirebaseMessagingService() {
     private fun sendNotification(messageBody: String) {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-            PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0 /* Request code */, intent,
+            PendingIntent.FLAG_ONE_SHOT
+        )
 
         val channelId = getString(R.string.default_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -135,23 +133,26 @@ class FirebaseService : FirebaseMessagingService() {
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId,
+            val channel = NotificationChannel(
+                channelId,
                 "Channel human readable title",
-                NotificationManager.IMPORTANCE_DEFAULT)
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
             notificationManager.createNotificationChannel(channel)
         }
 
-        notificationManager.notify(NOTIFICATION_ID /* ID of notification */, notificationBuilder.build())
+        notificationManager.notify(
+            NOTIFICATION_ID /* ID of notification */,
+            notificationBuilder.build()
+        )
     }
 
-
-
     companion object {
-
         private const val TAG = "MyFirebaseMsgService"
         private const val NOTIFICATION_CHANNEL_ID = "nh-demo-channel-id"
         private const val NOTIFICATION_CHANNEL_NAME = "Notification Hubs Demo Channel"
@@ -173,6 +174,5 @@ class FirebaseService : FirebaseMessagingService() {
                 notificationManager.createNotificationChannel(channel)
             }
         }
-
     }
 }

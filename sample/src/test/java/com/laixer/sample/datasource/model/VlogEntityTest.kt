@@ -25,6 +25,5 @@ class VlogEntityTest {
         assertTrue(model.totalLikes == vlogEntity.totalLikes)
         assertTrue(model.isLive == vlogEntity.isLive)
         assertTrue(model.isPrivate == vlogEntity.isPrivate)
-
     }
 }

@@ -22,8 +22,8 @@ class VlogCacheDataSourceImplTest {
 
     private val vlogId = vlog.id
 
-    private val cacheItem = vlog.copy(id = "cache")
-    private val remoteItem = vlog.copy(id = "remote")
+    private val cacheItem = vlog.copy(userId = "cache")
+    private val remoteItem = vlog.copy(userId = "remote")
 
     private val cacheList = listOf(cacheItem)
     private val remoteList = listOf(remoteItem)

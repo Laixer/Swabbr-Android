@@ -6,5 +6,4 @@ import io.reactivex.Single
 interface ReactionRepository {
 
     fun get(vlogId: String, refresh: Boolean): Single<List<Reaction>>
-
 }

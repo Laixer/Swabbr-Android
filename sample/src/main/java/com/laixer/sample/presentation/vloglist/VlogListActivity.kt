@@ -1,7 +1,6 @@
 package com.laixer.sample.presentation.vloglist
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -54,7 +53,5 @@ class VlogListActivity : AppCompatActivity() {
             it.data?.let { adapter.submitList(it) }
             it.message?.let { snackBar.show() }
         }
-
-
     }
 }

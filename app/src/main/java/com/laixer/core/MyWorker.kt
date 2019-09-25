@@ -15,6 +15,6 @@ class MyWorker(appContext: Context, workerParams: WorkerParameters) : Worker(app
     }
 
     companion object {
-        private val TAG = "MyWorker"
+        private const val TAG = "MyWorker"
     }
 }

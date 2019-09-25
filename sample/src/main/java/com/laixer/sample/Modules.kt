@@ -2,7 +2,12 @@ package com.laixer.sample
 
 import com.laixer.cache.ReactiveCache
 import com.laixer.network.createNetworkClient
-import com.laixer.sample.data.datasource.*
+import com.laixer.sample.data.datasource.UserCacheDataSource
+import com.laixer.sample.data.datasource.UserRemoteDataSource
+import com.laixer.sample.data.datasource.VlogCacheDataSource
+import com.laixer.sample.data.datasource.VlogRemoteDataSource
+import com.laixer.sample.data.datasource.ReactionCacheDataSource
+import com.laixer.sample.data.datasource.ReactionRemoteDataSource
 import com.laixer.sample.data.repository.ReactionRepositoryImpl
 import com.laixer.sample.data.repository.VlogRepositoryImpl
 import com.laixer.sample.data.repository.UserRepositoryImpl
@@ -11,12 +16,20 @@ import com.laixer.sample.datasource.cache.VlogCacheDataSourceImpl
 import com.laixer.sample.datasource.cache.UserCacheDataSourceImpl
 import com.laixer.sample.datasource.model.UserEntity
 import com.laixer.sample.datasource.model.VlogEntity
-import com.laixer.sample.datasource.remote.*
+import com.laixer.sample.datasource.remote.ReactionRemoteDataSourceImpl
+import com.laixer.sample.datasource.remote.ReactionsApi
+import com.laixer.sample.datasource.remote.UserRemoteDataSourceImpl
+import com.laixer.sample.datasource.remote.UsersApi
+import com.laixer.sample.datasource.remote.VlogRemoteDataSourceImpl
+import com.laixer.sample.datasource.remote.VlogsApi
 import com.laixer.sample.domain.model.Reaction
 import com.laixer.sample.domain.repository.ReactionRepository
 import com.laixer.sample.domain.repository.VlogRepository
 import com.laixer.sample.domain.repository.UserRepository
-import com.laixer.sample.domain.usecase.*
+import com.laixer.sample.domain.usecase.ReactionsUseCase
+import com.laixer.sample.domain.usecase.UserReactionUseCase
+import com.laixer.sample.domain.usecase.UserVlogUseCase
+import com.laixer.sample.domain.usecase.UsersVlogsUseCase
 import com.laixer.sample.presentation.vlogdetails.VlogDetailsViewModel
 import com.laixer.sample.presentation.vloglist.VlogListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel

@@ -12,4 +12,13 @@ data class ReactionItem(
 )
 
 fun List<CombinedUserReaction>.mapToPresentation(): List<ReactionItem> =
-    map { ReactionItem(it.user.id, it.reaction.vlogId, it.reaction.id, it.user.nickname,  it.reaction.duration, it.reaction.postDate) }
+    map {
+        ReactionItem(
+            it.user.id,
+            it.reaction.vlogId,
+            it.reaction.id,
+            it.user.nickname,
+            it.reaction.duration,
+            it.reaction.postDate
+        )
+    }

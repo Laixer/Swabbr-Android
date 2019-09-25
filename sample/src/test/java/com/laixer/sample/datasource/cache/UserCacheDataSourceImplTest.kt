@@ -22,8 +22,8 @@ class UserCacheDataSourceImplTest {
 
     private val userId = user.id
 
-    private val cacheItem = user.copy(id = "cache")
-    private val remoteItem = user.copy(id = "remote")
+    private val cacheItem = user.copy(nickname = "cache")
+    private val remoteItem = user.copy(nickname = "remote")
 
     private val cacheList = listOf(cacheItem)
     private val remoteList = listOf(remoteItem)

@@ -1,6 +1,8 @@
 package com.laixer.sample.datasource.remote
 
-import com.laixer.sample.datasource.model.*
+import com.laixer.sample.datasource.model.ReactionEntity
+import com.laixer.sample.datasource.model.UserEntity
+import com.laixer.sample.datasource.model.VlogEntity
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path

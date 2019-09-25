@@ -24,15 +24,15 @@ class UserReactionUseCase constructor(
             BiFunction { userList, reactionList -> map(userList, reactionList) })
 }
 
-//class UserReactionUseCase constructor(
+// class UserReactionUseCase constructor(
 //    private val userRepository: UserRepository,
 //    private val reactionRepository: ReactionRepository
-//) {
+// ) {
 //
 //    fun get(userId: String, vlogId: String, refresh: Boolean): Single<CombinedUserReaction> =
 //        Single.zip(userRepository.get(userId, refresh), reactionRepository.get(vlogId, refresh),
 //            BiFunction { user, reactionList -> map(user, reaction) })
-//}
+// }
 
 /**
  * To obtain the user from a reaction we need to use the userId from the reaction to find it in the user list.
@@ -41,4 +41,9 @@ class UserReactionUseCase constructor(
 fun map(user: User, reaction: Reaction): CombinedUserReaction = CombinedUserReaction(user, reaction)
 
 fun map(userList: List<User>, reactionList: List<Reaction>): List<CombinedUserReaction> =
-    reactionList.map { reaction -> CombinedUserReaction(userList.first { reaction.userId == it.id }, reaction) }
+    reactionList.map { reaction ->
+        CombinedUserReaction(
+            userList.first { reaction.userId == it.id },
+            reaction
+        )
+    }

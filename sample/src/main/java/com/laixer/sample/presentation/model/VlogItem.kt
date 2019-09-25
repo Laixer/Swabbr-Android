@@ -17,7 +17,6 @@ data class VlogItem(
     val email: String
 )
 
-
 fun CombinedUserVlog.mapToPresentation(): VlogItem = VlogItem(
     vlog.id,
     user.id,

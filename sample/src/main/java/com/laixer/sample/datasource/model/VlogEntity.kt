@@ -16,6 +16,16 @@ data class VlogEntity(
     @field:Json(name = "private") val isPrivate: Boolean
 )
 
-fun VlogEntity.mapToDomain(): Vlog = Vlog(userId, id, duration, startDate, totalLikes, totalReactions, totalViews, isLive, isPrivate)
+fun VlogEntity.mapToDomain(): Vlog = Vlog(
+    userId,
+    id,
+    duration,
+    startDate,
+    totalLikes,
+    totalReactions,
+    totalViews,
+    isLive,
+    isPrivate
+)
 
 fun List<VlogEntity>.mapToDomain(): List<Vlog> = map { it.mapToDomain() }

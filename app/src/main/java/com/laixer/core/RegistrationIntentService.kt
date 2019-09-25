@@ -3,6 +3,7 @@ package com.laixer.core
 import android.app.IntentService
 import android.content.Intent
 import com.microsoft.windowsazure.messaging.NotificationHub
+import com.microsoft.windowsazure.messaging.RegistrationGoneException
 import com.google.firebase.iid.FirebaseInstanceId
 import android.util.Log
 import android.widget.Toast
@@ -50,7 +51,8 @@ class RegistrationIntentService : IntentService(TAG) {
 
                     val hub = NotificationHub(
                         NotificationSettings.HubName,
-                        NotificationSettings.HubListenConnectionString, this
+                        NotificationSettings.HubListenConnectionString,
+                        this
                     )
 
                     Log.d(TAG, "Attempting a new registration with NH using FCM token : $fcmToken")
@@ -86,8 +88,8 @@ class RegistrationIntentService : IntentService(TAG) {
                     cache.save("fcmToken", fcmToken)
                 }
                 else -> resultString = "Previously Registered Successfully - RegId : $regID"
-            }// Check to see if the token has been compromised and needs refreshing.
-        } catch (e: Exception) {
+            } // Check to see if the token has been compromised and needs refreshing.
+        } catch (e: RegistrationGoneException) {
             Log.e(TAG, "Failed to complete registration", e)
             // If an exception happens while fetching the new token or updating registration data
             // on a third-party server, this ensures that we'll attempt the update at a later time.
@@ -101,12 +103,14 @@ class RegistrationIntentService : IntentService(TAG) {
 
     object NotificationSettings {
         const val HubName = "testnhub"
-        const val HubListenConnectionString = "Endpoint=sb://swnhubs.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=UrJUs2YisKhB6miXHky14NIrQ4IrdZ0FGafzZbcGjRQ="
+        const val HubListenConnectionString =
+            "Endpoint=sb://swnhubs.servicebus.windows.net/;" +
+                    "SharedAccessKeyName=DefaultListenSharedAccessSignature;" +
+                    "SharedAccessKey=UrJUs2YisKhB6miXHky14NIrQ4IrdZ0FGafzZbcGjRQ="
     }
 
     companion object {
         private const val TAG = "RegIntentService"
         private var cache: MemoryCache<String?> = MemoryCache()
-
     }
 }
