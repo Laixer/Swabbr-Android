@@ -41,9 +41,9 @@ class FirebaseService : FirebaseMessagingService() {
         Log.d(TAG, "From: ${remoteMessage.from}")
 
         // Check if message contains a data payload.
-        remoteMessage.data.let {
+        remoteMessage.data.values.filterNotNull().forEach {
             Log.d(TAG, "Message data payload: $it")
-            sendNotification(it.values.iterator().next())
+            sendNotification(it)
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.
