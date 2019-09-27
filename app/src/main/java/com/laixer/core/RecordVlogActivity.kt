@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.util.Size
 import android.graphics.Matrix
 import android.os.Environment
+import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Rational
 import android.view.Surface
@@ -83,11 +84,18 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     private fun startCamera() {
+        // Get resolution info
+        val metrics = DisplayMetrics().also { viewFinder.display.getRealMetrics(it) }
+        val screenSize = Size(metrics.widthPixels, metrics.heightPixels)
+        val screenAspectRatio = Rational(metrics.widthPixels, metrics.heightPixels)
 
         // Create configuration object for the viewfinder use case
         val previewConfig = PreviewConfig.Builder().apply {
-            setTargetAspectRatio(Rational(1, 1))
-            setTargetResolution(Size(640, 640))
+//            setTargetAspectRatio(Rational(1, 1))
+//            setTargetResolution(Size(640, 640))
+            setTargetResolution(screenSize)
+            setTargetAspectRatio(screenAspectRatio)
+            setTargetRotation(viewFinder.display.rotation)
         }.build()
 
         // Build the viewfinder use case

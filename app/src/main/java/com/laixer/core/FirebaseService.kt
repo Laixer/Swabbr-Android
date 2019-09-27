@@ -48,12 +48,7 @@ class FirebaseService : FirebaseMessagingService() {
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.
-                // scheduleJob()
-                // ====================================================================================================
-                if (remoteMessage.notification?.clickAction.isNullOrEmpty()){
-                    startNotificationActivity(remoteMessage.notification?.clickAction)
-                }
-                // ====================================================================================================
+                scheduleJob(remoteMessage)
             } else {
                 // Handle message within 10 seconds
                 handleNow()
@@ -90,11 +85,15 @@ class FirebaseService : FirebaseMessagingService() {
     /**
      * Schedule async work using WorkManager.
      */
-    private fun scheduleJob() {
+    private fun scheduleJob(remoteMessage: RemoteMessage) {
         // [START dispatch_job]
         val work = OneTimeWorkRequest.Builder(MyWorker::class.java).build()
         WorkManager.getInstance(this.baseContext).beginWith(work).enqueue()
         // [END dispatch_job]
+
+        if (!remoteMessage.notification?.clickAction.isNullOrEmpty()){
+            startNotificationActivity(remoteMessage.notification?.clickAction)
+        }
     }
 
     /**
