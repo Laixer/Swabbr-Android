@@ -6,6 +6,11 @@
     <!--Instant enabled app bundle-->
     <dist:module dist:instant="true" />
 
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:name="com.laixer.core.App"
         android:allowBackup="true"
@@ -37,6 +42,13 @@
             android:name="com.laixer.core.RegistrationIntentService"
             android:exported="false">
         </service>
+
+        <activity android:name=".RecordVlogActivity" android:parentActivityName=".MainActivity">
+            <intent-filter>
+                <action android:name="OPEN_CAMERA" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
     </application>
 

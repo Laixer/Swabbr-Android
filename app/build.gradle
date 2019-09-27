@@ -56,6 +56,11 @@ dependencies {
     implementation Libraries.workmanager
     implementation Libraries.workmanagerRxjava // RxJava2 compatibility
 
+    implementation Libraries.constraintLayout
+
+    implementation Libraries.cameraCore
+    implementation Libraries.camera2
+
     debugImplementation Libraries.leakCanaryAndroid
 }
 

@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.firebase.messaging.FirebaseMessaging
 import com.laixer.navigation.features.SampleNavigation
 
 class MainActivity : AppCompatActivity() {
@@ -18,6 +19,8 @@ class MainActivity : AppCompatActivity() {
         mainActivity = this
         registerWithNotificationHubs()
         FirebaseService.createChannelAndHandleNotifications(applicationContext)
+
+        FirebaseMessaging.getInstance().subscribeToTopic("DEV")
 
         startVlogs()
     }

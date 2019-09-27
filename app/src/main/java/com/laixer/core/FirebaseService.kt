@@ -9,6 +9,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -47,7 +48,12 @@ class FirebaseService : FirebaseMessagingService() {
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.
-                scheduleJob()
+                // scheduleJob()
+                // ====================================================================================================
+                if (remoteMessage.notification?.clickAction.isNullOrEmpty()){
+                    startNotificationActivity(remoteMessage.notification?.clickAction)
+                }
+                // ====================================================================================================
             } else {
                 // Handle message within 10 seconds
                 handleNow()
@@ -150,6 +156,20 @@ class FirebaseService : FirebaseMessagingService() {
             NOTIFICATION_ID /* ID of notification */,
             notificationBuilder.build()
         )
+    }
+
+    private fun startNotificationActivity(clickAction: String?) {
+        Log.d("CLICKACTION", clickAction)
+        // Create an Intent for the activity you want to start
+        val resultIntent = Intent(this, RecordVlogActivity::class.java)
+        // Create the TaskStackBuilder
+        //val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+        TaskStackBuilder.create(this).run {
+            // Add the intent, which inflates the back stack
+            addNextIntentWithParentStack(resultIntent)
+            // Get the PendingIntent containing the entire back stack
+            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
     }
 
     companion object {
