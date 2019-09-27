@@ -26,4 +26,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+<!--    <TextClock-->
+<!--        android:layout_width="20px"-->
+<!--        android:layout_height="20px"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/view_finder" />-->
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:indeterminate="false"
+        android:max="800"
+        android:minWidth="200dp"
+        android:minHeight="50dp"
+        android:progress="1"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/capture_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/view_finder" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

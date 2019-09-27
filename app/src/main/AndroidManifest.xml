@@ -23,7 +23,8 @@
         <meta-data android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name="com.laixer.core.MainActivity">
+<!--        <activity android:name="com.laixer.core.MainActivity">-->
+        <activity android:name="com.laixer.core.RecordVlogActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -43,7 +44,8 @@
             android:exported="false">
         </service>
 
-        <activity android:name=".RecordVlogActivity" android:parentActivityName=".MainActivity">
+<!--        <activity android:name=".RecordVlogActivity" android:parentActivityName=".MainActivity">-->
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="OPEN_CAMERA" />
                 <category android:name="android.intent.category.DEFAULT" />

@@ -3,20 +3,22 @@ package com.laixer.core
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-// Your IDE likely can auto-import these classes, but there are several
-// different implementations so we list them here to disambiguate
 import android.Manifest
 import android.content.pm.PackageManager
 import android.util.Size
 import android.graphics.Matrix
+import android.os.CountDownTimer
 import android.os.Environment
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Rational
 import android.view.Surface
 import android.view.TextureView
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.core.app.ActivityCompat
@@ -24,7 +26,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import java.io.File
 
-// This is an arbitrary number we are using to keep tab of the permission
+
+
+// This is an arbitrary number used to keep tab of the permission
 // request. Where an app has multiple context for requesting permission,
 // this can help differentiate the different contexts
 private const val REQUEST_CODE_PERMISSIONS = 10
@@ -33,6 +37,11 @@ private const val REQUEST_CODE_PERMISSIONS = 10
 private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
 
 class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
+
+    private var progressBar: ProgressBar? = null
+    private var countdown = 3
+    private var progressStatus = 0
+    private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,9 +60,9 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
         viewFinder.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             updateTransform()
         }
-    }
 
-    // Add this after onCreate
+        startCountdown()
+    }
 
     private lateinit var viewFinder: TextureView
 
@@ -91,8 +100,6 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
 
         // Create configuration object for the viewfinder use case
         val previewConfig = PreviewConfig.Builder().apply {
-//            setTargetAspectRatio(Rational(1, 1))
-//            setTargetResolution(Size(640, 640))
             setTargetResolution(screenSize)
             setTargetAspectRatio(screenAspectRatio)
             setTargetRotation(viewFinder.display.rotation)
@@ -104,7 +111,7 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
         // Every time the viewfinder is updated, recompute layout
         preview.setOnPreviewOutputUpdateListener {
 
-            // To update the SurfaceTexture, we have to remove it and re-add it
+            // Update the SurfaceTexture
             val parent = viewFinder.parent as ViewGroup
             parent.removeView(viewFinder)
             parent.addView(viewFinder, 0)
@@ -113,17 +120,16 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
             updateTransform()
         }
 
-        // Create configuration object for the image capture use case
+        // Configuration object for the image capture use case
         val imageCaptureConfig = ImageCaptureConfig.Builder()
             .apply {
                 setTargetAspectRatio(Rational(1, 1))
-                // We don't set a resolution for image capture; instead, we
-                // select a capture mode which will infer the appropriate
+                // Select a capture mode which will infer the appropriate
                 // resolution based on aspect ration and requested mode
                 setCaptureMode(ImageCapture.CaptureMode.MIN_LATENCY)
             }.build()
 
-        // Build the image capture use case and attach button click listener
+        // Image capture use case and attached button click listener
         val imageCapture = ImageCapture(imageCaptureConfig)
         val directory = Environment.getExternalStoragePublicDirectory("/testlocation");
         findViewById<ImageButton>(R.id.capture_button).setOnClickListener {
@@ -172,7 +178,46 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
         }
         matrix.postRotate(-rotationDegrees.toFloat(), centerX, centerY)
 
-        // Finally, apply transformations to our TextureView
+        // Apply transformations to our TextureView
         viewFinder.setTransform(matrix)
+    }
+
+    private fun startCountdown() {
+        val timer = object: CountDownTimer(3000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                countdown--
+            }
+
+            override fun onFinish() {
+                // hide countdown
+                startProgressBar()
+            }
+        }
+        timer.start()
+        startProgressBar()
+    }
+
+    private fun startProgressBar() {
+        progressBar = findViewById(R.id.progress_bar) as ProgressBar
+        progressBar!!.visibility = View.VISIBLE
+        // Start long running operation in a background thread
+        Thread(Runnable {
+            while (progressStatus <= 800) {
+                progressStatus += 1
+                // Update the progress bar and display the
+                //current value in the text view
+                handler.post(Runnable {
+                    progressBar!!.setProgress(progressStatus)
+                })
+                try {
+                    // Sleep for 10 milliseconds.
+                    Thread.sleep(10)
+                    if (progressStatus == 800) progressBar!!.visibility = View.INVISIBLE
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                }
+
+            }
+        }).start()
     }
 }
