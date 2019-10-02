@@ -14,6 +14,8 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.laixer.navigation.features.CameraNavigation
+import com.laixer.navigation.features.SampleNavigation
 import java.lang.UnsupportedOperationException
 
 class FirebaseService : FirebaseMessagingService() {
@@ -92,7 +94,7 @@ class FirebaseService : FirebaseMessagingService() {
         // [END dispatch_job]
 
         if (!remoteMessage.notification?.clickAction.isNullOrEmpty()){
-            startNotificationActivity(remoteMessage.notification?.clickAction)
+            //startNotificationActivity(remoteMessage.notification?.clickAction)
         }
     }
 
@@ -155,20 +157,6 @@ class FirebaseService : FirebaseMessagingService() {
             NOTIFICATION_ID /* ID of notification */,
             notificationBuilder.build()
         )
-    }
-
-    private fun startNotificationActivity(clickAction: String?) {
-        Log.d("CLICKACTION", clickAction)
-        // Create an Intent for the activity you want to start
-        val resultIntent = Intent(this, RecordVlogActivity::class.java)
-        // Create the TaskStackBuilder
-        //val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
-        TaskStackBuilder.create(this).run {
-            // Add the intent, which inflates the back stack
-            addNextIntentWithParentStack(resultIntent)
-            // Get the PendingIntent containing the entire back stack
-            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
     }
 
     companion object {

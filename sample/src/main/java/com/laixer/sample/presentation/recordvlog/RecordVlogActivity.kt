@@ -1,4 +1,4 @@
-package com.laixer.core
+package com.laixer.sample.presentation.recordvlog
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,12 +20,17 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.camera.core.*
+import androidx.camera.core.CameraX
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureConfig
+import androidx.camera.core.Preview
+import androidx.camera.core.PreviewConfig
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import com.laixer.sample.R
 import java.io.File
-
+import java.util.concurrent.TimeUnit
 
 
 // This is an arbitrary number used to keep tab of the permission
@@ -34,7 +39,11 @@ import java.io.File
 private const val REQUEST_CODE_PERMISSIONS = 10
 
 // This is an array of all the permission specified in the manifest
-private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+private val REQUIRED_PERMISSIONS = arrayOf(
+    Manifest.permission.CAMERA,
+    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+    Manifest.permission.READ_EXTERNAL_STORAGE
+)
 
 class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
 
@@ -53,7 +62,10 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
             viewFinder.post { startCamera() }
         } else {
             ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+                this,
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
+            )
         }
 
         // Every time the provided texture view changes, recompute layout
@@ -71,14 +83,17 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
      * been granted? If yes, start Camera. Otherwise display a toast
      */
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 viewFinder.post { startCamera() }
             } else {
-                Toast.makeText(this,
+                Toast.makeText(
+                    this,
                     "Permissions not granted by the user.",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
                 finish()
             }
         }
@@ -89,7 +104,8 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
      */
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
-            baseContext, it) == PackageManager.PERMISSION_GRANTED
+            baseContext, it
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun startCamera() {
@@ -133,12 +149,16 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
         val imageCapture = ImageCapture(imageCaptureConfig)
         val directory = Environment.getExternalStoragePublicDirectory("/testlocation");
         findViewById<ImageButton>(R.id.capture_button).setOnClickListener {
-            val file = File(directory,
-                "${System.currentTimeMillis()}.jpg")
+            val file = File(
+                directory,
+                "${System.currentTimeMillis()}.jpg"
+            )
             imageCapture.takePicture(file,
                 object : ImageCapture.OnImageSavedListener {
-                    override fun onError(error: ImageCapture.UseCaseError,
-                                         message: String, exc: Throwable?) {
+                    override fun onError(
+                        error: ImageCapture.UseCaseError,
+                        message: String, exc: Throwable?
+                    ) {
                         val msg = "Photo capture failed: $message"
                         Toast.makeText(baseContext, "${msg} === DIRECTORY: ${directory}", Toast.LENGTH_LONG).show()
                         Log.e("CameraXApp", msg)
@@ -169,7 +189,7 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
         val centerY = viewFinder.height / 2f
 
         // Correct preview output to account for display rotation
-        val rotationDegrees = when(viewFinder.display.rotation) {
+        val rotationDegrees = when (viewFinder.display.rotation) {
             Surface.ROTATION_0 -> 0
             Surface.ROTATION_90 -> 90
             Surface.ROTATION_180 -> 180
@@ -183,7 +203,7 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     private fun startCountdown() {
-        val timer = object: CountDownTimer(3000, 1000) {
+        val timer = object : CountDownTimer(3000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 countdown--
             }
@@ -198,7 +218,7 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     private fun startProgressBar() {
-        progressBar = findViewById(R.id.progress_bar) as ProgressBar
+        progressBar = findViewById(R.id.progress_bar)
         progressBar!!.visibility = View.VISIBLE
         // Start long running operation in a background thread
         Thread(Runnable {
@@ -206,17 +226,16 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
                 progressStatus += 1
                 // Update the progress bar and display the
                 //current value in the text view
-                handler.post(Runnable {
-                    progressBar!!.setProgress(progressStatus)
-                })
+                handler.post {
+                    progressBar!!.progress = progressStatus
+                }
                 try {
                     // Sleep for 10 milliseconds.
-                    Thread.sleep(10)
+                    TimeUnit.MILLISECONDS.sleep(10)
                     if (progressStatus == 800) progressBar!!.visibility = View.INVISIBLE
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
                 }
-
             }
         }).start()
     }

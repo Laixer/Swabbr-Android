@@ -21,6 +21,11 @@ dependencies {
 
     implementation Libraries.moshiConverter
 
+    implementation Libraries.constraintLayout
+
+    implementation Libraries.cameraCore
+    implementation Libraries.camera2
+
     testImplementation TestLibraries.junit
     testImplementation TestLibraries.assertjCore
     testImplementation TestLibraries.mockitoKotlin
