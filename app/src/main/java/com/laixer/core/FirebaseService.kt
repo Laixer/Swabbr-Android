@@ -9,13 +9,11 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.app.TaskStackBuilder
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.laixer.navigation.features.CameraNavigation
-import com.laixer.navigation.features.SampleNavigation
 import java.lang.UnsupportedOperationException
 
 class FirebaseService : FirebaseMessagingService() {
@@ -46,7 +44,7 @@ class FirebaseService : FirebaseMessagingService() {
         // Check if message contains a data payload.
         remoteMessage.data.values.filterNotNull().forEach {
             Log.d(TAG, "Message data payload: $it")
-            sendNotification(it)
+            //sendNotification(it)
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.
@@ -60,7 +58,8 @@ class FirebaseService : FirebaseMessagingService() {
         // Check if message contains a notification payload.
         remoteMessage.notification?.let {
             Log.d(TAG, "Message Notification Body: ${it.body}")
-            sendNotification("${it.body}")
+            Log.d(TAG, "Message Notification CLICK_ACTION: ${it.clickAction}")
+            sendNotification(it)
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -93,8 +92,8 @@ class FirebaseService : FirebaseMessagingService() {
         WorkManager.getInstance(this.baseContext).beginWith(work).enqueue()
         // [END dispatch_job]
 
-        if (!remoteMessage.notification?.clickAction.isNullOrEmpty()){
-            //startNotificationActivity(remoteMessage.notification?.clickAction)
+        if (!remoteMessage.notification?.clickAction.isNullOrEmpty()) {
+
         }
     }
 
@@ -122,14 +121,25 @@ class FirebaseService : FirebaseMessagingService() {
      *
      * @param messageBody FCM message body received.
      */
-    private fun sendNotification(messageBody: String) {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    private fun sendNotification(notification: RemoteMessage.Notification) {
+        val messageBody = notification.body
+        val clickaction = notification.clickAction
+        var intent = Intent(this, MainActivity::class.java)
+
+
+        when (clickaction) {
+            "vlog_record_request" -> {
+                intent = CameraNavigation.dynamicStart!!
+            }
+            else -> {
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
+        }
+
         val pendingIntent = PendingIntent.getActivity(
             this, 0 /* Request code */, intent,
             PendingIntent.FLAG_ONE_SHOT
         )
-
         val channelId = getString(R.string.default_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)

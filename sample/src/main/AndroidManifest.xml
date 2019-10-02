@@ -20,7 +20,7 @@
 
         <activity android:name="com.laixer.sample.presentation.recordvlog.RecordVlogActivity" android:parentActivityName="com.laixer.core.MainActivity">
             <intent-filter>
-                <action android:name="vlog_record_request " />
+                <action android:name="vlog_record_request" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
