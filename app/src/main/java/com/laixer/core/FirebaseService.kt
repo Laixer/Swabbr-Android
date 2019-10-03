@@ -141,7 +141,7 @@ class FirebaseService : FirebaseMessagingService() {
     private fun sendNotification(notification: notification?, data: Vlog1) {
         var intent: Intent = when (notification?.notification_type) {
             "vlog_record_request" -> CameraNavigation.dynamicStart!!
-            "followed_profile_live" -> SampleNavigation.vlogDetails("101")!!
+            "followed_profile_live" -> SampleNavigation.vlogDetails("1", "101")!!
             else -> Intent(this, MainActivity::class.java)
         }
 
