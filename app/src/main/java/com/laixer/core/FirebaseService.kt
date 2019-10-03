@@ -14,7 +14,34 @@ import androidx.work.WorkManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.laixer.navigation.features.CameraNavigation
+import com.laixer.navigation.features.SampleNavigation
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonClass
+import com.squareup.moshi.Moshi
+import org.json.JSONObject
 import java.lang.UnsupportedOperationException
+import java.util.*
+import kotlin.reflect.KClass
+
+data class notification (
+    @field:Json(name = "protocol") val protocol: String,
+    @field:Json(name = "version") val version: Int,
+    @field:Json(name = "data_type") val data_type: String,
+    @field:Json(name = "data") val data: String,
+    @field:Json(name = "content_type") val content_type: String,
+    @field:Json(name = "timestamp") val timestamp: String,
+    @field:Json(name = "user_agent") val user_agent: String,
+    @field:Json(name = "notification_type") val notification_type: String
+)
+
+abstract class Data(map: AbstractMap<*, *>)
+
+class Vlog1(map: AbstractMap<*, *>): Data(map) {
+    val title: String = map["title"] as String
+    val message: String = map["message"] as String
+    val id: String = map["id"] as String
+}
 
 class FirebaseService : FirebaseMessagingService() {
 
@@ -27,39 +54,29 @@ class FirebaseService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        // [START_EXCLUDE]
-        // There are two types of messages data messages and notification messages. Data messages are handled
-        // here in onMessageReceived whether the app is in the foreground or background. Data messages are the type
-        // traditionally used with GCM. Notification messages are only received here in onMessageReceived when the app
-        // is in the foreground. When the app is in the background an automatically generated notification is displayed.
-        // When the user taps on the notification they are returned to the app. Messages containing both notification
-        // and data payloads are treated as notification messages. The Firebase console always sends notification
-        // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
-        // [END_EXCLUDE]
+        val moshi: Moshi = Moshi.Builder().build()
+        val adapter: JsonAdapter<notification> = moshi.adapter(notification::class.java)
 
-        // TODO(developer): Handle FCM messages here.
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: ${remoteMessage.from}")
 
-        // Check if message contains a data payload.
-        remoteMessage.data.values.filterNotNull().forEach {
-            Log.d(TAG, "Message data payload: $it")
-            //sendNotification(it)
-
-            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use WorkManager.
-                scheduleJob(remoteMessage)
-            } else {
-                // Handle message within 10 seconds
-                handleNow()
-            }
-        }
-
         // Check if message contains a notification payload.
-        remoteMessage.notification?.let {
-            Log.d(TAG, "Message Notification Body: ${it.body}")
-            Log.d(TAG, "Message Notification CLICK_ACTION: ${it.clickAction}")
-            sendNotification(it)
+        remoteMessage.data.let {
+
+            // Creates JSONObject from notification payload
+            val jsonData = JSONObject(remoteMessage.data).toString()
+            val notification = adapter.fromJson(jsonData)
+
+            // Uses reflection to find the appropriate data class
+            val clazz = Class.forName("com.laixer.core.${notification?.data_type}").kotlin
+
+            // Create JSONObject from data within notification payload
+            val jsonDataVlog = JSONObject(notification?.data).toString()
+            val adapterVlog = moshi.adapter<Any>(Object::class.java) // returns AbstractMap
+
+            //
+            val data = Vlog1(adapterVlog.fromJson(jsonDataVlog) as AbstractMap<*, *>)
+
+        sendNotification(notification, data)
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -121,21 +138,14 @@ class FirebaseService : FirebaseMessagingService() {
      *
      * @param messageBody FCM message body received.
      */
-    private fun sendNotification(notification: RemoteMessage.Notification) {
-        val messageBody = notification.body
-        val clickaction = notification.clickAction
-        var intent = Intent(this, MainActivity::class.java)
-
-
-        when (clickaction) {
-            "vlog_record_request" -> {
-                intent = CameraNavigation.dynamicStart!!
-            }
-            else -> {
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            }
+    private fun sendNotification(notification: notification?, data: Vlog1) {
+        var intent: Intent = when (notification?.notification_type) {
+            "vlog_record_request" -> CameraNavigation.dynamicStart!!
+            "followed_profile_live" -> SampleNavigation.vlogDetails("101")!!
+            else -> Intent(this, MainActivity::class.java)
         }
 
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(
             this, 0 /* Request code */, intent,
             PendingIntent.FLAG_ONE_SHOT
@@ -144,8 +154,8 @@ class FirebaseService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_stat_ic_notification)
-            .setContentTitle(getString(R.string.fcm_message))
-            .setContentText(messageBody)
+            .setContentTitle(data.title)
+            .setContentText(data.message)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
