@@ -41,9 +41,8 @@ class FirebaseService : FirebaseMessagingService() {
         remoteMessage.data.let {
             val notificationManager = NotificationManager()
             val notification = notificationManager.handleNotification(remoteMessage.data)
-            val notificationData = notificationManager.handleNotificationData(notification!!)
 
-            sendNotification(notification, notificationData)
+            sendNotification(notification)
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -105,20 +104,19 @@ class FirebaseService : FirebaseMessagingService() {
      *
      * @param messageBody FCM message body received.
      */
-    private fun sendNotification(notification: notification?, data: vlog1) {
-
+    private fun sendNotification(notification: Notification?) {
         // Set default intent
         var intent = Intent(this, MainActivity::class.java)
 
         // Retrieve action from notification payload or null if none exists
-        val action = notification?.notification_type?.toUpperCase(Locale.ROOT)
+        val action = notification!!.payload.click_action?.toUpperCase(Locale.ROOT)
 
         // Assign correct action if notification contains payload
         action?.let {
             try {
                 intent = when (Action.valueOf(action)) {
                     Action.VLOG_RECORD_REQUEST -> CameraNavigation.dynamicStart!!
-                    Action.VLOG_NEW_REACTION -> SampleNavigation.vlogDetails(data.id)!!
+                    Action.VLOG_NEW_REACTION -> SampleNavigation.vlogDetails(notification.payload.id)!!
                 }
             } catch (e: IllegalArgumentException) {
                 Log.e(TAG, e.message)
@@ -137,8 +135,8 @@ class FirebaseService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_stat_ic_notification)
-            .setContentTitle(data.title)
-            .setContentText(data.message)
+            .setContentTitle(notification.payload.title)
+            .setContentText(notification.payload.message)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
