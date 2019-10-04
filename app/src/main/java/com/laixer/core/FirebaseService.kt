@@ -17,12 +17,11 @@ import com.laixer.navigation.features.CameraNavigation
 import com.laixer.navigation.features.SampleNavigation
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import org.json.JSONObject
 import java.lang.UnsupportedOperationException
 import java.util.*
-import kotlin.reflect.KClass
+import kotlin.IllegalArgumentException
 
 data class notification (
     @field:Json(name = "protocol") val protocol: String,
@@ -37,10 +36,15 @@ data class notification (
 
 abstract class Data(map: AbstractMap<*, *>)
 
-class Vlog1(map: AbstractMap<*, *>): Data(map) {
+class vlog1(map: AbstractMap<*, *>): Data(map) {
     val title: String = map["title"] as String
     val message: String = map["message"] as String
     val id: String = map["id"] as String
+}
+
+enum class Action {
+    VLOG_NEW_REACTION,
+    VLOG_RECORD_REQUEST
 }
 
 class FirebaseService : FirebaseMessagingService() {
@@ -74,7 +78,7 @@ class FirebaseService : FirebaseMessagingService() {
             val adapterVlog = moshi.adapter<Any>(Object::class.java) // returns AbstractMap
 
             //
-            val data = Vlog1(adapterVlog.fromJson(jsonDataVlog) as AbstractMap<*, *>)
+            val data = vlog1(adapterVlog.fromJson(jsonDataVlog) as AbstractMap<*, *>)
 
         sendNotification(notification, data)
         }
@@ -138,14 +142,30 @@ class FirebaseService : FirebaseMessagingService() {
      *
      * @param messageBody FCM message body received.
      */
-    private fun sendNotification(notification: notification?, data: Vlog1) {
-        var intent: Intent = when (notification?.notification_type) {
-            "vlog_record_request" -> CameraNavigation.dynamicStart!!
-            "followed_profile_live" -> SampleNavigation.vlogDetails("1", "101")!!
-            else -> Intent(this, MainActivity::class.java)
+    private fun sendNotification(notification: notification?, data: vlog1) {
+
+        // Set default intent
+        var intent = Intent(this, MainActivity::class.java)
+
+        // Retrieve action from notification payload or null if none exists
+        val action = notification?.notification_type?.toUpperCase(Locale.ROOT)
+
+        // Assign correct action if notification contains payload
+        action?.let {
+            try {
+                intent = when (Action.valueOf(action)) {
+                    Action.VLOG_RECORD_REQUEST -> CameraNavigation.dynamicStart!!
+                    Action.VLOG_NEW_REACTION -> SampleNavigation.vlogDetails(data.id)!!
+                }
+            } catch (e: IllegalArgumentException) {
+                Log.e(TAG, e.message)
+            }
         }
 
+        // Clear activity stack
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+        // Blabla
         val pendingIntent = PendingIntent.getActivity(
             this, 0 /* Request code */, intent,
             PendingIntent.FLAG_ONE_SHOT

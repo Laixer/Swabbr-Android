@@ -14,8 +14,6 @@ import com.laixer.sample.presentation.model.VlogItem
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-data class UserIdVlogId(val userId: String, val vlogId: String)
-
 class VlogDetailsViewModel constructor(
     private val userVlogUseCase: UserVlogUseCase,
     private val reactionsUseCase: UserReactionUseCase
@@ -25,8 +23,8 @@ class VlogDetailsViewModel constructor(
     val reactions = MutableLiveData<Resource<List<ReactionItem>>>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun getVlogs(ids: UserIdVlogId) =
-        compositeDisposable.add(userVlogUseCase.get(ids.userId, ids.vlogId, false)
+    fun getVlog(vlogId: String) =
+        compositeDisposable.add(userVlogUseCase.get(vlogId, false)
             .subscribeOn(Schedulers.io())
             .map { it.mapToPresentation() }
             .subscribe({ vlogs.postValue(it) }, { })
