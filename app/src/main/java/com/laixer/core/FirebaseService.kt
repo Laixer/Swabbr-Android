@@ -15,32 +15,9 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.laixer.navigation.features.CameraNavigation
 import com.laixer.navigation.features.SampleNavigation
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import org.json.JSONObject
 import java.lang.UnsupportedOperationException
 import java.util.*
 import kotlin.IllegalArgumentException
-
-data class notification (
-    @field:Json(name = "protocol") val protocol: String,
-    @field:Json(name = "version") val version: Int,
-    @field:Json(name = "data_type") val data_type: String,
-    @field:Json(name = "data") val data: String,
-    @field:Json(name = "content_type") val content_type: String,
-    @field:Json(name = "timestamp") val timestamp: String,
-    @field:Json(name = "user_agent") val user_agent: String,
-    @field:Json(name = "notification_type") val notification_type: String
-)
-
-abstract class Data(map: AbstractMap<*, *>)
-
-class vlog1(map: AbstractMap<*, *>): Data(map) {
-    val title: String = map["title"] as String
-    val message: String = map["message"] as String
-    val id: String = map["id"] as String
-}
 
 enum class Action {
     VLOG_NEW_REACTION,
@@ -58,29 +35,15 @@ class FirebaseService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        val moshi: Moshi = Moshi.Builder().build()
-        val adapter: JsonAdapter<notification> = moshi.adapter(notification::class.java)
-
         Log.d(TAG, "From: ${remoteMessage.from}")
 
         // Check if message contains a notification payload.
         remoteMessage.data.let {
+            val notificationManager = NotificationManager()
+            val notification = notificationManager.handleNotification(remoteMessage.data)
+            val notificationData = notificationManager.handleNotificationData(notification!!)
 
-            // Creates JSONObject from notification payload
-            val jsonData = JSONObject(remoteMessage.data).toString()
-            val notification = adapter.fromJson(jsonData)
-
-            // Uses reflection to find the appropriate data class
-            val clazz = Class.forName("com.laixer.core.${notification?.data_type}").kotlin
-
-            // Create JSONObject from data within notification payload
-            val jsonDataVlog = JSONObject(notification?.data).toString()
-            val adapterVlog = moshi.adapter<Any>(Object::class.java) // returns AbstractMap
-
-            //
-            val data = vlog1(adapterVlog.fromJson(jsonDataVlog) as AbstractMap<*, *>)
-
-        sendNotification(notification, data)
+            sendNotification(notification, notificationData)
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
