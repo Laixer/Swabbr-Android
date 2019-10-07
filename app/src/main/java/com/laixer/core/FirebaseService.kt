@@ -109,14 +109,14 @@ class FirebaseService : FirebaseMessagingService() {
         var intent = Intent(this, MainActivity::class.java)
 
         // Retrieve action from notification payload or null if none exists
-        val action = notification!!.payload.click_action?.toUpperCase(Locale.ROOT)
+        val action = "vlog_new_reaction"//notification!!.payload.click_action?.toUpperCase(Locale.ROOT)
 
         // Assign correct action if notification contains payload
         action?.let {
             try {
                 intent = when (Action.valueOf(action)) {
                     Action.VLOG_RECORD_REQUEST -> CameraNavigation.dynamicStart!!
-                    Action.VLOG_NEW_REACTION -> SampleNavigation.vlogDetails(notification.payload.id)!!
+                    Action.VLOG_NEW_REACTION -> SampleNavigation.vlogDetails("101")!!//notification.payload.id)!!
                 }
             } catch (e: IllegalArgumentException) {
                 Log.e(TAG, e.message)
@@ -135,8 +135,8 @@ class FirebaseService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_stat_ic_notification)
-            .setContentTitle(notification.payload.title)
-            .setContentText(notification.payload.message)
+            .setContentTitle("a")//notification.payload.title)
+            .setContentText("b")//notification.payload.message)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
