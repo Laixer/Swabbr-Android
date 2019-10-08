@@ -1,6 +1,5 @@
 package com.laixer.core
 
-import com.squareup.moshi.Json
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 
@@ -22,10 +21,6 @@ data class NotificationPayload(
     val click_action: String,
     val id: String
 )
-
-//class vlogPayload(map: AbstractMap<*, *>): NotificationPayload {
-//    @field:Json(name = "id") val id: String
-//}
 
 class NotificationManager {
     val moshi: Moshi = Moshi.Builder().build()
