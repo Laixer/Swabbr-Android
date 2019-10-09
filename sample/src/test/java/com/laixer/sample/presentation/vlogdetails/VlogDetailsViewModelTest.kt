@@ -52,14 +52,14 @@ class VlogDetailsViewModelTest {
     @Test
     fun `get vlog succeeds`() {
         // given
-        whenever(mockUserVlogUseCase.get(userId, vlogId, false))
+        whenever(mockUserVlogUseCase.get(vlogId, false))
             .thenReturn(Single.just(combinedUserVlog))
 
         // when
-        viewModel.getVlogs(UserIdVlogId(userId, vlogId))
+        viewModel.getVlog(vlogId)
 
         // then
-        verify(mockUserVlogUseCase).get(userId, vlogId, false)
+        verify(mockUserVlogUseCase).get(vlogId, false)
         assertEquals(combinedUserVlog.mapToPresentation(), viewModel.vlogs.value)
     }
 

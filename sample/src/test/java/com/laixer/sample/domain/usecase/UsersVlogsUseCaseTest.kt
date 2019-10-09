@@ -86,39 +86,39 @@ class UserVlogUseCaseTest {
     @Test
     fun `repository get success`() {
         // given
-        whenever(mockUserRepository.get(userId, false)).thenReturn(Single.just(user))
+        whenever(mockUserRepository.get(false)).thenReturn(Single.just(listOf(user)))
         whenever(mockVlogRepository.get(vlogId, false)).thenReturn(Single.just(vlog))
 
         // when
-        val test = userVlogUseCase.get(userId, vlogId, false).test()
+        val test = userVlogUseCase.get(vlogId, false).test()
 
         // then
-        verify(mockUserRepository).get(userId, false)
+        verify(mockUserRepository).get(false)
         verify(mockVlogRepository).get(vlogId, false)
 
         test.assertNoErrors()
         test.assertComplete()
         test.assertValueCount(1)
-        test.assertValue(map(user, vlog))
+        test.assertValue(map(listOf(user), vlog))
     }
 
     @Test
     fun `repository get fail`() {
-        // given
-        val throwable = Throwable()
-        whenever(mockUserRepository.get(userId, false)).thenReturn(Single.error(throwable))
-        whenever(mockVlogRepository.get(vlogId, false)).thenReturn(Single.error(throwable))
+            // given
+            val throwable = Throwable()
+            whenever(mockUserRepository.get(false)).thenReturn(Single.error(throwable))
+            whenever(mockVlogRepository.get(vlogId, false)).thenReturn(Single.error(throwable))
 
-        // when
-        val test = userVlogUseCase.get(userId, vlogId, false).test()
+            // when
+            val test = userVlogUseCase.get(vlogId, false).test()
 
-        // then
-        verify(mockUserRepository).get(userId, false)
-        verify(mockVlogRepository).get(vlogId, false)
+            // then
+            verify(mockUserRepository).get(false)
+            verify(mockVlogRepository).get(vlogId, false)
 
-        test.assertNoValues()
-        test.assertNotComplete()
-        test.assertError(throwable)
-        test.assertValueCount(0)
+            test.assertNoValues()
+            test.assertNotComplete()
+            test.assertError(throwable)
+            test.assertValueCount(0)
     }
 }

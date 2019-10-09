@@ -32,11 +32,19 @@ import com.laixer.sample.R
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-
 // This is an arbitrary number used to keep tab of the permission
 // request. Where an app has multiple context for requesting permission,
 // this can help differentiate the different contexts
 private const val REQUEST_CODE_PERMISSIONS = 10
+private const val RECORD_COUNTDOWN = 3
+private const val ROTATION_0 = 0
+private const val ROTATION_90 = 90
+private const val ROTATION_180 = 180
+private const val ROTATION_270 = 270
+private const val COUNTDOWN_MILLISECONDS = 3000.toLong()
+private const val COUNTDOWN_INTERVAL_MILLISECONDS = 1000.toLong()
+private const val MINIMUM_RECORD_TIME = 800
+private const val PROGRESSBAR_INTERVAL_MILLISECONDS = 10.toLong()
 
 // This is an array of all the permission specified in the manifest
 private val REQUIRED_PERMISSIONS = arrayOf(
@@ -48,7 +56,7 @@ private val REQUIRED_PERMISSIONS = arrayOf(
 class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
 
     private var progressBar: ProgressBar? = null
-    private var countdown = 3
+    private var countdown = RECORD_COUNTDOWN
     private var progressStatus = 0
     private val handler = Handler()
 
@@ -82,9 +90,7 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
      * Process result from permission request dialog box, has the request
      * been granted? If yes, start Camera. Otherwise display a toast
      */
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 viewFinder.post { startCamera() }
@@ -147,7 +153,7 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
 
         // Image capture use case and attached button click listener
         val imageCapture = ImageCapture(imageCaptureConfig)
-        val directory = Environment.getExternalStoragePublicDirectory("/testlocation");
+        val directory = Environment.getExternalStoragePublicDirectory("/testlocation")
         findViewById<ImageButton>(R.id.capture_button).setOnClickListener {
             val file = File(
                 directory,
@@ -155,12 +161,9 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
             )
             imageCapture.takePicture(file,
                 object : ImageCapture.OnImageSavedListener {
-                    override fun onError(
-                        error: ImageCapture.UseCaseError,
-                        message: String, exc: Throwable?
-                    ) {
+                    override fun onError(error: ImageCapture.UseCaseError, message: String, exc: Throwable?) {
                         val msg = "Photo capture failed: $message"
-                        Toast.makeText(baseContext, "${msg} === DIRECTORY: ${directory}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(baseContext, "$msg === DIRECTORY: $directory", Toast.LENGTH_LONG).show()
                         Log.e("CameraXApp", msg)
                         exc?.printStackTrace()
                     }
@@ -190,10 +193,10 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
 
         // Correct preview output to account for display rotation
         val rotationDegrees = when (viewFinder.display.rotation) {
-            Surface.ROTATION_0 -> 0
-            Surface.ROTATION_90 -> 90
-            Surface.ROTATION_180 -> 180
-            Surface.ROTATION_270 -> 270
+            Surface.ROTATION_0 -> ROTATION_0
+            Surface.ROTATION_90 -> ROTATION_90
+            Surface.ROTATION_180 -> ROTATION_180
+            Surface.ROTATION_270 -> ROTATION_270
             else -> return
         }
         matrix.postRotate(-rotationDegrees.toFloat(), centerX, centerY)
@@ -203,7 +206,7 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     private fun startCountdown() {
-        val timer = object : CountDownTimer(3000, 1000) {
+        val timer = object : CountDownTimer(COUNTDOWN_MILLISECONDS, COUNTDOWN_INTERVAL_MILLISECONDS) {
             override fun onTick(millisUntilFinished: Long) {
                 countdown--
             }
@@ -222,17 +225,16 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
         progressBar!!.visibility = View.VISIBLE
         // Start long running operation in a background thread
         Thread(Runnable {
-            while (progressStatus <= 800) {
+            while (progressStatus <= MINIMUM_RECORD_TIME) {
                 progressStatus += 1
-                // Update the progress bar and display the
-                //current value in the text view
+                // Update the progress bar to display the current value in the text view
                 handler.post {
                     progressBar!!.progress = progressStatus
                 }
                 try {
                     // Sleep for 10 milliseconds.
-                    TimeUnit.MILLISECONDS.sleep(10)
-                    if (progressStatus == 800) progressBar!!.visibility = View.INVISIBLE
+                    TimeUnit.MILLISECONDS.sleep(PROGRESSBAR_INTERVAL_MILLISECONDS)
+                    if (progressStatus == MINIMUM_RECORD_TIME) progressBar!!.visibility = View.INVISIBLE
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
                 }

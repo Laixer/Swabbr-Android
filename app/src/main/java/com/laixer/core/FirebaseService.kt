@@ -9,8 +9,6 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.laixer.navigation.features.CameraNavigation
@@ -69,16 +67,16 @@ class FirebaseService : FirebaseMessagingService() {
     /**
      * Schedule async work using WorkManager.
      */
-    private fun scheduleJob(remoteMessage: RemoteMessage) {
-        // [START dispatch_job]
-        val work = OneTimeWorkRequest.Builder(MyWorker::class.java).build()
-        WorkManager.getInstance(this.baseContext).beginWith(work).enqueue()
-        // [END dispatch_job]
-
-        if (!remoteMessage.notification?.clickAction.isNullOrEmpty()) {
-
-        }
-    }
+//    private fun scheduleJob(remoteMessage: RemoteMessage) {
+//        // [START dispatch_job]
+//        val work = OneTimeWorkRequest.Builder(MyWorker::class.java).build()
+//        WorkManager.getInstance(this.baseContext).beginWith(work).enqueue()
+//        // [END dispatch_job]
+//
+//        if (!remoteMessage.notification?.clickAction.isNullOrEmpty()) {
+//
+//        }
+//    }
 
     /**
      * Handle time allotted to BroadcastReceivers.
@@ -109,10 +107,10 @@ class FirebaseService : FirebaseMessagingService() {
         var intent = Intent(this, MainActivity::class.java)
 
         // Retrieve action from notification payload or null if none exists
-        val action = notification!!.data.click_action?.toUpperCase(Locale.ROOT)
+        val action = notification!!.data.clickAction.toUpperCase(Locale.ROOT)
 
         // Assign correct action if notification contains payload
-        action?.let {
+        action.let {
             try {
                 intent = when (Action.valueOf(action)) {
                     Action.VLOG_RECORD_REQUEST -> CameraNavigation.dynamicStart!!
