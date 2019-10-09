@@ -3,6 +3,7 @@
 package com.laixer.sample.datasource.model
 
 import com.laixer.sample.vlogEntity
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -16,14 +17,14 @@ class VlogEntityTest {
         val model = vlogEntity.mapToDomain()
 
         // then
-        assertTrue(model.userId == vlogEntity.userId)
-        assertTrue(model.id == vlogEntity.id)
-        assertTrue(model.duration == vlogEntity.duration)
-        assertTrue(model.startDate == vlogEntity.startDate)
-        assertTrue(model.totalViews == vlogEntity.totalViews)
-        assertTrue(model.totalReactions == vlogEntity.totalReactions)
-        assertTrue(model.totalLikes == vlogEntity.totalLikes)
-        assertTrue(model.isLive == vlogEntity.isLive)
-        assertTrue(model.isPrivate == vlogEntity.isPrivate)
+        assertEquals(model.userId, vlogEntity.userId)
+        assertEquals(model.id, vlogEntity.id)
+        assertEquals(model.duration, vlogEntity.duration)
+        assertEquals(model.startDate, vlogEntity.startDate)
+        assertEquals(model.totalViews, vlogEntity.totalViews)
+        assertEquals(model.totalReactions, vlogEntity.totalReactions)
+        assertEquals(model.totalLikes, vlogEntity.totalLikes)
+        assertEquals(model.isLive, vlogEntity.isLive)
+        assertEquals(model.isPrivate, vlogEntity.isPrivate)
     }
 }
