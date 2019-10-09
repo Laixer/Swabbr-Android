@@ -23,7 +23,7 @@ data class NotificationPayload(
 )
 
 class NotificationManager {
-    val moshi: Moshi = Moshi.Builder().build()
+    private val moshi: Moshi = Moshi.Builder().build()
 
     fun handleNotification(data: Map<String, *>): Notification? {
         val adapter: JsonAdapter<Notification> = moshi.adapter(Notification::class.java).lenient()
