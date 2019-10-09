@@ -4,7 +4,6 @@ package com.laixer.sample.datasource.model
 
 import com.laixer.sample.vlogEntity
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class VlogEntityTest {
