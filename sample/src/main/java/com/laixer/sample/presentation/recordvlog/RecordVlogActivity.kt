@@ -19,6 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.camera.core.CameraX
 import androidx.camera.core.ImageCapture
@@ -206,18 +207,22 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     private fun startCountdown() {
+        val countdownText: TextView = findViewById(R.id.countdown)
+        countdownText.text = countdown.toString()
+        countdownText!!.visibility = View.VISIBLE
+
         val timer = object : CountDownTimer(COUNTDOWN_MILLISECONDS, COUNTDOWN_INTERVAL_MILLISECONDS) {
             override fun onTick(millisUntilFinished: Long) {
                 countdown--
+                countdownText.text = countdown.toString()
             }
 
             override fun onFinish() {
-                // hide countdown
+                countdownText!!.visibility = View.INVISIBLE
                 startProgressBar()
             }
         }
         timer.start()
-        startProgressBar()
     }
 
     private fun startProgressBar() {
