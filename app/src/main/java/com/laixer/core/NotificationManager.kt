@@ -22,10 +22,6 @@ data class NotificationPayload(
     @field:Json(name = "id") val id: String
 )
 
-//class vlogPayload(map: AbstractMap<*, *>): NotificationPayload {
-//    @field:Json(name = "id") val id: String
-//}
-
 class NotificationManager {
     private val moshi: Moshi = Moshi.Builder().build()
 
