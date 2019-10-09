@@ -57,6 +57,8 @@ dependencies {
     implementation Libraries.workmanagerRxjava // RxJava2 compatibility
 
     debugImplementation Libraries.leakCanaryAndroid
+
+    testImplementation TestLibraries.junit
 }
 
 repositories {

@@ -3,7 +3,7 @@
 package com.laixer.sample.datasource.model
 
 import com.laixer.sample.reactionEntity
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ReactionEntityTest {
@@ -16,10 +16,10 @@ class ReactionEntityTest {
         val model = reactionEntity.mapToDomain()
 
         // then
-        assertTrue(model.userId == reactionEntity.userId)
-        assertTrue(model.vlogId == reactionEntity.vlogId)
-        assertTrue(model.id == reactionEntity.id)
-        assertTrue(model.duration == reactionEntity.duration)
-        assertTrue(model.postDate == reactionEntity.postDate)
+        assertEquals(model.userId, reactionEntity.userId)
+        assertEquals(model.vlogId, reactionEntity.vlogId)
+        assertEquals(model.id, reactionEntity.id)
+        assertEquals(model.duration, reactionEntity.duration)
+        assertEquals(model.postDate, reactionEntity.postDate)
     }
 }

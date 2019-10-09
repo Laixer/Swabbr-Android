@@ -23,7 +23,6 @@ class VlogDetailsActivity : AppCompatActivity() {
 
     private val vm: VlogDetailsViewModel by viewModel()
     private val adapter = ReactionsAdapter()
-    private val userId by lazy { intent.getStringExtra(SampleNavigation.USER_ID_KEY) }
     private val vlogId by lazy { intent.getStringExtra(SampleNavigation.VLOG_ID_KEY) }
     private val snackBar by lazy {
         Snackbar.make(container, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)
@@ -41,7 +40,7 @@ class VlogDetailsActivity : AppCompatActivity() {
         reactionsRecyclerView.adapter = adapter
 
         if (savedInstanceState == null) {
-            vm.getVlogs(UserIdVlogId(userId, vlogId))
+            vm.getVlog(vlogId)
             vm.getReactions(vlogId, refresh = false)
         }
 

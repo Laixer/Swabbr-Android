@@ -38,7 +38,7 @@ object Versions {
 
     val fabric = "1.30.0"
 
-    val appcompat = "1.0.2"
+    val appcompat = "1.1.0-alpha01"
     val design = "1.0.0"
     val cardview = "1.0.0"
     val recyclerview = "1.0.0"
@@ -68,6 +68,10 @@ object Versions {
     val assertjCore = "3.12.2"
     val mockitoKotlin = "2.1.0"
     val mockitoInline = "3.0.0"
+
+    val camera = "1.0.0-alpha04"
+
+    val constraintLayout = "1.1.3"
 }
 
 object Libraries {
@@ -105,6 +109,11 @@ object Libraries {
 
     val koinAndroid = "org.koin:koin-android:${Versions.koin}"
     val koinViewModel = "org.koin:koin-androidx-viewmodel:${Versions.koin}"
+
+    val cameraCore = "androidx.camera:camera-core:${Versions.camera}"
+    val camera2 = "androidx.camera:camera-camera2:${Versions.camera}"
+
+    val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
 }
 
 object SupportLibraries {

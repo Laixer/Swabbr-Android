@@ -29,8 +29,8 @@ class UserVlogUseCase constructor(
     private val vlogRepository: VlogRepository
 ) {
 
-    fun get(userId: String, vlogId: String, refresh: Boolean): Single<CombinedUserVlog> =
-        Single.zip(userRepository.get(userId, refresh), vlogRepository.get(vlogId, refresh),
+    fun get(vlogId: String, refresh: Boolean): Single<CombinedUserVlog> =
+        Single.zip(userRepository.get(refresh), vlogRepository.get(vlogId, refresh),
             BiFunction { user, vlog -> map(user, vlog) })
 }
 
@@ -38,7 +38,8 @@ class UserVlogUseCase constructor(
  * To obtain the user from a vlog we need to use the userId from the vlog to find it in the user list.
  * This is a limitation that comes from the network API and this specific use case requires both sample and users.
  */
-fun map(user: User, vlog: Vlog): CombinedUserVlog = CombinedUserVlog(user, vlog)
+fun map(userList: List<User>, vlog: Vlog): CombinedUserVlog =
+    CombinedUserVlog(userList.first { vlog.userId == it.id }, vlog)
 
 fun map(userList: List<User>, vlogList: List<Vlog>): List<CombinedUserVlog> =
     vlogList.map { vlog -> CombinedUserVlog(userList.first { vlog.userId == it.id }, vlog) }

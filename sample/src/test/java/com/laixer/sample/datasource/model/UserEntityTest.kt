@@ -3,6 +3,7 @@
 package com.laixer.sample.datasource.model
 
 import com.laixer.sample.userEntity
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -16,19 +17,19 @@ class UserEntityTest {
         val model = userEntity.mapToDomain()
 
         // then
-        assertTrue(model.id == userEntity.id)
-        assertTrue(model.firstName == userEntity.firstName)
-        assertTrue(model.lastName == userEntity.lastName)
-        assertTrue(model.gender == userEntity.gender)
-        assertTrue(model.country == userEntity.country)
-        assertTrue(model.email == userEntity.email)
-        assertTrue(model.timezone == userEntity.timezone)
-        assertTrue(model.totalVlogs == userEntity.totalVlogs)
-        assertTrue(model.totalFollowers == userEntity.totalFollowers)
-        assertTrue(model.totalFollowing == userEntity.totalFollowing)
-        assertTrue(model.nickname == userEntity.nickname)
-        assertTrue(model.profileImageUrl == userEntity.profileImageUrl)
-        assertTrue(model.birthdate == userEntity.birthdate)
+        assertEquals(model.id, userEntity.id)
+        assertEquals(model.firstName, userEntity.firstName)
+        assertEquals(model.lastName, userEntity.lastName)
+        assertEquals(model.gender, userEntity.gender)
+        assertEquals(model.country, userEntity.country)
+        assertEquals(model.email, userEntity.email)
+        assertEquals(model.timezone, userEntity.timezone)
+        assertEquals(model.totalVlogs, userEntity.totalVlogs)
+        assertEquals(model.totalFollowers, userEntity.totalFollowers)
+        assertEquals(model.totalFollowing, userEntity.totalFollowing)
+        assertEquals(model.nickname, userEntity.nickname)
+        assertEquals(model.profileImageUrl, userEntity.profileImageUrl)
+        assertEquals(model.birthdate, userEntity.birthdate)
         assertTrue(model.longitude == userEntity.longitude)
         assertTrue(model.latitude == userEntity.latitude)
     }

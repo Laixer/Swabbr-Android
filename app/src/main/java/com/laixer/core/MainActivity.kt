@@ -1,5 +1,6 @@
 package com.laixer.core
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.firebase.messaging.FirebaseMessaging
 import com.laixer.navigation.features.SampleNavigation
 
 class MainActivity : AppCompatActivity() {
@@ -18,6 +20,8 @@ class MainActivity : AppCompatActivity() {
         mainActivity = this
         registerWithNotificationHubs()
         FirebaseService.createChannelAndHandleNotifications(applicationContext)
+
+        FirebaseMessaging.getInstance().subscribeToTopic("DEV")
 
         startVlogs()
     }
@@ -66,11 +70,7 @@ class MainActivity : AppCompatActivity() {
                     .show()
             } else {
                 Log.i(TAG, "This device is not supported by Google Play Services.")
-                Toast.makeText(
-                    this,
-                    "This device is not supported by Google Play Services.",
-                    Toast.LENGTH_LONG
-                ).show()
+                this.toast("This device is not supported by Google Play Services.")
                 finish()
             }
             return false
@@ -84,4 +84,7 @@ class MainActivity : AppCompatActivity() {
         private const val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
         private const val TAG = "MainActivity"
     }
+
+    fun Context.toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    fun Context.toast(message: String, length: Int) = Toast.makeText(this, message, length).show()
 }
