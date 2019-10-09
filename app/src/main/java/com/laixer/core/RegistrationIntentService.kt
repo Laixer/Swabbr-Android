@@ -102,11 +102,12 @@ class RegistrationIntentService : IntentService(TAG) {
     }
 
     object NotificationSettings {
-        const val HubName = "testnhub"
+        const val HubName = "swabbr"
         const val HubListenConnectionString =
-            "Endpoint=sb://swnhubs.servicebus.windows.net/;" +
-                    "SharedAccessKeyName=DefaultListenSharedAccessSignature;" +
-                    "SharedAccessKey=UrJUs2YisKhB6miXHky14NIrQ4IrdZ0FGafzZbcGjRQ="
+            "Endpoint=sb://swabbr-notificationhubs.servicebus.windows.net/;"+
+            "SharedAccessKeyName=DefaultListenSharedAccessSignature;"+
+            "SharedAccessKey=FjhpRaNYK6WrnEYQKQcnfmXBLdUP/4xMVQaCnCIqzYQ="
+
     }
 
     companion object {
