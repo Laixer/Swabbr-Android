@@ -22,7 +22,7 @@ object SampleNavigation : DynamicFeature<Intent> {
             }
 
     fun profile(userId: String): Intent? =
-        VLOG_DETAILS.loadIntentOrNull()
+        PROFILE.loadIntentOrNull()
             ?.apply {
                 putExtra(USER_ID_KEY, userId)
             }

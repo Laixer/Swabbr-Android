@@ -19,8 +19,10 @@ class VlogListActivity : AppCompatActivity() {
 
     private val vm: VlogListViewModel by viewModel()
 
+//    private val itemClick: (VlogItem) -> Unit =
+//        { startActivity(SampleNavigation.vlogDetails(vlogId = it.vlogId)) }
     private val itemClick: (VlogItem) -> Unit =
-        { startActivity(SampleNavigation.vlogDetails(vlogId = it.vlogId)) }
+        { startActivity(SampleNavigation.profile(userId = it.userId)) }
     private val adapter = VlogListAdapter(itemClick)
     private val snackBar by lazy {
         Snackbar.make(swipeRefreshLayout, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)

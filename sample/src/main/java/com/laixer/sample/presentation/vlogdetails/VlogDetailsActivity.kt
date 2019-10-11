@@ -44,15 +44,15 @@ class VlogDetailsActivity : AppCompatActivity() {
             vm.getReactions(vlogId, refresh = false)
         }
 
-        vm.vlogs.observe(this, Observer { updateVlogs(it) })
+        vm.vlog.observe(this, Observer { updateVlogs(it) })
         vm.reactions.observe(this, Observer { updateReactions(it) })
     }
 
     private fun updateVlogs(vlogItem: VlogItem?) {
         vlogItem?.let {
-            userAvatar.loadAvatar(it.userId)
-            userUsername.text = "@${it.nickname}"
-            userName.text = "${it.firstName} ${it.lastName}"
+//            userAvatar.loadAvatar(it.user.id)
+//            userUsername.text = "@${it.user.nickname}"
+//            userName.text = "${it.user.firstName} ${it.user.lastName}"
             vlogPostDate.text = it.startDate
             vlogDuration.text = it.duration
         }

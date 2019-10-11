@@ -19,7 +19,7 @@ class VlogDetailsViewModel constructor(
     private val reactionsUseCase: UserReactionUseCase
 ) : ViewModel() {
 
-    val vlogs = MutableLiveData<VlogItem>()
+    val vlog = MutableLiveData<VlogItem>()
     val reactions = MutableLiveData<Resource<List<ReactionItem>>>()
     private val compositeDisposable = CompositeDisposable()
 
@@ -27,7 +27,7 @@ class VlogDetailsViewModel constructor(
         compositeDisposable.add(userVlogUseCase.get(vlogId, false)
             .subscribeOn(Schedulers.io())
             .map { it.mapToPresentation() }
-            .subscribe({ vlogs.postValue(it) }, { })
+            .subscribe({ vlog.postValue(it) }, { })
         )
 
     fun getReactions(vlogId: String, refresh: Boolean = false) =
