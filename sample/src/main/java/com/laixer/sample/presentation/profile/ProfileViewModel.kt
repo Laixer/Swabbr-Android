@@ -15,7 +15,7 @@ class ProfileViewModel constructor(
     val profile = MutableLiveData<ProfileItem>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun getProfile(userId: String) =
+    fun get(userId: String) =
         compositeDisposable.add(userVlogsUseCase.get(userId, false)
             .subscribeOn(Schedulers.io())
             .subscribe({ profile.postValue(it.mapToPresentation()) }, { })

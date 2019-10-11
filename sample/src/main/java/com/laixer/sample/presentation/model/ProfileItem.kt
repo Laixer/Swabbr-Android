@@ -9,4 +9,4 @@ data class ProfileItem(
 )
 
 fun Pair<User, List<Vlog>>.mapToPresentation(): ProfileItem =
-    ProfileItem(this.first, this.second.map { it.mapToPresentation() })
+    ProfileItem(this.first, this.second.map { it.mapToPresentation(this.first) })

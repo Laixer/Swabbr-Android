@@ -29,7 +29,9 @@ import com.laixer.sample.domain.repository.UserRepository
 import com.laixer.sample.domain.usecase.ReactionsUseCase
 import com.laixer.sample.domain.usecase.UserReactionUseCase
 import com.laixer.sample.domain.usecase.UserVlogUseCase
+import com.laixer.sample.domain.usecase.UserVlogsUseCase
 import com.laixer.sample.domain.usecase.UsersVlogsUseCase
+import com.laixer.sample.presentation.profile.ProfileViewModel
 import com.laixer.sample.presentation.vlogdetails.VlogDetailsViewModel
 import com.laixer.sample.presentation.vloglist.VlogListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -52,6 +54,7 @@ private val loadFeature by lazy {
 }
 
 val viewModelModule: Module = module {
+    viewModel { ProfileViewModel(userVlogsUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get()) }
     viewModel { VlogDetailsViewModel(userVlogUseCase = get(), reactionsUseCase = get()) }
 }
@@ -59,6 +62,7 @@ val viewModelModule: Module = module {
 val useCaseModule: Module = module {
     factory { UsersVlogsUseCase(userRepository = get(), vlogRepository = get()) }
     factory { UserVlogUseCase(userRepository = get(), vlogRepository = get()) }
+    factory { UserVlogsUseCase(userRepository = get(), vlogRepository = get()) }
     factory { UserReactionUseCase(userRepository = get(), reactionRepository = get()) }
     factory { ReactionsUseCase(reactionRepository = get()) }
 }

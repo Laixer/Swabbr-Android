@@ -50,9 +50,9 @@ class VlogDetailsActivity : AppCompatActivity() {
 
     private fun updateVlogs(vlogItem: VlogItem?) {
         vlogItem?.let {
-//            userAvatar.loadAvatar(it.user.id)
-//            userUsername.text = "@${it.user.nickname}"
-//            userName.text = "${it.user.firstName} ${it.user.lastName}"
+            userAvatar.loadAvatar(it.userId)
+            userUsername.text = "@${it.nickname}"
+            userName.text = "${it.firstName} ${it.lastName}"
             vlogPostDate.text = it.startDate
             vlogDuration.text = it.duration
         }
