@@ -16,7 +16,7 @@
     <include layout="@layout/include_user_info" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/vlogsRecyclerView"
+        android:id="@+id/profilevlogsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"

@@ -16,10 +16,12 @@ class ProfileViewModel constructor(
     private val compositeDisposable = CompositeDisposable()
 
     fun get(userId: String) =
-        compositeDisposable.add(userVlogsUseCase.get(userId, false)
-            .subscribeOn(Schedulers.io())
-            .subscribe({ profile.postValue(it.mapToPresentation()) }, { })
+        compositeDisposable.add(
+            userVlogsUseCase.get(userId, false)
+                .subscribeOn(Schedulers.io())
+                .subscribe({ profile.postValue(it.mapToPresentation()) }, { })
         )
+
 
     override fun onCleared() {
         compositeDisposable.dispose()
