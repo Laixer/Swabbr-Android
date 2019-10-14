@@ -9,7 +9,7 @@ import com.laixer.presentation.inflate
 import com.laixer.sample.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.item_list_profilevlog.view.*
 
-class ProfileAdapter : ListAdapter<VlogItem, ProfileAdapter.ViewHolder>(ProfileDiffCallback()) {
+class ProfileVlogsAdapter : ListAdapter<VlogItem, ProfileVlogsAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(parent)

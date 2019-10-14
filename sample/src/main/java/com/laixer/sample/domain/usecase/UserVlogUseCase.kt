@@ -4,6 +4,8 @@ import com.laixer.sample.domain.model.Vlog
 import com.laixer.sample.domain.model.User
 import com.laixer.sample.domain.repository.VlogRepository
 import com.laixer.sample.domain.repository.UserRepository
+import com.laixer.sample.presentation.model.ProfileItem
+import com.laixer.sample.presentation.model.VlogItem
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 
@@ -19,7 +21,7 @@ class UsersVlogsUseCase constructor(
     private val vlogRepository: VlogRepository
 ) {
 
-    fun get(refresh: Boolean): Single<List<CombinedUserVlog>> =
+    fun get(refresh: Boolean): Single<List<Pair<User, Vlog>>> =
         Single.zip(userRepository.get(refresh), vlogRepository.get(refresh),
             BiFunction { userList, vlogList -> map(userList, vlogList) })
 }
@@ -29,7 +31,7 @@ class UserVlogUseCase constructor(
     private val vlogRepository: VlogRepository
 ) {
 
-    fun get(vlogId: String, refresh: Boolean): Single<CombinedUserVlog> =
+    fun get(vlogId: String, refresh: Boolean): Single<Pair<User, Vlog>> =
         Single.zip(
             userRepository.get(refresh),
             vlogRepository.get(vlogId, refresh),
@@ -45,7 +47,7 @@ class UserVlogsUseCase constructor(
         Single.zip(
             userRepository.get(userId, refresh),
             vlogRepository.get(refresh),
-            BiFunction { user, vlogs -> Pair(user, vlogs.filter { it.id == userId }) }
+            BiFunction { user, vlogs -> Pair(user, vlogs.filter { it.userId == userId }) }
         )
 }
 
@@ -54,8 +56,8 @@ class UserVlogsUseCase constructor(
      * To obtain the user from a vlog we need to use the userId from the vlog to find it in the user list.
      * This is a limitation that comes from the network API and this specific use case requires both sample and users.
      */
-    fun map(userList: List<User>, vlog: Vlog): CombinedUserVlog =
-        CombinedUserVlog(userList.first { vlog.userId == it.id }, vlog)
+    fun map(userList: List<User>, vlog: Vlog): Pair<User, Vlog> =
+        Pair(userList.first { vlog.userId == it.id }, vlog)
 
-    fun map(userList: List<User>, vlogList: List<Vlog>): List<CombinedUserVlog> =
-        vlogList.map { vlog -> CombinedUserVlog(userList.first { vlog.userId == it.id }, vlog) }
+    fun map(userList: List<User>, vlogList: List<Vlog>): List<Pair<User, Vlog>> =
+        vlogList.map { vlog -> Pair(userList.first { vlog.userId == it.id }, vlog) }

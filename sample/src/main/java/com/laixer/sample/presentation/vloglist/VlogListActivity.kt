@@ -11,6 +11,7 @@ import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
+import com.laixer.sample.presentation.model.ProfileItem
 import com.laixer.sample.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.activity_vlog_list.*
 import org.koin.androidx.viewmodel.ext.viewModel
@@ -19,10 +20,10 @@ class VlogListActivity : AppCompatActivity() {
 
     private val vm: VlogListViewModel by viewModel()
 
-//    private val itemClick: (VlogItem) -> Unit =
-//        { startActivity(SampleNavigation.vlogDetails(vlogId = it.vlogId)) }
-    private val itemClick: (VlogItem) -> Unit =
-        { startActivity(SampleNavigation.profile(userId = it.userId)) }
+//    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
+//        { startActivity(SampleNavigation.vlogDetails(vlogId = it.second.vlogId)) }
+    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
+        { startActivity(SampleNavigation.profile(userId = it.first.id)) }
     private val adapter = VlogListAdapter(itemClick)
     private val snackBar by lazy {
         Snackbar.make(swipeRefreshLayout, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)
@@ -45,7 +46,7 @@ class VlogListActivity : AppCompatActivity() {
         swipeRefreshLayout.setOnRefreshListener { vm.get(refresh = true) }
     }
 
-    private fun updateVlogs(resource: Resource<List<VlogItem>>?) {
+    private fun updateVlogs(resource: Resource<List<Pair<ProfileItem, VlogItem>>>?) {
         resource?.let {
             when (it.state) {
                 ResourceState.LOADING -> swipeRefreshLayout.startRefreshing()

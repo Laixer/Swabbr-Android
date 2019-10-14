@@ -1,6 +1,7 @@
 package com.laixer.sample.presentation.model
 
-import com.laixer.sample.domain.usecase.CombinedUserReaction
+import com.laixer.sample.domain.model.Reaction
+import com.laixer.sample.domain.model.User
 
 data class ReactionItem(
     val userId: String,
@@ -11,14 +12,14 @@ data class ReactionItem(
     val postDate: String
 )
 
-fun List<CombinedUserReaction>.mapToPresentation(): List<ReactionItem> =
+fun List<Pair<User, Reaction>>.mapToPresentation(): List<ReactionItem> =
     map {
         ReactionItem(
-            it.user.id,
-            it.reaction.vlogId,
-            it.reaction.id,
-            it.user.nickname,
-            it.reaction.duration,
-            it.reaction.postDate
+            it.first.id,
+            it.second.vlogId,
+            it.second.id,
+            it.first.nickname,
+            it.second.duration,
+            it.second.postDate
         )
     }

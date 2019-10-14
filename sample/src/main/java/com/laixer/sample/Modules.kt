@@ -30,6 +30,7 @@ import com.laixer.sample.domain.usecase.ReactionsUseCase
 import com.laixer.sample.domain.usecase.UserReactionUseCase
 import com.laixer.sample.domain.usecase.UserVlogUseCase
 import com.laixer.sample.domain.usecase.UserVlogsUseCase
+import com.laixer.sample.domain.usecase.UsersUseCase
 import com.laixer.sample.domain.usecase.UsersVlogsUseCase
 import com.laixer.sample.presentation.profile.ProfileViewModel
 import com.laixer.sample.presentation.vlogdetails.VlogDetailsViewModel
@@ -54,12 +55,13 @@ private val loadFeature by lazy {
 }
 
 val viewModelModule: Module = module {
-    viewModel { ProfileViewModel(userVlogsUseCase = get()) }
+    viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get()) }
     viewModel { VlogDetailsViewModel(userVlogUseCase = get(), reactionsUseCase = get()) }
 }
 
 val useCaseModule: Module = module {
+    factory { UsersUseCase(userRepository = get()) }
     factory { UsersVlogsUseCase(userRepository = get(), vlogRepository = get()) }
     factory { UserVlogUseCase(userRepository = get(), vlogRepository = get()) }
     factory { UserVlogsUseCase(userRepository = get(), vlogRepository = get()) }

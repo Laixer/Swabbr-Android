@@ -1,12 +1,18 @@
 package com.laixer.sample.presentation.model
 
 import com.laixer.sample.domain.model.User
-import com.laixer.sample.domain.model.Vlog
 
 data class ProfileItem(
-    val user: User,
-    val vlogs: List<VlogItem>
+    val id: String,
+    val nickname: String,
+    val firstName: String,
+    val lastName: String
 )
 
-fun Pair<User, List<Vlog>>.mapToPresentation(): ProfileItem =
-    ProfileItem(this.first, this.second.map { it.mapToPresentation(this.first) })
+fun User.mapToPresentation(): ProfileItem =
+    ProfileItem(
+        this.id,
+        this.nickname,
+        this.firstName,
+        this.lastName
+    )

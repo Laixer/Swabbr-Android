@@ -5,6 +5,7 @@
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/item_margin"
     android:animateLayoutChanges="true">
 
     <LinearLayout
@@ -14,6 +15,13 @@
     android:orientation="vertical">
 
     <include layout="@layout/include_user_info" />
+
+    <View
+        style="@style/Divider"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="@dimen/divider_margin"
+        android:layout_marginBottom="@dimen/divider_margin" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/profilevlogsRecyclerView"
