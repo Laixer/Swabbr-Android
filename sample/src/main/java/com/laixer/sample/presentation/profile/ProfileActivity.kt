@@ -6,6 +6,9 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.laixer.navigation.features.SampleNavigation
 import com.laixer.presentation.Resource
+import com.laixer.presentation.ResourceState
+import com.laixer.presentation.startRefreshing
+import com.laixer.presentation.stopRefreshing
 import com.laixer.sample.R
 import com.laixer.sample.injectFeature
 import com.laixer.sample.presentation.loadAvatar
@@ -13,6 +16,7 @@ import com.laixer.sample.presentation.model.ProfileItem
 import com.laixer.sample.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile.swipeRefreshLayout
+import kotlinx.android.synthetic.main.activity_vlog_list.*
 import kotlinx.android.synthetic.main.include_user_info.*
 import org.koin.androidx.viewmodel.ext.viewModel
 
@@ -55,6 +59,11 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun updateProfileVlogs(resource: Resource<List<VlogItem>>?) {
         resource?.let { res ->
+            when (res.state) {
+                ResourceState.LOADING -> swipeRefreshLayout.startRefreshing()
+                ResourceState.SUCCESS -> swipeRefreshLayout.stopRefreshing()
+                ResourceState.ERROR -> swipeRefreshLayout.stopRefreshing()
+            }
             res.data?.let { adapter.submitList(it) }
             res.message?.let { snackBar.show() }
         }
