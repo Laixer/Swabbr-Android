@@ -11,7 +11,6 @@ import com.laixer.sample.domain.usecase.UserReactionUseCase
 import com.laixer.sample.domain.usecase.UserVlogUseCase
 import com.laixer.sample.presentation.model.ProfileVlogItem
 import com.laixer.sample.presentation.model.ReactionItem
-import com.laixer.sample.presentation.model.VlogItem
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 

@@ -3,7 +3,7 @@ package com.laixer.sample.presentation.model
 import com.laixer.sample.domain.model.User
 import com.laixer.sample.domain.model.Vlog
 
-data class ProfileVlogItem (
+data class ProfileVlogItem(
     val id: String,
     val nickname: String,
     val firstName: String,
@@ -33,3 +33,5 @@ fun Pair<User, Vlog>.mapToPresentation(): ProfileVlogItem =
         this.second.totalReactions,
         this.second.totalLikes
     )
+
+fun List<Pair<User, Vlog>>.mapToPresentation(): List<ProfileVlogItem> = map { it.mapToPresentation() }

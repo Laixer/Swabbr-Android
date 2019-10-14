@@ -23,7 +23,7 @@ class VlogListViewModel constructor(private val usersVlogsUseCase: UsersVlogsUse
         compositeDisposable.add(usersVlogsUseCase.get(refresh)
             .doOnSubscribe { vlogs.setLoading() }
             .subscribeOn(Schedulers.io())
-            .map { it.map { pair ->  Pair(pair.first.mapToPresentation(), pair.second.mapToPresentation() )} }
+            .map { it.map { pair -> Pair(pair.first.mapToPresentation(), pair.second.mapToPresentation()) } }
             .subscribe({ vlogs.setSuccess(it) }, { vlogs.setError(it.message) })
         )
 

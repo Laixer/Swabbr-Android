@@ -39,6 +39,9 @@ private class VlogDiffCallback : DiffUtil.ItemCallback<Pair<ProfileItem, VlogIte
     override fun areItemsTheSame(oldItem: Pair<ProfileItem, VlogItem>, newItem: Pair<ProfileItem, VlogItem>): Boolean =
         oldItem.second.vlogId == newItem.second.vlogId
 
-    override fun areContentsTheSame(oldItem: Pair<ProfileItem, VlogItem>, newItem: Pair<ProfileItem, VlogItem>): Boolean =
+    override fun areContentsTheSame(
+        oldItem: Pair<ProfileItem, VlogItem>,
+        newItem: Pair<ProfileItem, VlogItem>
+    ): Boolean =
         oldItem == newItem
 }

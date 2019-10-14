@@ -14,7 +14,6 @@ import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.sample.presentation.model.ProfileVlogItem
 import com.laixer.sample.presentation.model.ReactionItem
-import com.laixer.sample.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.activity_vlog_details.*
 import kotlinx.android.synthetic.main.include_user_info.*
 import kotlinx.android.synthetic.main.item_list_vlog.*

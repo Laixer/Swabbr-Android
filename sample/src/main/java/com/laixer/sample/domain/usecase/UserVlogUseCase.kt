@@ -4,8 +4,6 @@ import com.laixer.sample.domain.model.Vlog
 import com.laixer.sample.domain.model.User
 import com.laixer.sample.domain.repository.VlogRepository
 import com.laixer.sample.domain.repository.UserRepository
-import com.laixer.sample.presentation.model.ProfileItem
-import com.laixer.sample.presentation.model.VlogItem
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 
@@ -50,7 +48,6 @@ class UserVlogsUseCase constructor(
             BiFunction { user, vlogs -> Pair(user, vlogs.filter { it.userId == userId }) }
         )
 }
-
 
     /**
      * To obtain the user from a vlog we need to use the userId from the vlog to find it in the user list.

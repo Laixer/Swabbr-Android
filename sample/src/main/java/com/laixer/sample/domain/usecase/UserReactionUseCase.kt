@@ -22,16 +22,6 @@ class UserReactionUseCase constructor(
             BiFunction { userList, reactionList -> map(userList, reactionList) })
 }
 
-// class UserReactionUseCase constructor(
-//    private val userRepository: UserRepository,
-//    private val reactionRepository: ReactionRepository
-// ) {
-//
-//    fun get(userId: String, vlogId: String, refresh: Boolean): Single<CombinedUserReaction> =
-//        Single.zip(userRepository.get(userId, refresh), reactionRepository.get(vlogId, refresh),
-//            BiFunction { user, reactionList -> map(user, reaction) })
-// }
-
 /**
  * To obtain the user from a reaction we need to use the userId from the reaction to find it in the user list.
  * This is a limitation that comes from the network API and this specific use case requires both sample and users.

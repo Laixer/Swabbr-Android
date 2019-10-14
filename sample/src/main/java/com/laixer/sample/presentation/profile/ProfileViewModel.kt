@@ -34,7 +34,7 @@ class ProfileViewModel constructor(
     fun getProfileVlogs(userId: String, refresh: Boolean = false) =
         compositeDisposable.add(
             userVlogsUseCase.get(userId, refresh)
-                .doOnSubscribe {profileVlogs.setLoading()}
+                .doOnSubscribe { profileVlogs.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .map { it.second.mapToPresentation() }
                 .subscribe({ profileVlogs.setSuccess(it) }, { profileVlogs.setError(it.message) })

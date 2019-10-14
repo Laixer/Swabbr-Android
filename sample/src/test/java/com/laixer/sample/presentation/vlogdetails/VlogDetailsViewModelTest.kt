@@ -10,7 +10,6 @@ import com.laixer.sample.presentation.RxSchedulersOverrideRule
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.sample.*
-import com.laixer.sample.domain.usecase.CombinedUserReaction
 import com.laixer.sample.domain.usecase.UserReactionUseCase
 import com.laixer.sample.domain.usecase.UserVlogUseCase
 import com.laixer.sample.presentation.model.mapToPresentation
@@ -28,7 +27,7 @@ class VlogDetailsViewModelTest {
     private val mockUserVlogUseCase: UserVlogUseCase = mock()
     private val mockUserReactionUseCase: UserReactionUseCase = mock()
 
-    private val combinedUserReaction = CombinedUserReaction(user, reaction)
+    private val combinedUserReaction = Pair(user, reaction)
     private val reactions = listOf(combinedUserReaction)
 
     private val userId = user.id
@@ -53,14 +52,14 @@ class VlogDetailsViewModelTest {
     fun `get vlog succeeds`() {
         // given
         whenever(mockUserVlogUseCase.get(vlogId, false))
-            .thenReturn(Single.just(combinedUserVlog))
+            .thenReturn(Single.just(pairUserVlog))
 
         // when
         viewModel.getVlog(vlogId)
 
         // then
         verify(mockUserVlogUseCase).get(vlogId, false)
-        assertEquals(combinedUserVlog.mapToPresentation(), viewModel.vlogs.value)
+        assertEquals(pairUserVlog.mapToPresentation(), viewModel.vlog.value)
     }
 
     @Test
