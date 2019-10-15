@@ -1,5 +1,6 @@
 package com.laixer.sample.presentation.model
 
+import com.laixer.sample.domain.model.Vlog
 import com.laixer.sample.domain.usecase.CombinedUserVlog
 
 data class VlogItem(
@@ -10,26 +11,30 @@ data class VlogItem(
     val isLive: Boolean,
     val totalViews: Int,
     val totalReactions: Int,
-    val totalLikes: Int,
-    val firstName: String,
-    val lastName: String,
-    val nickname: String,
-    val email: String
+    val totalLikes: Int
 )
 
 fun CombinedUserVlog.mapToPresentation(): VlogItem = VlogItem(
     vlog.id,
-    user.id,
+    vlog.userId,
     vlog.duration,
     vlog.startDate,
     vlog.isLive,
     vlog.totalViews,
     vlog.totalReactions,
-    vlog.totalLikes,
-    user.firstName,
-    user.lastName,
-    user.nickname,
-    user.email
+    vlog.totalLikes
 )
 
-fun List<CombinedUserVlog>.mapToPresentation(): List<VlogItem> = map { it.mapToPresentation() }
+fun Vlog.mapToPresentation(): VlogItem =
+    VlogItem(
+        this.id,
+        this.userId,
+        this.duration,
+        this.startDate,
+        this.isLive,
+        this.totalViews,
+        this.totalReactions,
+        this.totalLikes
+    )
+
+fun List<Vlog>.mapToPresentation(): List<VlogItem> = map { it.mapToPresentation() }

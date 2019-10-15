@@ -6,12 +6,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import com.laixer.sample.combinedUserVlog
 import com.laixer.sample.presentation.RxSchedulersOverrideRule
 import com.laixer.sample.presentation.model.mapToPresentation
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.sample.domain.usecase.UsersVlogsUseCase
+import com.laixer.sample.pairUserVlog
 import io.reactivex.Single
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -25,7 +25,7 @@ class VlogListViewModelTest {
 
     private val mockUseCase: UsersVlogsUseCase = mock()
 
-    private val combinedUserVlogList = listOf(combinedUserVlog)
+    private val pairUserVlogList = listOf(pairUserVlog)
     private val throwable = Throwable()
 
     @Rule
@@ -44,7 +44,7 @@ class VlogListViewModelTest {
     @Test
     fun `get vlog item list succeeds`() {
         // given
-        whenever(mockUseCase.get(false)).thenReturn(Single.just(combinedUserVlogList))
+        whenever(mockUseCase.get(false)).thenReturn(Single.just(pairUserVlogList))
 
         // when
         viewModel.get(false)
@@ -52,7 +52,7 @@ class VlogListViewModelTest {
         // then
         verify(mockUseCase).get(false)
         assertEquals(
-            Resource(ResourceState.SUCCESS, combinedUserVlogList.mapToPresentation(), null),
+            Resource(ResourceState.SUCCESS, pairUserVlogList.map { Pair(it.first.mapToPresentation(), it.second.mapToPresentation()) }, null),
             viewModel.vlogs.value
         )
     }

@@ -12,8 +12,8 @@ import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
+import com.laixer.sample.presentation.model.ProfileVlogItem
 import com.laixer.sample.presentation.model.ReactionItem
-import com.laixer.sample.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.activity_vlog_details.*
 import kotlinx.android.synthetic.main.include_user_info.*
 import kotlinx.android.synthetic.main.item_list_vlog.*
@@ -44,11 +44,11 @@ class VlogDetailsActivity : AppCompatActivity() {
             vm.getReactions(vlogId, refresh = false)
         }
 
-        vm.vlogs.observe(this, Observer { updateVlogs(it) })
+        vm.vlog.observe(this, Observer { updateVlogs(it) })
         vm.reactions.observe(this, Observer { updateReactions(it) })
     }
 
-    private fun updateVlogs(vlogItem: VlogItem?) {
+    private fun updateVlogs(vlogItem: ProfileVlogItem?) {
         vlogItem?.let {
             userAvatar.loadAvatar(it.userId)
             userUsername.text = "@${it.nickname}"
