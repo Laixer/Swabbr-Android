@@ -20,10 +20,11 @@ class VlogListActivity : AppCompatActivity() {
 
     private val vm: VlogListViewModel by viewModel()
 
-//    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
-//        { startActivity(SampleNavigation.vlogDetails(vlogId = it.second.vlogId)) }
     private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
-        { startActivity(SampleNavigation.profile(userId = it.first.id)) }
+        { startActivity(SampleNavigation.vlogDetails(vlogId = it.second.vlogId)) }
+//    // Open profile
+//    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
+//        { startActivity(SampleNavigation.profile(userId = it.first.id)) }
     private val adapter = VlogListAdapter(itemClick)
     private val snackBar by lazy {
         Snackbar.make(swipeRefreshLayout, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)
