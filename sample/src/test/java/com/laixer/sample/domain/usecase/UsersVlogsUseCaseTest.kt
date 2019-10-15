@@ -75,7 +75,6 @@ class UserVlogUseCaseTest {
     private val mockUserRepository: UserRepository = mock {}
     private val mockVlogRepository: VlogRepository = mock {}
 
-    private val userId = user.id
     private val vlogId = vlog.id
 
     @Before
@@ -120,5 +119,58 @@ class UserVlogUseCaseTest {
             test.assertNotComplete()
             test.assertError(throwable)
             test.assertValueCount(0)
+    }
+}
+
+class UserVlogsUseCaseTest {
+    private lateinit var userVlogsUseCase: UserVlogsUseCase
+
+    private val mockUserRepository: UserRepository = mock {}
+    private val mockVlogRepository: VlogRepository = mock {}
+
+    private val userId = user.id
+
+    @Before
+    fun setUp() {
+        userVlogsUseCase = UserVlogsUseCase(mockUserRepository, mockVlogRepository)
+    }
+
+    @Test
+    fun `repository get success`() {
+        // given
+        whenever(mockUserRepository.get(userId, false)).thenReturn(Single.just(user))
+        whenever(mockVlogRepository.get(false)).thenReturn(Single.just(listOf(vlog)))
+
+        // when
+        val test = userVlogsUseCase.get(userId, false).test()
+
+        // then
+        verify(mockUserRepository).get(userId, false)
+        verify(mockVlogRepository).get(false)
+
+        test.assertNoErrors()
+        test.assertComplete()
+        test.assertValueCount(1)
+        test.assertValue(Pair(user, listOf(vlog)))
+    }
+
+    @Test
+    fun `repository get fail`() {
+        // given
+        val throwable = Throwable()
+        whenever(mockUserRepository.get(userId, false)).thenReturn(Single.error(throwable))
+        whenever(mockVlogRepository.get(false)).thenReturn(Single.error(throwable))
+
+        // when
+        val test = userVlogsUseCase.get(userId, false).test()
+
+        // then
+        verify(mockUserRepository).get(userId, false)
+        verify(mockVlogRepository).get(false)
+
+        test.assertNoValues()
+        test.assertNotComplete()
+        test.assertError(throwable)
+        test.assertValueCount(0)
     }
 }

@@ -4,12 +4,11 @@ import com.laixer.sample.domain.model.User
 import com.laixer.sample.domain.model.Vlog
 
 data class ProfileVlogItem(
-    val id: String,
+    val userId: String,
     val nickname: String,
     val firstName: String,
     val lastName: String,
     val vlogId: String,
-    val userId: String,
     val duration: String,
     val startDate: String,
     val isLive: Boolean,
@@ -25,7 +24,6 @@ fun Pair<User, Vlog>.mapToPresentation(): ProfileVlogItem =
         this.first.firstName,
         this.first.lastName,
         this.second.id,
-        this.second.userId,
         this.second.duration,
         this.second.startDate,
         this.second.isLive,
