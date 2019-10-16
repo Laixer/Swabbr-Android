@@ -5,9 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/search"
         android:orderInCategory="100"
         android:title="Search"
         android:icon="@drawable/ic_search_white_24dp"
+        app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always" />
 </menu>

@@ -16,6 +16,10 @@ import com.laixer.sample.presentation.model.ProfileItem
 import com.laixer.sample.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.activity_vlog_list.*
 import org.koin.androidx.viewmodel.ext.viewModel
+import android.app.SearchManager
+import android.content.Context
+import android.widget.SearchView
+
 
 class VlogListActivity : AppCompatActivity() {
 
@@ -53,6 +57,19 @@ class VlogListActivity : AppCompatActivity() {
         // Inflate the menu to use in the action bar
         val inflater = menuInflater
         inflater.inflate(R.menu.toolbar, menu)
+
+//        val searchItem = menu.findItem(R.id.search)
+//
+//        val searchManager = this.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+//
+//        var searchView: SearchView? = null
+//        if (searchItem != null) {
+//            searchView = searchItem.actionView as SearchView
+//        }
+//        if (searchView != null) {
+//            searchView!!.setSearchableInfo(searchManager.getSearchableInfo(this.componentName))
+//        }
+
         return super.onCreateOptionsMenu(menu)
     }
 
