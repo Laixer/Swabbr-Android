@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Vlogs</string>
+    <string name="app_name">Swabbr</string>
     <string name="screen_vlog_details_title">Vlog Details</string>
     <string name="screen_vlog_list_title">Vlog List</string>
     <string name="screen_user_details_title">User Details</string>
@@ -13,4 +13,7 @@
     <string name="user_address">%1$s, %2$s, %3$s</string>
     <string name="user_website">Website: %1$s</string>
     <string name="user_company">Company: %1$s</string>
+
+    <string name="app_label">Swabbr</string>
+    <string name="search_hint">Search for profiles</string>
 </resources>
