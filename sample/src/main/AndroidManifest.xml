@@ -17,12 +17,6 @@
         <activity
             android:name="com.laixer.sample.presentation.vloglist.VlogListActivity"
             android:parentActivityName="com.laixer.core.MainActivity" >
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
-<!--            </intent-filter>-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.SEARCH" />-->
-<!--            </intent-filter>-->
             <meta-data android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
         </activity>
