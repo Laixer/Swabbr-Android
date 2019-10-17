@@ -32,7 +32,8 @@
 
         <activity
             android:name="com.laixer.sample.presentation.search.SearchActivity"
-            android:parentActivityName="com.laixer.core.MainActivity">
+            android:parentActivityName="com.laixer.core.MainActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>

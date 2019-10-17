@@ -33,6 +33,7 @@ import com.laixer.sample.domain.usecase.UserVlogsUseCase
 import com.laixer.sample.domain.usecase.UsersUseCase
 import com.laixer.sample.domain.usecase.UsersVlogsUseCase
 import com.laixer.sample.presentation.profile.ProfileViewModel
+import com.laixer.sample.presentation.search.SearchViewModel
 import com.laixer.sample.presentation.vlogdetails.VlogDetailsViewModel
 import com.laixer.sample.presentation.vloglist.VlogListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -58,6 +59,7 @@ val viewModelModule: Module = module {
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get()) }
     viewModel { VlogDetailsViewModel(userVlogUseCase = get(), reactionsUseCase = get()) }
+    viewModel { SearchViewModel(usersUseCase = get()) }
 }
 
 val useCaseModule: Module = module {
