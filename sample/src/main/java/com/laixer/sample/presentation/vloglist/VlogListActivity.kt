@@ -28,8 +28,6 @@ class VlogListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //TO DO: DELETE v
-        startActivity(SampleNavigation.search)
         setContentView(R.layout.activity_vlog_list)
 
         injectFeature()
@@ -45,7 +43,7 @@ class VlogListActivity : AppCompatActivity() {
     }
 
     private fun updateVlogs(resource: Resource<List<Pair<ProfileItem, VlogItem>>>?) {
-        resource?.let {res ->
+        resource?.let { res ->
             when (res.state) {
                 ResourceState.LOADING -> swipeRefreshLayout.startRefreshing()
                 ResourceState.SUCCESS -> swipeRefreshLayout.stopRefreshing()

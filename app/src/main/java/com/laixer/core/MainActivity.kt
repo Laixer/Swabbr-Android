@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         isVisible = false
     }
 
-   private fun startVlogs() = SampleNavigation.dynamicStart?.let { startActivity(it) }
+    private fun startVlogs() = SampleNavigation.dynamicStart?.let { startActivity(it) }
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If

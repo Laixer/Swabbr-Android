@@ -15,16 +15,16 @@ import io.reactivex.schedulers.Schedulers
 class SearchViewModel constructor(private val usersUseCase: UsersUseCase) :
     ViewModel() {
 
-    val users = MutableLiveData<Resource<List<ProfileItem>>>()
+    val profiles = MutableLiveData<Resource<List<ProfileItem>>>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun get(query: String) =
+    fun getProfiles(query: String, refresh: Boolean = false) =
         compositeDisposable.add(
-            usersUseCase.get(query, refresh = false)
-                .doOnSubscribe { users.setLoading() }
+            usersUseCase.get(query, refresh = refresh)
+                .doOnSubscribe { profiles.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .map { it.mapToPresentation() }
-                .subscribe({ users.setSuccess(listOf(it)) }, { users.setError(it.message) })
+                .subscribe({ profiles.setSuccess(listOf(it)) }, { profiles.setError(it.message) })
         )
 
     override fun onCleared() {

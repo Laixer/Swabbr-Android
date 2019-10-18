@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.activity_profile.swipeRefreshLayout
 import kotlinx.android.synthetic.main.activity_search.*
 import org.koin.androidx.viewmodel.ext.viewModel
 
-
 class SearchActivity : AppCompatActivity() {
 
     private val vm: SearchViewModel by viewModel()
@@ -35,7 +34,7 @@ class SearchActivity : AppCompatActivity() {
         searchRecyclerView.isNestedScrollingEnabled = false
         searchRecyclerView.adapter = adapter
 
-        vm.users.observe(this, Observer { updateUsers(it) })
+        vm.profiles.observe(this, Observer { updateUsers(it) })
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -67,7 +66,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search(query: String) {
-        vm.get(query)
+        vm.getProfiles(query)
     }
 
     private fun updateUsers(resource: Resource<List<ProfileItem>>?) {
