@@ -3,7 +3,6 @@ package com.laixer.sample.presentation.vloglist
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.google.android.material.snackbar.Snackbar
 import com.laixer.navigation.features.SampleNavigation
 import com.laixer.sample.R
 import com.laixer.sample.injectFeature
@@ -26,10 +25,6 @@ class VlogListActivity : AppCompatActivity() {
 //    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
 //        { startActivity(SampleNavigation.profile(userId = it.first.id)) }
     private val adapter = VlogListAdapter(itemClick)
-    private val snackBar by lazy {
-        Snackbar.make(swipeRefreshLayout, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)
-            .setAction(getString(R.string.retry)) { vm.get(refresh = true) }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,14 +43,13 @@ class VlogListActivity : AppCompatActivity() {
     }
 
     private fun updateVlogs(resource: Resource<List<Pair<ProfileItem, VlogItem>>>?) {
-        resource?.let {
-            when (it.state) {
+        resource?.let { res ->
+            when (res.state) {
                 ResourceState.LOADING -> swipeRefreshLayout.startRefreshing()
                 ResourceState.SUCCESS -> swipeRefreshLayout.stopRefreshing()
                 ResourceState.ERROR -> swipeRefreshLayout.stopRefreshing()
             }
-            it.data?.let { adapter.submitList(it) }
-            it.message?.let { snackBar.show() }
+            res.data?.let { adapter.submitList(it) }
         }
     }
 }
