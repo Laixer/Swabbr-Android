@@ -38,13 +38,11 @@ object Versions {
 
     val fabric = "1.30.0"
 
-    val appcompat = "1.1.0-alpha01"
-    val design = "1.0.0"
-    val cardview = "1.0.0"
-    val recyclerview = "1.0.0"
+    val androidx = "1.1.0"
     val maps = "15.0.1"
 
-    val ktx = "1.0.0-alpha1"
+    val ktx = "1.2.0-beta01"
+    val material = "1.2.0-alpha01"
 
     val kotlin = "1.3.50"
     val timber = "4.7.1"
@@ -69,13 +67,14 @@ object Versions {
     val mockitoKotlin = "2.1.0"
     val mockitoInline = "3.0.0"
 
+    val exoplayer = "2.10.5"
     val camera = "1.0.0-alpha04"
-
-    val constraintLayout = "1.1.3"
+    val swiperefreshlayout = "1.0.0"
+    val viewpager2 = "1.0.0-rc01"
 }
 
 object Libraries {
-    val kotlin = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}"
+    val kotlin = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
 
     val ktx = "androidx.core:core-ktx:${Versions.ktx}"
 
@@ -113,19 +112,28 @@ object Libraries {
     val cameraCore = "androidx.camera:camera-core:${Versions.camera}"
     val camera2 = "androidx.camera:camera-camera2:${Versions.camera}"
 
-    val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}"
 }
 
-object SupportLibraries {
-    val appcompat = "androidx.appcompat:appcompat:${Versions.appcompat}"
-    val design = "com.google.android.material:material:${Versions.design}"
-    val cardview = "androidx.cardview:cardview:${Versions.cardview}"
-    val recyclerview = "androidx.recyclerview:recyclerview:${Versions.recyclerview}"
+object JetpackLibraries {
+    val appcompat = "androidx.appcompat:appcompat:${Versions.androidx}"
+    val design = "com.google.android.material:material:${Versions.androidx}"
+    val cardview = "androidx.cardview:cardview:${Versions.androidx}"
+    val recyclerview = "androidx.recyclerview:recyclerview:${Versions.androidx}"
+    val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.androidx}"
+    val fragment = "androidx.fragment:fragment-ktx:1.2.0-alpha02"
+    val viewpager2 = "androidx.viewpager2:viewpager2:${Versions.viewpager2}"
+    val swiperefreshlayout = "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.swiperefreshlayout}"
+
+
 }
 
 object GoogleLibraries {
     val auth = "com.google.android.gms:play-services-auth:${Versions.googleAuth}"
     val playCore = "com.google.android.play:core:${Versions.playCore}"
+    val material = "com.google.android.material:material:${Versions.material}"
+    val exoplayer = "com.google.android.exoplayer:exoplayer:${Versions.exoplayer}"
+
+
 }
 
 object MicrosoftLibraries {
