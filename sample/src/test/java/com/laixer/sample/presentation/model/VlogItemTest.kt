@@ -27,9 +27,5 @@ class VlogItemTest {
         assertTrue(vlogItem.totalViews == vlog.totalViews)
         assertTrue(vlogItem.totalReactions == vlog.totalReactions)
         assertTrue(vlogItem.totalLikes == vlog.totalLikes)
-        assertTrue(vlogItem.firstName == user.firstName)
-        assertTrue(vlogItem.lastName == user.lastName)
-        assertTrue(vlogItem.nickname == user.nickname)
-        assertTrue(vlogItem.email == user.email)
     }
 }

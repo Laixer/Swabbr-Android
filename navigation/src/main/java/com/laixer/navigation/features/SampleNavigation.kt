@@ -6,9 +6,12 @@ import com.laixer.navigation.loadIntentOrNull
 object SampleNavigation : DynamicFeature<Intent> {
 
     const val VLOG_ID_KEYS = "VLOG_ID_KEYS"
+    const val USER_ID_KEY = "VLOG_ID_KEY"
 
+    private const val PROFILE = "com.laixer.sample.presentation.profile.ProfileActivity"
     private const val VLOG_LIST = "com.laixer.sample.presentation.vloglist.VlogListActivity"
     private const val VLOG_DETAILS = "com.laixer.sample.presentation.vlogdetails.VlogDetailsActivity"
+    private const val SEARCH = "com.laixer.sample.presentation.search.SearchActivity"
 
     override val dynamicStart: Intent?
         get() = VLOG_LIST.loadIntentOrNull()
@@ -18,4 +21,12 @@ object SampleNavigation : DynamicFeature<Intent> {
             ?.apply {
                 putExtra(VLOG_ID_KEYS, vlogIds)
             }
+
+    fun profile(userId: String): Intent? =
+        PROFILE.loadIntentOrNull()
+            ?.apply {
+                putExtra(USER_ID_KEY, userId)
+            }
+
+    val search: Intent? = SEARCH.loadIntentOrNull()
 }

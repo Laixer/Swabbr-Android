@@ -2,7 +2,6 @@
 
 package com.laixer.sample.presentation.model
 
-import com.laixer.sample.domain.usecase.CombinedUserReaction
 import com.laixer.sample.reaction
 import com.laixer.sample.user
 import org.junit.Assert.assertTrue
@@ -13,7 +12,7 @@ class ReactionItemTest {
     @Test
     fun `map domain to presentation`() {
         // given
-        val userReaction = CombinedUserReaction(user, reaction)
+        val userReaction = Pair(user, reaction)
 
         // when
         val reactionItem = listOf(userReaction).mapToPresentation().first()

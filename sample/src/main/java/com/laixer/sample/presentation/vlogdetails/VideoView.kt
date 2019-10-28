@@ -1,5 +1,6 @@
 package com.laixer.sample.presentation.vlogdetails
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,7 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.laixer.presentation.visible
 import com.laixer.sample.R
 import com.laixer.sample.presentation.loadAvatar
-import com.laixer.sample.presentation.model.VlogItem
+import com.laixer.sample.presentation.model.ProfileVlogItem
 import kotlinx.android.synthetic.main.include_user_info.view.userAvatar
 import kotlinx.android.synthetic.main.include_user_info.view.userName
 import kotlinx.android.synthetic.main.include_user_info.view.userUsername
@@ -22,18 +23,14 @@ class VideoView(layoutInflater: LayoutInflater, container: ViewGroup?) {
     val exo: PlayerView = view.player
     var exoPlayer: ExoPlayer? = null
 
-
-    fun bind(ePlayer: ExoPlayer?, item: VlogItem) {
+    fun bind(ePlayer: ExoPlayer?, item: ProfileVlogItem, context: Context) {
         exo.overlayFrameLayout?.addView(overlayView)
-
         exoPlayer = ePlayer
         exoPlayer?.setForegroundMode(false)
-
         exo.player = exoPlayer
-
         overlayView.userAvatar.loadAvatar(item.userId)
-        overlayView.userUsername.text = "@${item.nickname}"
-        overlayView.userName.text = "${item.firstName} ${item.lastName}"
+        overlayView.userUsername.text = context.getString(R.string.nickname, item.nickname)
+        overlayView.userName.text = context.getString(R.string.full_name, item.firstName, item.lastName)
 
         if (item.isLive) {
             overlayView.isLive.visible()

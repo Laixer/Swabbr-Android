@@ -4,7 +4,6 @@ import com.laixer.sample.datasource.model.*
 import com.laixer.sample.domain.model.Reaction
 import com.laixer.sample.domain.model.Vlog
 import com.laixer.sample.domain.model.User
-import com.laixer.sample.domain.usecase.CombinedUserVlog
 import java.util.*
 
 private val date = Calendar.getInstance().time.toString()
@@ -46,7 +45,7 @@ val reaction = Reaction(
     date
 )
 
-val combinedUserVlog = CombinedUserVlog(user, vlog)
+val pairUserVlog = Pair(user, vlog)
 
 val userEntity = UserEntity(
     "userId",

@@ -13,8 +13,8 @@ import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
+import com.laixer.sample.presentation.model.ProfileVlogItem
 import com.laixer.sample.presentation.model.ReactionItem
-import com.laixer.sample.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.activity_vlog_details.*
 import org.koin.androidx.viewmodel.ext.viewModel
 import com.laixer.sample.R
@@ -25,9 +25,9 @@ class VlogDetailsActivity : AppCompatActivity() {
     private val adapter = ReactionsAdapter()
 
     private val vlogIds by lazy { intent.getStringArrayListExtra(SampleNavigation.VLOG_ID_KEYS) }
-    private var vlogs = listOf<VlogItem>()
+    private var vlogs = listOf<ProfileVlogItem>()
 
-    private lateinit var currentVlog: VlogItem
+    private lateinit var currentVlog: ProfileVlogItem
 
     private val snackBar by lazy {
         Snackbar.make(container, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)
@@ -75,7 +75,6 @@ class VlogDetailsActivity : AppCompatActivity() {
         vm.reactions.observe(this, Observer { updateReactions(it) })
     }
 
-
 //    override fun onConfigurationChanged(newConfig: Configuration) {
 //        resizeScreen(newConfig)
 //        super.onConfigurationChanged(newConfig)
@@ -94,7 +93,7 @@ class VlogDetailsActivity : AppCompatActivity() {
 //        }
 //    }
 
-    private fun updateVlogs(resource: Resource<List<VlogItem>>?) = resource?.data?.let {
+    private fun updateVlogs(resource: Resource<List<ProfileVlogItem>>?) = resource?.data?.let {
         vlogs = it
         vp.adapter?.notifyDataSetChanged()
     }

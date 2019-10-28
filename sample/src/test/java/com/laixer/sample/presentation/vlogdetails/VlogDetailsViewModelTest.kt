@@ -10,7 +10,6 @@ import com.laixer.sample.presentation.RxSchedulersOverrideRule
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.sample.*
-import com.laixer.sample.domain.usecase.CombinedUserReaction
 import com.laixer.sample.domain.usecase.UserReactionUseCase
 import com.laixer.sample.domain.usecase.UsersVlogsUseCase
 import com.laixer.sample.presentation.model.mapToPresentation
@@ -28,7 +27,7 @@ class VlogDetailsViewModelTest {
     private val mockUsersVlogsUseCase: UsersVlogsUseCase = mock()
     private val mockUserReactionUseCase: UserReactionUseCase = mock()
 
-    private val combinedUserReaction = CombinedUserReaction(user, reaction)
+    private val combinedUserReaction = Pair(user, reaction)
     private val reactions = listOf(combinedUserReaction)
 
     private val userId = user.id
@@ -54,14 +53,14 @@ class VlogDetailsViewModelTest {
         // given
         val idList = arrayListOf(vlogId)
         whenever(mockUsersVlogsUseCase.get(idList, false))
-            .thenReturn(Single.just(listOf(combinedUserVlog)))
+            .thenReturn(Single.just(listOf(pairUserVlog)))
 
         // when
         viewModel.getVlogs(idList)
 
         // then
         verify(mockUsersVlogsUseCase).get(idList, false)
-        assertEquals(combinedUserVlog.mapToPresentation(), viewModel.vlogs.value!!.data!![0])
+        assertEquals(pairUserVlog.mapToPresentation(), viewModel.vlogs.value!!.data!![0])
     }
 
     @Test
@@ -69,15 +68,15 @@ class VlogDetailsViewModelTest {
         // given
         val idList = arrayListOf(vlogId, vlogId)
         whenever(mockUsersVlogsUseCase.get(idList, false))
-            .thenReturn(Single.just(listOf(combinedUserVlog, combinedUserVlog)))
+            .thenReturn(Single.just(listOf(pairUserVlog, pairUserVlog)))
 
         // when
         viewModel.getVlogs(idList)
 
         // then
         verify(mockUsersVlogsUseCase).get(idList, false)
-        assertEquals(combinedUserVlog.mapToPresentation(), viewModel.vlogs.value!!.data!![0])
-        assertEquals(combinedUserVlog.mapToPresentation(), viewModel.vlogs.value!!.data!![1])
+        assertEquals(pairUserVlog.mapToPresentation(), viewModel.vlogs.value!!.data!![0])
+        assertEquals(pairUserVlog.mapToPresentation(), viewModel.vlogs.value!!.data!![1])
     }
 
     @Test
@@ -94,7 +93,6 @@ class VlogDetailsViewModelTest {
         verify(mockUsersVlogsUseCase).get(idList, false)
         assert(viewModel.vlogs.value!!.data!!.isNullOrEmpty())
     }
-
 
     @Test
     fun `get reactions succeeds`() {

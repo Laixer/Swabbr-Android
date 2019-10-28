@@ -11,7 +11,7 @@ import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import com.laixer.sample.presentation.model.VlogItem
+import com.laixer.sample.presentation.model.ProfileVlogItem
 import com.laixer.sample.presentation.model.getUrlString
 
 class VlogFragment : Fragment() {
@@ -22,16 +22,16 @@ class VlogFragment : Fragment() {
     private lateinit var videoSourceFactory: ProgressiveMediaSource.Factory
     private lateinit var uri: Uri
     private lateinit var videoSource: ProgressiveMediaSource
-    private lateinit var vlogItem: VlogItem
+    private lateinit var profileVlogItem: ProfileVlogItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        vlogItem = arguments!!.getSerializable(VLOGITEM_KEY) as VlogItem
+        profileVlogItem = arguments!!.getSerializable(PROFILEVLOGITEM_KEY) as ProfileVlogItem
         exoPlayer = ExoPlayerFactory.newSimpleInstance(this.context)
         dataSourceFactory = DefaultDataSourceFactory(this.context, Util.getUserAgent(this.context, "Swabbr"))
         videoSourceFactory = ProgressiveMediaSource.Factory(dataSourceFactory)
-        uri = Uri.parse(vlogItem.getUrlString())
+        uri = Uri.parse(profileVlogItem.getUrlString())
         videoSource = videoSourceFactory.createMediaSource(uri)
         exoPlayer.prepare(videoSource, true, false)
     }
@@ -47,10 +47,9 @@ class VlogFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        videoView?.bind(exoPlayer, vlogItem)
+        videoView?.bind(exoPlayer, profileVlogItem, requireContext())
         exoPlayer.playWhenReady = true
         exoPlayer.seekTo(0)
-
     }
 
     override fun onPause() {
@@ -58,7 +57,6 @@ class VlogFragment : Fragment() {
         videoView?.unbind()
         exoPlayer.seekTo(0)
         exoPlayer.playWhenReady = false
-
     }
 
     override fun onDestroyView() {
@@ -72,12 +70,12 @@ class VlogFragment : Fragment() {
     }
 
     companion object {
-        private val VLOGITEM_KEY = "VLOGITEM"
+        private val PROFILEVLOGITEM_KEY = "PROFILEVLOGITEM"
 
-        fun create(item: VlogItem): VlogFragment {
+        fun create(item: ProfileVlogItem): VlogFragment {
             val fragment = VlogFragment()
             val bundle = Bundle()
-            bundle.putSerializable(VLOGITEM_KEY, item)
+            bundle.putSerializable(PROFILEVLOGITEM_KEY, item)
             fragment.arguments = bundle
             return fragment
         }
