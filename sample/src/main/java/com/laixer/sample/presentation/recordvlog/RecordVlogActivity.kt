@@ -1,6 +1,5 @@
 package com.laixer.sample.presentation.recordvlog
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
 import android.Manifest
@@ -21,6 +20,7 @@ import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraX
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureConfig
@@ -63,7 +63,7 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_recordvlog)
+        setContentView(R.layout.activity_record_vlog)
         viewFinder = findViewById(R.id.view_finder)
 
         // Request camera permissions
@@ -209,7 +209,7 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
     private fun startCountdown() {
         val countdownText: TextView = findViewById(R.id.countdown)
         countdownText.text = countdown.toString()
-        countdownText!!.visibility = View.VISIBLE
+        countdownText.visibility = View.VISIBLE
 
         val timer = object : CountDownTimer(COUNTDOWN_MILLISECONDS, COUNTDOWN_INTERVAL_MILLISECONDS) {
             override fun onTick(millisUntilFinished: Long) {
@@ -218,7 +218,7 @@ class RecordVlogActivity : AppCompatActivity(), LifecycleOwner {
             }
 
             override fun onFinish() {
-                countdownText!!.visibility = View.INVISIBLE
+                countdownText.visibility = View.INVISIBLE
                 startProgressBar()
             }
         }

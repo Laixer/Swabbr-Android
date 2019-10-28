@@ -58,7 +58,7 @@ private val loadFeature by lazy {
 val viewModelModule: Module = module {
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get()) }
-    viewModel { VlogDetailsViewModel(userVlogUseCase = get(), reactionsUseCase = get()) }
+    viewModel { VlogDetailsViewModel(usersVlogsUseCase = get(), reactionsUseCase = get()) }
     viewModel { SearchViewModel(usersUseCase = get()) }
 }
 

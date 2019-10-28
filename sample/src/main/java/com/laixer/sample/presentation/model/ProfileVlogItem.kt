@@ -2,6 +2,7 @@ package com.laixer.sample.presentation.model
 
 import com.laixer.sample.domain.model.User
 import com.laixer.sample.domain.model.Vlog
+import java.io.Serializable
 
 data class ProfileVlogItem(
     val userId: String,
@@ -15,7 +16,10 @@ data class ProfileVlogItem(
     val totalViews: Int,
     val totalReactions: Int,
     val totalLikes: Int
-)
+) : Serializable
+
+fun ProfileVlogItem.getUrlString(): String =
+    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
 
 fun Pair<User, Vlog>.mapToPresentation(): ProfileVlogItem =
     ProfileVlogItem(

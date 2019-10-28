@@ -1,6 +1,5 @@
 package com.laixer.core
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -23,7 +22,8 @@ class MainActivity : AppCompatActivity() {
 
         FirebaseMessaging.getInstance().subscribeToTopic("DEV")
 
-        startVlogs()
+        startVlogList()
+//      startVlogs()
     }
 
     private fun registerWithNotificationHubs() {
@@ -54,7 +54,12 @@ class MainActivity : AppCompatActivity() {
         isVisible = false
     }
 
-    private fun startVlogs() = SampleNavigation.dynamicStart?.let { startActivity(it) }
+    private fun startVlogs() =
+        SampleNavigation.vlogDetails(arrayListOf("100", "101", "102", "103", "104", "105", "106"))?.let {
+            startActivity(it)
+        }
+
+    private fun startVlogList() = SampleNavigation.dynamicStart?.let { startActivity(it) }
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If
@@ -70,8 +75,7 @@ class MainActivity : AppCompatActivity() {
                     .show()
             } else {
                 Log.i(TAG, "This device is not supported by Google Play Services.")
-                this.toast("This device is not supported by Google Play Services.")
-                finish()
+                Toast.makeText(this, "This device is not supported by Google Play Services.", Toast.LENGTH_SHORT).show()
             }
             return false
         }
@@ -84,7 +88,4 @@ class MainActivity : AppCompatActivity() {
         private const val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
         private const val TAG = "MainActivity"
     }
-
-    fun Context.toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    fun Context.toast(message: String, length: Int) = Toast.makeText(this, message, length).show()
 }

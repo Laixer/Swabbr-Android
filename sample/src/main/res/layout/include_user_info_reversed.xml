@@ -5,16 +5,10 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/userAvatar"
-        android:layout_width="@dimen/medium_icon_size"
-        android:layout_height="@dimen/medium_icon_size"
-        android:contentDescription="@string/user_avatar" />
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/image_text_horizontal_margin"
+        android:layout_marginEnd="@dimen/image_text_horizontal_margin"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
@@ -22,6 +16,7 @@
             android:id="@+id/userUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/colorAccent"
@@ -31,11 +26,19 @@
             android:id="@+id/userName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/SmallTextAppearance"
             tools:text="Name" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/userAvatar"
+        android:layout_width="@dimen/medium_icon_size"
+        android:layout_height="@dimen/medium_icon_size"
+        android:contentDescription="@string/user_avatar" />
+
 
 </LinearLayout>

@@ -52,8 +52,8 @@ class ProfileActivity : AppCompatActivity() {
     private fun updateProfile(profileItem: ProfileItem?) {
         profileItem?.let {
                 userAvatar.loadAvatar(it.id)
-                userUsername.text = "@${it.nickname}"
-                userName.text = "${it.firstName} ${it.lastName}"
+                userUsername.text = baseContext.getString(R.string.nickname, it.nickname)
+                userName.text = baseContext.getString(R.string.full_name, it.firstName, it.lastName)
         }
     }
 

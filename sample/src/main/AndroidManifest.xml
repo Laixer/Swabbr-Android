@@ -10,21 +10,20 @@
         <dist:fusing dist:include="true" />
     </dist:module>
 
-    <application tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name="com.laixer.sample.presentation.profile.ProfileActivity"
-            android:parentActivityName="com.laixer.core.MainActivity" />
-        <activity
-            android:name="com.laixer.sample.presentation.vloglist.VlogListActivity"
-            android:parentActivityName="com.laixer.core.MainActivity" >
-        </activity>
-        <activity
-            android:name="com.laixer.sample.presentation.vlogdetails.VlogDetailsActivity"
-            android:parentActivityName="com.laixer.sample.presentation.vloglist.VlogListActivity" />
+    <application
+        tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name="com.laixer.sample.presentation.recordvlog.RecordVlogActivity"
-            android:parentActivityName="com.laixer.core.MainActivity">
+            android:name="com.laixer.sample.presentation.profile.ProfileActivity" />
+        <activity
+            android:name="com.laixer.sample.presentation.vloglist.VlogListActivity" />
+        <activity
+            android:name="com.laixer.sample.presentation.vlogdetails.VlogDetailsActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/VlogTheme" />
+
+        <activity
+            android:name="com.laixer.sample.presentation.recordvlog.RecordVlogActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -32,14 +31,13 @@
 
         <activity
             android:name="com.laixer.sample.presentation.search.SearchActivity"
-            android:parentActivityName="com.laixer.core.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
             <meta-data
                 android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+                android:resource="@xml/searchable" />
         </activity>
 
     </application>

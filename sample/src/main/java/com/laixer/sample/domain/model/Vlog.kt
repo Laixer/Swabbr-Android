@@ -10,4 +10,6 @@ data class Vlog(
     val totalLikes: Int,
     val isLive: Boolean,
     val isPrivate: Boolean
-)
+) {
+    val url: String = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+}

@@ -14,6 +14,15 @@ android {
         multiDexEnabled true
     }
 
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -39,10 +48,8 @@ dependencies {
 
     implementation MicrosoftLibraries.notificationshub
 
-    implementation SupportLibraries.design
-    implementation SupportLibraries.cardview
-    implementation SupportLibraries.appcompat
-    implementation SupportLibraries.recyclerview
+    implementation GoogleLibraries.material
+    implementation JetpackLibraries.appcompat
 
     implementation Libraries.koinAndroid
     implementation Libraries.koinViewModel

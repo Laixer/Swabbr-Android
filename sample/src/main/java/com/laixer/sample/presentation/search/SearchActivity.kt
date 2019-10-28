@@ -22,10 +22,11 @@ import org.koin.androidx.viewmodel.ext.viewModel
 class SearchActivity : AppCompatActivity() {
 
     private val vm: SearchViewModel by viewModel()
-    private val adapter = SearchAdapter()
+    private lateinit var adapter: SearchAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        adapter = SearchAdapter(baseContext)
         setContentView(R.layout.activity_search)
         setSupportActionBar(findViewById(R.id.toolbar))
 
@@ -38,6 +39,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
         setIntent(intent)
         handleIntent(intent)
     }
