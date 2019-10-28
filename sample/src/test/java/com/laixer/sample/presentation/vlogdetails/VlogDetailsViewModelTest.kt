@@ -12,7 +12,7 @@ import com.laixer.presentation.ResourceState
 import com.laixer.sample.*
 import com.laixer.sample.domain.usecase.CombinedUserReaction
 import com.laixer.sample.domain.usecase.UserReactionUseCase
-import com.laixer.sample.domain.usecase.UserVlogUseCase
+import com.laixer.sample.domain.usecase.UsersVlogsUseCase
 import com.laixer.sample.presentation.model.mapToPresentation
 import io.reactivex.Single
 import org.junit.Assert.assertEquals
@@ -25,7 +25,7 @@ class VlogDetailsViewModelTest {
 
     private lateinit var viewModel: VlogDetailsViewModel
 
-    private val mockUserVlogUseCase: UserVlogUseCase = mock()
+    private val mockUsersVlogsUseCase: UsersVlogsUseCase = mock()
     private val mockUserReactionUseCase: UserReactionUseCase = mock()
 
     private val combinedUserReaction = CombinedUserReaction(user, reaction)
@@ -46,22 +46,55 @@ class VlogDetailsViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = VlogDetailsViewModel(mockUserVlogUseCase, mockUserReactionUseCase)
+        viewModel = VlogDetailsViewModel(mockUsersVlogsUseCase, mockUserReactionUseCase)
     }
 
     @Test
-    fun `get vlog succeeds`() {
+    fun `get single vlog succeeds`() {
         // given
-        whenever(mockUserVlogUseCase.get(vlogId, false))
-            .thenReturn(Single.just(combinedUserVlog))
+        val idList = arrayListOf(vlogId)
+        whenever(mockUsersVlogsUseCase.get(idList, false))
+            .thenReturn(Single.just(listOf(combinedUserVlog)))
 
         // when
-        viewModel.getVlog(vlogId)
+        viewModel.getVlogs(idList)
 
         // then
-        verify(mockUserVlogUseCase).get(vlogId, false)
-        assertEquals(combinedUserVlog.mapToPresentation(), viewModel.vlogs.value)
+        verify(mockUsersVlogsUseCase).get(idList, false)
+        assertEquals(combinedUserVlog.mapToPresentation(), viewModel.vlogs.value!!.data!![0])
     }
+
+    @Test
+    fun `get multiple vlogs succeeds`() {
+        // given
+        val idList = arrayListOf(vlogId, vlogId)
+        whenever(mockUsersVlogsUseCase.get(idList, false))
+            .thenReturn(Single.just(listOf(combinedUserVlog, combinedUserVlog)))
+
+        // when
+        viewModel.getVlogs(idList)
+
+        // then
+        verify(mockUsersVlogsUseCase).get(idList, false)
+        assertEquals(combinedUserVlog.mapToPresentation(), viewModel.vlogs.value!!.data!![0])
+        assertEquals(combinedUserVlog.mapToPresentation(), viewModel.vlogs.value!!.data!![1])
+    }
+
+    @Test
+    fun `get zero vlogs succeeds`() {
+        // given
+        val idList = arrayListOf<String>()
+        whenever(mockUsersVlogsUseCase.get(idList, false))
+            .thenReturn(Single.just(listOf()))
+
+        // when
+        viewModel.getVlogs(idList)
+
+        // then
+        verify(mockUsersVlogsUseCase).get(idList, false)
+        assert(viewModel.vlogs.value!!.data!!.isNullOrEmpty())
+    }
+
 
     @Test
     fun `get reactions succeeds`() {
