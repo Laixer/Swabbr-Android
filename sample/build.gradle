@@ -1,11 +1,8 @@
 apply from: "$rootDir/common-android-dynamic-feature.gradle"
 android {
     compileOptions {
-
             sourceCompatibility 1.8
             targetCompatibility 1.8
-
-
     }
 }
 dependencies {
@@ -13,11 +10,6 @@ dependencies {
     implementation project(Modules.network)
     implementation project(Modules.navigation)
     implementation project(Modules.presentation)
-
-    implementation SupportLibraries.design
-    implementation SupportLibraries.cardview
-    implementation SupportLibraries.appcompat
-    implementation SupportLibraries.recyclerview
 
     implementation Libraries.koinAndroid
     implementation Libraries.koinViewModel
@@ -29,10 +21,16 @@ dependencies {
 
     implementation Libraries.moshiConverter
 
-    implementation Libraries.constraintLayout
-
-    implementation Libraries.cameraCore
     implementation Libraries.camera2
+
+    implementation Libraries.ktx
+    implementation JetpackLibraries.appcompat
+    implementation JetpackLibraries.fragment
+    implementation JetpackLibraries.viewpager2
+    implementation JetpackLibraries.swiperefreshlayout
+
+    implementation GoogleLibraries.material
+    implementation GoogleLibraries.exoplayer
 
     testImplementation TestLibraries.junit
     testImplementation TestLibraries.assertjCore

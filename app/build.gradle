@@ -48,10 +48,8 @@ dependencies {
 
     implementation MicrosoftLibraries.notificationshub
 
-    implementation SupportLibraries.design
-    implementation SupportLibraries.cardview
-    implementation SupportLibraries.appcompat
-    implementation SupportLibraries.recyclerview
+    implementation GoogleLibraries.material
+    implementation JetpackLibraries.appcompat
 
     implementation Libraries.koinAndroid
     implementation Libraries.koinViewModel

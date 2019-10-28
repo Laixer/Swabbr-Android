@@ -8,7 +8,6 @@ dependencies {
     implementation Libraries.moshiConverter
     implementation Libraries.loggingInterceptor
     implementation Libraries.rxjavaAdapter
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 repositories {
     mavenCentral()
