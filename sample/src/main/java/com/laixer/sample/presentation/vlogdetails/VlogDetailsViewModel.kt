@@ -9,25 +9,27 @@ import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
 import com.laixer.sample.domain.usecase.UserReactionUseCase
 import com.laixer.sample.domain.usecase.UserVlogUseCase
+import com.laixer.sample.domain.usecase.UsersVlogsUseCase
 import com.laixer.sample.presentation.model.ReactionItem
 import com.laixer.sample.presentation.model.VlogItem
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class VlogDetailsViewModel constructor(
-    private val userVlogUseCase: UserVlogUseCase,
+    private val usersVlogsUseCase: UsersVlogsUseCase,
     private val reactionsUseCase: UserReactionUseCase
 ) : ViewModel() {
 
-    val vlogs = MutableLiveData<VlogItem>()
+    val vlogs = MutableLiveData<Resource<List<VlogItem>>>()
     val reactions = MutableLiveData<Resource<List<ReactionItem>>>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun getVlog(vlogId: String) =
-        compositeDisposable.add(userVlogUseCase.get(vlogId, false)
+    fun getVlogs(ids: ArrayList<String>, refresh: Boolean = false) =
+        compositeDisposable.add(usersVlogsUseCase.get(ids, refresh)
+            .doOnSubscribe { vlogs.setLoading() }
             .subscribeOn(Schedulers.io())
             .map { it.mapToPresentation() }
-            .subscribe({ vlogs.postValue(it) }, { })
+            .subscribe({ vlogs.setSuccess(it) }, { vlogs.setError(it.message) })
         )
 
     fun getReactions(vlogId: String, refresh: Boolean = false) =

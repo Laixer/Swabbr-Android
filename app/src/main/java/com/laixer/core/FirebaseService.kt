@@ -114,7 +114,7 @@ class FirebaseService : FirebaseMessagingService() {
             try {
                 intent = when (Action.valueOf(action)) {
                     Action.VLOG_RECORD_REQUEST -> CameraNavigation.dynamicStart!!
-                    Action.VLOG_NEW_REACTION -> SampleNavigation.vlogDetails(notification.data.id)!!
+                    Action.VLOG_NEW_REACTION -> SampleNavigation.vlogDetails(arrayListOf(notification.data.id))!!
                 }
             } catch (e: IllegalArgumentException) {
                 Log.e(TAG, e.message)

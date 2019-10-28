@@ -12,17 +12,18 @@
 
     <application tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name="com.laixer.sample.presentation.vloglist.VlogListActivity"
-            android:parentActivityName="com.laixer.core.MainActivity" />
+            android:name="com.laixer.sample.presentation.vloglist.VlogListActivity" />
         <activity
+            android:theme="@style/VlogTheme"
             android:name="com.laixer.sample.presentation.vlogdetails.VlogDetailsActivity"
-            android:parentActivityName="com.laixer.sample.presentation.vloglist.VlogListActivity" />
+            android:configChanges="orientation|screenSize"/>
 
-        <activity android:name="com.laixer.sample.presentation.recordvlog.RecordVlogActivity" android:parentActivityName="com.laixer.core.MainActivity">
+        <activity
+            android:name="com.laixer.sample.presentation.recordvlog.RecordVlogActivity"
+            android:parentActivityName="com.laixer.core.MainActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
     </application>
 </manifest>

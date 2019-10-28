@@ -22,6 +22,10 @@ class UsersVlogsUseCase constructor(
     fun get(refresh: Boolean): Single<List<CombinedUserVlog>> =
         Single.zip(userRepository.get(refresh), vlogRepository.get(refresh),
             BiFunction { userList, vlogList -> map(userList, vlogList) })
+
+    fun get(ids: ArrayList<String>, refresh: Boolean): Single<List<CombinedUserVlog>> =
+        Single.zip(userRepository.get(refresh), vlogRepository.get(refresh),
+            BiFunction { user, vlog -> map(user, vlog.filter { ids.contains( it.id )}) })
 }
 
 class UserVlogUseCase constructor(
@@ -32,6 +36,7 @@ class UserVlogUseCase constructor(
     fun get(vlogId: String, refresh: Boolean): Single<CombinedUserVlog> =
         Single.zip(userRepository.get(refresh), vlogRepository.get(vlogId, refresh),
             BiFunction { user, vlog -> map(user, vlog) })
+
 }
 
 /**
