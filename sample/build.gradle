@@ -1,5 +1,13 @@
 apply from: "$rootDir/common-android-dynamic-feature.gradle"
+android {
+    compileOptions {
 
+            sourceCompatibility 1.8
+            targetCompatibility 1.8
+
+
+    }
+}
 dependencies {
     implementation project(Modules.cache)
     implementation project(Modules.network)
