@@ -34,7 +34,7 @@ class VlogFragment : Fragment() {
 
         // Check if we need to create a progressive or HLS datasource
         val mediaSourceFactory = when (profileVlogItem.isLive) {
-            true -> HlsMediaSource.Factory(dataSourceFactory)
+            true -> HlsMediaSource.Factory(dataSourceFactory).setAllowChunklessPreparation(true)
             false -> ProgressiveMediaSource.Factory(dataSourceFactory)
         }
 
@@ -58,13 +58,17 @@ class VlogFragment : Fragment() {
         super.onResume()
         videoView?.bind(exoPlayer, profileVlogItem, requireContext())
         exoPlayer.playWhenReady = true
-        exoPlayer.seekTo(0)
+        if (!profileVlogItem.isLive) {
+            exoPlayer.seekTo(0)
+        }
     }
 
     override fun onPause() {
         super.onPause()
         videoView?.unbind()
-        exoPlayer.seekTo(0)
+        if (!profileVlogItem.isLive) {
+            exoPlayer.seekTo(0)
+        }
         exoPlayer.playWhenReady = false
     }
 
