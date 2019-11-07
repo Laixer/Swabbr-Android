@@ -18,8 +18,10 @@ data class ProfileVlogItem(
     val totalLikes: Int
 ) : Serializable
 
-fun ProfileVlogItem.getUrlString(): String =
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+fun ProfileVlogItem.getUrlString(): String = when (this.isLive) {
+    true -> "https://wowzaprod270-i.akamaihd.net/hls/live/1003477/7ed632e7/playlist.m3u8"
+    false -> "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+}
 
 fun Pair<User, Vlog>.mapToPresentation(): ProfileVlogItem =
     ProfileVlogItem(

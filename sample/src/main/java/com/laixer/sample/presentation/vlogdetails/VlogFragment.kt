@@ -9,7 +9,10 @@ import androidx.fragment.app.Fragment
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.hls.HlsMediaSource
+import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.laixer.sample.presentation.model.ProfileVlogItem
 import com.laixer.sample.presentation.model.getUrlString
@@ -18,22 +21,28 @@ class VlogFragment : Fragment() {
 
     private var videoView: VideoView? = null
     private lateinit var exoPlayer: ExoPlayer
-    private lateinit var dataSourceFactory: DefaultDataSourceFactory
-    private lateinit var videoSourceFactory: ProgressiveMediaSource.Factory
-    private lateinit var uri: Uri
-    private lateinit var videoSource: ProgressiveMediaSource
     private lateinit var profileVlogItem: ProfileVlogItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         profileVlogItem = arguments!!.getSerializable(PROFILEVLOGITEM_KEY) as ProfileVlogItem
+
+        val dataSourceFactory: DataSource.Factory = when (profileVlogItem.isLive) {
+            true -> DefaultHttpDataSourceFactory(Util.getUserAgent(this.context, "Swabbr"))
+            false -> DefaultDataSourceFactory(this.context, Util.getUserAgent(this.context, "Swabbr"))
+        }
+
+        // Check if we need to create a progressive or HLS datasource
+        val mediaSourceFactory = when (profileVlogItem.isLive) {
+            true -> HlsMediaSource.Factory(dataSourceFactory)
+            false -> ProgressiveMediaSource.Factory(dataSourceFactory)
+        }
+
+        val uri = Uri.parse(profileVlogItem.getUrlString())
+        val mediaSource = mediaSourceFactory.createMediaSource(uri)
+
         exoPlayer = ExoPlayerFactory.newSimpleInstance(this.context)
-        dataSourceFactory = DefaultDataSourceFactory(this.context, Util.getUserAgent(this.context, "Swabbr"))
-        videoSourceFactory = ProgressiveMediaSource.Factory(dataSourceFactory)
-        uri = Uri.parse(profileVlogItem.getUrlString())
-        videoSource = videoSourceFactory.createMediaSource(uri)
-        exoPlayer.prepare(videoSource, true, false)
+        exoPlayer.prepare(mediaSource, true, false)
     }
 
     override fun onCreateView(
