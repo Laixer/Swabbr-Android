@@ -22,6 +22,9 @@ class VlogListActivity : AppCompatActivity() {
     private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
         { startActivity(SampleNavigation.vlogDetails(vlogIds = arrayListOf(it.second.vlogId))) }
 
+    private val profileClick: (Pair<ProfileItem, VlogItem>) -> Unit =
+        { startActivity(SampleNavigation.profile(userId = it.first.id)) }
+
 //    // Open profile
 //    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
 //        { startActivity(SampleNavigation.profile(userId = it.first.id)) }
@@ -31,7 +34,7 @@ class VlogListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vlog_list)
-        adapter = VlogListAdapter(baseContext, itemClick)
+        adapter = VlogListAdapter(baseContext, itemClick, profileClick)
 
         injectFeature()
 

@@ -15,7 +15,8 @@ import kotlinx.android.synthetic.main.item_list_vlog.view.*
 
 class VlogListAdapter constructor(
     private val context: Context,
-    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit
+    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit,
+    private val profileClick: (Pair<ProfileItem, VlogItem>) -> Unit
 ) :
     ListAdapter<Pair<ProfileItem, VlogItem>, VlogListAdapter.ViewHolder>(VlogDiffCallback()) {
 
@@ -30,6 +31,7 @@ class VlogListAdapter constructor(
 
         fun bind(item: Pair<ProfileItem, VlogItem>) {
             itemView.userAvatar.loadAvatar(item.first.id)
+            itemView.userAvatar.setOnClickListener { profileClick.invoke(item) }
             itemView.userUsername.text = context.getString(R.string.nickname, item.first.nickname)
             itemView.userName.text = context.getString(R.string.full_name, item.first.firstName, item.first.lastName)
             itemView.vlogDuration.text = item.second.duration
