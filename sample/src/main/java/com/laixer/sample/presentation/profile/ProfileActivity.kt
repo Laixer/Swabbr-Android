@@ -38,7 +38,7 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile)
 
         followButton.setOnClickListener{
-            handleFollowButton()
+            // TODO: METHODE TOEVOEGEN AAN BUTTON
         }
 
         injectFeature()
@@ -79,17 +79,9 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun updateFollowRequest(followRequestItem: FollowRequestItem?) {
-        followRequestItem?.let {
-            followButton.text = it.status
-        }
-    }
-
-    private fun handleFollowButton() {
-//        if (false) { //TODO: check if following / not following
-//            vm.requestUnfollow("", "") //TODO: parameters
-//        }
-//        else {
-//            vm.requestFollow("", "") //TODO: parameters
+        followButton.text = followRequestItem?.status ?: "Empty"
+//        followRequestItem?.let {
+//            followButton.text = it.status
 //        }
     }
 }

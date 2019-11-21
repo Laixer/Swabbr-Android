@@ -38,9 +38,9 @@ interface FollowApi {
     fun getFollowRequests(@Query("receiverId") receiverId: String): Single<List<FollowRequestEntity>>
 
     @GET("followRequests/")
-    fun getFollowRequest(@Query("receiverId") receiverId: String): Single<FollowRequestEntity>
+    fun getFollowRequest(@Query("requesterId") requesterId: String, @Query("receiverId") receiverId: String): Single<FollowRequestEntity>
 
     //TODO: SET ???
     @GET("followRequests/")
-    fun sendRequest(@Query("receiverId") receiverId: String): Single<FollowRequestEntity>
+    fun sendRequest(@Query("requesterId") requesterId: String, @Query("receiverId") receiverId: String): Single<FollowRequestEntity>
 }

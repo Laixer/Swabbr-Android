@@ -8,22 +8,24 @@ import com.laixer.sample.domain.model.User
 import io.reactivex.Single
 
 class FollowCacheDataSourceImpl constructor(
-    private val cache: ReactiveCache<FollowRequest>
+    private val cache: ReactiveCache<List<FollowRequest>>
 ) : FollowCacheDataSource {
 
     val key = "FollowRequest List"
 
-    override fun get(receiverId: String): Single<FollowRequest> =
-        cache.load(key + receiverId)
+    override fun get(receiverId: String): Single<List<FollowRequest>> =
+         cache.load(key + receiverId)
+
+    override fun set(followRequests: List<FollowRequest>): Single<List<FollowRequest>> =
+        cache.save(key, followRequests)
+
+    override fun get(requesterId: String, receiverId: String): Single<FollowRequest> =
+        cache.load(key)
+            .map { list -> list.first { it.requesterId == requesterId && it.receiverId == receiverId } }
 
     override fun set(followRequest: FollowRequest): Single<FollowRequest> =
-        cache.save(key + followRequest.receiverId, followRequest)
-
-    override fun get(userId: String): Single<List<FollowRequest>> =
-        cache.load(key, userId)
-    }
-
-    override fun set(followRequest: List<FollowRequest>): Single<List<FollowRequest>> =
-        //
-    }
+        cache.load(key)
+            .map { list -> list.filter { it.requesterId != followRequest.requesterId && it.receiverId != followRequest.receiverId }.plus(followRequest) }
+            .flatMap { set(it) }
+            .map { followRequest }
 }

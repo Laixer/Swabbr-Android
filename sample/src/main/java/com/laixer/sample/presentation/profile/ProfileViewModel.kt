@@ -44,21 +44,13 @@ class ProfileViewModel constructor(
                 .subscribe({ profileVlogs.setSuccess(it) }, { profileVlogs.setError(it.message) })
         )
 
-    fun getFollowRequest(receiverId: String) =
+    fun getFollowRequest(requesterId: String, receiverId: String) =
         compositeDisposable.add(
-            followUseCase.get(receiverId)
+            followUseCase.get(requesterId, receiverId)
                 .subscribeOn(Schedulers.io())
                 .map { it.mapToPresentation() }
                 .subscribe({ followRequest.postValue(it) }, { })
         )
-
-    fun requestFollow(receiverId: String) {
-        followUseCase.requestFollow(receiverId)
-    }
-
-    fun requestUnfollow(receiverId: String) {
-        followUseCase.requestUnfollow(receiverId)
-    }
 
     override fun onCleared() {
         compositeDisposable.dispose()

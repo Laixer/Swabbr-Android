@@ -9,16 +9,16 @@ class FollowRemoteDataSourceImpl constructor(
     private val api: FollowApi
 ) : FollowRemoteDataSource {
 
-    override fun get(userId: String): Single<List<FollowRequest>> =
-        api.getFollowRequests(userId)
+    override fun get(receiverId: String): Single<List<FollowRequest>> =
+        api.getFollowRequests(receiverId)
             .map { it.mapToDomain() }
 
-    override fun get(receiverId: String): Single<FollowRequest> =
-        api.getFollowRequest(receiverId)
+    override fun get(requesterId: String, receiverId: String): Single<FollowRequest> =
+        api.getFollowRequest(requesterId, receiverId)
             .map { it.mapToDomain() }
 
     override fun set(followRequest: FollowRequest): Single<FollowRequest> =
-        // TODO: Aanvullen
+        // TODO: Aanvullen / Fixen
         api.sendRequest("", "")
             .map { it.mapToDomain() }
 }

@@ -11,19 +11,11 @@ class FollowRepositoryImpl constructor(
     private val remoteDataSource: FollowRemoteDataSource
 ) : FollowRepository {
 
-    override fun get(userId: String): Single<List<FollowRequest>> =
-        remoteDataSource.get(userId)
-            .flatMap { cacheDataSource.set(it)}
-
-    override fun get(receiverId: String): Single<FollowRequest> =
+    override fun get(receiverId: String): Single<List<FollowRequest>> =
         remoteDataSource.get(receiverId)
             .flatMap { cacheDataSource.set(it)}
 
-    override fun requestFollow(receiverId: String): Single<FollowRequest> =
-        remoteDataSource.get(receiverId)
-            .flatMap { cacheDataSource.set(it) }
-
-    override fun requestUnfollow(receiverId: String): Single<FollowRequest> =
-        remoteDataSource.get(receiverId)
-            .flatMap { cacheDataSource.set(it) }
+    override fun get(requesterId: String, receiverId: String): Single<FollowRequest> =
+        remoteDataSource.get(requesterId, receiverId)
+            .flatMap { cacheDataSource.set(it)}
 }

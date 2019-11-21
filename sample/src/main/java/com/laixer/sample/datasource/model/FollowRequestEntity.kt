@@ -6,6 +6,7 @@ import com.squareup.moshi.Json
 
 data class FollowRequestEntity(
     @field:Json(name = "id") val id: String,
+    @field:Json(name = "requesterId") val requesterId: String,
     @field:Json(name = "receiverId") val receiverId: String,
     @field:Json(name = "status") val status: String,
     @field:Json(name = "timestamp") val timestamp: String
@@ -13,6 +14,7 @@ data class FollowRequestEntity(
 
 fun FollowRequestEntity.mapToDomain(): FollowRequest = FollowRequest(
     id,
+    requesterId,
     receiverId,
     status,
     timestamp

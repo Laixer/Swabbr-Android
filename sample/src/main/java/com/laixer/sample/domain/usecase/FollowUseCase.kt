@@ -6,17 +6,9 @@ import io.reactivex.Single
 
 class FollowUseCase constructor(private val followRepository: FollowRepository) {
 
-    fun get(userId: String): Single<List<FollowRequest>> =
-        followRepository.get(userId)
-
-    fun get(receiverId: String): Single<FollowRequest> =
+    fun get(receiverId: String): Single<List<FollowRequest>> =
         followRepository.get(receiverId)
 
-    fun requestFollow(receiverId: String) {
-        followRepository.requestFollow(receiverId)
-    }
-
-    fun requestUnfollow(receiverId: String) {
-        followRepository.requestUnfollow(receiverId)
-    }
+    fun get(requesterId: String, receiverId: String): Single<FollowRequest> =
+        followRepository.get(requesterId, receiverId)
 }

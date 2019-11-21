@@ -5,11 +5,7 @@ import io.reactivex.Single
 
 interface FollowRepository {
 
-    fun get(userId: String): Single<List<FollowRequest>>
+    fun get(receiverId: String): Single<List<FollowRequest>>
 
-    fun get(receiverId: String): Single<FollowRequest>
-
-    fun requestFollow(receiverId: String): Single<FollowRequest>
-
-    fun requestUnfollow(receiverId: String): Single<FollowRequest>
+    fun get(requesterId: String, receiverId: String): Single<FollowRequest>
 }

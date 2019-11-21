@@ -95,7 +95,7 @@ val dataSourceModule: Module = module {
     single { VlogRemoteDataSourceImpl(api = vlogsApi) as VlogRemoteDataSource }
     single { ReactionCacheDataSourceImpl(cache = get(REACTION_CACHE)) as ReactionCacheDataSource }
     single { ReactionRemoteDataSourceImpl(api = reactionsApi) as ReactionRemoteDataSource }
-    single { FollowCacheDataSourceImpl(cache = get(USER_CACHE)) as FollowCacheDataSource }
+    single { FollowCacheDataSourceImpl(cache = get(FOLLOWREQUEST_CACHE)) as FollowCacheDataSource }
     single { FollowRemoteDataSourceImpl(api = followApi) as FollowRemoteDataSource }
 }
 
@@ -103,6 +103,7 @@ val networkModule: Module = module {
     single { usersApi }
     single { vlogsApi }
     single { reactionsApi }
+    single { followApi }
 }
 
 val cacheModule: Module = module {
