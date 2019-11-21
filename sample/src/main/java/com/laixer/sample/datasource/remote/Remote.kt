@@ -1,5 +1,6 @@
 package com.laixer.sample.datasource.remote
 
+import com.laixer.sample.datasource.model.FollowRequestEntity
 import com.laixer.sample.datasource.model.ReactionEntity
 import com.laixer.sample.datasource.model.UserEntity
 import com.laixer.sample.datasource.model.VlogEntity
@@ -30,4 +31,16 @@ interface ReactionsApi {
 
     @GET("reactions/")
     fun getReactions(@Query("vlogId") vlogId: String): Single<List<ReactionEntity>>
+}
+
+interface FollowApi {
+    @GET("followRequests/")
+    fun getFollowRequests(@Query("receiverId") receiverId: String): Single<List<FollowRequestEntity>>
+
+    @GET("followRequests/")
+    fun getFollowRequest(@Query("receiverId") receiverId: String): Single<FollowRequestEntity>
+
+    //TODO: SET ???
+    @GET("followRequests/")
+    fun sendRequest(@Query("receiverId") receiverId: String): Single<FollowRequestEntity>
 }

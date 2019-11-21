@@ -19,12 +19,12 @@ class VlogListActivity : AppCompatActivity() {
 
     private val vm: VlogListViewModel by viewModel()
 
-    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
-        { startActivity(SampleNavigation.vlogDetails(vlogIds = arrayListOf(it.second.vlogId))) }
+//    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
+//        { startActivity(SampleNavigation.vlogDetails(vlogIds = arrayListOf(it.second.vlogId))) }
 
 //    // Open profile
-//    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
-//        { startActivity(SampleNavigation.profile(userId = it.first.id)) }
+    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
+        { startActivity(SampleNavigation.profile(userId = it.first.id)) }
 
     private lateinit var adapter: VlogListAdapter
 

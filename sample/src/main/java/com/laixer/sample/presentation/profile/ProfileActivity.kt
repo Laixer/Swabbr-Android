@@ -2,6 +2,8 @@ package com.laixer.sample.presentation.profile
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Button
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.laixer.navigation.features.SampleNavigation
@@ -12,6 +14,7 @@ import com.laixer.presentation.stopRefreshing
 import com.laixer.sample.R
 import com.laixer.sample.injectFeature
 import com.laixer.sample.presentation.loadAvatar
+import com.laixer.sample.presentation.model.FollowRequestItem
 import com.laixer.sample.presentation.model.ProfileItem
 import com.laixer.sample.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.activity_profile.*
@@ -34,11 +37,16 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
+        followButton.setOnClickListener{
+            handleFollowButton()
+        }
+
         injectFeature()
 
         if (savedInstanceState == null) {
             vm.getProfile(userId)
             vm.getProfileVlogs(userId)
+            vm.getFollowRequest(userId, userId)
         }
 
         profilevlogsRecyclerView.isNestedScrollingEnabled = false
@@ -46,6 +54,7 @@ class ProfileActivity : AppCompatActivity() {
 
         vm.profile.observe(this, Observer { updateProfile(it) })
         vm.profileVlogs.observe(this, Observer { updateProfileVlogs(it) })
+        vm.followRequest.observe(this, Observer { updateFollowRequest(it) })
         swipeRefreshLayout.setOnRefreshListener { vm.getProfileVlogs(userId, refresh = true) }
     }
 
@@ -67,5 +76,20 @@ class ProfileActivity : AppCompatActivity() {
             res.data?.let { adapter.submitList(it) }
             res.message?.let { snackBar.show() }
         }
+    }
+
+    private fun updateFollowRequest(followRequestItem: FollowRequestItem?) {
+        followRequestItem?.let {
+            followButton.text = it.status
+        }
+    }
+
+    private fun handleFollowButton() {
+//        if (false) { //TODO: check if following / not following
+//            vm.requestUnfollow("", "") //TODO: parameters
+//        }
+//        else {
+//            vm.requestFollow("", "") //TODO: parameters
+//        }
     }
 }

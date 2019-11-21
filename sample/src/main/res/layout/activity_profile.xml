@@ -16,7 +16,13 @@
 
     <include layout="@layout/include_user_info" />
 
-    <View
+        <Button
+            android:id="@+id/followButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Follow" />
+
+        <View
         style="@style/Divider"
         android:layout_width="match_parent"
         android:layout_height="1px"
