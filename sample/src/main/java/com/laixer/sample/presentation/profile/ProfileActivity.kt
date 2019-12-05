@@ -79,6 +79,10 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun updateFollowStatus(followStatus: String?) {
-        followButton.text = followStatus
+        followButton.text = when (followStatus) {
+            "pending" -> "Requested"
+            "accepted" -> "Following"
+            else -> "Follow"
+        }
     }
 }
