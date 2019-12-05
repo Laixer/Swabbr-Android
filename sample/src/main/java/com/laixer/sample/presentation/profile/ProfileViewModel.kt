@@ -9,7 +9,6 @@ import com.laixer.presentation.setSuccess
 import com.laixer.sample.domain.usecase.FollowUseCase
 import com.laixer.sample.domain.usecase.UserVlogsUseCase
 import com.laixer.sample.domain.usecase.UsersUseCase
-import com.laixer.sample.presentation.model.FollowRequestItem
 import com.laixer.sample.presentation.model.ProfileItem
 import com.laixer.sample.presentation.model.VlogItem
 import com.laixer.sample.presentation.model.mapToPresentation
@@ -24,7 +23,7 @@ class ProfileViewModel constructor(
 
     val profile = MutableLiveData<ProfileItem?>()
     val profileVlogs = MutableLiveData<Resource<List<VlogItem>>>()
-    val followRequest = MutableLiveData<FollowRequestItem?>()
+    val followStatus = MutableLiveData<String?>()
     private val compositeDisposable = CompositeDisposable()
 
     fun getProfile(userId: String, refresh: Boolean = false) =
@@ -44,12 +43,11 @@ class ProfileViewModel constructor(
                 .subscribe({ profileVlogs.setSuccess(it) }, { profileVlogs.setError(it.message) })
         )
 
-    fun getFollowRequest(requesterId: String, receiverId: String) =
+    fun getFollowStatus(targetId: String) =
         compositeDisposable.add(
-            followUseCase.get(requesterId, receiverId)
+            followUseCase.getFollowStatus(targetId)
                 .subscribeOn(Schedulers.io())
-                .map { it.mapToPresentation() }
-                .subscribe({ followRequest.postValue(it) }, { })
+                .subscribe({ followStatus.postValue(it) }, { })
         )
 
     override fun onCleared() {

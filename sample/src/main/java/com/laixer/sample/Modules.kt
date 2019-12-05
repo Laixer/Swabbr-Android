@@ -2,7 +2,6 @@ package com.laixer.sample
 
 import com.laixer.cache.ReactiveCache
 import com.laixer.network.createNetworkClient
-import com.laixer.sample.data.datasource.FollowCacheDataSource
 import com.laixer.sample.data.datasource.FollowRemoteDataSource
 import com.laixer.sample.data.datasource.UserCacheDataSource
 import com.laixer.sample.data.datasource.UserRemoteDataSource
@@ -14,11 +13,9 @@ import com.laixer.sample.data.repository.FollowRepositoryImpl
 import com.laixer.sample.data.repository.ReactionRepositoryImpl
 import com.laixer.sample.data.repository.VlogRepositoryImpl
 import com.laixer.sample.data.repository.UserRepositoryImpl
-import com.laixer.sample.datasource.cache.FollowCacheDataSourceImpl
 import com.laixer.sample.datasource.cache.ReactionCacheDataSourceImpl
 import com.laixer.sample.datasource.cache.VlogCacheDataSourceImpl
 import com.laixer.sample.datasource.cache.UserCacheDataSourceImpl
-import com.laixer.sample.datasource.model.FollowRequestEntity
 import com.laixer.sample.datasource.model.UserEntity
 import com.laixer.sample.datasource.model.VlogEntity
 import com.laixer.sample.datasource.remote.FollowApi
@@ -85,7 +82,7 @@ val repositoryModule: Module = module {
     single { UserRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as UserRepository }
     single { VlogRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as VlogRepository }
     single { ReactionRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as ReactionRepository }
-    single { FollowRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as FollowRepository }
+    single { FollowRepositoryImpl(remoteDataSource = get()) as FollowRepository }
 }
 
 val dataSourceModule: Module = module {
@@ -95,7 +92,6 @@ val dataSourceModule: Module = module {
     single { VlogRemoteDataSourceImpl(api = vlogsApi) as VlogRemoteDataSource }
     single { ReactionCacheDataSourceImpl(cache = get(REACTION_CACHE)) as ReactionCacheDataSource }
     single { ReactionRemoteDataSourceImpl(api = reactionsApi) as ReactionRemoteDataSource }
-    single { FollowCacheDataSourceImpl(cache = get(FOLLOWREQUEST_CACHE)) as FollowCacheDataSource }
     single { FollowRemoteDataSourceImpl(api = followApi) as FollowRemoteDataSource }
 }
 
@@ -110,7 +106,6 @@ val cacheModule: Module = module {
     single(name = USER_CACHE) { ReactiveCache<List<UserEntity>>() }
     single(name = VLOG_CACHE) { ReactiveCache<List<VlogEntity>>() }
     single(name = REACTION_CACHE) { ReactiveCache<List<Reaction>>() }
-    single(name = FOLLOWREQUEST_CACHE) { ReactiveCache<List<FollowRequestEntity>>() }
 }
 
 private const val BASE_URL = "https://my-json-server.typicode.com/pnobbe/swabbrdata/"
@@ -125,4 +120,3 @@ private val followApi: FollowApi = retrofit.create(FollowApi::class.java)
 private const val USER_CACHE = "USER_CACHE"
 private const val VLOG_CACHE = "VLOG_CACHE"
 private const val REACTION_CACHE = "REACTION_CACHE"
-private const val FOLLOWREQUEST_CACHE = "FOLLOWREQUEST_CACHE"

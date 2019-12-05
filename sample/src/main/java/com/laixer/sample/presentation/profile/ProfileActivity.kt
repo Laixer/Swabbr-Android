@@ -3,7 +3,6 @@ package com.laixer.sample.presentation.profile
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.laixer.navigation.features.SampleNavigation
@@ -14,12 +13,10 @@ import com.laixer.presentation.stopRefreshing
 import com.laixer.sample.R
 import com.laixer.sample.injectFeature
 import com.laixer.sample.presentation.loadAvatar
-import com.laixer.sample.presentation.model.FollowRequestItem
 import com.laixer.sample.presentation.model.ProfileItem
 import com.laixer.sample.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile.swipeRefreshLayout
-import kotlinx.android.synthetic.main.activity_vlog_list.*
 import kotlinx.android.synthetic.main.include_user_info.*
 import org.koin.androidx.viewmodel.ext.viewModel
 
@@ -46,7 +43,7 @@ class ProfileActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             vm.getProfile(userId)
             vm.getProfileVlogs(userId)
-            vm.getFollowRequest(userId, userId)
+            vm.getFollowStatus(userId) // TODO: Target ID
         }
 
         profilevlogsRecyclerView.isNestedScrollingEnabled = false
@@ -54,8 +51,11 @@ class ProfileActivity : AppCompatActivity() {
 
         vm.profile.observe(this, Observer { updateProfile(it) })
         vm.profileVlogs.observe(this, Observer { updateProfileVlogs(it) })
-        vm.followRequest.observe(this, Observer { updateFollowRequest(it) })
-        swipeRefreshLayout.setOnRefreshListener { vm.getProfileVlogs(userId, refresh = true) }
+        vm.followStatus.observe(this, Observer { updateFollowStatus(it) })
+        swipeRefreshLayout.setOnRefreshListener {
+            vm.getProfileVlogs(userId, refresh = true)
+            vm.getFollowStatus(userId)
+        }
     }
 
     private fun updateProfile(profileItem: ProfileItem?) {
@@ -78,10 +78,7 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateFollowRequest(followRequestItem: FollowRequestItem?) {
-        followButton.text = followRequestItem?.status ?: "Empty"
-//        followRequestItem?.let {
-//            followButton.text = it.status
-//        }
+    private fun updateFollowStatus(followStatus: String?) {
+        followButton.text = followStatus
     }
 }
