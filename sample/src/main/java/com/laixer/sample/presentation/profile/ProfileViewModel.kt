@@ -23,7 +23,7 @@ class ProfileViewModel constructor(
 
     val profile = MutableLiveData<ProfileItem?>()
     val profileVlogs = MutableLiveData<Resource<List<VlogItem>>>()
-    val followStatus = MutableLiveData<String?>()
+    val followStatus = MutableLiveData<String>()
     private val compositeDisposable = CompositeDisposable()
 
     fun getProfile(userId: String, refresh: Boolean = false) =
@@ -49,6 +49,11 @@ class ProfileViewModel constructor(
                 .subscribeOn(Schedulers.io())
                 .subscribe({ followStatus.postValue(it) }, { })
         )
+
+    fun sendFollowRequest(targetId: String) {
+        //followUseCase
+
+    }
 
     override fun onCleared() {
         compositeDisposable.dispose()

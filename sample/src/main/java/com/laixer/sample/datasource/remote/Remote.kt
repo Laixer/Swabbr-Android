@@ -36,4 +36,13 @@ interface ReactionsApi {
 interface FollowApi {
     @GET("followStatus/{id}")
     fun getFollowStatus(@Path("id") id: String): Single<FollowStatusEntity>
+
+    @GET("followers/{id}")
+    fun getFollowers(@Path("id") id: String): Single<List<UserEntity>>
+
+    @GET("following/{id}")
+    fun getFollowing(@Path("id") id: String): Single<List<UserEntity>>
+
+    @GET("incomingRequests/")
+    fun getIncomingRequests(): Single<List<UserEntity>>
 }

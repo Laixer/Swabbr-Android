@@ -29,13 +29,19 @@ class ProfileActivity : AppCompatActivity() {
             .setAction(getString(R.string.retry)) { vm.getProfileVlogs(userId, refresh = true) }
     }
     private val adapter = ProfileVlogsAdapter()
+    private lateinit var followStatus: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
+        // TODO: Target
         followButton.setOnClickListener{
-            // TODO: METHODE TOEVOEGEN AAN BUTTON
+            when (followStatus) {
+                "Follow" -> vm.sendFollowRequest(userId)// TODO: Target ID
+                "Following" -> "" // unfollow
+                else -> ""  // cancel request
+            }
         }
 
         injectFeature()
@@ -78,11 +84,13 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateFollowStatus(followStatus: String?) {
+    private fun updateFollowStatus(followStatus: String) {
+        this.followStatus = followStatus
         followButton.text = when (followStatus) {
             "pending" -> "Requested"
             "accepted" -> "Following"
             else -> "Follow"
         }
+        followButton.isEnabled = true
     }
 }
