@@ -23,7 +23,7 @@ class ProfileViewModel constructor(
 
     val profile = MutableLiveData<ProfileItem?>()
     val profileVlogs = MutableLiveData<Resource<List<VlogItem>>>()
-    val followStatus = MutableLiveData<String>()
+    val followStatus = MutableLiveData<Resource<String>>()
     private val compositeDisposable = CompositeDisposable()
 
     fun getProfile(userId: String, refresh: Boolean = false) =
@@ -43,17 +43,37 @@ class ProfileViewModel constructor(
                 .subscribe({ profileVlogs.setSuccess(it) }, { profileVlogs.setError(it.message) })
         )
 
-    fun getFollowStatus(targetId: String) =
+    fun getFollowStatus(userId: String) =
         compositeDisposable.add(
-            followUseCase.getFollowStatus(targetId)
+            followUseCase.getFollowStatus(userId)
+                .doOnSubscribe { followStatus.setLoading() }
                 .subscribeOn(Schedulers.io())
-                .subscribe({ followStatus.postValue(it) }, { })
+                .subscribe({ followStatus.setSuccess(it) }, { })
         )
 
-    fun sendFollowRequest(targetId: String) {
-        followUseCase.sendFollowRequest(targetId)
+    fun sendFollowRequest(userId: String) =
+        compositeDisposable.add(
+            followUseCase.sendFollowRequest(userId)
+                .doOnSubscribe { followStatus.setLoading() }
+                .subscribeOn(Schedulers.io())
+                .subscribe({ followStatus.setSuccess(it) }, { })
+        )
 
-    }
+    fun unfollow(userId: String) =
+        compositeDisposable.add(
+            followUseCase.unfollow(userId)
+                .doOnSubscribe { followStatus.setLoading() }
+                .subscribeOn(Schedulers.io())
+                .subscribe({ followStatus.setSuccess(it) }, { })
+        )
+
+    fun cancelFollowRequest(userId: String) =
+        compositeDisposable.add(
+            followUseCase.cancelFollowRequest(userId)
+                .doOnSubscribe { followStatus.setLoading() }
+                .subscribeOn(Schedulers.io())
+                .subscribe({ followStatus.setSuccess(it) }, { })
+        )
 
     override fun onCleared() {
         compositeDisposable.dispose()

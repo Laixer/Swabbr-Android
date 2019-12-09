@@ -93,12 +93,12 @@ class VlogDetailsActivity : AppCompatActivity() {
 //        }
 //    }
 
-    private fun updateVlogs(resource: Resource<List<ProfileVlogItem>>?) = resource?.data?.let {
+    private fun updateVlogs(resource: Resource<List<ProfileVlogItem>?>) = resource?.data?.let {
         vlogs = it
         vp.adapter?.notifyDataSetChanged()
     }
 
-    private fun updateReactions(resource: Resource<List<ReactionItem>>?) {
+    private fun updateReactions(resource: Resource<List<ReactionItem>?>) {
         resource?.let { res ->
             when (res.state) {
                 ResourceState.LOADING -> progressBar.visible()

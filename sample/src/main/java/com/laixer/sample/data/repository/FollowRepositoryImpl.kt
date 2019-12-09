@@ -9,30 +9,30 @@ class FollowRepositoryImpl constructor(
     private val remoteDataSource: FollowRemoteDataSource
 ) : FollowRepository {
 
-    override fun getFollowStatus(targetId: String): Single<String> =
-        remoteDataSource.getFollowStatus(targetId)
+    override fun getFollowStatus(userId: String): Single<String> =
+        remoteDataSource.getFollowStatus(userId)
 
-    override fun getFollowers(targetId: String): Single<List<User>> =
-        remoteDataSource.getFollowers(targetId)
+    override fun getFollowers(userId: String): Single<List<User>> =
+        remoteDataSource.getFollowers(userId)
 
-    override fun getFollowing(targetId: String): Single<List<User>> =
-        remoteDataSource.getFollowing(targetId)
+    override fun getFollowing(userId: String): Single<List<User>> =
+        remoteDataSource.getFollowing(userId)
 
     override fun getIncomingRequests(): Single<List<User>> =
         remoteDataSource.getIncomingRequests()
 
-    override fun sendFollowRequest(targetId: String) =
-        remoteDataSource.sendFollowRequest(targetId)
+    override fun sendFollowRequest(userId: String): Single<String> =
+        remoteDataSource.sendFollowRequest(userId)
 
-    override fun cancelFollowRequest(targetId: String) =
-        remoteDataSource.cancelFollowRequest(targetId)
+    override fun cancelFollowRequest(userId: String): Single<String> =
+        remoteDataSource.cancelFollowRequest(userId)
 
-    override fun unfollow(targetId: String) =
-        remoteDataSource.unfollow(targetId)
+    override fun unfollow(userId: String): Single<String> =
+        remoteDataSource.unfollow(userId)
 
-    override fun acceptRequest(targetId: String) =
-        remoteDataSource.acceptRequest(targetId)
+    override fun acceptRequest(userId: String): Single<String> =
+        remoteDataSource.acceptRequest(userId)
 
-    override fun declineRequest(targetId: String) =
-        remoteDataSource.declineRequest(targetId)
+    override fun declineRequest(userId: String): Single<String> =
+        remoteDataSource.declineRequest(userId)
 }

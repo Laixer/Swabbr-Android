@@ -5,21 +5,21 @@ import io.reactivex.Single
 
 interface FollowRemoteDataSource {
 
-    fun getFollowStatus(targetId: String): Single<String>
+    fun getFollowStatus(userId: String): Single<String>
 
-    fun getFollowers(targetId: String): Single<List<User>>
+    fun getFollowers(userId: String): Single<List<User>>
 
-    fun getFollowing(targetId: String): Single<List<User>>
+    fun getFollowing(userId: String): Single<List<User>>
 
     fun getIncomingRequests(): Single<List<User>>
 
-    fun sendFollowRequest(targetId: String)
+    fun sendFollowRequest(userId: String): Single<String>
 
-    fun cancelFollowRequest(targetId: String)
+    fun cancelFollowRequest(userId: String): Single<String>
 
-    fun unfollow(targetId: String)
+    fun unfollow(userId: String): Single<String>
 
-    fun acceptRequest(targetId: String)
+    fun acceptRequest(userId: String): Single<String>
 
-    fun declineRequest(targetId: String)
+    fun declineRequest(userId: String): Single<String>
 }

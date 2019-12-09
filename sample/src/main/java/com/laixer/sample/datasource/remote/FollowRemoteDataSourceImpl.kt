@@ -9,34 +9,39 @@ class FollowRemoteDataSourceImpl constructor(
     private val api: FollowApi
 ) : FollowRemoteDataSource {
 
-    override fun getFollowStatus(targetId: String): Single<String> =
-        api.getFollowStatus(targetId)
+    override fun getFollowStatus(userId: String): Single<String> =
+        api.getFollowStatus(userId)
             .map { it.mapToDomain() }
 
-    override fun getFollowers(targetId: String): Single<List<User>> =
-        api.getFollowers(targetId)
+    override fun getFollowers(userId: String): Single<List<User>> =
+        api.getFollowers(userId)
             .map { it.mapToDomain() }
 
-    override fun getFollowing(targetId: String): Single<List<User>> =
-        api.getFollowing(targetId)
+    override fun getFollowing(userId: String): Single<List<User>> =
+        api.getFollowing(userId)
             .map { it.mapToDomain() }
 
     override fun getIncomingRequests(): Single<List<User>> =
         api.getIncomingRequests()
             .map { it.mapToDomain() }
 
-    override fun sendFollowRequest(targetId: String) =
-        api.sendFollowRequest(targetId)
+    override fun sendFollowRequest(userId: String): Single<String> =
+        api.sendFollowRequest(userId)
+            .map { it.mapToDomain() }
 
-    override fun cancelFollowRequest(targetId: String) =
-        api.cancelFollowRequest(targetId)
+    override fun cancelFollowRequest(userId: String): Single<String> =
+        api.cancelFollowRequest(userId)
+            .map { it.mapToDomain() }
 
-    override fun unfollow(targetId: String) =
-        api.unfollow(targetId)
+    override fun unfollow(userId: String): Single<String> =
+        api.unfollow(userId)
+            .map { it.mapToDomain() }
 
-    override fun acceptRequest(targetId: String) =
-        api.acceptRequest(targetId)
+    override fun acceptRequest(userId: String): Single<String> =
+        api.acceptRequest(userId)
+            .map { it.mapToDomain() }
 
-    override fun declineRequest(targetId: String) =
-        api.declineRequest(targetId)
+    override fun declineRequest(userId: String): Single<String> =
+        api.declineRequest(userId)
+            .map { it.mapToDomain() }
 }

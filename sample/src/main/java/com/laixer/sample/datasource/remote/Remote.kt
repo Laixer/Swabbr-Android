@@ -7,6 +7,7 @@ import com.laixer.sample.datasource.model.VlogEntity
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -47,18 +48,18 @@ interface FollowApi {
     @GET("incomingRequests/")
     fun getIncomingRequests(): Single<List<UserEntity>>
 
-    @POST("sendFollowRequest/")
-    fun sendFollowRequest(@Path("id") id: String)
+    @POST("sendFollowRequest/{id}")
+    fun sendFollowRequest(@Path("id") id: String): Single<FollowStatusEntity>
 
-    @POST("cancelFollowRequest/")
-    fun cancelFollowRequest(@Path("id") id: String)
+    @POST("cancelFollowRequest/{id}")
+    fun cancelFollowRequest(@Path("id") id: String): Single<FollowStatusEntity>
 
-    @POST("unfollow/")
-    fun unfollow(@Path("id") id: String)
+    @POST("unfollow/{id}")
+    fun unfollow(@Path("id") id: String): Single<FollowStatusEntity>
 
-    @POST("acceptRequest/")
-    fun acceptRequest(@Path("id") id: String)
+    @POST("acceptRequest/{id}")
+    fun acceptRequest(@Path("id") id: String): Single<FollowStatusEntity>
 
-    @POST("declineRequest/")
-    fun declineRequest(@Path("id") id: String)
+    @POST("declineRequest/{id}")
+    fun declineRequest(@Path("id") id: String): Single<FollowStatusEntity>
 }

@@ -6,30 +6,30 @@ import io.reactivex.Single
 
 class FollowUseCase constructor(private val followRepository: FollowRepository) {
 
-    fun getFollowStatus(targetId: String): Single<String> =
-        followRepository.getFollowStatus(targetId)
+    fun getFollowStatus(userId: String): Single<String> =
+        followRepository.getFollowStatus(userId)
 
-    fun getFollowers(targetId: String): Single<List<User>> =
-        followRepository.getFollowers(targetId)
+    fun getFollowers(userId: String): Single<List<User>> =
+        followRepository.getFollowers(userId)
 
-    fun getFollowing(targetId: String): Single<List<User>> =
-        followRepository.getFollowing(targetId)
+    fun getFollowing(userId: String): Single<List<User>> =
+        followRepository.getFollowing(userId)
 
     fun getIncomingRequests(): Single<List<User>> =
         followRepository.getIncomingRequests()
 
-    fun sendFollowRequest(targetId: String) =
-        followRepository.sendFollowRequest(targetId)
+    fun sendFollowRequest(userId: String): Single<String> =
+        followRepository.sendFollowRequest(userId)
 
-    fun cancelFollowRequest(targetId: String) =
-        followRepository.cancelFollowRequest(targetId)
+    fun cancelFollowRequest(userId: String): Single<String> =
+        followRepository.cancelFollowRequest(userId)
 
-    fun unfollow(targetId: String) =
-        followRepository.unfollow(targetId)
+    fun unfollow(userId: String): Single<String> =
+        followRepository.unfollow(userId)
 
-    fun acceptRequest(targetId: String) =
-        followRepository.acceptRequest(targetId)
+    fun acceptRequest(userId: String): Single<String> =
+        followRepository.acceptRequest(userId)
 
-    fun declineRequest(targetId: String) =
-        followRepository.declineRequest(targetId)
+    fun declineRequest(userId: String): Single<String> =
+        followRepository.declineRequest(userId)
 }

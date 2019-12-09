@@ -45,7 +45,7 @@ class VlogListActivity : AppCompatActivity() {
         swipeRefreshLayout.setOnRefreshListener { vm.get(refresh = true) }
     }
 
-    private fun updateVlogs(resource: Resource<List<Pair<ProfileItem, VlogItem>>>?) {
+    private fun updateVlogs(resource: Resource<List<Pair<ProfileItem, VlogItem>>?>) {
         resource?.let { res ->
             when (res.state) {
                 ResourceState.LOADING -> swipeRefreshLayout.startRefreshing()
