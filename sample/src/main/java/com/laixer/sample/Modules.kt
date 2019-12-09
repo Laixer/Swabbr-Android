@@ -2,7 +2,7 @@ package com.laixer.sample
 
 import com.laixer.cache.ReactiveCache
 import com.laixer.network.createNetworkClient
-import com.laixer.sample.data.datasource.FollowRemoteDataSource
+import com.laixer.sample.data.datasource.FollowDataSource
 import com.laixer.sample.data.datasource.UserCacheDataSource
 import com.laixer.sample.data.datasource.UserRemoteDataSource
 import com.laixer.sample.data.datasource.VlogCacheDataSource
@@ -19,7 +19,7 @@ import com.laixer.sample.datasource.cache.UserCacheDataSourceImpl
 import com.laixer.sample.datasource.model.UserEntity
 import com.laixer.sample.datasource.model.VlogEntity
 import com.laixer.sample.datasource.remote.FollowApi
-import com.laixer.sample.datasource.remote.FollowRemoteDataSourceImpl
+import com.laixer.sample.datasource.remote.FollowDataSourceImpl
 import com.laixer.sample.datasource.remote.ReactionRemoteDataSourceImpl
 import com.laixer.sample.datasource.remote.ReactionsApi
 import com.laixer.sample.datasource.remote.UserRemoteDataSourceImpl
@@ -82,7 +82,7 @@ val repositoryModule: Module = module {
     single { UserRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as UserRepository }
     single { VlogRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as VlogRepository }
     single { ReactionRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as ReactionRepository }
-    single { FollowRepositoryImpl(remoteDataSource = get()) as FollowRepository }
+    single { FollowRepositoryImpl(dataSource = get()) as FollowRepository }
 }
 
 val dataSourceModule: Module = module {
@@ -92,7 +92,7 @@ val dataSourceModule: Module = module {
     single { VlogRemoteDataSourceImpl(api = vlogsApi) as VlogRemoteDataSource }
     single { ReactionCacheDataSourceImpl(cache = get(REACTION_CACHE)) as ReactionCacheDataSource }
     single { ReactionRemoteDataSourceImpl(api = reactionsApi) as ReactionRemoteDataSource }
-    single { FollowRemoteDataSourceImpl(api = followApi) as FollowRemoteDataSource }
+    single { FollowDataSourceImpl(api = followApi) as FollowDataSource }
 }
 
 val networkModule: Module = module {

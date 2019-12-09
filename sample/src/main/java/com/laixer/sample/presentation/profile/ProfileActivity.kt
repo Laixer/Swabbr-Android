@@ -2,7 +2,6 @@ package com.laixer.sample.presentation.profile
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -38,9 +37,9 @@ class ProfileActivity : AppCompatActivity() {
 
         followButton.setOnClickListener {
             when (followStatus) {
-                "accepted" -> vm.unfollow(userId) // TODO: Target ID
-                "pending" -> vm.cancelFollowRequest(userId) // TODO: Target ID
-                else -> vm.sendFollowRequest(userId)// TODO: Target ID
+                "accepted" -> vm.unfollow(userId)
+                "pending" -> vm.cancelFollowRequest(userId)
+                else -> vm.sendFollowRequest(userId)
             }
         }
 
@@ -48,8 +47,8 @@ class ProfileActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             vm.getProfile(userId)
-            vm.getProfileVlogs(userId) //TODO: Target ID
-            vm.getFollowStatus(userId) // TODO: Target ID
+            vm.getProfileVlogs(userId)
+            vm.getFollowStatus(userId)
         }
 
         profilevlogsRecyclerView.isNestedScrollingEnabled = false
@@ -100,7 +99,8 @@ class ProfileActivity : AppCompatActivity() {
             }
             ResourceState.ERROR -> {
                 swipeRefreshLayout.stopRefreshing()
-                Toast.makeText(this, res.message, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, res.message, Toast.LENGTH_SHORT).show()
+                followButton.isEnabled = true
             }
         }
     }

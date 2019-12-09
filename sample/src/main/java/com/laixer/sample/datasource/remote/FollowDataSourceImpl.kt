@@ -1,13 +1,13 @@
 package com.laixer.sample.datasource.remote
 
-import com.laixer.sample.data.datasource.FollowRemoteDataSource
+import com.laixer.sample.data.datasource.FollowDataSource
 import com.laixer.sample.datasource.model.mapToDomain
 import com.laixer.sample.domain.model.User
 import io.reactivex.Single
 
-class FollowRemoteDataSourceImpl constructor(
+class FollowDataSourceImpl constructor(
     private val api: FollowApi
-) : FollowRemoteDataSource {
+) : FollowDataSource {
 
     override fun getFollowStatus(userId: String): Single<String> =
         api.getFollowStatus(userId)

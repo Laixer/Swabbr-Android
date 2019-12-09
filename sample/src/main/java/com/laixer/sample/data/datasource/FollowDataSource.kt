@@ -3,7 +3,7 @@ package com.laixer.sample.data.datasource
 import com.laixer.sample.domain.model.User
 import io.reactivex.Single
 
-interface FollowRemoteDataSource {
+interface FollowDataSource {
 
     fun getFollowStatus(userId: String): Single<String>
 

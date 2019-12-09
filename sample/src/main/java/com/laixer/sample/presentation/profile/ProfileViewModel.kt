@@ -48,7 +48,7 @@ class ProfileViewModel constructor(
             followUseCase.getFollowStatus(userId)
                 .doOnSubscribe { followStatus.setLoading() }
                 .subscribeOn(Schedulers.io())
-                .subscribe({ followStatus.setSuccess(it) }, { })
+                .subscribe({ followStatus.setSuccess(it) }, { followStatus.setError(it.message) })
         )
 
     fun sendFollowRequest(userId: String) =
@@ -56,7 +56,7 @@ class ProfileViewModel constructor(
             followUseCase.sendFollowRequest(userId)
                 .doOnSubscribe { followStatus.setLoading() }
                 .subscribeOn(Schedulers.io())
-                .subscribe({ followStatus.setSuccess(it) }, { })
+                .subscribe({ followStatus.setSuccess(it) }, { followStatus.setError(it.message) })
         )
 
     fun unfollow(userId: String) =
@@ -64,7 +64,7 @@ class ProfileViewModel constructor(
             followUseCase.unfollow(userId)
                 .doOnSubscribe { followStatus.setLoading() }
                 .subscribeOn(Schedulers.io())
-                .subscribe({ followStatus.setSuccess(it) }, { })
+                .subscribe({ followStatus.setSuccess(it) }, { followStatus.setError(it.message) })
         )
 
     fun cancelFollowRequest(userId: String) =
@@ -72,7 +72,7 @@ class ProfileViewModel constructor(
             followUseCase.cancelFollowRequest(userId)
                 .doOnSubscribe { followStatus.setLoading() }
                 .subscribeOn(Schedulers.io())
-                .subscribe({ followStatus.setSuccess(it) }, { })
+                .subscribe({ followStatus.setSuccess(it) }, { followStatus.setError(it.message) })
         )
 
     override fun onCleared() {

@@ -10,6 +10,7 @@ import com.laixer.sample.presentation.RxSchedulersOverrideRule
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.sample.*
+import com.laixer.sample.domain.usecase.FollowUseCase
 import com.laixer.sample.domain.usecase.UserVlogsUseCase
 import com.laixer.sample.domain.usecase.UsersUseCase
 import com.laixer.sample.presentation.model.mapToPresentation
@@ -26,8 +27,10 @@ class ProfileViewModelTest {
 
     private val mockUsersUseCase: UsersUseCase = mock()
     private val mockUserVlogsUseCase: UserVlogsUseCase = mock()
+    private val mockFollowUseCase: FollowUseCase = mock()
 
     private val profileVlogs = Pair(user, listOf(vlog))
+    private val followStatus = "pending"
 
     private val userId = user.id
 
@@ -43,7 +46,7 @@ class ProfileViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = ProfileViewModel(mockUsersUseCase, mockUserVlogsUseCase)
+        viewModel = ProfileViewModel(mockUsersUseCase, mockUserVlogsUseCase, mockFollowUseCase)
     }
 
     @Test
@@ -92,6 +95,42 @@ class ProfileViewModelTest {
         assertEquals(
             Resource(state = ResourceState.ERROR, data = null, message = throwable.message),
             viewModel.profileVlogs.value
+        )
+    }
+
+    @Test
+    fun `get followstatus succeeds`() {
+        // given
+        whenever(mockFollowUseCase.getFollowStatus(userId))
+            .thenReturn(Single.just("pending"))
+
+        // when
+        viewModel.getFollowStatus(userId)
+
+        // then
+        verify(mockFollowUseCase).getFollowStatus(userId)
+        assertEquals(
+            Resource(
+                state = ResourceState.SUCCESS,
+                data = followStatus,
+                message = null
+            ), viewModel.followStatus.value
+        )
+    }
+
+    @Test
+    fun `get followstatus fails`() {
+        // given
+        whenever(mockFollowUseCase.getFollowStatus(userId)).thenReturn(Single.error(throwable))
+
+        // when
+        viewModel.getFollowStatus(userId)
+
+        // then
+        verify(mockFollowUseCase).getFollowStatus(userId)
+        assertEquals(
+            Resource(state = ResourceState.ERROR, data = null, message = throwable.message),
+            viewModel.followStatus.value
         )
     }
 }
