@@ -21,6 +21,12 @@ class FollowRepositoryImpl constructor(
     override fun getIncomingRequests(): Single<List<User>> =
         remoteDataSource.getIncomingRequests()
 
-    override fun sendFollowRequest() =
-        remoteDataSource.sendFollowRequest()
+    override fun sendFollowRequest(targetId: String) =
+        remoteDataSource.sendFollowRequest(targetId)
+
+    override fun cancelFollowRequest(targetId: String) =
+        remoteDataSource.cancelFollowRequest(targetId)
+
+    override fun unfollow(targetId: String) =
+        remoteDataSource.unfollow(targetId)
 }

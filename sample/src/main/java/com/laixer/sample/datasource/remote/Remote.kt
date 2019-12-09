@@ -48,5 +48,11 @@ interface FollowApi {
     fun getIncomingRequests(): Single<List<UserEntity>>
 
     @POST("sendFollowRequest/")
-    fun sendFollowRequest()
+    fun sendFollowRequest(@Path("id") id: String)
+
+    @POST("cancelFollowRequest/")
+    fun cancelFollowRequest(@Path("id") id: String)
+
+    @POST("unfollow/")
+    fun unfollow(@Path("id") id: String)
 }

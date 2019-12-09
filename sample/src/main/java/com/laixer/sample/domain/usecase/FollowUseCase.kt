@@ -19,5 +19,11 @@ class FollowUseCase constructor(private val followRepository: FollowRepository) 
         followRepository.getIncomingRequests()
 
     fun sendFollowRequest(targetId: String) =
-        followRepository.
+        followRepository.sendFollowRequest(targetId)
+
+    fun cancelFollowRequest(targetId: String) =
+        followRepository.cancelFollowRequest(targetId)
+
+    fun unfollow(targetId: String) =
+        followRepository.unfollow(targetId)
 }

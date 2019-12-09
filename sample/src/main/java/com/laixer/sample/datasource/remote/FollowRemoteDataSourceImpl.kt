@@ -25,6 +25,12 @@ class FollowRemoteDataSourceImpl constructor(
         api.getIncomingRequests()
             .map { it.mapToDomain() }
 
-    override fun sendFollowRequest() =
-        api.sendFollowRequest()
+    override fun sendFollowRequest(targetId: String) =
+        api.sendFollowRequest(targetId)
+
+    override fun cancelFollowRequest(targetId: String) =
+        api.cancelFollowRequest(targetId)
+
+    override fun unfollow(targetId: String) =
+        api.unfollow(targetId)
 }
