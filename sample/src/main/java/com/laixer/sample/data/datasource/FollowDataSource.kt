@@ -13,6 +13,6 @@ interface FollowRemoteDataSource {
 
     fun getIncomingRequests(): Single<List<User>>
 
-    //fun set(followRequest: FollowRequest): Single<FollowRequest>
+    fun sendFollowRequest()
 
 }

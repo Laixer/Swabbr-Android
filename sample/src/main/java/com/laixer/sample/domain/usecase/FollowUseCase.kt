@@ -15,10 +15,9 @@ class FollowUseCase constructor(private val followRepository: FollowRepository) 
     fun getFollowing(targetId: String): Single<List<User>> =
         followRepository.getFollowing(targetId)
 
-//    fun getIncomingFollowRequests(): Single<List<User>> =
-//        ""
+    fun getIncomingRequests(): Single<List<User>> =
+        followRepository.getIncomingRequests()
 
-//    fun sendFollowRequest(targetId: String) {
-//        //followRepository
-//    }
+    fun sendFollowRequest(targetId: String) =
+        followRepository.
 }

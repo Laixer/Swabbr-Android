@@ -20,4 +20,7 @@ class FollowRepositoryImpl constructor(
 
     override fun getIncomingRequests(): Single<List<User>> =
         remoteDataSource.getIncomingRequests()
+
+    override fun sendFollowRequest() =
+        remoteDataSource.sendFollowRequest()
 }

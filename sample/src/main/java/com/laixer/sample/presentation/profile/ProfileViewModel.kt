@@ -51,7 +51,7 @@ class ProfileViewModel constructor(
         )
 
     fun sendFollowRequest(targetId: String) {
-        //followUseCase
+        followUseCase.sendFollowRequest(targetId)
 
     }
 

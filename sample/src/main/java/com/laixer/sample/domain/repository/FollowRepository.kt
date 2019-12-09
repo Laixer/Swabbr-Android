@@ -13,5 +13,5 @@ interface FollowRepository {
 
     fun getIncomingRequests(): Single<List<User>>
 
-    //fun sendFollowRequest()
+    fun sendFollowRequest()
 }

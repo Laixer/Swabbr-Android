@@ -24,4 +24,7 @@ class FollowRemoteDataSourceImpl constructor(
     override fun getIncomingRequests(): Single<List<User>> =
         api.getIncomingRequests()
             .map { it.mapToDomain() }
+
+    override fun sendFollowRequest() =
+        api.sendFollowRequest()
 }
