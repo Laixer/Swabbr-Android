@@ -55,4 +55,10 @@ interface FollowApi {
 
     @POST("unfollow/")
     fun unfollow(@Path("id") id: String)
+
+    @POST("acceptRequest/")
+    fun acceptRequest(@Path("id") id: String)
+
+    @POST("declineRequest/")
+    fun declineRequest(@Path("id") id: String)
 }

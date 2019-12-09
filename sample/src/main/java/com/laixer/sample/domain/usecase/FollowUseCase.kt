@@ -26,4 +26,10 @@ class FollowUseCase constructor(private val followRepository: FollowRepository) 
 
     fun unfollow(targetId: String) =
         followRepository.unfollow(targetId)
+
+    fun acceptRequest(targetId: String) =
+        followRepository.acceptRequest(targetId)
+
+    fun declineRequest(targetId: String) =
+        followRepository.declineRequest(targetId)
 }

@@ -18,4 +18,8 @@ interface FollowRepository {
     fun cancelFollowRequest(targetId: String)
 
     fun unfollow(targetId: String)
+
+    fun acceptRequest(targetId: String)
+
+    fun declineRequest(targetId: String)
 }

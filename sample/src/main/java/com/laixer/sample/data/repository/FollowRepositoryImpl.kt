@@ -29,4 +29,10 @@ class FollowRepositoryImpl constructor(
 
     override fun unfollow(targetId: String) =
         remoteDataSource.unfollow(targetId)
+
+    override fun acceptRequest(targetId: String) =
+        remoteDataSource.acceptRequest(targetId)
+
+    override fun declineRequest(targetId: String) =
+        remoteDataSource.declineRequest(targetId)
 }
