@@ -71,7 +71,7 @@ class SearchActivity : AppCompatActivity() {
         vm.getProfiles(query)
     }
 
-    private fun updateUsers(resource: Resource<List<ProfileItem>>?) {
+    private fun updateUsers(resource: Resource<List<ProfileItem>?>) {
         resource?.let { res ->
             when (res.state) {
                 ResourceState.LOADING -> swipeRefreshLayout.startRefreshing()

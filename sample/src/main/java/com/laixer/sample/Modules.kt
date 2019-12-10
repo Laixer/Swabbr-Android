@@ -2,12 +2,14 @@ package com.laixer.sample
 
 import com.laixer.cache.ReactiveCache
 import com.laixer.network.createNetworkClient
+import com.laixer.sample.data.datasource.FollowDataSource
 import com.laixer.sample.data.datasource.UserCacheDataSource
 import com.laixer.sample.data.datasource.UserRemoteDataSource
 import com.laixer.sample.data.datasource.VlogCacheDataSource
 import com.laixer.sample.data.datasource.VlogRemoteDataSource
 import com.laixer.sample.data.datasource.ReactionCacheDataSource
 import com.laixer.sample.data.datasource.ReactionRemoteDataSource
+import com.laixer.sample.data.repository.FollowRepositoryImpl
 import com.laixer.sample.data.repository.ReactionRepositoryImpl
 import com.laixer.sample.data.repository.VlogRepositoryImpl
 import com.laixer.sample.data.repository.UserRepositoryImpl
@@ -16,6 +18,8 @@ import com.laixer.sample.datasource.cache.VlogCacheDataSourceImpl
 import com.laixer.sample.datasource.cache.UserCacheDataSourceImpl
 import com.laixer.sample.datasource.model.UserEntity
 import com.laixer.sample.datasource.model.VlogEntity
+import com.laixer.sample.datasource.remote.FollowApi
+import com.laixer.sample.datasource.remote.FollowDataSourceImpl
 import com.laixer.sample.datasource.remote.ReactionRemoteDataSourceImpl
 import com.laixer.sample.datasource.remote.ReactionsApi
 import com.laixer.sample.datasource.remote.UserRemoteDataSourceImpl
@@ -23,9 +27,11 @@ import com.laixer.sample.datasource.remote.UsersApi
 import com.laixer.sample.datasource.remote.VlogRemoteDataSourceImpl
 import com.laixer.sample.datasource.remote.VlogsApi
 import com.laixer.sample.domain.model.Reaction
+import com.laixer.sample.domain.repository.FollowRepository
 import com.laixer.sample.domain.repository.ReactionRepository
 import com.laixer.sample.domain.repository.VlogRepository
 import com.laixer.sample.domain.repository.UserRepository
+import com.laixer.sample.domain.usecase.FollowUseCase
 import com.laixer.sample.domain.usecase.ReactionsUseCase
 import com.laixer.sample.domain.usecase.UserReactionUseCase
 import com.laixer.sample.domain.usecase.UserVlogUseCase
@@ -56,7 +62,7 @@ private val loadFeature by lazy {
 }
 
 val viewModelModule: Module = module {
-    viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get()) }
+    viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get()) }
     viewModel { VlogDetailsViewModel(usersVlogsUseCase = get(), reactionsUseCase = get()) }
     viewModel { SearchViewModel(usersUseCase = get()) }
@@ -69,12 +75,14 @@ val useCaseModule: Module = module {
     factory { UserVlogsUseCase(userRepository = get(), vlogRepository = get()) }
     factory { UserReactionUseCase(userRepository = get(), reactionRepository = get()) }
     factory { ReactionsUseCase(reactionRepository = get()) }
+    factory { FollowUseCase(followRepository = get()) }
 }
 
 val repositoryModule: Module = module {
     single { UserRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as UserRepository }
     single { VlogRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as VlogRepository }
     single { ReactionRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as ReactionRepository }
+    single { FollowRepositoryImpl(dataSource = get()) as FollowRepository }
 }
 
 val dataSourceModule: Module = module {
@@ -84,12 +92,14 @@ val dataSourceModule: Module = module {
     single { VlogRemoteDataSourceImpl(api = vlogsApi) as VlogRemoteDataSource }
     single { ReactionCacheDataSourceImpl(cache = get(REACTION_CACHE)) as ReactionCacheDataSource }
     single { ReactionRemoteDataSourceImpl(api = reactionsApi) as ReactionRemoteDataSource }
+    single { FollowDataSourceImpl(api = followApi) as FollowDataSource }
 }
 
 val networkModule: Module = module {
     single { usersApi }
     single { vlogsApi }
     single { reactionsApi }
+    single { followApi }
 }
 
 val cacheModule: Module = module {
@@ -105,6 +115,7 @@ private val retrofit: Retrofit = createNetworkClient(BASE_URL, BuildConfig.DEBUG
 private val vlogsApi: VlogsApi = retrofit.create(VlogsApi::class.java)
 private val usersApi: UsersApi = retrofit.create(UsersApi::class.java)
 private val reactionsApi: ReactionsApi = retrofit.create(ReactionsApi::class.java)
+private val followApi: FollowApi = retrofit.create(FollowApi::class.java)
 
 private const val USER_CACHE = "USER_CACHE"
 private const val VLOG_CACHE = "VLOG_CACHE"

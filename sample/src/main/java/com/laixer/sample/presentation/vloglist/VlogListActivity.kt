@@ -19,15 +19,15 @@ class VlogListActivity : AppCompatActivity() {
 
     private val vm: VlogListViewModel by viewModel()
 
-    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
-        { startActivity(SampleNavigation.vlogDetails(vlogIds = arrayListOf(it.second.vlogId))) }
+//    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
+//        { startActivity(SampleNavigation.vlogDetails(vlogIds = arrayListOf(it.second.vlogId))) }
 
     private val profileClick: (Pair<ProfileItem, VlogItem>) -> Unit =
         { startActivity(SampleNavigation.profile(userId = it.first.id)) }
 
 //    // Open profile
-//    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
-//        { startActivity(SampleNavigation.profile(userId = it.first.id)) }
+    private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
+        { startActivity(SampleNavigation.profile(userId = it.first.id)) }
 
     private lateinit var adapter: VlogListAdapter
 
@@ -48,7 +48,7 @@ class VlogListActivity : AppCompatActivity() {
         swipeRefreshLayout.setOnRefreshListener { vm.get(refresh = true) }
     }
 
-    private fun updateVlogs(resource: Resource<List<Pair<ProfileItem, VlogItem>>>?) {
+    private fun updateVlogs(resource: Resource<List<Pair<ProfileItem, VlogItem>>?>) {
         resource?.let { res ->
             when (res.state) {
                 ResourceState.LOADING -> swipeRefreshLayout.startRefreshing()

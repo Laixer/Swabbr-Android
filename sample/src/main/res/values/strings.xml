@@ -25,5 +25,9 @@
     <string name="user_avatar">User avatar</string>
     <string name="search">Search</string>
 
+    <string name="requested">Requested</string>
+    <string name="following">Following</string>
+    <string name="follow">Follow</string>
+
 
 </resources>
