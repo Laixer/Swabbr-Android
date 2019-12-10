@@ -44,7 +44,7 @@ object Versions {
     val ktx = "1.2.0-beta01"
     val material = "1.2.0-alpha01"
 
-    val kotlin = "1.3.50"
+    val kotlin = "1.3.61"
     val timber = "4.7.1"
     val rxjava = "2.2.10"
     val rxkotlin = "2.3.0"
