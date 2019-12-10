@@ -11,7 +11,7 @@ object Modules {
 
     val presentation = ":common:presentation"
 
-    val sample = ":sample"
+    val swabbr = ":swabbr"
 }
 
 object Releases {

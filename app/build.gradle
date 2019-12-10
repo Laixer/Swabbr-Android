@@ -32,7 +32,7 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
-    dynamicFeatures = [Modules.sample]
+    dynamicFeatures = [Modules.swabbr]
 }
 
 dependencies {

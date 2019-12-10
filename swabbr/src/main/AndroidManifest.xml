@@ -1,0 +1,44 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.laixer.swabbr">
+
+    <dist:module
+        dist:instant="false"
+        dist:onDemand="true"
+        dist:title="@string/module_feature_vlogs">
+        <dist:fusing dist:include="true" />
+    </dist:module>
+
+    <application
+        tools:ignore="GoogleAppIndexingWarning">
+
+        <activity
+            android:name="com.laixer.swabbr.presentation.profile.ProfileActivity" />
+        <activity
+            android:name="com.laixer.swabbr.presentation.vloglist.VlogListActivity" />
+        <activity
+            android:name="com.laixer.swabbr.presentation.vlogdetails.VlogDetailsActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/VlogTheme" />
+
+        <activity
+            android:name="com.laixer.swabbr.presentation.recordvlog.RecordVlogActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.laixer.swabbr.presentation.search.SearchActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+
+    </application>
+</manifest>
