@@ -8,6 +8,14 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true">
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusableInTouchMode="true">
+
+        <include layout="@layout/toolbar" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/vlogsRecyclerView"
             android:layout_width="match_parent"
@@ -15,5 +23,7 @@
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_list_vlog" />
+
+        </LinearLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
