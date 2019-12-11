@@ -1,6 +1,8 @@
 package com.laixer.swabbr.presentation.vloglist
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.laixer.navigation.features.SampleNavigation
@@ -32,6 +34,7 @@ class VlogListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vlog_list)
+        setSupportActionBar(findViewById(R.id.toolbar))
         adapter = VlogListAdapter(baseContext, itemClick, profileClick)
 
         injectFeature()
@@ -54,6 +57,27 @@ class VlogListActivity : AppCompatActivity() {
                 ResourceState.ERROR -> swipeRefreshLayout.stopRefreshing()
             }
             res.data?.let { adapter.submitList(it) }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.toolbar, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.settings -> {
+            startActivity(SampleNavigation.settings())
+            true
+        }
+
+        R.id.search -> {
+            true
+        }
+
+        else -> {
+            super.onOptionsItemSelected(item)
         }
     }
 }

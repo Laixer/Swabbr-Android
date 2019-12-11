@@ -4,6 +4,7 @@ import com.laixer.swabbr.datasource.model.*
 import com.laixer.swabbr.domain.model.Reaction
 import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.model.User
+import com.laixer.swabbr.domain.model.Settings
 import java.util.*
 
 private val date = Calendar.getInstance().time.toString()
@@ -45,6 +46,14 @@ val reaction = Reaction(
     date
 )
 
+val settings = Settings(
+    false,
+    2,
+    1
+)
+
+val followStatus = "Pending"
+
 val pairUserVlog = Pair(user, vlog)
 
 val userEntity = UserEntity(
@@ -81,4 +90,14 @@ val reactionEntity = ReactionEntity(
     "id",
     "duration",
     date
+)
+
+val settingsEntity = SettingsEntity(
+    false,
+    2,
+    2
+)
+
+val followStatusEntity = FollowStatusEntity(
+    "pending"
 )

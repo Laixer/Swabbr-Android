@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="200px" />
+
+    <Switch
+        android:id="@+id/privateSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Profile is private"
+        android:enabled="false" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="200px" />
+
+    <TextView
+        android:id="@+id/dailyVlogRequestLimitLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Daily vlog request limit" />
+
+    <Spinner
+        android:id="@+id/dailyVlogRequestLimitSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="200px" />
+
+    <TextView
+        android:id="@+id/followmodeLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Follow mode" />
+
+    <Spinner
+        android:id="@+id/followmodeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="200px" />
+
+    <Button
+        android:id="@+id/saveSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="Save" />
+
+</LinearLayout>

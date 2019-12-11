@@ -9,11 +9,15 @@ import com.laixer.swabbr.data.datasource.VlogCacheDataSource
 import com.laixer.swabbr.data.datasource.VlogRemoteDataSource
 import com.laixer.swabbr.data.datasource.ReactionCacheDataSource
 import com.laixer.swabbr.data.datasource.ReactionRemoteDataSource
+import com.laixer.swabbr.data.datasource.SettingsCacheDataSource
+import com.laixer.swabbr.data.datasource.SettingsRemoteDataSource
 import com.laixer.swabbr.data.repository.FollowRepositoryImpl
 import com.laixer.swabbr.data.repository.ReactionRepositoryImpl
+import com.laixer.swabbr.data.repository.SettingsRepositoryImpl
 import com.laixer.swabbr.data.repository.VlogRepositoryImpl
 import com.laixer.swabbr.data.repository.UserRepositoryImpl
 import com.laixer.swabbr.datasource.cache.ReactionCacheDataSourceImpl
+import com.laixer.swabbr.datasource.cache.SettingsCacheDataSourceImpl
 import com.laixer.swabbr.datasource.cache.VlogCacheDataSourceImpl
 import com.laixer.swabbr.datasource.cache.UserCacheDataSourceImpl
 import com.laixer.swabbr.datasource.model.UserEntity
@@ -22,17 +26,22 @@ import com.laixer.swabbr.datasource.remote.FollowApi
 import com.laixer.swabbr.datasource.remote.FollowDataSourceImpl
 import com.laixer.swabbr.datasource.remote.ReactionRemoteDataSourceImpl
 import com.laixer.swabbr.datasource.remote.ReactionsApi
+import com.laixer.swabbr.datasource.remote.SettingsApi
+import com.laixer.swabbr.datasource.remote.SettingsRemoteDataSourceImpl
 import com.laixer.swabbr.datasource.remote.UserRemoteDataSourceImpl
 import com.laixer.swabbr.datasource.remote.UsersApi
 import com.laixer.swabbr.datasource.remote.VlogRemoteDataSourceImpl
 import com.laixer.swabbr.datasource.remote.VlogsApi
 import com.laixer.swabbr.domain.model.Reaction
+import com.laixer.swabbr.domain.model.Settings
 import com.laixer.swabbr.domain.repository.FollowRepository
 import com.laixer.swabbr.domain.repository.ReactionRepository
+import com.laixer.swabbr.domain.repository.SettingsRepository
 import com.laixer.swabbr.domain.repository.VlogRepository
 import com.laixer.swabbr.domain.repository.UserRepository
 import com.laixer.swabbr.domain.usecase.FollowUseCase
 import com.laixer.swabbr.domain.usecase.ReactionsUseCase
+import com.laixer.swabbr.domain.usecase.SettingsUseCase
 import com.laixer.swabbr.domain.usecase.UserReactionUseCase
 import com.laixer.swabbr.domain.usecase.UserVlogUseCase
 import com.laixer.swabbr.domain.usecase.UserVlogsUseCase
@@ -40,6 +49,7 @@ import com.laixer.swabbr.domain.usecase.UsersUseCase
 import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
+import com.laixer.swabbr.presentation.settings.SettingsViewModel
 import com.laixer.swabbr.presentation.vlogdetails.VlogDetailsViewModel
 import com.laixer.swabbr.presentation.vloglist.VlogListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -66,6 +76,7 @@ val viewModelModule: Module = module {
     viewModel { VlogListViewModel(usersVlogsUseCase = get()) }
     viewModel { VlogDetailsViewModel(usersVlogsUseCase = get(), reactionsUseCase = get()) }
     viewModel { SearchViewModel(usersUseCase = get()) }
+    viewModel { SettingsViewModel(settingsUseCase = get()) }
 }
 
 val useCaseModule: Module = module {
@@ -76,6 +87,7 @@ val useCaseModule: Module = module {
     factory { UserReactionUseCase(userRepository = get(), reactionRepository = get()) }
     factory { ReactionsUseCase(reactionRepository = get()) }
     factory { FollowUseCase(followRepository = get()) }
+    factory { SettingsUseCase(settingsRepository = get()) }
 }
 
 val repositoryModule: Module = module {
@@ -83,6 +95,7 @@ val repositoryModule: Module = module {
     single { VlogRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as VlogRepository }
     single { ReactionRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as ReactionRepository }
     single { FollowRepositoryImpl(dataSource = get()) as FollowRepository }
+    single { SettingsRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as SettingsRepository }
 }
 
 val dataSourceModule: Module = module {
@@ -93,6 +106,8 @@ val dataSourceModule: Module = module {
     single { ReactionCacheDataSourceImpl(cache = get(REACTION_CACHE)) as ReactionCacheDataSource }
     single { ReactionRemoteDataSourceImpl(api = reactionsApi) as ReactionRemoteDataSource }
     single { FollowDataSourceImpl(api = followApi) as FollowDataSource }
+    single { SettingsCacheDataSourceImpl(cache = get(SETTINGS_CACHE)) as SettingsCacheDataSource }
+    single { SettingsRemoteDataSourceImpl(api = settingsApi) as SettingsRemoteDataSource }
 }
 
 val networkModule: Module = module {
@@ -100,12 +115,14 @@ val networkModule: Module = module {
     single { vlogsApi }
     single { reactionsApi }
     single { followApi }
+    single { settingsApi }
 }
 
 val cacheModule: Module = module {
     single(name = USER_CACHE) { ReactiveCache<List<UserEntity>>() }
     single(name = VLOG_CACHE) { ReactiveCache<List<VlogEntity>>() }
     single(name = REACTION_CACHE) { ReactiveCache<List<Reaction>>() }
+    single(name = SETTINGS_CACHE) { ReactiveCache<Settings>() }
 }
 
 private const val BASE_URL = "https://my-json-server.typicode.com/pnobbe/swabbrdata/"
@@ -115,8 +132,10 @@ private val retrofit: Retrofit = createNetworkClient(BASE_URL, BuildConfig.DEBUG
 private val vlogsApi: VlogsApi = retrofit.create(VlogsApi::class.java)
 private val usersApi: UsersApi = retrofit.create(UsersApi::class.java)
 private val reactionsApi: ReactionsApi = retrofit.create(ReactionsApi::class.java)
+private val settingsApi: SettingsApi = retrofit.create(SettingsApi::class.java)
 private val followApi: FollowApi = retrofit.create(FollowApi::class.java)
 
 private const val USER_CACHE = "USER_CACHE"
 private const val VLOG_CACHE = "VLOG_CACHE"
 private const val REACTION_CACHE = "REACTION_CACHE"
+private const val SETTINGS_CACHE = "SETTINGS_CACHE"

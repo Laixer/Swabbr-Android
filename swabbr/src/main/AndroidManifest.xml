@@ -15,8 +15,10 @@
 
         <activity
             android:name="com.laixer.swabbr.presentation.profile.ProfileActivity" />
+
         <activity
             android:name="com.laixer.swabbr.presentation.vloglist.VlogListActivity" />
+
         <activity
             android:name="com.laixer.swabbr.presentation.vlogdetails.VlogDetailsActivity"
             android:configChanges="orientation|screenSize"
@@ -39,6 +41,9 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+
+        <activity
+            android:name="com.laixer.swabbr.presentation.settings.SettingsActivity" />
 
     </application>
 </manifest>

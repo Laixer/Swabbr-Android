@@ -4,6 +4,7 @@ import com.laixer.swabbr.datasource.model.FollowStatusEntity
 import com.laixer.swabbr.datasource.model.ReactionEntity
 import com.laixer.swabbr.datasource.model.UserEntity
 import com.laixer.swabbr.datasource.model.VlogEntity
+import com.laixer.swabbr.datasource.model.SettingsEntity
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -61,4 +62,13 @@ interface FollowApi {
 
     @POST("declineRequest/{id}")
     fun declineRequest(@Path("id") id: String): Single<FollowStatusEntity>
+}
+
+interface SettingsApi {
+
+    @GET("userSettings/")
+    fun get(): Single<SettingsEntity>
+
+    @POST("userSettings/")
+    fun set(settings: SettingsEntity): Single<SettingsEntity>
 }
