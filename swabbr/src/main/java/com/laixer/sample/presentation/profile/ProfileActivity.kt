@@ -2,6 +2,8 @@ package com.laixer.swabbr.presentation.profile
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -34,6 +36,7 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
         followButton.setOnClickListener {
             when (followStatus) {
@@ -102,6 +105,22 @@ class ProfileActivity : AppCompatActivity() {
                 Toast.makeText(this, res.message, Toast.LENGTH_SHORT).show()
                 followButton.isEnabled = true
             }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.toolbar_settings, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.settings -> {
+            startActivity(SampleNavigation.settings())
+            true
+        }
+        else -> {
+            super.onOptionsItemSelected(item)
         }
     }
 }

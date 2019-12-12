@@ -32,5 +32,6 @@ object SampleNavigation : DynamicFeature<Intent> {
     fun settings(): Intent? =
         SETTINGS.loadIntentOrNull()
 
-    val search: Intent? = SEARCH.loadIntentOrNull()
+    fun search(): Intent? =
+        SEARCH.loadIntentOrNull()
 }
