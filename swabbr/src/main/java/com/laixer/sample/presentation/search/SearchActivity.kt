@@ -17,6 +17,7 @@ import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.model.ProfileItem
 import kotlinx.android.synthetic.main.activity_profile.swipeRefreshLayout
 import kotlinx.android.synthetic.main.activity_search.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.koin.androidx.viewmodel.ext.viewModel
 
 class SearchActivity : AppCompatActivity() {
@@ -36,6 +37,8 @@ class SearchActivity : AppCompatActivity() {
         searchRecyclerView.adapter = adapter
 
         vm.profiles.observe(this, Observer { updateUsers(it) })
+
+        toolbar.getChildAt(0).requestFocus()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -52,16 +55,12 @@ class SearchActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu to use in the action bar
         val inflater = menuInflater
-        inflater.inflate(R.menu.toolbar, menu)
+        inflater.inflate(R.menu.toolbar_search, menu)
 
-        // Get the SearchView and set the searchable configuration
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         (menu.findItem(R.id.search).actionView as SearchView).apply {
-            // Assumes current activity is the searchable activity
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
-            // setIconifiedByDefault(false) // Expands widget by default
             clearFocus()
         }
         return true

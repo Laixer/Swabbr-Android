@@ -14,10 +14,12 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name="com.laixer.swabbr.presentation.profile.ProfileActivity" />
+            android:name="com.laixer.swabbr.presentation.profile.ProfileActivity"
+            android:theme="@style/CustomToolbar" />
 
         <activity
-            android:name="com.laixer.swabbr.presentation.vloglist.VlogListActivity" />
+            android:name="com.laixer.swabbr.presentation.vloglist.VlogListActivity"
+            android:theme="@style/CustomToolbar" />
 
         <activity
             android:name="com.laixer.swabbr.presentation.vlogdetails.VlogDetailsActivity"
@@ -33,6 +35,7 @@
 
         <activity
             android:name="com.laixer.swabbr.presentation.search.SearchActivity"
+            android:theme="@style/CustomToolbar"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />

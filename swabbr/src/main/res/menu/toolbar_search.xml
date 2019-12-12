@@ -11,11 +11,4 @@
         android:icon="@drawable/ic_search_white_24dp"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always" />
-
-    <item
-        android:id="@+id/settings"
-        android:orderInCategory="2"
-        android:title="@string/settings"
-        android:icon="@drawable/ic_settings_white_24dp"
-        app:showAsAction="always" />
 </menu>

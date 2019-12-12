@@ -21,11 +21,9 @@ class VlogListActivity : AppCompatActivity() {
 
     private val vm: VlogListViewModel by viewModel()
 
-    // Open vlogdetails
     private val itemClick: (Pair<ProfileItem, VlogItem>) -> Unit =
         { startActivity(SampleNavigation.vlogDetails(vlogIds = arrayListOf(it.second.vlogId))) }
 
-    // Open profile
     private val profileClick: (Pair<ProfileItem, VlogItem>) -> Unit =
         { startActivity(SampleNavigation.profile(userId = it.first.id)) }
 
@@ -62,20 +60,15 @@ class VlogListActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.toolbar, menu)
+        inflater.inflate(R.menu.toolbar_vloglist, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.settings -> {
-            startActivity(SampleNavigation.settings())
-            true
-        }
-
         R.id.search -> {
+            startActivity(SampleNavigation.search())
             true
         }
-
         else -> {
             super.onOptionsItemSelected(item)
         }
