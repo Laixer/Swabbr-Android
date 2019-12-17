@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.laixer.navigation.features.SampleNavigation
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
@@ -21,14 +22,14 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        loadTextEditors()
+        addListeners()
 
         loginButton.setOnClickListener {
             vm.login(Login(usernameInput.text.toString(), passwordInput.text.toString()))
         }
 
         registerButton.setOnClickListener {
-            // TODO: Go to register activity
+            startActivity(SampleNavigation.registration())
         }
 
         injectFeature()
@@ -41,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
             ResourceState.LOADING -> {
             }
             ResourceState.SUCCESS -> {
-                // TODO: Go to home screen
+                startActivity(SampleNavigation.vlogList())
             }
             ResourceState.ERROR -> {
                 passwordInput.text.clear()
@@ -50,30 +51,15 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadTextEditors() {
-        usernameInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-            }
+    private fun addListeners() {
+        val watcher: TextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) { checkChanges() }
+            override fun afterTextChanged(editable: Editable) {}
+        }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                checkChanges()
-            }
-        })
-
-        passwordInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                checkChanges()
-            }
-        })
+        usernameInput.addTextChangedListener(watcher)
+        passwordInput.addTextChangedListener(watcher)
     }
 
     private fun checkChanges() { loginButton.isEnabled = !(usernameInput.text.isNullOrEmpty() || passwordInput.text.isNullOrEmpty())}

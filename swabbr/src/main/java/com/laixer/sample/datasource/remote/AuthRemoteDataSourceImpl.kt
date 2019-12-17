@@ -25,7 +25,8 @@ class AuthRemoteDataSourceImpl constructor(
             }
 
     override fun register(registration: Registration): Single<Triple<String, User, Settings>> =
-        api.register(registration.mapToData())
+        //api.register(registration.mapToData())
+        api.register()
             .map {
                 Triple(
                     it.accessToken,

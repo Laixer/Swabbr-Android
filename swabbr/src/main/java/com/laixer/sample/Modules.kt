@@ -58,6 +58,7 @@ import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
 import com.laixer.swabbr.presentation.settings.LoginViewModel
+import com.laixer.swabbr.presentation.settings.RegistrationViewModel
 import com.laixer.swabbr.presentation.settings.SettingsViewModel
 import com.laixer.swabbr.presentation.vlogdetails.VlogDetailsViewModel
 import com.laixer.swabbr.presentation.vloglist.VlogListViewModel
@@ -82,6 +83,7 @@ private val loadFeature by lazy {
 
 val viewModelModule: Module = module {
     viewModel { LoginViewModel(authUseCase = get()) }
+    viewModel { RegistrationViewModel(authUseCase = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get()) }
     viewModel { VlogDetailsViewModel(usersVlogsUseCase = get(), reactionsUseCase = get()) }

@@ -2,6 +2,7 @@ package com.laixer.swabbr.datasource.remote
 
 import com.laixer.swabbr.datasource.model.AuthenticatedUserEntity
 import com.laixer.swabbr.datasource.model.FollowStatusEntity
+import com.laixer.swabbr.datasource.model.LoginEntity
 import com.laixer.swabbr.datasource.model.ReactionEntity
 import com.laixer.swabbr.datasource.model.RegistrationEntity
 import com.laixer.swabbr.datasource.model.UserEntity
@@ -76,10 +77,14 @@ interface SettingsApi {
 }
 
 interface AuthApi {
+//    @GET("login/")
+//    fun login(login: LoginEntity): Single<AuthenticatedUserEntity>
     @GET("login/")
     fun login(): Single<AuthenticatedUserEntity>
 
     // POST
+//    @GET("register/")
+//    fun register(registration: RegistrationEntity): Single<AuthenticatedUserEntity>
     @GET("register/")
-    fun register(registration: RegistrationEntity): Single<AuthenticatedUserEntity>
+    fun register(): Single<AuthenticatedUserEntity>
 }

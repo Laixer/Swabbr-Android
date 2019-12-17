@@ -7,7 +7,7 @@
         android:id="@+id/loginLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Username/Email" />
+        android:text="@string/usernameEmail" />
 
     <EditText
         android:id="@+id/usernameInput"
@@ -21,7 +21,7 @@
         android:id="@+id/passwordLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="" />
+        android:text="@string/password" />
 
     <EditText
         android:id="@+id/passwordInput"
@@ -35,12 +35,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:enabled="false"
-        android:text="Login" />
+        android:text="@string/login" />
 
     <Button
         android:id="@+id/registerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Register" />
+        android:text="@string/register" />
 
 </LinearLayout>
