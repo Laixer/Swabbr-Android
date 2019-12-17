@@ -14,12 +14,13 @@ class AuthRemoteDataSourceImpl constructor(
 ) : AuthRemoteDataSource {
 
     override fun login(login: Login): Single<Triple<String, User, Settings>> =
-        api.login(login.mapToData())
+        // api.login(login.mapToData())
+        api.login()
             .map {
                 Triple(
-                    it.first,
-                    it.second.mapToDomain(),
-                    it.third.mapToDomain()
+                    it.accessToken,
+                    it.user.mapToDomain(),
+                    it.userSettings.mapToDomain()
                 )
             }
 
@@ -27,9 +28,9 @@ class AuthRemoteDataSourceImpl constructor(
         api.register(registration.mapToData())
             .map {
                 Triple(
-                    it.first,
-                    it.second.mapToDomain(),
-                    it.third.mapToDomain()
+                    it.accessToken,
+                    it.user.mapToDomain(),
+                    it.userSettings.mapToDomain()
                 )
             }
 }

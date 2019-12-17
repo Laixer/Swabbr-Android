@@ -14,7 +14,5 @@ interface AuthRemoteDataSource {
 }
 
 interface AuthCacheDataSource {
-    fun login(token: String)
-
-    fun register(token: String)
+    fun set(authorizedUser: Pair<String, User>): Single<Pair<String, User>>
 }
