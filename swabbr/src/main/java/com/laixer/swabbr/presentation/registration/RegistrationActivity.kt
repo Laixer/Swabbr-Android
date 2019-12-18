@@ -9,7 +9,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import com.laixer.navigation.features.SampleNavigation
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
@@ -24,6 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.app.DatePickerDialog
 import android.widget.DatePicker
+import com.laixer.navigation.features.SwabbrNavigation
 
 class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private val vm: RegistrationViewModel by viewModel()
@@ -64,7 +64,7 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
             ResourceState.LOADING -> {
             }
             ResourceState.SUCCESS -> {
-                startActivity(SampleNavigation.vlogList())
+                startActivity(SwabbrNavigation.vlogList())
             }
             ResourceState.ERROR -> {
                 passwordInput.text.clear()

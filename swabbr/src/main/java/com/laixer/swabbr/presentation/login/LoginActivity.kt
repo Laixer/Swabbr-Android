@@ -6,7 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import com.laixer.navigation.features.SampleNavigation
+import com.laixer.navigation.features.SwabbrNavigation
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         registerButton.setOnClickListener {
-            startActivity(SampleNavigation.registration())
+            startActivity(SwabbrNavigation.registration())
         }
 
         injectFeature()
@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
             ResourceState.LOADING -> {
             }
             ResourceState.SUCCESS -> {
-                startActivity(SampleNavigation.vlogList())
+                startActivity(SwabbrNavigation.vlogList())
             }
             ResourceState.ERROR -> {
                 passwordInput.text.clear()
