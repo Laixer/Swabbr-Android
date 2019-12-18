@@ -10,7 +10,7 @@
         android:layout_width="@dimen/medium_icon_size"
         android:layout_height="@dimen/medium_icon_size"
         android:contentDescription="@string/logo"
-        android:src="@drawable/logo" />
+        android:src="@mipmap/ic_logo_round" />
 
     <include
         layout="@layout/include_user_info_reversed"

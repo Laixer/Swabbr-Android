@@ -15,11 +15,15 @@ data class Notification(
     @field:Json(name = "user_agent") val userAgent: String
 )
 
-data class NotificationPayload(
-    @field:Json(name = "title") val title: String,
-    @field:Json(name = "message") val message: String,
-    @field:Json(name = "click_action") val clickAction: String,
-    @field:Json(name = "id") val id: String
+open class NotificationPayload(
+    @field:Json(name = "title") val title: String? = null,
+    @field:Json(name = "message") val message: String? = null,
+    @field:Json(name = "click_action") val clickAction: String? = null,
+    @field:Json(name = "cloud_code") val cloudCode: String?,
+    @field:Json(name = "host_address") val hostAddress: String,
+    @field:Json(name = "app_name") val appName: String,
+    @field:Json(name = "stream_name") val streamName: String,
+    @field:Json(name = "port") val port: Int
 )
 
 class NotificationManager {
