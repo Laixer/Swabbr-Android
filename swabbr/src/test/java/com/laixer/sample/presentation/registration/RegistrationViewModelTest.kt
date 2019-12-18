@@ -10,8 +10,7 @@ import com.laixer.swabbr.presentation.RxSchedulersOverrideRule
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.*
-import com.laixer.swabbr.domain.usecase.SettingsUseCase
-import com.laixer.swabbr.presentation.model.mapToPresentation
+import com.laixer.swabbr.domain.usecase.AuthUseCase
 import io.reactivex.Single
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -19,13 +18,15 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 
-class SettingsViewModelTest {
+class RegistrationViewModelTest {
 
-    private lateinit var viewModel: SettingsViewModel
+    private lateinit var viewModel: RegistrationViewModel
 
-    private val mockSettingsUseCase: SettingsUseCase = mock()
+    private val mockAuthUseCase: AuthUseCase = mock()
 
     private val throwable = Throwable()
+
+    private val reponse = Pair(Pair("token", user), settings)
 
     @Rule
     @JvmField
@@ -37,38 +38,38 @@ class SettingsViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = SettingsViewModel(mockSettingsUseCase)
+        viewModel = RegistrationViewModel(mockAuthUseCase)
     }
 
     @Test
-    fun `get settings succeeds`() {
+    fun `registration succeeds`() {
         // given
-        whenever(mockSettingsUseCase.get(false))
-            .thenReturn(Single.just(settings))
+        whenever(mockAuthUseCase.register(registration))
+            .thenReturn(Single.just(reponse))
 
         // when
-        viewModel.getSettings(false)
+        viewModel.register(registration)
 
         // then
-        verify(mockSettingsUseCase).get(false)
+        verify(mockAuthUseCase).register(registration)
         assertEquals(
-            Resource(ResourceState.SUCCESS, settings.mapToPresentation(), null),
-            viewModel.settings.value)
+            Resource(ResourceState.SUCCESS, true, null),
+            viewModel.authorized.value)
     }
 
     @Test
-    fun `get settings fails`() {
+    fun `registration fails`() {
         // given
-        whenever(mockSettingsUseCase.get(true)).thenReturn(Single.error(throwable))
+        whenever(mockAuthUseCase.register(registration)).thenReturn(Single.error(throwable))
 
         // when
-        viewModel.getSettings(true)
+        viewModel.register(registration)
 
         // then
-        verify(mockSettingsUseCase).get(true)
+        verify(mockAuthUseCase).register(registration)
         assertEquals(
             Resource(state = ResourceState.ERROR, data = null, message = throwable.message),
-            viewModel.settings.value
+            viewModel.authorized.value
         )
     }
 }

@@ -13,4 +13,6 @@ class AuthCacheDataSourceImpl constructor(
 
     override fun set(authorizedUser: Pair<String, User>): Single<Pair<String, User>> = cache.save(key, authorizedUser)
 
+    override fun get(): Single<Pair<String, User>> =
+        cache.load(key)
 }

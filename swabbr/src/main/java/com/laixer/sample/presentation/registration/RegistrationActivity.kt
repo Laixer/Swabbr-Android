@@ -25,8 +25,6 @@ import java.util.*
 import android.app.DatePickerDialog
 import android.widget.DatePicker
 
-
-
 class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private val vm: RegistrationViewModel by viewModel()
 
@@ -84,12 +82,17 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
 
     private fun prepareTextInputs() {
         val textInputWatcher: TextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+                return
+            }
+
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 checkChanges()
             }
 
-            override fun afterTextChanged(editable: Editable) {}
+            override fun afterTextChanged(editable: Editable) {
+                return
+            }
         }
         firstNameInput.addTextChangedListener(textInputWatcher)
         lastNameInput.addTextChangedListener(textInputWatcher)
@@ -123,11 +126,11 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
             countrySpinner.adapter = adapter
         }
 
-        val countries= Locale.getAvailableLocales().map {
+        val countries = Locale.getAvailableLocales().map {
             it.getDisplayCountry(Locale.getDefault())
         }.filter { !it.isNullOrEmpty() }.toSortedSet().toTypedArray()
 
-        var adapter= ArrayAdapter(this,android.R.layout.simple_spinner_item, countries)
+        var adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, countries)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         countrySpinner.adapter = adapter
         countrySpinner.setSelection(countries.indexOf(Locale.getDefault().getDisplayCountry(Locale.getDefault())))
@@ -143,7 +146,12 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
     }
 
     private fun prepareDatepicker() {
-        birthDatePicker.text = "${Calendar.getInstance().get(Calendar.DAY_OF_MONTH)}/${Calendar.getInstance().get(Calendar.MONTH)}/${Calendar.getInstance().get(Calendar.YEAR)}"
+        birthDatePicker.text = getString(
+            R.string.birthDatePicker,
+            Calendar.getInstance().get(Calendar.DAY_OF_MONTH).toString(),
+            Calendar.getInstance().get(Calendar.MONTH).toString(),
+            Calendar.getInstance().get(Calendar.YEAR).toString()
+        )
         birthDatePicker.setOnClickListener { showDatePickerDialog() }
     }
 
@@ -159,8 +167,8 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
                         nicknameInput.text.isNullOrEmpty() ||
                         emailAddressInput.text.isNullOrEmpty() ||
                         passwordInput.text.isNullOrEmpty() ||
-                        confirmPasswordInput.text.isNullOrEmpty())
-                && (passwordInput.text.toString() == confirmPasswordInput.text.toString())
+                        confirmPasswordInput.text.isNullOrEmpty()) &&
+                (passwordInput.text.toString() == confirmPasswordInput.text.toString())
     }
 
     private fun showDatePickerDialog() {

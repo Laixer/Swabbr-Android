@@ -53,14 +53,24 @@ class LoginActivity : AppCompatActivity() {
 
     private fun addListeners() {
         val watcher: TextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) { checkChanges() }
-            override fun afterTextChanged(editable: Editable) {}
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+                return
+            }
+
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+                checkChanges()
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+                return
+            }
         }
 
         usernameInput.addTextChangedListener(watcher)
         passwordInput.addTextChangedListener(watcher)
     }
 
-    private fun checkChanges() { loginButton.isEnabled = !(usernameInput.text.isNullOrEmpty() || passwordInput.text.isNullOrEmpty())}
+    private fun checkChanges() {
+        loginButton.isEnabled = !(usernameInput.text.isNullOrEmpty() || passwordInput.text.isNullOrEmpty())
+    }
 }

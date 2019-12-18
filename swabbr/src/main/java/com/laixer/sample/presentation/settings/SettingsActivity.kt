@@ -129,36 +129,3 @@ class SettingsActivity : AppCompatActivity() {
         saveSettings.isEnabled = settings != savedSettings
     }
 }
-
-//private fun prepareSpinners() {
-//    var spinnerWatcher = object : AdapterView.OnItemSelectedListener {
-//        override fun onNothingSelected(parent: AdapterView<*>?) {
-//            return
-//        }
-//
-//        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//            settings?.dailyVlogRequestLimit = position
-//            checkChanges()
-//        }
-//    }
-//
-//    dailyVlogRequestLimitSpinner.onItemSelectedListener = spinnerWatcher
-//    followmodeSpinner.onItemSelectedListener = spinnerWatcher
-//
-//    ArrayAdapter.createFromResource(
-//        this,
-//        R.array.dailyvlogrequestlimit_array,
-//        android.R.layout.simple_spinner_item
-//    ).also { adapter ->
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//        dailyVlogRequestLimitSpinner.adapter = adapter
-//    }
-//    ArrayAdapter.createFromResource(
-//        this,
-//        R.array.followmode_array,
-//        android.R.layout.simple_spinner_item
-//    ).also { adapter ->
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//        followmodeSpinner.adapter = adapter
-//    }
-//}

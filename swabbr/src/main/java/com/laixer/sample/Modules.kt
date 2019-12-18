@@ -104,7 +104,12 @@ val useCaseModule: Module = module {
 }
 
 val repositoryModule: Module = module {
-    single { AuthRepositoryImpl(authCacheDataSource = get(), userCacheDataSource = get(), settingsCacheDataSource = get(), remoteDataSource = get()) as AuthRepository }
+    single {
+        AuthRepositoryImpl(
+            authCacheDataSource = get(), userCacheDataSource = get(),
+            settingsCacheDataSource = get(), remoteDataSource = get()
+        ) as AuthRepository
+    }
     single { UserRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as UserRepository }
     single { VlogRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as VlogRepository }
     single { ReactionRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as ReactionRepository }

@@ -19,20 +19,22 @@ class AuthRepositoryImpl constructor(
     private val remoteDataSource: AuthRemoteDataSource
 ) : AuthRepository {
 
-    override fun login(login: Login): Single<Pair<Pair<String, User>, Settings>> = remoteDataSource.login(login)
-        .flatMap {
-            Single.zip(
-                authCacheDataSource.set(Pair(it.first, it.second)),
-                userCacheDataSource.set(it.second),
-                settingsCacheDataSource.set(it.third),
-                Function3<Pair<String, User>, User, Settings, Pair<Pair<String, User>, Settings>> { authUser, _, settings ->
-                    Pair(
-                        authUser,
-                        settings
-                    )
-                }
-            )
-        }
+    override fun login(login: Login): Single<Pair<Pair<String, User>, Settings>> =
+        remoteDataSource.login(login)
+            .flatMap {
+                Single.zip(
+                    authCacheDataSource.set(Pair(it.first, it.second)),
+                    userCacheDataSource.set(it.second),
+                    settingsCacheDataSource.set(it.third),
+                    Function3<Pair<String, User>, User, Settings, Pair<Pair<String, User>, Settings>>
+                    { authUser, _, settings ->
+                        Pair(
+                            authUser,
+                            settings
+                        )
+                    }
+                )
+            }
 
     override fun register(registration: Registration): Single<Pair<Pair<String, User>, Settings>> =
         remoteDataSource.register(registration)
@@ -41,7 +43,8 @@ class AuthRepositoryImpl constructor(
                     authCacheDataSource.set(Pair(it.first, it.second)),
                     userCacheDataSource.set(it.second),
                     settingsCacheDataSource.set(it.third),
-                    Function3<Pair<String, User>, User, Settings, Pair<Pair<String, User>, Settings>> { authUser, _, settings ->
+                    Function3<Pair<String, User>, User, Settings, Pair<Pair<String, User>, Settings>>
+                    { authUser, _, settings ->
                         Pair(
                             authUser,
                             settings
