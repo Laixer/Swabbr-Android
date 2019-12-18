@@ -12,6 +12,8 @@ object Modules {
     val presentation = ":common:presentation"
 
     val swabbr = ":swabbr"
+
+    val gocodersdk = "com.wowza.gocoder.sdk.android:com.wowza.gocoder.sdk:2.0.0@aar"
 }
 
 object Releases {

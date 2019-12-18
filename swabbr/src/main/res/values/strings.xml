@@ -30,6 +30,20 @@
     <string name="following">Following</string>
     <string name="follow">Follow</string>
 
+    <string name="button_dismiss">Dismiss</string>
+    <string name="switch_camera">Switch Camera</string>
+    <string name="torch">Torch</string>
+
+    <string name="zero_time">00:00</string>
+
+    <string name="status_connecting">Connecting</string>
+    <string name="status_connected">Connected</string>
+    <string name="status_disconnecting">Disconnecting</string>
+    <string name="status_error">An error occurred.</string>
+    <string name="status_unknown">Unexpected error occurred.</string>
+
+    <string name="no_devices_available">Could not detect or gain access to any cameras on this device</string>
+
     <string name="manual">Manual</string>
     <string name="acceptall">Accept all</string>
     <string name="denyall">Deny all</string>
