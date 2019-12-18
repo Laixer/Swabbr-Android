@@ -1,15 +1,36 @@
 apply from: "$rootDir/common-android-dynamic-feature.gradle"
+
+def localPropertiesFile = rootProject.file("local.properties")
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(localPropertiesFile))
+
 android {
+
+    defaultConfig {
+        buildConfigField("String", "GOCODER_SDK_KEY", localProperties['GOCODER_SDK_KEY'])
+    }
+
     compileOptions {
             sourceCompatibility 1.8
             targetCompatibility 1.8
     }
 }
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation project(Modules.cache)
     implementation project(Modules.network)
     implementation project(Modules.navigation)
     implementation project(Modules.presentation)
+
+    implementation Modules.gocodersdk
 
     implementation Libraries.koinAndroid
     implementation Libraries.koinViewModel

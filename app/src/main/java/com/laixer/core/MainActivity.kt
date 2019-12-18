@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.messaging.FirebaseMessaging
-import com.laixer.navigation.features.SampleNavigation
+import com.laixer.navigation.features.SwabbrNavigation
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,7 +53,22 @@ class MainActivity : AppCompatActivity() {
         isVisible = false
     }
 
-    private fun startVlogList() = SampleNavigation.dynamicStart?.let { startActivity(it) }
+    private fun startVlogs() =
+        SwabbrNavigation.vlogDetails(
+            arrayListOf(
+                "100",
+                "101",
+                "102",
+                "103",
+                "104",
+                "105",
+                "106"
+            )
+        )?.let {
+            startActivity(it)
+        }
+
+    private fun startVlogList() = SwabbrNavigation.dynamicStart?.let { startActivity(it) }
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If
@@ -69,7 +84,11 @@ class MainActivity : AppCompatActivity() {
                     .show()
             } else {
                 Log.i(TAG, "This device is not supported by Google Play Services.")
-                Toast.makeText(this, "This device is not supported by Google Play Services.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "This device is not supported by Google Play Services.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             return false
         }

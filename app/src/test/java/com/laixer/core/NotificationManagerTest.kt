@@ -38,6 +38,5 @@ class NotificationManagerTest {
         assertEquals(handledData?.data?.title, "Reactie")
         assertEquals(handledData?.data?.message, "Nieuwe reactie op vlog")
         assertEquals(handledData?.data?.clickAction, "vlog_new_reaction")
-        assertEquals(handledData?.data?.id, "101")
     }
 }

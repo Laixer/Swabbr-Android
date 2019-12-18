@@ -11,8 +11,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.laixer.navigation.features.CameraNavigation
-import com.laixer.navigation.features.SampleNavigation
+import com.laixer.navigation.features.SwabbrNavigation
 import java.lang.UnsupportedOperationException
 import java.util.*
 import kotlin.IllegalArgumentException
@@ -100,21 +99,33 @@ class FirebaseService : FirebaseMessagingService() {
     /**
      * Create and show a simple notification containing the received FCM message.
      *
-     * @param messageBody FCM message body received.
+     * @param notification FCM message body received.
      */
     private fun sendNotification(notification: Notification?) {
         // Set default intent
         var intent = Intent(this, MainActivity::class.java)
 
         // Retrieve action from notification payload or null if none exists
-        val action = notification!!.data.clickAction.toUpperCase(Locale.ROOT)
+        val action = notification?.data?.clickAction?.toUpperCase(Locale.ROOT)
 
         // Assign correct action if notification contains payload
-        action.let {
+        action?.let {
             try {
                 intent = when (Action.valueOf(action)) {
-                    Action.VLOG_RECORD_REQUEST -> CameraNavigation.dynamicStart!!
-                    Action.VLOG_NEW_REACTION -> SampleNavigation.vlogDetails(arrayListOf(notification.data.id))!!
+                    Action.VLOG_RECORD_REQUEST -> SwabbrNavigation.record(
+                        SwabbrNavigation.ConnectionSettings(
+                            notification.data.cloudCode,
+                            notification.data.hostAddress,
+                            notification.data.appName,
+                            notification.data.streamName,
+                            notification.data.port
+                        )
+                    )!!
+                    Action.VLOG_NEW_REACTION -> SwabbrNavigation.vlogDetails(
+                        arrayListOf(
+                            notification.data.port.toString()
+                        )
+                    )!!
                 }
             } catch (e: IllegalArgumentException) {
                 Log.e(TAG, e.message)
@@ -133,8 +144,8 @@ class FirebaseService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_stat_ic_notification)
-            .setContentTitle(notification.data.title)
-            .setContentText(notification.data.message)
+            .setContentTitle(notification?.data?.title ?: "Swabbr Notification")
+            .setContentText(notification?.data?.message)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)

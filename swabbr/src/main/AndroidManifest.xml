@@ -10,6 +10,10 @@
         <dist:fusing dist:include="true" />
     </dist:module>
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
     <application
         tools:ignore="GoogleAppIndexingWarning">
 
@@ -27,7 +31,8 @@
             android:theme="@style/VlogTheme" />
 
         <activity
-            android:name="com.laixer.swabbr.presentation.recordvlog.RecordVlogActivity">
+            android:name="com.laixer.swabbr.presentation.recordvlog.RecordVlogActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
