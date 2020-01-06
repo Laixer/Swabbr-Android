@@ -24,7 +24,7 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-        loadSpinners()
+        prepareUI()
 
         saveSettings.setOnClickListener {
             settings?.let {
@@ -65,27 +65,41 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadSpinners() {
+    private fun prepareUI() {
+        prepareSwitch()
+        prepareSpinners()
+    }
+
+    private fun prepareSwitch() {
         privateSwitch.setOnCheckedChangeListener { _, isChecked ->
             settings?.private = isChecked
             checkChanges()
         }
+    }
 
+    private fun prepareSpinners() {
         dailyVlogRequestLimitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) { return }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                return
+            }
+
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 settings?.dailyVlogRequestLimit = position
                 checkChanges()
             }
         }
 
-        followmodeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) { return }
+        val spinnerWatcher = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                return
+            }
+
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 settings?.followMode = position
                 checkChanges()
             }
         }
+        followmodeSpinner.onItemSelectedListener = spinnerWatcher
 
         ArrayAdapter.createFromResource(
             this,
@@ -111,5 +125,7 @@ class SettingsActivity : AppCompatActivity() {
         privateSwitch.isEnabled = enable
     }
 
-    private fun checkChanges() { saveSettings.isEnabled = settings != savedSettings }
+    private fun checkChanges() {
+        saveSettings.isEnabled = settings != savedSettings
+    }
 }

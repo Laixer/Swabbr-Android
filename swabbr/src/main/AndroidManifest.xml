@@ -18,6 +18,12 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
+            android:name="com.laixer.swabbr.presentation.login.LoginActivity" />
+
+        <activity
+            android:name="com.laixer.swabbr.presentation.registration.RegistrationActivity" />
+
+        <activity
             android:name="com.laixer.swabbr.presentation.profile.ProfileActivity"
             android:theme="@style/CustomToolbar" />
 

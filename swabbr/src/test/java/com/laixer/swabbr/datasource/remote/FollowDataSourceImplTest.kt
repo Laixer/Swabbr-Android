@@ -3,7 +3,6 @@
 package com.laixer.swabbr.datasource.remote
 
 import com.laixer.swabbr.datasource.model.mapToDomain
-import com.laixer.swabbr.followStatus
 import com.laixer.swabbr.followStatusEntity
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -20,8 +19,6 @@ class FollowDataSourceImplTest {
     private val mockApi: FollowApi = mock()
 
     private val userId = user.id
-
-    private val remoteItem = followStatus
 
     private val throwable = Throwable()
 
