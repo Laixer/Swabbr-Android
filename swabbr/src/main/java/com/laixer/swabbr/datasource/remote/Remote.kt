@@ -2,11 +2,14 @@ package com.laixer.swabbr.datasource.remote
 
 import com.laixer.swabbr.datasource.model.AuthenticatedUserEntity
 import com.laixer.swabbr.datasource.model.FollowStatusEntity
+import com.laixer.swabbr.datasource.model.LoginEntity
 import com.laixer.swabbr.datasource.model.ReactionEntity
+import com.laixer.swabbr.datasource.model.RegistrationEntity
 import com.laixer.swabbr.datasource.model.UserEntity
 import com.laixer.swabbr.datasource.model.VlogEntity
 import com.laixer.swabbr.datasource.model.SettingsEntity
 import io.reactivex.Single
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -75,14 +78,9 @@ interface SettingsApi {
 }
 
 interface AuthApi {
-//    @GET("login/")
-//    fun login(login: LoginEntity): Single<AuthenticatedUserEntity>
-    @GET("login/")
-    fun login(): Single<AuthenticatedUserEntity>
+    @POST("api/v1/authentication/login/")
+    fun login(@Body login: LoginEntity): Single<AuthenticatedUserEntity>
 
-    // POST
-//    @GET("register/")
-//    fun register(registration: RegistrationEntity): Single<AuthenticatedUserEntity>
-    @GET("register/")
-    fun register(): Single<AuthenticatedUserEntity>
+    @POST("api/v1/authentication/register/")
+    fun register(@Body registration: RegistrationEntity): Single<AuthenticatedUserEntity>
 }

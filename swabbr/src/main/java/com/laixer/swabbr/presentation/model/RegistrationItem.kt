@@ -10,7 +10,7 @@ data class RegistrationItem(
     val country: String,
     val email: String,
     val password: String,
-    val birthdate: Date,
+    val birthdate: String,
     val timezone: String,
     val nickname: String,
     val profileImageUrl: String,

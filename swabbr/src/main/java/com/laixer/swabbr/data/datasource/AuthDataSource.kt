@@ -17,4 +17,6 @@ interface AuthCacheDataSource {
     fun set(authorizedUser: Pair<String, User>): Single<Pair<String, User>>
 
     fun get(): Single<Pair<String, User>>
+
+    fun getToken(): Single<String>
 }

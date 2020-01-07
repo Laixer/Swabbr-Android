@@ -13,4 +13,6 @@ class AuthUseCase constructor(private val authRepository: AuthRepository) {
 
     fun register(registration: Registration): Single<Pair<Pair<String, User>, Settings>> =
         authRepository.register(registration)
+
+    fun getToken(): Single<String> = authRepository.getToken()
 }

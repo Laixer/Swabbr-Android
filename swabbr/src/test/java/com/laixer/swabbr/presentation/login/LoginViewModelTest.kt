@@ -1,6 +1,6 @@
 @file:Suppress("IllegalIdentifier")
 
-package com.laixer.swabbr.presentation.settings
+package com.laixer.swabbr.presentation.login
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.mock

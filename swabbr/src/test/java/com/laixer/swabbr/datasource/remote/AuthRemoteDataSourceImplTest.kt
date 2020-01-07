@@ -5,7 +5,9 @@ package com.laixer.swabbr.datasource.remote
 import com.laixer.swabbr.authenticatedUserEntity
 import com.laixer.swabbr.datasource.model.mapToDomain
 import com.laixer.swabbr.login
+import com.laixer.swabbr.loginEntity
 import com.laixer.swabbr.registration
+import com.laixer.swabbr.registrationEntity
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -29,13 +31,13 @@ class AuthRemoteDataSourceImplTest {
     @Test
     fun `login remote success`() {
         // given
-        whenever(mockApi.login()).thenReturn(Single.just(authenticatedUserEntity))
+        whenever(mockApi.login(loginEntity)).thenReturn(Single.just(authenticatedUserEntity))
 
         // when
         val test = dataSource.login(login).test()
 
         // then
-        verify(mockApi).login()
+        verify(mockApi).login(loginEntity)
         test.assertValue(Triple(
             authenticatedUserEntity.accessToken,
             authenticatedUserEntity.user.mapToDomain(),
@@ -46,26 +48,26 @@ class AuthRemoteDataSourceImplTest {
     @Test
     fun `login remote fail`() {
         // given
-        whenever(mockApi.login()).thenReturn(Single.error(throwable))
+        whenever(mockApi.login(loginEntity)).thenReturn(Single.error(throwable))
 
         // when
         val test = dataSource.login(login).test()
 
         // then
-        verify(mockApi).login()
+        verify(mockApi).login(loginEntity)
         test.assertError(throwable)
     }
 
     @Test
     fun `registration remote success`() {
         // given
-        whenever(mockApi.register()).thenReturn(Single.just(authenticatedUserEntity))
+        whenever(mockApi.register(registrationEntity)).thenReturn(Single.just(authenticatedUserEntity))
 
         // when
         val test = dataSource.register(registration).test()
 
         // then
-        verify(mockApi).register()
+        verify(mockApi).register(registrationEntity)
         test.assertValue(Triple(
             authenticatedUserEntity.accessToken,
             authenticatedUserEntity.user.mapToDomain(),
@@ -76,13 +78,13 @@ class AuthRemoteDataSourceImplTest {
     @Test
     fun `registration remote fail`() {
         // given
-        whenever(mockApi.register()).thenReturn(Single.error(throwable))
+        whenever(mockApi.register(registrationEntity)).thenReturn(Single.error(throwable))
 
         // when
         val test = dataSource.register(registration).test()
 
         // then
-        verify(mockApi).register()
+        verify(mockApi).register(registrationEntity)
         test.assertError(throwable)
     }
 }

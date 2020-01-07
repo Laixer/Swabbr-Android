@@ -4,7 +4,7 @@ import com.laixer.swabbr.domain.model.User
 import com.squareup.moshi.Json
 
 data class UserEntity(
-    @field:Json(name = "id") val id: String,
+    @field:Json(name = "userId") val id: String,
 
     // User info
     @field:Json(name = "firstName") val firstName: String,
@@ -22,7 +22,7 @@ data class UserEntity(
     // Profile
     @field:Json(name = "nickname") val nickname: String,
     @field:Json(name = "profileImageUrl") val profileImageUrl: String,
-    @field:Json(name = "birthdate") val birthdate: String,
+    @field:Json(name = "birthDate") val birthdate: String,
 
     // Location
     @field:Json(name = "longitude") val longitude: Double,

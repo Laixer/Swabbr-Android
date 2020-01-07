@@ -4,11 +4,13 @@ import com.laixer.swabbr.domain.model.Login
 
 data class LoginItem(
     val username: String,
-    val password: String
+    val password: String,
+    val remember: Boolean
 )
 
 fun LoginItem.mapToDomain(): Login =
     Login(
         this.username,
-        this.password
+        this.password,
+        this.remember
     )

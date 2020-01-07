@@ -12,7 +12,6 @@ import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.model.Login
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.settings.LoginViewModel
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.androidx.viewmodel.ext.viewModel
 
@@ -25,7 +24,7 @@ class LoginActivity : AppCompatActivity() {
         addListeners()
 
         loginButton.setOnClickListener {
-            vm.login(Login(usernameInput.text.toString(), passwordInput.text.toString()))
+            vm.login(Login(usernameInput.text.toString(), passwordInput.text.toString(), rememberMeSwitch.isChecked))
         }
 
         registerButton.setOnClickListener {
@@ -40,6 +39,7 @@ class LoginActivity : AppCompatActivity() {
     private fun login(res: Resource<Boolean>) {
         when (res.state) {
             ResourceState.LOADING -> {
+
             }
             ResourceState.SUCCESS -> {
                 startActivity(SwabbrNavigation.vlogList())

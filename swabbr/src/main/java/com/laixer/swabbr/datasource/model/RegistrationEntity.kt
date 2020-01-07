@@ -25,7 +25,7 @@ fun Registration.mapToData(): RegistrationEntity = RegistrationEntity(
     country,
     email,
     password,
-    birthdate.toString(),
+    birthdate,
     timezone,
     nickname,
     profileImageUrl,

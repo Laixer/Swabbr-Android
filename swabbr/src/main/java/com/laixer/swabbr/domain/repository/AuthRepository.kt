@@ -11,4 +11,6 @@ interface AuthRepository {
     fun login(login: Login): Single<Pair<Pair<String, User>, Settings>>
 
     fun register(registration: Registration): Single<Pair<Pair<String, User>, Settings>>
+
+    fun getToken(): Single<String>
 }

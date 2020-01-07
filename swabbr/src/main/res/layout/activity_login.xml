@@ -7,7 +7,7 @@
         android:id="@+id/loginLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/usernameEmail" />
+        android:text="@string/email" />
 
     <EditText
         android:id="@+id/usernameInput"
@@ -29,6 +29,12 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPassword" />
+
+    <Switch
+        android:id="@+id/rememberMeSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/rememberMe" />
 
     <Button
         android:id="@+id/loginButton"

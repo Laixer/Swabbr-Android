@@ -14,28 +14,35 @@ import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.model.Registration
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.settings.RegistrationViewModel
 import kotlinx.android.synthetic.main.activity_login.passwordInput
 import kotlinx.android.synthetic.main.activity_login.registerButton
 import kotlinx.android.synthetic.main.activity_registration.*
 import org.koin.androidx.viewmodel.ext.viewModel
-import java.text.SimpleDateFormat
 import java.util.*
 import android.app.DatePickerDialog
 import android.widget.DatePicker
 import com.laixer.navigation.features.SwabbrNavigation
+import java.time.LocalDate
 
 class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private val vm: RegistrationViewModel by viewModel()
+    private val date = LocalDate.now()
+    private var birthDate = date.dayOfMonth
+    private var birthMonth = date.monthValue
+    private var birthYear = date.year
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)
         prepareUI()
 
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy")
-
         registerButton.setOnClickListener {
+            var birthDateString = birthDate.toString()
+            var birthMonthString = birthMonth.toString()
+            if (birthDate < ADD_ZERO_BELOW) birthDateString = "0$birthDate"
+            if (birthMonth < ADD_ZERO_BELOW) birthMonthString = "0$birthMonth"
+            val birthdate = "$birthYear-$birthMonthString-$birthDateString" + "T00:00:00.000Z"
+
             vm.register(
                 Registration(
                     firstNameInput.text.toString(),
@@ -44,7 +51,7 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
                     countrySpinner.selectedItem.toString(),
                     emailAddressInput.text.toString(),
                     passwordInput.text.toString(),
-                    dateFormat.parse(birthDatePicker.text.toString()),
+                    birthdate,
                     TimeZone.getDefault().getDisplayName(false, TimeZone.SHORT),
                     nicknameInput.text.toString(),
                     "",
@@ -68,6 +75,7 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
             }
             ResourceState.ERROR -> {
                 passwordInput.text.clear()
+                confirmPasswordInput.text.clear()
                 Toast.makeText(this, res.message, Toast.LENGTH_SHORT).show()
             }
         }
@@ -148,9 +156,9 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
     private fun prepareDatepicker() {
         birthDatePicker.text = getString(
             R.string.birthDatePicker,
-            Calendar.getInstance().get(Calendar.DAY_OF_MONTH).toString(),
-            Calendar.getInstance().get(Calendar.MONTH).toString(),
-            Calendar.getInstance().get(Calendar.YEAR).toString()
+            date.dayOfMonth.toString(),
+            date.monthValue.toString(),
+            date.year.toString()
         )
         birthDatePicker.setOnClickListener { showDatePickerDialog() }
     }
@@ -175,16 +183,23 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
         val datePickerDialog = DatePickerDialog(
             this,
             this,
-            Calendar.getInstance().get(Calendar.YEAR),
-            Calendar.getInstance().get(Calendar.MONTH),
-            Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+            date.year,
+            date.monthValue,
+            date.dayOfMonth
         )
         datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
         datePickerDialog.show()
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, dayOfMonth: Int) {
-        val date = "$dayOfMonth/$month/$year"
+        birthDate = dayOfMonth
+        birthMonth = month + 1
+        birthYear = year
+        val date = "$dayOfMonth/$birthMonth/$year"
         birthDatePicker.text = date
+    }
+
+    companion object {
+        private const val ADD_ZERO_BELOW = 10
     }
 }

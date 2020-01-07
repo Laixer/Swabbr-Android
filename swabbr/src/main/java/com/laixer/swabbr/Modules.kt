@@ -55,10 +55,10 @@ import com.laixer.swabbr.domain.usecase.UserVlogUseCase
 import com.laixer.swabbr.domain.usecase.UserVlogsUseCase
 import com.laixer.swabbr.domain.usecase.UsersUseCase
 import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
+import com.laixer.swabbr.presentation.login.LoginViewModel
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
+import com.laixer.swabbr.presentation.registration.RegistrationViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
-import com.laixer.swabbr.presentation.settings.LoginViewModel
-import com.laixer.swabbr.presentation.settings.RegistrationViewModel
 import com.laixer.swabbr.presentation.settings.SettingsViewModel
 import com.laixer.swabbr.presentation.vlogdetails.VlogDetailsViewModel
 import com.laixer.swabbr.presentation.vloglist.VlogListViewModel
@@ -148,7 +148,8 @@ val cacheModule: Module = module {
     single(name = SETTINGS_CACHE) { ReactiveCache<Settings>() }
 }
 
-private const val BASE_URL = "https://my-json-server.typicode.com/pnobbe/swabbrdata/"
+// private const val BASE_URL = "https://my-json-server.typicode.com/pnobbe/swabbrdata/"
+private const val BASE_URL = "https://swabbr.azurewebsites.net/"
 
 private val retrofit: Retrofit = createNetworkClient(BASE_URL, BuildConfig.DEBUG)
 

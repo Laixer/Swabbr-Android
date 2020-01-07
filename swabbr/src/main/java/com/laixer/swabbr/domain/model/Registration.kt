@@ -1,7 +1,5 @@
 package com.laixer.swabbr.domain.model
 
-import java.util.*
-
 data class Registration(
     val firstName: String,
     val lastName: String,
@@ -9,7 +7,7 @@ data class Registration(
     val country: String,
     val email: String,
     val password: String,
-    val birthdate: Date,
+    val birthdate: String,
     val timezone: String,
     val nickname: String,
     val profileImageUrl: String,

@@ -1,6 +1,7 @@
 package com.laixer.swabbr.datasource.remote
 
 import com.laixer.swabbr.data.datasource.AuthRemoteDataSource
+import com.laixer.swabbr.datasource.model.mapToData
 import com.laixer.swabbr.datasource.model.mapToDomain
 import com.laixer.swabbr.domain.model.Login
 import com.laixer.swabbr.domain.model.Registration
@@ -13,8 +14,7 @@ class AuthRemoteDataSourceImpl constructor(
 ) : AuthRemoteDataSource {
 
     override fun login(login: Login): Single<Triple<String, User, Settings>> =
-        // api.login(login.mapToData())
-        api.login()
+        api.login(login.mapToData())
             .map {
                 Triple(
                     it.accessToken,
@@ -24,8 +24,7 @@ class AuthRemoteDataSourceImpl constructor(
             }
 
     override fun register(registration: Registration): Single<Triple<String, User, Settings>> =
-        // api.register(registration.mapToData())
-        api.register()
+        api.register(registration.mapToData())
             .map {
                 Triple(
                     it.accessToken,

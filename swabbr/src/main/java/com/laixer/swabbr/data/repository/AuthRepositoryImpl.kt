@@ -52,4 +52,6 @@ class AuthRepositoryImpl constructor(
                     }
                 )
             }
+
+    override fun getToken(): Single<String> = authCacheDataSource.getToken()
 }

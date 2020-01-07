@@ -53,8 +53,9 @@
     <string name="followMode">Follow mode</string>
     <string name="save">Save</string>
 
-    <string name="usernameEmail">Username/Email</string>
+    <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="rememberMe">Remember me</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
 

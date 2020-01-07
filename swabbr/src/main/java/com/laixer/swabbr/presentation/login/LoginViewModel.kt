@@ -1,9 +1,10 @@
-package com.laixer.swabbr.presentation.settings
+package com.laixer.swabbr.presentation.login
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.laixer.presentation.Resource
 import com.laixer.presentation.setError
+import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.model.Login
 import com.laixer.swabbr.domain.usecase.AuthUseCase
@@ -20,6 +21,7 @@ class LoginViewModel constructor(
     fun login(login: Login) =
         compositeDisposable.add(
             authUseCase.login(login)
+                .doOnSubscribe { authorized.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .subscribe({ authorized.setSuccess(true) }, { authorized.setError(it.message) })
         )

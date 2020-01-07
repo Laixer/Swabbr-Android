@@ -25,7 +25,7 @@ object Versions {
     val gradle = "3.4.2"
 
     val compileSdk = 28
-    val minSdk = 24
+    val minSdk = 26
     val targetSdk = 28
 
     val googleAuth = "16.0.1"

@@ -15,4 +15,6 @@ class AuthCacheDataSourceImpl constructor(
 
     override fun get(): Single<Pair<String, User>> =
         cache.load(key)
+
+    override fun getToken(): Single<String> = cache.load(key).flatMap { Single.just(it.first) }
 }

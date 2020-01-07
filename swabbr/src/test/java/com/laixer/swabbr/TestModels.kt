@@ -58,7 +58,8 @@ val settings = Settings(
 
 val login = Login(
     "username",
-    "password"
+    "password",
+    true
 )
 
 val registration = Registration(
@@ -68,7 +69,7 @@ val registration = Registration(
     "country",
     "email@email.com",
     "password",
-    Date.from(Date().toInstant()),
+    "T11:48:52.844Z",
     "GMT+01:00",
     "nickname",
     "profileImageUrl",
@@ -78,7 +79,8 @@ val registration = Registration(
 
 val loginItem = LoginItem(
     "username",
-    "password"
+    "password",
+    true
 )
 
 val registrationItem = RegistrationItem(
@@ -88,7 +90,7 @@ val registrationItem = RegistrationItem(
     "country",
     "email@email.com",
     "password",
-    Date.from(Date().toInstant()),
+    "T11:48:52.844Z",
     "GMT+01:00",
     "nickname",
     "profileImageUrl",
@@ -113,7 +115,7 @@ val userEntity = UserEntity(
     0,
     "nickname",
     "profileImgeUrl",
-    "birthdate",
+    "T11:48:52.844Z",
     0.0,
     0.0
 )
@@ -150,4 +152,25 @@ val authenticatedUserEntity = AuthenticatedUserEntity(
     "token",
     userEntity,
     settingsEntity
+)
+
+val loginEntity = LoginEntity(
+    "username",
+    "password",
+    true
+)
+
+val registrationEntity = RegistrationEntity(
+    "firstname",
+    "lastname",
+    0,
+    "country",
+    "email@email.com",
+    "password",
+    "T11:48:52.844Z",
+    "GMT+01:00",
+    "nickname",
+    "profileImageUrl",
+    false,
+    "0612345678"
 )
