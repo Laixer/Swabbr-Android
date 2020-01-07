@@ -9,10 +9,14 @@ import androidx.lifecycle.Observer
 import com.laixer.navigation.features.SwabbrNavigation
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
+import com.laixer.presentation.gone
+import com.laixer.presentation.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.model.Login
 import com.laixer.swabbr.injectFeature
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.progressBar
+import kotlinx.android.synthetic.main.activity_vlog_details.*
 import org.koin.androidx.viewmodel.ext.viewModel
 
 class LoginActivity : AppCompatActivity() {
@@ -39,13 +43,15 @@ class LoginActivity : AppCompatActivity() {
     private fun login(res: Resource<Boolean>) {
         when (res.state) {
             ResourceState.LOADING -> {
-
+                progressBar.visible()
             }
             ResourceState.SUCCESS -> {
+                progressBar.gone()
                 startActivity(SwabbrNavigation.vlogList())
             }
             ResourceState.ERROR -> {
                 passwordInput.text.clear()
+                progressBar.gone()
                 Toast.makeText(this, res.message, Toast.LENGTH_SHORT).show()
             }
         }

@@ -14,14 +14,18 @@ import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.model.Registration
 import com.laixer.swabbr.injectFeature
-import kotlinx.android.synthetic.main.activity_login.passwordInput
-import kotlinx.android.synthetic.main.activity_login.registerButton
 import kotlinx.android.synthetic.main.activity_registration.*
 import org.koin.androidx.viewmodel.ext.viewModel
 import java.util.*
 import android.app.DatePickerDialog
 import android.widget.DatePicker
 import com.laixer.navigation.features.SwabbrNavigation
+import com.laixer.presentation.gone
+import com.laixer.presentation.visible
+import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.passwordInput
+import kotlinx.android.synthetic.main.activity_login.registerButton
+import kotlinx.android.synthetic.main.activity_registration.progressBar
 import java.time.LocalDate
 
 class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
@@ -69,13 +73,16 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
     private fun register(res: Resource<Boolean>) {
         when (res.state) {
             ResourceState.LOADING -> {
+                progressBar.visible()
             }
             ResourceState.SUCCESS -> {
+                progressBar.gone()
                 startActivity(SwabbrNavigation.vlogList())
             }
             ResourceState.ERROR -> {
                 passwordInput.text.clear()
                 confirmPasswordInput.text.clear()
+                progressBar.gone()
                 Toast.makeText(this, res.message, Toast.LENGTH_SHORT).show()
             }
         }
