@@ -52,6 +52,7 @@
     <string name="dailyVlogRequestLimit">Daily vlog request limit</string>
     <string name="followMode">Follow mode</string>
     <string name="save">Save</string>
+    <string name="logout">Logout</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>

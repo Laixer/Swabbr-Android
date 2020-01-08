@@ -2,8 +2,7 @@ package com.laixer.swabbr.data.repository
 
 import com.laixer.swabbr.data.datasource.AuthCacheDataSource
 import com.laixer.swabbr.data.datasource.AuthRemoteDataSource
-import com.laixer.swabbr.data.datasource.SettingsCacheDataSource
-import com.laixer.swabbr.data.datasource.UserCacheDataSource
+import com.laixer.swabbr.domain.model.AuthUser
 import com.laixer.swabbr.domain.model.Login
 import com.laixer.swabbr.domain.model.Registration
 import com.laixer.swabbr.domain.model.Settings
@@ -14,44 +13,49 @@ import io.reactivex.functions.Function3
 
 class AuthRepositoryImpl constructor(
     private val authCacheDataSource: AuthCacheDataSource,
-    private val userCacheDataSource: UserCacheDataSource,
-    private val settingsCacheDataSource: SettingsCacheDataSource,
-    private val remoteDataSource: AuthRemoteDataSource
+    private val authRemoteDataSource: AuthRemoteDataSource
 ) : AuthRepository {
 
-    override fun login(login: Login): Single<Pair<Pair<String, User>, Settings>> =
-        remoteDataSource.login(login)
+    override fun login(login: Login): Single<AuthUser> =
+        authRemoteDataSource.login(login)
             .flatMap {
                 Single.zip(
-                    authCacheDataSource.set(Pair(it.first, it.second)),
-                    userCacheDataSource.set(it.second),
-                    settingsCacheDataSource.set(it.third),
-                    Function3<Pair<String, User>, User, Settings, Pair<Pair<String, User>, Settings>>
-                    { authUser, _, settings ->
-                        Pair(
-                            authUser,
+                    authCacheDataSource.set(Pair(it.accessToken, it.user.id)),
+                    Single.just(it.user),
+                    Single.just(it.userSettings),
+                    Function3<Pair<String, String>, User, Settings, AuthUser>
+                    { auth, user, settings ->
+                        AuthUser(
+                            auth.first,
+                            user,
                             settings
                         )
                     }
                 )
             }
 
-    override fun register(registration: Registration): Single<Pair<Pair<String, User>, Settings>> =
-        remoteDataSource.register(registration)
+    override fun register(registration: Registration): Single<AuthUser> =
+        authRemoteDataSource.register(registration)
             .flatMap {
                 Single.zip(
-                    authCacheDataSource.set(Pair(it.first, it.second)),
-                    userCacheDataSource.set(it.second),
-                    settingsCacheDataSource.set(it.third),
-                    Function3<Pair<String, User>, User, Settings, Pair<Pair<String, User>, Settings>>
-                    { authUser, _, settings ->
-                        Pair(
-                            authUser,
+                    authCacheDataSource.set(Pair(it.accessToken, it.user.id)),
+                    Single.just(it.user),
+                    Single.just(it.userSettings),
+                    Function3<Pair<String, String>, User, Settings, AuthUser>
+                    { auth, user, settings ->
+                        AuthUser(
+                            auth.first,
+                            user,
                             settings
                         )
                     }
                 )
             }
 
-    override fun getToken(): Single<String> = authCacheDataSource.getToken()
+//    override fun logout(): Completable {
+//        authRemoteDataSource.logout(getToken())
+//        authCacheDataSource.logout()
+//    }
+
+    override fun getToken(): String = authCacheDataSource.getToken().blockingGet()
 }

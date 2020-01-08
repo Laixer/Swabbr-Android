@@ -26,4 +26,7 @@ class UserRepositoryImpl constructor(
             false -> cacheDataSource.get(userId)
                 .onErrorResumeNext { get(userId, true) }
         }
+
+    override fun set(user: User): Single<User> =
+        cacheDataSource.set(user)
 }

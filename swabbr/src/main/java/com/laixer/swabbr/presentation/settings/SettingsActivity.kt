@@ -32,6 +32,10 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+        logout.setOnClickListener {
+            //vm.logout()
+        }
+
         injectFeature()
 
         if (savedInstanceState == null) {

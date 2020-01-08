@@ -1,6 +1,6 @@
 package com.laixer.swabbr.datasource.remote
 
-import com.laixer.swabbr.datasource.model.AuthenticatedUserEntity
+import com.laixer.swabbr.datasource.model.AuthUserEntity
 import com.laixer.swabbr.datasource.model.FollowStatusEntity
 import com.laixer.swabbr.datasource.model.LoginEntity
 import com.laixer.swabbr.datasource.model.ReactionEntity
@@ -8,9 +8,12 @@ import com.laixer.swabbr.datasource.model.RegistrationEntity
 import com.laixer.swabbr.datasource.model.UserEntity
 import com.laixer.swabbr.datasource.model.VlogEntity
 import com.laixer.swabbr.datasource.model.SettingsEntity
+import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -79,8 +82,11 @@ interface SettingsApi {
 
 interface AuthApi {
     @POST("api/v1/authentication/login/")
-    fun login(@Body login: LoginEntity): Single<AuthenticatedUserEntity>
+    fun login(@Body login: LoginEntity): Single<AuthUserEntity>
 
     @POST("api/v1/authentication/register/")
-    fun register(@Body registration: RegistrationEntity): Single<AuthenticatedUserEntity>
+    fun register(@Body registration: RegistrationEntity): Single<AuthUserEntity>
+
+    @DELETE("api/v1/authentication/logout/")
+    fun logout(@Header("authorization") token: String): Completable
 }

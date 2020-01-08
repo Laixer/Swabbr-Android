@@ -88,7 +88,7 @@ val viewModelModule: Module = module {
     viewModel { VlogListViewModel(usersVlogsUseCase = get()) }
     viewModel { VlogDetailsViewModel(usersVlogsUseCase = get(), reactionsUseCase = get()) }
     viewModel { SearchViewModel(usersUseCase = get()) }
-    viewModel { SettingsViewModel(settingsUseCase = get()) }
+    viewModel { SettingsViewModel(settingsUseCase = get(), authUseCase = get()) }
 }
 
 val useCaseModule: Module = module {
@@ -107,7 +107,7 @@ val repositoryModule: Module = module {
     single {
         AuthRepositoryImpl(
             authCacheDataSource = get(), userCacheDataSource = get(),
-            settingsCacheDataSource = get(), remoteDataSource = get()
+            settingsCacheDataSource = get(), authRemoteDataSource = get()
         ) as AuthRepository
     }
     single { UserRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as UserRepository }

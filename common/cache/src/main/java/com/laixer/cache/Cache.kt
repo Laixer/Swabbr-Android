@@ -33,6 +33,8 @@ class ReactiveCache<T> {
 
     fun save(key: String, anyObject: T): Single<T> =
         book.write(key, anyObject).toSingleDefault(anyObject)
+
+    fun delete(key: String) = book.delete(key)
 }
 
 class MemoryCache<T> {

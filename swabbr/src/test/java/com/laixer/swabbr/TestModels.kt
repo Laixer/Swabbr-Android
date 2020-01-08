@@ -148,7 +148,7 @@ val followStatusEntity = FollowStatusEntity(
     "pending"
 )
 
-val authenticatedUserEntity = AuthenticatedUserEntity(
+val authenticatedUserEntity = AuthUserEntity(
     "token",
     userEntity,
     settingsEntity
