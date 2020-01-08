@@ -19,7 +19,10 @@ class SettingsRepositoryImpl constructor(
                 .onErrorResumeNext { get(true) }
         }
 
-    override fun set(settings: Settings): Single<Settings> =
-        remoteDataSource.set(settings)
-            .flatMap { cacheDataSource.set(it) }
+    override fun set(settings: Settings, updateRemote: Boolean): Single<Settings> =
+        when (updateRemote) {
+            true -> remoteDataSource.set(settings)
+                .flatMap { cacheDataSource.set(it) }
+            false -> cacheDataSource.set(settings)
+        }
 }

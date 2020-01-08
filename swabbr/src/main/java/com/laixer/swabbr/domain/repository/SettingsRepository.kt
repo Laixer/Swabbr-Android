@@ -7,5 +7,5 @@ interface SettingsRepository {
 
     fun get(refresh: Boolean): Single<Settings>
 
-    fun set(settings: Settings): Single<Settings>
+    fun set(settings: Settings, updateRemote: Boolean = true): Single<Settings>
 }

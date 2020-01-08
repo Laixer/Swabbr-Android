@@ -23,7 +23,7 @@ class AuthUseCase constructor(
                 Single.zip(
                     Single.just(it.accessToken),
                     userRepository.set(it.user),
-                    settingsRepository.set(it.userSettings),
+                    settingsRepository.set(it.userSettings, false),
                     Function3<String, User, Settings, AuthUser>
                     { auth, user, settings ->
                         AuthUser(
@@ -41,7 +41,7 @@ class AuthUseCase constructor(
                 Single.zip(
                     Single.just(it.accessToken),
                     userRepository.set(it.user),
-                    settingsRepository.set(it.userSettings),
+                    settingsRepository.set(it.userSettings, false),
                     Function3<String, User, Settings, AuthUser>
                     { auth, user, settings ->
                         AuthUser(
