@@ -118,25 +118,27 @@ val repositoryModule: Module = module {
 
 val dataSourceModule: Module = module {
     single { AuthCacheDataSourceImpl(cache = get(AUTH_CACHE)) as AuthCacheDataSource }
-    single { AuthRemoteDataSourceImpl(api = authApi) as AuthRemoteDataSource }
+    single { AuthRemoteDataSourceImpl(api = get(AUTH_API)) as AuthRemoteDataSource }
     single { UserCacheDataSourceImpl(cache = get(USER_CACHE)) as UserCacheDataSource }
-    single { UserRemoteDataSourceImpl(api = usersApi) as UserRemoteDataSource }
+    single { UserRemoteDataSourceImpl(api = get(USER_API)) as UserRemoteDataSource }
     single { VlogCacheDataSourceImpl(cache = get(VLOG_CACHE)) as VlogCacheDataSource }
-    single { VlogRemoteDataSourceImpl(api = vlogsApi) as VlogRemoteDataSource }
+    single { VlogRemoteDataSourceImpl(api = get(VLOG_API)) as VlogRemoteDataSource }
     single { ReactionCacheDataSourceImpl(cache = get(REACTION_CACHE)) as ReactionCacheDataSource }
-    single { ReactionRemoteDataSourceImpl(api = reactionsApi) as ReactionRemoteDataSource }
-    single { FollowDataSourceImpl(api = followApi) as FollowDataSource }
+    single { ReactionRemoteDataSourceImpl(api = get(REACTION_API)) as ReactionRemoteDataSource }
+    single { FollowDataSourceImpl(api = get(FOLLOW_API)) as FollowDataSource }
     single { SettingsCacheDataSourceImpl(cache = get(SETTINGS_CACHE)) as SettingsCacheDataSource }
-    single { SettingsRemoteDataSourceImpl(api = settingsApi) as SettingsRemoteDataSource }
+    single { SettingsRemoteDataSourceImpl(api = get(SETTINGS_API)) as SettingsRemoteDataSource }
 }
 
 val networkModule: Module = module {
-    single { authApi }
-    single { usersApi }
-    single { vlogsApi }
-    single { reactionsApi }
-    single { followApi }
-    single { settingsApi }
+    single(name = AUTH_INTERCEPTOR) { AuthInterceptor(authCacheDataSource = get()) }
+    single(name = RETROFIT) { createNetworkClient(get(AUTH_INTERCEPTOR), BASE_URL, BuildConfig.DEBUG) }
+    single(name = AUTH_API) { provideAuthApi(get(RETROFIT)) }
+    single(name = USER_API) { provideUsersApi(get(RETROFIT)) }
+    single(name = VLOG_API) { provideVlogsApi(get(RETROFIT)) }
+    single(name = REACTION_API) { provideReactionsApi(get(RETROFIT)) }
+    single(name = FOLLOW_API) { provideFollowApi(get(RETROFIT)) }
+    single(name = SETTINGS_API) { provideSettingsApi(get(RETROFIT)) }
 }
 
 val cacheModule: Module = module {
@@ -150,14 +152,23 @@ val cacheModule: Module = module {
 // private const val BASE_URL = "https://my-json-server.typicode.com/pnobbe/swabbrdata/"
 private const val BASE_URL = "https://swabbr.azurewebsites.net/"
 
-private val retrofit: Retrofit = createNetworkClient(BASE_URL, BuildConfig.DEBUG)
+private fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
+private fun provideVlogsApi(retrofit: Retrofit): VlogsApi = retrofit.create(VlogsApi::class.java)
+private fun provideUsersApi(retrofit: Retrofit): UsersApi = retrofit.create(UsersApi::class.java)
+private fun provideReactionsApi(retrofit: Retrofit): ReactionsApi = retrofit.create(ReactionsApi::class.java)
+private fun provideSettingsApi(retrofit: Retrofit): SettingsApi = retrofit.create(SettingsApi::class.java)
+private fun provideFollowApi(retrofit: Retrofit): FollowApi = retrofit.create(FollowApi::class.java)
 
-private val authApi: AuthApi = retrofit.create(AuthApi::class.java)
-private val vlogsApi: VlogsApi = retrofit.create(VlogsApi::class.java)
-private val usersApi: UsersApi = retrofit.create(UsersApi::class.java)
-private val reactionsApi: ReactionsApi = retrofit.create(ReactionsApi::class.java)
-private val settingsApi: SettingsApi = retrofit.create(SettingsApi::class.java)
-private val followApi: FollowApi = retrofit.create(FollowApi::class.java)
+private const val RETROFIT = "RETROFIT"
+private const val AUTH_API = "AUTH_API"
+private const val VLOG_API = "VLOG_API"
+private const val USER_API = "USER_API"
+private const val REACTION_API = "REACTION_API"
+private const val SETTINGS_API = "SETTINGS_API"
+private const val FOLLOW_API = "FOLLOW_API"
+
+
+private const val AUTH_INTERCEPTOR = "AUTH_INTERCEPTOR"
 
 private const val AUTH_CACHE = "AUTH_CACHE"
 private const val USER_CACHE = "USER_CACHE"

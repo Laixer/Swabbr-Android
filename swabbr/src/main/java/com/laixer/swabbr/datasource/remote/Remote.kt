@@ -14,6 +14,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -82,11 +83,13 @@ interface SettingsApi {
 
 interface AuthApi {
     @POST("api/v1/authentication/login/")
+    @Headers("No-Authentication: true")
     fun login(@Body login: LoginEntity): Single<AuthUserEntity>
 
     @POST("api/v1/authentication/register/")
+    @Headers("No-Authentication: true")
     fun register(@Body registration: RegistrationEntity): Single<AuthUserEntity>
 
     @DELETE("api/v1/authentication/logout/")
-    fun logout(@Header("authorization") token: String): Completable
+    fun logout(@Header("Authorization") token: String): Completable
 }

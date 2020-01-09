@@ -1,20 +1,23 @@
 package com.laixer.network
 
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-fun createNetworkClient(baseUrl: String, debug: Boolean = false) =
-    retrofitClient(baseUrl, httpClient(debug))
+fun createNetworkClient(interceptor: Interceptor, baseUrl: String, debug: Boolean = false) =
+    retrofitClient(baseUrl, httpClient(interceptor, debug))
 
-private fun httpClient(debug: Boolean): OkHttpClient {
+private fun httpClient(interceptor: Interceptor, debug: Boolean): OkHttpClient {
     val httpLoggingInterceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
     val clientBuilder = OkHttpClient.Builder()
     if (debug) {
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         clientBuilder.addInterceptor(httpLoggingInterceptor)
+        clientBuilder.addInterceptor(interceptor)
+
     }
     return clientBuilder.build()
 }
