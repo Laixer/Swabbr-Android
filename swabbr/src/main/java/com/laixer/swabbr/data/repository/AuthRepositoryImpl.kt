@@ -65,7 +65,6 @@ class AuthRepositoryImpl constructor(
                     }
 
                     override fun onComplete() = authCacheDataSource.logout()
-
                 })
             }
 }

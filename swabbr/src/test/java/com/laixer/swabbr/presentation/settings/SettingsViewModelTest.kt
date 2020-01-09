@@ -10,6 +10,7 @@ import com.laixer.swabbr.presentation.RxSchedulersOverrideRule
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.*
+import com.laixer.swabbr.domain.usecase.AuthUseCase
 import com.laixer.swabbr.domain.usecase.SettingsUseCase
 import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.Single
@@ -24,6 +25,7 @@ class SettingsViewModelTest {
     private lateinit var viewModel: SettingsViewModel
 
     private val mockSettingsUseCase: SettingsUseCase = mock()
+    private val mockAuthUseCase: AuthUseCase = mock()
 
     private val throwable = Throwable()
 
@@ -37,7 +39,7 @@ class SettingsViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = SettingsViewModel(mockSettingsUseCase)
+        viewModel = SettingsViewModel(mockSettingsUseCase, mockAuthUseCase)
     }
 
     @Test

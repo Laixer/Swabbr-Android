@@ -167,7 +167,6 @@ private const val REACTION_API = "REACTION_API"
 private const val SETTINGS_API = "SETTINGS_API"
 private const val FOLLOW_API = "FOLLOW_API"
 
-
 private const val AUTH_INTERCEPTOR = "AUTH_INTERCEPTOR"
 
 private const val AUTH_CACHE = "AUTH_CACHE"

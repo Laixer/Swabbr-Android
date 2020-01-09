@@ -4,6 +4,7 @@ package com.laixer.swabbr.datasource.remote
 
 import com.laixer.swabbr.authenticatedUserEntity
 import com.laixer.swabbr.datasource.model.mapToDomain
+import com.laixer.swabbr.domain.model.AuthUser
 import com.laixer.swabbr.login
 import com.laixer.swabbr.loginEntity
 import com.laixer.swabbr.registration
@@ -38,7 +39,7 @@ class AuthRemoteDataSourceImplTest {
 
         // then
         verify(mockApi).login(loginEntity)
-        test.assertValue(Triple(
+        test.assertValue(AuthUser(
             authenticatedUserEntity.accessToken,
             authenticatedUserEntity.user.mapToDomain(),
             authenticatedUserEntity.userSettings.mapToDomain()
@@ -68,7 +69,7 @@ class AuthRemoteDataSourceImplTest {
 
         // then
         verify(mockApi).register(registrationEntity)
-        test.assertValue(Triple(
+        test.assertValue(AuthUser(
             authenticatedUserEntity.accessToken,
             authenticatedUserEntity.user.mapToDomain(),
             authenticatedUserEntity.userSettings.mapToDomain()

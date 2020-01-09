@@ -10,6 +10,7 @@ import com.laixer.swabbr.presentation.RxSchedulersOverrideRule
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.*
+import com.laixer.swabbr.domain.model.AuthUser
 import com.laixer.swabbr.domain.usecase.AuthUseCase
 import io.reactivex.Single
 import org.junit.Assert.assertEquals
@@ -26,7 +27,7 @@ class LoginViewModelTest {
 
     private val throwable = Throwable()
 
-    private val reponse = Pair(Pair("token", user), settings)
+    private val response = AuthUser("token", user, settings)
 
     @Rule
     @JvmField
@@ -45,7 +46,7 @@ class LoginViewModelTest {
     fun `login succeeds`() {
         // given
         whenever(mockAuthUseCase.login(login))
-            .thenReturn(Single.just(reponse))
+            .thenReturn(Single.just(response))
 
         // when
         viewModel.login(login)
