@@ -8,10 +8,10 @@ class AuthCacheDataSourceImpl constructor(
     private val cache: ReactiveCache<Pair<String, String>>
 ) : AuthCacheDataSource {
 
-    val key = "Authorized user"
+    val key = "Auth user"
 
     // First is Token, second is UserId
-    override fun set(authorizedUser: Pair<String, String>): Single<Pair<String, String>> = cache.save(key, authorizedUser)
+    override fun set(authUser: Pair<String, String>): Single<Pair<String, String>> = cache.save(key, authUser)
 
     override fun get(): Single<Pair<String, String>> =
         cache.load(key)

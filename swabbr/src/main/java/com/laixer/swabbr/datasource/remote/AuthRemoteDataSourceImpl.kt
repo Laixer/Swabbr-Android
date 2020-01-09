@@ -33,5 +33,5 @@ class AuthRemoteDataSourceImpl constructor(
                 )
             }
 
-    override fun logout(token: String): Completable = api.logout(token)
+    override fun logout(): Completable = api.logout()
 }

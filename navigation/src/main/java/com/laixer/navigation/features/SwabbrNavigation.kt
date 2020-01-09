@@ -24,6 +24,9 @@ object SwabbrNavigation : DynamicFeature<Intent> {
     override val dynamicStart: Intent?
         get() = LOGIN.loadIntentOrNull()
 
+    fun login(): Intent? =
+        LOGIN.loadIntentOrNull()
+
     fun registration(): Intent? =
         REGISTRATION.loadIntentOrNull()
 

@@ -2,13 +2,17 @@ package com.laixer.swabbr.presentation.settings
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.laixer.navigation.features.SwabbrNavigation
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
+import com.laixer.presentation.gone
+import com.laixer.presentation.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.model.SettingsItem
@@ -33,7 +37,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         logout.setOnClickListener {
-            //vm.logout()
+            vm.logout()
         }
 
         injectFeature()
@@ -43,6 +47,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         vm.settings.observe(this, Observer { loadSettings(it) })
+        vm.logout.observe(this, Observer { logout(it) })
     }
 
     private fun loadSettings(res: Resource<SettingsItem?>) {
@@ -64,6 +69,24 @@ class SettingsActivity : AppCompatActivity() {
             }
             ResourceState.ERROR -> {
                 Toast.makeText(this, res.message, Toast.LENGTH_SHORT).show()
+                enableSettings(true)
+            }
+        }
+    }
+
+    private fun logout(res: Resource<String?>) {
+        when (res.state) {
+            ResourceState.LOADING -> {
+                enableSettings(false)
+                progressBar.visible()
+            }
+            ResourceState.SUCCESS -> {
+                progressBar.gone()
+                startActivity(SwabbrNavigation.login())
+            }
+            ResourceState.ERROR -> {
+                Toast.makeText(this, res.message, Toast.LENGTH_SHORT).show()
+                progressBar.gone()
                 enableSettings(true)
             }
         }
@@ -127,6 +150,7 @@ class SettingsActivity : AppCompatActivity() {
         dailyVlogRequestLimitSpinner.isEnabled = enable
         followmodeSpinner.isEnabled = enable
         privateSwitch.isEnabled = enable
+        logout.isEnabled = enable
     }
 
     private fun checkChanges() {

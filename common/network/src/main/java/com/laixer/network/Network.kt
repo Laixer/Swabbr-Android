@@ -11,13 +11,13 @@ fun createNetworkClient(interceptor: Interceptor, baseUrl: String, debug: Boolea
     retrofitClient(baseUrl, httpClient(interceptor, debug))
 
 private fun httpClient(interceptor: Interceptor, debug: Boolean): OkHttpClient {
-    val httpLoggingInterceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
     val clientBuilder = OkHttpClient.Builder()
     if (debug) {
+        val httpLoggingInterceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        clientBuilder.addInterceptor(httpLoggingInterceptor)
-        clientBuilder.addInterceptor(interceptor)
 
+        clientBuilder.addNetworkInterceptor(httpLoggingInterceptor)
+        clientBuilder.addNetworkInterceptor(interceptor)
     }
     return clientBuilder.build()
 }

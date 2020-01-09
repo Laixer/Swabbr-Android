@@ -8,6 +8,7 @@ import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.repository.AuthRepository
 import com.laixer.swabbr.domain.repository.SettingsRepository
 import com.laixer.swabbr.domain.repository.UserRepository
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.Function3
 
@@ -53,5 +54,5 @@ class AuthUseCase constructor(
                 )
             }
 
-    //fun logout(): Completable = authRepository.logout()
+    fun logout(): Completable = authRepository.logout()
 }

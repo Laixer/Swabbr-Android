@@ -12,11 +12,11 @@ interface AuthRemoteDataSource {
 
     fun register(registration: Registration): Single<AuthUser>
 
-    fun logout(token: String): Completable
+    fun logout(): Completable
 }
 
 interface AuthCacheDataSource {
-    fun set(authorizedUser: Pair<String, String>): Single<Pair<String, String>>
+    fun set(authUser: Pair<String, String>): Single<Pair<String, String>>
 
     fun get(): Single<Pair<String, String>>
 

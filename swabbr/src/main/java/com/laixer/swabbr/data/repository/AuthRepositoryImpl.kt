@@ -8,8 +8,11 @@ import com.laixer.swabbr.domain.model.Registration
 import com.laixer.swabbr.domain.model.Settings
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.repository.AuthRepository
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.functions.Function3
+import io.reactivex.observers.DisposableCompletableObserver
+import io.reactivex.schedulers.Schedulers
 
 class AuthRepositoryImpl constructor(
     private val authCacheDataSource: AuthCacheDataSource,
@@ -52,10 +55,17 @@ class AuthRepositoryImpl constructor(
                 )
             }
 
-//    override fun logout(): Completable {
-//        authRemoteDataSource.logout(getToken())
-//        authCacheDataSource.logout()
-//    }
+    override fun logout(): Completable =
+        authRemoteDataSource.logout()
+            .also {
+                it.subscribeOn(Schedulers.io())
+                it.subscribeWith(object : DisposableCompletableObserver() {
+                    override fun onError(e: Throwable) {
+                        return
+                    }
 
-    override fun getToken(): String = authCacheDataSource.getToken().blockingGet()
+                    override fun onComplete() = authCacheDataSource.logout()
+
+                })
+            }
 }

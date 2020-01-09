@@ -91,5 +91,5 @@ interface AuthApi {
     fun register(@Body registration: RegistrationEntity): Single<AuthUserEntity>
 
     @DELETE("api/v1/authentication/logout/")
-    fun logout(@Header("Authorization") token: String): Completable
+    fun logout(): Completable
 }
