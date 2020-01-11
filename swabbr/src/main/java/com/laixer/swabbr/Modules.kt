@@ -76,9 +76,9 @@ private val loadFeature by lazy {
         useCaseModule,
         repositoryModule,
         dataSourceModule,
-        networkModule,
-        cacheModule
-    )
+        cacheModule,
+        networkModule
+        )
 }
 
 val viewModelModule: Module = module {
@@ -104,11 +104,7 @@ val useCaseModule: Module = module {
 }
 
 val repositoryModule: Module = module {
-    single {
-        AuthRepositoryImpl(
-            authCacheDataSource = get(), authRemoteDataSource = get()
-        ) as AuthRepository
-    }
+    single { AuthRepositoryImpl(authCacheDataSource = get(), authRemoteDataSource = get()) as AuthRepository }
     single { UserRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as UserRepository }
     single { VlogRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as VlogRepository }
     single { ReactionRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) as ReactionRepository }
@@ -117,7 +113,7 @@ val repositoryModule: Module = module {
 }
 
 val dataSourceModule: Module = module {
-    single { AuthCacheDataSourceImpl(cache = get(AUTH_CACHE)) as AuthCacheDataSource }
+    single { AuthCacheDataSourceImpl(cache = get(AUTH_CACHE)) as AuthCacheDataSource}
     single { AuthRemoteDataSourceImpl(api = get(AUTH_API)) as AuthRemoteDataSource }
     single { UserCacheDataSourceImpl(cache = get(USER_CACHE)) as UserCacheDataSource }
     single { UserRemoteDataSourceImpl(api = get(USER_API)) as UserRemoteDataSource }
@@ -142,7 +138,7 @@ val networkModule: Module = module {
 }
 
 val cacheModule: Module = module {
-    single(name = AUTH_CACHE) { ReactiveCache<List<String>>() }
+    single(name = AUTH_CACHE) { ReactiveCache<Pair<String, String>>() }
     single(name = USER_CACHE) { ReactiveCache<List<UserEntity>>() }
     single(name = VLOG_CACHE) { ReactiveCache<List<VlogEntity>>() }
     single(name = REACTION_CACHE) { ReactiveCache<List<Reaction>>() }

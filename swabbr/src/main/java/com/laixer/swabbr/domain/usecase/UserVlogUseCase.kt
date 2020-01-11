@@ -4,6 +4,7 @@ import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.repository.VlogRepository
 import com.laixer.swabbr.domain.repository.UserRepository
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 
@@ -26,13 +27,18 @@ class UsersVlogsUseCase constructor(
     fun get(ids: ArrayList<String>, refresh: Boolean): Single<List<Pair<User, Vlog>>> =
         Single.zip(userRepository.get(refresh), vlogRepository.get(refresh),
             BiFunction { user, vlog -> map(user, vlog.filter { ids.contains(it.id) }) })
+
+    fun getFeaturedVlogs(): Single<List<Pair<User, Vlog>>> =
+        vlogRepository.getFeaturedVlogs().flattenAsObservable {vlogs -> vlogs}
+            .flatMapSingle{vlog -> userRepository.get(vlog.userId, false)
+                .map { user -> Pair(user, vlog)}
+            }.toList()
 }
 
 class UserVlogUseCase constructor(
     private val userRepository: UserRepository,
     private val vlogRepository: VlogRepository
 ) {
-
     fun get(vlogId: String, refresh: Boolean): Single<Pair<User, Vlog>> =
         Single.zip(
             userRepository.get(refresh),

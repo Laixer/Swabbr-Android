@@ -38,13 +38,13 @@ class VlogListActivity : AppCompatActivity() {
         injectFeature()
 
         if (savedInstanceState == null) {
-            vm.get(refresh = false)
+            vm.get()
         }
 
         vlogsRecyclerView.adapter = adapter
 
         vm.vlogs.observe(this, Observer { updateVlogs(it) })
-        swipeRefreshLayout.setOnRefreshListener { vm.get(refresh = true) }
+        swipeRefreshLayout.setOnRefreshListener { vm.get() }
     }
 
     private fun updateVlogs(resource: Resource<List<Pair<ProfileItem, VlogItem>>?>) {

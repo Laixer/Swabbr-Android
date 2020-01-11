@@ -25,15 +25,18 @@ interface VlogsApi {
 
     @GET("vlogs/{id}")
     fun getVlog(@Path("id") vlogId: String): Single<VlogEntity>
+
+    @GET("api/v1/vlogs/featured")
+    fun getFeaturedVlogs(): Single<List<VlogEntity>>
 }
 
 interface UsersApi {
 
-    @GET("users/")
+    @GET("api/v1/users/search?query=test")
     fun getUsers(): Single<List<UserEntity>>
 
-    @GET("users/{id}")
-    fun getUser(@Path("id") userId: String): Single<UserEntity>
+    @GET("/api/v1/users/search")
+    fun getUser(@Query("id") userId: String): Single<UserEntity>
 }
 
 interface ReactionsApi {

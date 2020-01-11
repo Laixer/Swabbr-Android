@@ -14,7 +14,7 @@ class AuthCacheDataSourceImplTest {
 
     private lateinit var dataSource: AuthCacheDataSourceImpl
 
-    private val mockCache: ReactiveCache<Pair<String, String>> = mock()
+    private val mockAuthCache: ReactiveCache<Pair<String, String>> = mock()
 
     private val key = "Auth user"
 
@@ -24,32 +24,32 @@ class AuthCacheDataSourceImplTest {
 
     @Before
     fun setUp() {
-        dataSource = AuthCacheDataSourceImpl(mockCache)
+        dataSource = AuthCacheDataSourceImpl(mockAuthCache)
     }
 
     @Test
     fun `get authorized user cache success`() {
         // given
-        whenever(mockCache.load(key)).thenReturn(Single.just(cacheItem))
+        whenever(mockAuthCache.load(key)).thenReturn(Single.just(cacheItem))
 
         // when
         val test = dataSource.get().test()
 
         // then
-        verify(mockCache).load(key)
+        verify(mockAuthCache).load(key)
         test.assertValue(cacheItem)
     }
 
     @Test
     fun `get authorized user cache fail`() {
         // given
-        whenever(mockCache.load(key)).thenReturn(Single.error(throwable))
+        whenever(mockAuthCache.load(key)).thenReturn(Single.error(throwable))
 
         // when
         val test = dataSource.get().test()
 
         // then
-        verify(mockCache).load(key)
+        verify(mockAuthCache).load(key)
         test.assertError(throwable)
     }
 }

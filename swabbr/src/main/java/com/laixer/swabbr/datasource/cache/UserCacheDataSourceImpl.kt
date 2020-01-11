@@ -22,7 +22,7 @@ class UserCacheDataSourceImpl constructor(
             .map { it.first { it.id == userId } }
 
     override fun set(item: User): Single<User> =
-        cache.load(key)
+        cache.load(key).onErrorResumeNext { set(listOf(item)) }
             .map { it.filter { it.id != item.id }.plus(item) }
             .flatMap { set(it) }
             .map { item }

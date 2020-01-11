@@ -11,7 +11,9 @@ class AuthCacheDataSourceImpl constructor(
     val key = "Auth user"
 
     // First is Token, second is UserId
-    override fun set(authUser: Pair<String, String>): Single<Pair<String, String>> = cache.save(key, authUser)
+    override fun set(authUser: Pair<String, String>): Single<Pair<String, String>> {
+        return cache.save(key, authUser)
+    }
 
     override fun get(): Single<Pair<String, String>> =
         cache.load(key)
@@ -20,7 +22,7 @@ class AuthCacheDataSourceImpl constructor(
         cache.delete(key)
     }
 
-    override fun getToken(): Single<String> = cache.load(key).flatMap { Single.just(it.first) }
+    override fun getToken(): Single<String> = cache.load(key).flatMap { Single.just(it.first) }.onErrorResumeNext( Single.just(set(Pair("", "")).blockingGet().first ))
 
     override fun getUserId(): Single<String> = cache.load(key).flatMap { Single.just(it.second) }
 }

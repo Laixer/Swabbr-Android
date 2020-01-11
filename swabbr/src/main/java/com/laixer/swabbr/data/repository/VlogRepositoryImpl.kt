@@ -26,4 +26,8 @@ class VlogRepositoryImpl constructor(
             false -> cacheDataSource.get(vlogId)
                 .onErrorResumeNext { get(vlogId, true) }
         }
+
+    override fun getFeaturedVlogs(): Single<List<Vlog>> =
+            remoteDataSource.getFeaturedVlogs()
+                .flatMap { cacheDataSource.set(it) }
 }

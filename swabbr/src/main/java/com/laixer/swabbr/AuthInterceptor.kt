@@ -7,30 +7,20 @@ import okhttp3.Response
 class AuthInterceptor(
     private val authCacheDataSource: AuthCacheDataSource
 ) : Interceptor {
-
-    var cookie: String = ""
-
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = authCacheDataSource.getToken().blockingGet()
 
-        with(chain.request()) {
-            if (!header("No-Authentication").isNullOrEmpty() ||
-                token.isNullOrEmpty()
-            ) {
-                var response = chain.proceed(
-                    newBuilder()
-                        .build()
-                )
-                cookie = response.headers("Set-Cookie")[0].toString()
-                return response
-            }
+        val request = chain.request()
+        val builder = request.newBuilder()
 
-            return chain.proceed(
-                newBuilder()
-                    .addHeader("Authorization", "Bearer $token")
-                    .addHeader("Cookie", cookie)
-                    .build()
-            )
+        // Check if request requires authenticaton
+        if (request.header("No-Authentication").isNullOrEmpty()) {
+            // Authentication required
+            if (!token.isNullOrEmpty()) {
+                builder.addHeader("Authorization", "Bearer $token")
+            }
         }
+
+        return chain.proceed(request)
     }
 }

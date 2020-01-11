@@ -19,8 +19,8 @@ class VlogListViewModel constructor(private val usersVlogsUseCase: UsersVlogsUse
     val vlogs = MutableLiveData<Resource<List<Pair<ProfileItem, VlogItem>>>>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun get(refresh: Boolean = false) =
-        compositeDisposable.add(usersVlogsUseCase.get(refresh)
+    fun get() =
+        compositeDisposable.add(usersVlogsUseCase.getFeaturedVlogs()
             .doOnSubscribe { vlogs.setLoading() }
             .subscribeOn(Schedulers.io())
             .map { it.map { pair -> Pair(pair.first.mapToPresentation(), pair.second.mapToPresentation()) } }

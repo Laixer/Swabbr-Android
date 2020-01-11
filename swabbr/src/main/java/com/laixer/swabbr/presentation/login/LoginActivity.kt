@@ -6,12 +6,15 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.laixer.cache.ReactiveCache
 import com.laixer.navigation.features.SwabbrNavigation
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
+import com.laixer.swabbr.data.datasource.AuthCacheDataSource
+import com.laixer.swabbr.datasource.cache.AuthCacheDataSourceImpl
 import com.laixer.swabbr.domain.model.Login
 import com.laixer.swabbr.injectFeature
 import kotlinx.android.synthetic.main.activity_login.*

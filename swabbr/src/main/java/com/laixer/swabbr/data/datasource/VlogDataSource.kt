@@ -19,4 +19,6 @@ interface VlogRemoteDataSource {
     fun get(): Single<List<Vlog>>
 
     fun get(vlogId: String): Single<Vlog>
+
+    fun getFeaturedVlogs(): Single<List<Vlog>>
 }
