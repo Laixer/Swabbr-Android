@@ -26,7 +26,7 @@ class UsersVlogsUseCase constructor(
 
     fun get(ids: ArrayList<String>, refresh: Boolean): Single<List<Pair<User, Vlog>>> =
         Single.zip(userRepository.get(refresh), vlogRepository.get(refresh),
-            BiFunction { user, vlog -> map(user, vlog.filter { ids.contains(it.id) }) })
+            BiFunction { user, vlog -> map(user, vlog.filter { ids.contains(it.vlogId) }) })
 
     fun getFeaturedVlogs(): Single<List<Pair<User, Vlog>>> =
         vlogRepository.getFeaturedVlogs().flattenAsObservable {vlogs -> vlogs}

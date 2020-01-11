@@ -20,7 +20,7 @@ class VlogCacheDataSourceImplTest {
 
     val key = "Vlog List"
 
-    private val vlogId = vlog.id
+    private val vlogId = vlog.vlogId
 
     private val cacheItem = vlog.copy(userId = "cache")
     private val remoteItem = vlog.copy(userId = "remote")

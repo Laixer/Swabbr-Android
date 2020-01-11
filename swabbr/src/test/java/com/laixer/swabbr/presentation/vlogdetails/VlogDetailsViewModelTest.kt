@@ -30,8 +30,7 @@ class VlogDetailsViewModelTest {
     private val combinedUserReaction = Pair(user, reaction)
     private val reactions = listOf(combinedUserReaction)
 
-    private val userId = user.id
-    private val vlogId = vlog.id
+    private val vlogId = vlog.vlogId
 
     private val throwable = Throwable()
 

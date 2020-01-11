@@ -19,13 +19,9 @@ class VlogItemTest {
         val vlogItem = combinedUserVlog.mapToPresentation()
 
         // then
-        assertTrue(vlogItem.vlogId == vlog.id)
+        assertTrue(vlogItem.vlogId == vlog.vlogId)
         assertTrue(vlogItem.userId == user.id)
-        assertTrue(vlogItem.duration == vlog.duration)
         assertTrue(vlogItem.startDate == vlog.startDate)
         assertTrue(vlogItem.isLive == vlog.isLive)
-        assertTrue(vlogItem.totalViews == vlog.totalViews)
-        assertTrue(vlogItem.totalReactions == vlog.totalReactions)
-        assertTrue(vlogItem.totalLikes == vlog.totalLikes)
     }
 }

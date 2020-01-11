@@ -17,12 +17,8 @@ class VlogEntityTest {
 
         // then
         assertEquals(model.userId, vlogEntity.userId)
-        assertEquals(model.id, vlogEntity.id)
-        assertEquals(model.duration, vlogEntity.duration)
+        assertEquals(model.vlogId, vlogEntity.vlogId)
         assertEquals(model.startDate, vlogEntity.startDate)
-        assertEquals(model.totalViews, vlogEntity.totalViews)
-        assertEquals(model.totalReactions, vlogEntity.totalReactions)
-        assertEquals(model.totalLikes, vlogEntity.totalLikes)
         assertEquals(model.isLive, vlogEntity.isLive)
         assertEquals(model.isPrivate, vlogEntity.isPrivate)
     }

@@ -18,7 +18,7 @@ class ReactionsUseCaseTest {
 
     private val mockRepository: ReactionRepository = mock()
 
-    private val vlogId = vlog.id
+    private val vlogId = vlog.vlogId
     private val reactionList = listOf(reaction)
 
     @Before

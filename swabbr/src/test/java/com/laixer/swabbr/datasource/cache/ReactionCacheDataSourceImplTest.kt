@@ -21,7 +21,7 @@ class ReactionCacheDataSourceImplTest {
 
     val key = "Reaction List"
 
-    private val vlogId = vlog.id
+    private val vlogId = vlog.vlogId
 
     private val cacheItem = reaction.copy(id = "cache")
     private val remoteItem = reaction.copy(id = "remote")

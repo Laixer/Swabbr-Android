@@ -47,7 +47,7 @@ class VlogListViewModelTest {
         whenever(mockUseCase.get(false)).thenReturn(Single.just(pairUserVlogList))
 
         // when
-        viewModel.get(false)
+        viewModel.get()
 
         // then
         verify(mockUseCase).get(false)
@@ -63,7 +63,7 @@ class VlogListViewModelTest {
         whenever(mockUseCase.get(false)).thenReturn(Single.error(throwable))
 
         // when
-        viewModel.get(false)
+        viewModel.get()
 
         // then
         verify(mockUseCase).get(false)

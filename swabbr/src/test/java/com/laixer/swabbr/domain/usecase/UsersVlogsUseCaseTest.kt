@@ -75,7 +75,7 @@ class UserVlogUseCaseTest {
     private val mockUserRepository: UserRepository = mock {}
     private val mockVlogRepository: VlogRepository = mock {}
 
-    private val vlogId = vlog.id
+    private val vlogId = vlog.vlogId
 
     @Before
     fun setUp() {

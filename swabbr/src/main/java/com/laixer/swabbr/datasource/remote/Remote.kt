@@ -15,6 +15,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -23,8 +24,8 @@ interface VlogsApi {
     @GET("vlogs/")
     fun getVlogs(): Single<List<VlogEntity>>
 
-    @GET("vlogs/{id}")
-    fun getVlog(@Path("id") vlogId: String): Single<VlogEntity>
+    @GET("api/v1/vlogs/{vlogId}")
+    fun getVlog(@Path("vlogId") vlogId: String): Single<VlogEntity>
 
     @GET("api/v1/vlogs/featured")
     fun getFeaturedVlogs(): Single<List<VlogEntity>>
@@ -32,11 +33,11 @@ interface VlogsApi {
 
 interface UsersApi {
 
-    @GET("api/v1/users/search?query=test")
+    @GET("api/v1/users/")
     fun getUsers(): Single<List<UserEntity>>
 
-    @GET("/api/v1/users/search")
-    fun getUser(@Query("id") userId: String): Single<UserEntity>
+    @GET("/api/v1/users/{userId}")
+    fun getUser(@Path("userId") userId: String): Single<UserEntity>
 }
 
 interface ReactionsApi {
@@ -46,41 +47,41 @@ interface ReactionsApi {
 }
 
 interface FollowApi {
-    @GET("followStatus/{id}")
-    fun getFollowStatus(@Path("id") id: String): Single<FollowStatusEntity>
+    @GET("/api/v1/followrequests/outgoing/{receiverId}/status")
+    fun getFollowStatus(@Path("receiverId") id: String): Single<FollowStatusEntity>
 
-    @GET("followers/{id}")
-    fun getFollowers(@Path("id") id: String): Single<List<UserEntity>>
+    @GET("/api/v1/users/users/{userId}/followers")
+    fun getFollowers(@Path("userId") id: String): Single<List<UserEntity>>
 
-    @GET("following/{id}")
-    fun getFollowing(@Path("id") id: String): Single<List<UserEntity>>
+    @GET("/api/v1/users/users/{userId}/following")
+    fun getFollowing(@Path("userId") id: String): Single<List<UserEntity>>
 
-    @GET("incomingRequests/")
+    @GET("/api/v1/followrequests/incoming")
     fun getIncomingRequests(): Single<List<UserEntity>>
 
-    @POST("sendFollowRequest/{id}")
-    fun sendFollowRequest(@Path("id") id: String): Single<FollowStatusEntity>
+    @POST("/api/v1/followrequests/send")
+    fun sendFollowRequest(@Path("receiverId") id: String): Single<FollowStatusEntity>
 
-    @POST("cancelFollowRequest/{id}")
-    fun cancelFollowRequest(@Path("id") id: String): Single<FollowStatusEntity>
+    @DELETE("/api/v1/followrequests/{followRequestId}/cancel")
+    fun cancelFollowRequest(@Path("followRequestId") id: String): Single<FollowStatusEntity>
 
-    @POST("unfollow/{id}")
-    fun unfollow(@Path("id") id: String): Single<FollowStatusEntity>
+    @DELETE("/api/v1/users/users/{userId}/unfollow")
+    fun unfollow(@Path("userId") id: String): Single<FollowStatusEntity>
 
-    @POST("acceptRequest/{id}")
-    fun acceptRequest(@Path("id") id: String): Single<FollowStatusEntity>
+    @PUT("/api/v1/followrequests/{followRequestId}/accept")
+    fun acceptRequest(@Path("followRequestId") id: String): Single<FollowStatusEntity>
 
-    @POST("declineRequest/{id}")
-    fun declineRequest(@Path("id") id: String): Single<FollowStatusEntity>
+    @PUT("/api/v1/followrequests/{followRequestId}/decline")
+    fun declineRequest(@Path("followRequestId") id: String): Single<FollowStatusEntity>
 }
 
 interface SettingsApi {
 
-    @GET("userSettings/")
+    @GET("/api/v1/users/self/settings/get")
     fun get(): Single<SettingsEntity>
 
-    @POST("userSettings/")
-    fun set(settings: SettingsEntity): Single<SettingsEntity>
+    @PUT("/api/v1/users/self/settings/update/")
+    fun set(@Body settings: SettingsEntity): Single<SettingsEntity>
 }
 
 interface AuthApi {

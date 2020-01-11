@@ -18,7 +18,7 @@ class ReactionRemoteDataSourceImplTest {
 
     private val mockApi: ReactionsApi = mock()
 
-    private val vlogId = vlog.id
+    private val vlogId = vlog.vlogId
 
     private val remoteItem = reactionEntity.copy(id = "remote")
 

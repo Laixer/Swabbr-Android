@@ -1,6 +1,7 @@
 package com.laixer.swabbr
 
 import com.laixer.swabbr.datasource.model.*
+import com.laixer.swabbr.domain.model.Like
 import com.laixer.swabbr.domain.model.Login
 import com.laixer.swabbr.domain.model.Reaction
 import com.laixer.swabbr.domain.model.Registration
@@ -30,16 +31,21 @@ val user = User(
     0.0,
     0.0
 )
+
+val like = Like(
+    "likeId",
+    "vlogId",
+    "userId",
+    "time"
+)
+
 val vlog = Vlog(
     "userId",
     "id",
-    "duration",
-    date,
-    0,
-    0,
-    0,
-    isLive = false,
-    isPrivate = false
+    false,
+    false,
+    "startdate",
+    listOf(like)
 )
 
 val reaction = Reaction(
@@ -119,16 +125,21 @@ val userEntity = UserEntity(
     0.0,
     0.0
 )
-val vlogEntity = VlogEntity(
+
+val likeEntity = LikeEntity(
+    "likeId",
+    "vlogId",
     "userId",
+    "time"
+)
+
+val vlogEntity = VlogEntity(
     "id",
-    "duration",
-    date,
-    0,
-    0,
-    0,
-    isLive = false,
-    isPrivate = false
+    "userId",
+    false,
+    false,
+    "startdate",
+    listOf(likeEntity)
 )
 val reactionEntity = ReactionEntity(
     "userId",

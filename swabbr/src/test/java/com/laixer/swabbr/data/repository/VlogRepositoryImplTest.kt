@@ -19,10 +19,10 @@ class VlogRepositoryImplTest {
     private val mockCacheDataSource: VlogCacheDataSource = mock()
     private val mockRemoteDataSource: VlogRemoteDataSource = mock()
 
-    private val vlogId = vlog.id
+    private val vlogId = vlog.vlogId
 
-    private val cacheItem = vlog.copy(id = "cache")
-    private val remoteItem = vlog.copy(id = "remote")
+    private val cacheItem = vlog.copy(vlogId = "cache")
+    private val remoteItem = vlog.copy(vlogId = "remote")
 
     private val cacheList = listOf(cacheItem)
     private val remoteList = listOf(remoteItem)

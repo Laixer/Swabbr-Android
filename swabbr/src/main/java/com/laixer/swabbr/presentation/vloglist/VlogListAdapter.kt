@@ -34,7 +34,6 @@ class VlogListAdapter constructor(
             itemView.userAvatar.setOnClickListener { profileClick.invoke(item) }
             itemView.userUsername.text = context.getString(R.string.nickname, item.first.nickname)
             itemView.userName.text = context.getString(R.string.full_name, item.first.firstName, item.first.lastName)
-            itemView.vlogDuration.text = item.second.duration
             itemView.vlogPostDate.text = item.second.startDate
             itemView.setOnClickListener { itemClick.invoke(item) }
         }

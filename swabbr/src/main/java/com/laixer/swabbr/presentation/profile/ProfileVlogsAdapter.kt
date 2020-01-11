@@ -22,7 +22,6 @@ class ProfileVlogsAdapter : ListAdapter<VlogItem, ProfileVlogsAdapter.ViewHolder
 
         fun bind(item: VlogItem) {
             itemView.vlogPostDate.text = item.startDate
-            itemView.vlogDuration.text = item.duration
         }
     }
 }

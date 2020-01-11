@@ -18,9 +18,9 @@ class VlogRemoteDataSourceImplTest {
 
     private val mockApi: VlogsApi = mock()
 
-    private val vlogId = vlog.id
+    private val vlogId = vlog.vlogId
 
-    private val remoteItem = vlogEntity.copy(id = "remote")
+    private val remoteItem = vlogEntity.copy(vlogId = "remote")
 
     private val remoteList = listOf(remoteItem)
 

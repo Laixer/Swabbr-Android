@@ -18,11 +18,11 @@ class VlogCacheDataSourceImpl constructor(
 
     override fun get(vlogId: String): Single<Vlog> =
         cache.load(key)
-            .map { list -> list.first { it.id == vlogId } }
+            .map { list -> list.first { it.vlogId == vlogId } }
 
     override fun set(item: Vlog): Single<Vlog> =
         cache.load(key)
-            .map { list -> list.filter { it.id != item.id }.plus(item) }
+            .map { list -> list.filter { it.vlogId != item.vlogId }.plus(item) }
             .flatMap { set(it) }
             .map { item }
 }
