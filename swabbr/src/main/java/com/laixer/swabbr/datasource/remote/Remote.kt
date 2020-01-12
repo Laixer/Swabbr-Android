@@ -38,6 +38,9 @@ interface UsersApi {
 
     @GET("/api/v1/users/{userId}")
     fun getUser(@Path("userId") userId: String): Single<UserEntity>
+
+    @GET("/api/v1/users/search")
+    fun searchUser(@Query("query") userId: String): Single<UserEntity>
 }
 
 interface ReactionsApi {
