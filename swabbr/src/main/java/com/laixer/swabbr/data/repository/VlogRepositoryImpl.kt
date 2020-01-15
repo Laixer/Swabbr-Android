@@ -11,12 +11,12 @@ class VlogRepositoryImpl constructor(
     private val remoteDataSource: VlogRemoteDataSource
 ) : VlogRepository {
 
-    override fun get(refresh: Boolean): Single<List<Vlog>> =
+    override fun getUserVlogs(userId: String, refresh: Boolean): Single<List<Vlog>> =
         when (refresh) {
-            true -> remoteDataSource.get()
+            true -> remoteDataSource.getUserVlogs(userId)
                 .flatMap { cacheDataSource.set(it) }
             false -> cacheDataSource.get()
-                .onErrorResumeNext { get(true) }
+                .onErrorResumeNext { getUserVlogs(userId, true) }
         }
 
     override fun get(vlogId: String, refresh: Boolean): Single<Vlog> =

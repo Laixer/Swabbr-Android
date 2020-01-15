@@ -23,7 +23,7 @@ class ProfileViewModel constructor(
 
     val profile = MutableLiveData<ProfileItem?>()
     val profileVlogs = MutableLiveData<Resource<List<VlogItem>>>()
-    val followStatus = MutableLiveData<Resource<String>>()
+    val followStatus = MutableLiveData<Resource<Int>>()
     private val compositeDisposable = CompositeDisposable()
 
     fun getProfile(userId: String, refresh: Boolean = false) =
@@ -39,7 +39,7 @@ class ProfileViewModel constructor(
             userVlogsUseCase.get(userId, refresh)
                 .doOnSubscribe { profileVlogs.setLoading() }
                 .subscribeOn(Schedulers.io())
-                .map { it.second.mapToPresentation() }
+                .map { it.mapToPresentation() }
                 .subscribe({ profileVlogs.setSuccess(it) }, { profileVlogs.setError(it.message) })
         )
 

@@ -9,7 +9,7 @@ class FollowDataSourceImpl constructor(
     private val api: FollowApi
 ) : FollowDataSource {
 
-    override fun getFollowStatus(userId: String): Single<String> =
+    override fun getFollowStatus(userId: String): Single<Int> =
         api.getFollowStatus(userId)
             .map { it.mapToDomain() }
 
@@ -25,23 +25,23 @@ class FollowDataSourceImpl constructor(
         api.getIncomingRequests()
             .map { it.mapToDomain() }
 
-    override fun sendFollowRequest(userId: String): Single<String> =
+    override fun sendFollowRequest(userId: String): Single<Int> =
         api.sendFollowRequest(userId)
             .map { it.mapToDomain() }
 
-    override fun cancelFollowRequest(userId: String): Single<String> =
+    override fun cancelFollowRequest(userId: String): Single<Int> =
         api.cancelFollowRequest(userId)
             .map { it.mapToDomain() }
 
-    override fun unfollow(userId: String): Single<String> =
+    override fun unfollow(userId: String): Single<Int> =
         api.unfollow(userId)
             .map { it.mapToDomain() }
 
-    override fun acceptRequest(userId: String): Single<String> =
+    override fun acceptRequest(userId: String): Single<Int> =
         api.acceptRequest(userId)
             .map { it.mapToDomain() }
 
-    override fun declineRequest(userId: String): Single<String> =
+    override fun declineRequest(userId: String): Single<Int> =
         api.declineRequest(userId)
             .map { it.mapToDomain() }
 }

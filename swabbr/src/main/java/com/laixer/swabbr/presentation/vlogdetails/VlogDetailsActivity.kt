@@ -52,7 +52,7 @@ class VlogDetailsActivity : AppCompatActivity() {
         reactionsRecyclerView.adapter = adapter
 
         if (savedInstanceState == null) {
-            vm.getVlogs(vlogIds)
+            //vm.getVlogs(vlogIds)
         }
 
         // Register ViewPager

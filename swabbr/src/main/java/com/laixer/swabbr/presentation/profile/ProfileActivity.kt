@@ -31,7 +31,7 @@ class ProfileActivity : AppCompatActivity() {
             .setAction(getString(R.string.retry)) { vm.getProfileVlogs(userId, refresh = true) }
     }
     private val adapter = ProfileVlogsAdapter()
-    private var followStatus: String? = null
+    private var followStatus: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +40,8 @@ class ProfileActivity : AppCompatActivity() {
 
         followButton.setOnClickListener {
             when (followStatus) {
-                "accepted" -> vm.unfollow(userId)
-                "pending" -> vm.cancelFollowRequest(userId)
+                1 -> vm.unfollow(userId)
+                0 -> vm.cancelFollowRequest(userId)
                 else -> vm.sendFollowRequest(userId)
             }
         }
@@ -84,7 +84,7 @@ class ProfileActivity : AppCompatActivity() {
         res.message?.let { snackBar.show() }
     }
 
-    private fun updateFollowStatus(res: Resource<String?>) {
+    private fun updateFollowStatus(res: Resource<Int?>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 followButton.isEnabled = false
@@ -94,8 +94,8 @@ class ProfileActivity : AppCompatActivity() {
                 swipeRefreshLayout.stopRefreshing()
                 this.followStatus = res.data
                 followButton.text = when (followStatus) {
-                    "pending" -> getString(R.string.requested)
-                    "accepted" -> getString(R.string.following)
+                    0 -> getString(R.string.requested)
+                    1 -> getString(R.string.following)
                     else -> getString(R.string.follow)
                 }
                 followButton.isEnabled = true

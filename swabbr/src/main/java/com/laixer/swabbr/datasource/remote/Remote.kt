@@ -21,8 +21,8 @@ import retrofit2.http.Query
 
 interface VlogsApi {
 
-    @GET("vlogs/")
-    fun getVlogs(): Single<List<VlogEntity>>
+    @GET("/api/v1/vlogs/users/{userId}")
+    fun getUserVlogs(@Path("userId") userId: String): Single<List<VlogEntity>>
 
     @GET("api/v1/vlogs/{vlogId}")
     fun getVlog(@Path("vlogId") vlogId: String): Single<VlogEntity>
@@ -40,7 +40,7 @@ interface UsersApi {
     fun getUser(@Path("userId") userId: String): Single<UserEntity>
 
     @GET("/api/v1/users/search")
-    fun searchUser(@Query("query") userId: String): Single<UserEntity>
+    fun searchUser(@Query("query") userId: String): Single<List<UserEntity>>
 }
 
 interface ReactionsApi {
@@ -50,25 +50,25 @@ interface ReactionsApi {
 }
 
 interface FollowApi {
-    @GET("/api/v1/followrequests/outgoing/{receiverId}/status")
+    @GET("/api/v1/followrequests/outgoing/{receiverId}")
     fun getFollowStatus(@Path("receiverId") id: String): Single<FollowStatusEntity>
 
-    @GET("/api/v1/users/users/{userId}/followers")
+    @GET("/api/v1/users/{userId}/followers")
     fun getFollowers(@Path("userId") id: String): Single<List<UserEntity>>
 
-    @GET("/api/v1/users/users/{userId}/following")
+    @GET("/api/v1/users/{userId}/following")
     fun getFollowing(@Path("userId") id: String): Single<List<UserEntity>>
 
     @GET("/api/v1/followrequests/incoming")
     fun getIncomingRequests(): Single<List<UserEntity>>
 
     @POST("/api/v1/followrequests/send")
-    fun sendFollowRequest(@Path("receiverId") id: String): Single<FollowStatusEntity>
+    fun sendFollowRequest(@Query("receiverId") userId: String): Single<FollowStatusEntity>
 
     @DELETE("/api/v1/followrequests/{followRequestId}/cancel")
     fun cancelFollowRequest(@Path("followRequestId") id: String): Single<FollowStatusEntity>
 
-    @DELETE("/api/v1/users/users/{userId}/unfollow")
+    @DELETE("/api/v1/users/{userId}/unfollow")
     fun unfollow(@Path("userId") id: String): Single<FollowStatusEntity>
 
     @PUT("/api/v1/followrequests/{followRequestId}/accept")

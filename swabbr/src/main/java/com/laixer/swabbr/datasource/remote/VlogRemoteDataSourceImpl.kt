@@ -9,8 +9,8 @@ class VlogRemoteDataSourceImpl constructor(
     private val api: VlogsApi
 ) : VlogRemoteDataSource {
 
-    override fun get(): Single<List<Vlog>> =
-        api.getVlogs()
+    override fun getUserVlogs(userId: String): Single<List<Vlog>> =
+        api.getUserVlogs(userId)
             .map { it.mapToDomain() }
 
     override fun get(vlogId: String): Single<Vlog> =

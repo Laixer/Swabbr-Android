@@ -11,7 +11,7 @@ import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.ProfileItem
 import kotlinx.android.synthetic.main.include_user_info.view.*
 
-class SearchAdapter(val context: Context) : ListAdapter<ProfileItem, SearchAdapter.ViewHolder>(ProfileDiffCallback()) {
+class SearchAdapter constructor(val context: Context, val profileClick: (ProfileItem) -> Unit) : ListAdapter<ProfileItem, SearchAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(parent)
@@ -26,6 +26,7 @@ class SearchAdapter(val context: Context) : ListAdapter<ProfileItem, SearchAdapt
             itemView.userAvatar.loadAvatar(item.id)
             itemView.userUsername.text = context.getString(R.string.nickname, item.nickname)
             itemView.userName.text = context.getString(R.string.full_name, item.firstName, item.lastName)
+            itemView.setOnClickListener { profileClick.invoke(item) }
         }
     }
 }

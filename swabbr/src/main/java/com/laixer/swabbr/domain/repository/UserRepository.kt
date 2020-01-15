@@ -9,7 +9,7 @@ interface UserRepository {
 
     fun get(userId: String, refresh: Boolean): Single<User>
 
-    fun searchUser(userId: String): Single<User>
+    fun searchUser(userId: String): Single<List<User>>
 
     fun set(user: User): Single<User>
 }

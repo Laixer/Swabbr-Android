@@ -8,6 +8,7 @@ import android.view.Menu
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.laixer.navigation.features.SwabbrNavigation
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
@@ -25,9 +26,12 @@ class SearchActivity : AppCompatActivity() {
     private val vm: SearchViewModel by viewModel()
     private lateinit var adapter: SearchAdapter
 
+    private val profileClick: (ProfileItem) -> Unit =
+        { startActivity(SwabbrNavigation.profile(userId = it.id)) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = SearchAdapter(baseContext)
+        adapter = SearchAdapter(baseContext, profileClick)
         setContentView(R.layout.activity_search)
         setSupportActionBar(findViewById(R.id.toolbar))
 
@@ -67,7 +71,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search(query: String) {
-        vm.getProfiles(query)
+        vm.search(query)
     }
 
     private fun updateUsers(resource: Resource<List<ProfileItem>?>) {

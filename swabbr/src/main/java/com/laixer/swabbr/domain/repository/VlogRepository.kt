@@ -5,7 +5,7 @@ import io.reactivex.Single
 
 interface VlogRepository {
 
-    fun get(refresh: Boolean): Single<List<Vlog>>
+    fun getUserVlogs(userId: String, refresh: Boolean): Single<List<Vlog>>
 
     fun get(vlogId: String, refresh: Boolean): Single<Vlog>
 

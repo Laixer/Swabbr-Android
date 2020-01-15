@@ -5,7 +5,7 @@ import io.reactivex.Single
 
 interface FollowRepository {
 
-    fun getFollowStatus(userId: String): Single<String>
+    fun getFollowStatus(userId: String): Single<Int>
 
     fun getFollowers(userId: String): Single<List<User>>
 
@@ -13,13 +13,13 @@ interface FollowRepository {
 
     fun getIncomingRequests(): Single<List<User>>
 
-    fun sendFollowRequest(userId: String): Single<String>
+    fun sendFollowRequest(userId: String): Single<Int>
 
-    fun cancelFollowRequest(userId: String): Single<String>
+    fun cancelFollowRequest(userId: String): Single<Int>
 
-    fun unfollow(userId: String): Single<String>
+    fun unfollow(userId: String): Single<Int>
 
-    fun acceptRequest(userId: String): Single<String>
+    fun acceptRequest(userId: String): Single<Int>
 
-    fun declineRequest(userId: String): Single<String>
+    fun declineRequest(userId: String): Single<Int>
 }

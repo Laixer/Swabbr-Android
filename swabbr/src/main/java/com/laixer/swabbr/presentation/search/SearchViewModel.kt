@@ -18,13 +18,13 @@ class SearchViewModel constructor(private val usersUseCase: UsersUseCase) :
     val profiles = MutableLiveData<Resource<List<ProfileItem>>>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun getProfiles(query: String, refresh: Boolean = false) =
+    fun search(query: String) =
         compositeDisposable.add(
             usersUseCase.searchUser(query)
                 .doOnSubscribe { profiles.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .map { it.mapToPresentation() }
-                .subscribe({ profiles.setSuccess(listOf(it)) }, { profiles.setError(it.message) })
+                .subscribe({ profiles.setSuccess(it) }, { profiles.setError(it.message) })
         )
 
     override fun onCleared() {

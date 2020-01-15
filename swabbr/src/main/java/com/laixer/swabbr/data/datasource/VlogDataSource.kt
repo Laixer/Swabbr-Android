@@ -16,7 +16,7 @@ interface VlogCacheDataSource {
 
 interface VlogRemoteDataSource {
 
-    fun get(): Single<List<Vlog>>
+    fun getUserVlogs(userId: String): Single<List<Vlog>>
 
     fun get(vlogId: String): Single<Vlog>
 

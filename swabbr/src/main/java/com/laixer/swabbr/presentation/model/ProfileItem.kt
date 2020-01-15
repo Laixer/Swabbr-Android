@@ -16,3 +16,5 @@ fun User.mapToPresentation(): ProfileItem =
         this.firstName,
         this.lastName
     )
+
+fun List<User>.mapToPresentation(): List<ProfileItem> = map { it.mapToPresentation() }

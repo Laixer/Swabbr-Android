@@ -12,6 +12,6 @@ class UsersUseCase constructor(private val userRepository: UserRepository) {
     fun get(userId: String, refresh: Boolean): Single<User> =
         userRepository.get(userId, refresh)
 
-    fun searchUser(userId: String): Single<User> =
+    fun searchUser(userId: String): Single<List<User>> =
         userRepository.searchUser(userId)
 }
