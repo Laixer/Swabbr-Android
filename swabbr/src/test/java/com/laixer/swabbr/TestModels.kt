@@ -155,7 +155,7 @@ val settingsEntity = SettingsEntity(
     2
 )
 
-val followStatusEntity = FollowStatusEntity(
+val followStatusEntity = FollowRequestEntity(
     "pending"
 )
 

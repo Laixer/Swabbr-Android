@@ -1,11 +1,12 @@
 package com.laixer.swabbr.data.datasource
 
+import com.laixer.swabbr.domain.model.FollowRequest
 import com.laixer.swabbr.domain.model.User
 import io.reactivex.Single
 
 interface FollowDataSource {
 
-    fun getFollowStatus(userId: String): Single<Int>
+    fun getFollowStatus(userId: String): Single<FollowRequest>
 
     fun getFollowers(userId: String): Single<List<User>>
 
@@ -13,13 +14,13 @@ interface FollowDataSource {
 
     fun getIncomingRequests(): Single<List<User>>
 
-    fun sendFollowRequest(userId: String): Single<Int>
+    fun sendFollowRequest(userId: String): Single<FollowRequest>
 
-    fun cancelFollowRequest(userId: String): Single<Int>
+    fun cancelFollowRequest(userId: String): Single<FollowRequest>
 
-    fun unfollow(userId: String): Single<Int>
+    fun unfollow(userId: String): Single<FollowRequest>
 
-    fun acceptRequest(userId: String): Single<Int>
+    fun acceptRequest(userId: String): Single<FollowRequest>
 
-    fun declineRequest(userId: String): Single<Int>
+    fun declineRequest(userId: String): Single<FollowRequest>
 }

@@ -30,26 +30,26 @@ class FollowDataSourceImplTest {
     @Test
     fun `get followstatus remote success`() {
         // given
-        whenever(mockApi.getFollowStatus(userId)).thenReturn(Single.just(followStatusEntity))
+        whenever(mockApi.getFollowRequest(userId)).thenReturn(Single.just(followStatusEntity))
 
         // when
         val test = dataSource.getFollowStatus(userId).test()
 
         // then
-        verify(mockApi).getFollowStatus(userId)
+        verify(mockApi).getFollowRequest(userId)
         test.assertValue(followStatusEntity.mapToDomain())
     }
 
     @Test
     fun `get followstatus remote fail`() {
         // given
-        whenever(mockApi.getFollowStatus(userId)).thenReturn(Single.error(throwable))
+        whenever(mockApi.getFollowRequest(userId)).thenReturn(Single.error(throwable))
 
         // when
         val test = dataSource.getFollowStatus(userId).test()
 
         // then
-        verify(mockApi).getFollowStatus(userId)
+        verify(mockApi).getFollowRequest(userId)
         test.assertError(throwable)
     }
 }

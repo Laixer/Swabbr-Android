@@ -1,7 +1,7 @@
 package com.laixer.swabbr.datasource.remote
 
 import com.laixer.swabbr.datasource.model.AuthUserEntity
-import com.laixer.swabbr.datasource.model.FollowStatusEntity
+import com.laixer.swabbr.datasource.model.FollowRequestEntity
 import com.laixer.swabbr.datasource.model.LoginEntity
 import com.laixer.swabbr.datasource.model.ReactionEntity
 import com.laixer.swabbr.datasource.model.RegistrationEntity
@@ -51,7 +51,7 @@ interface ReactionsApi {
 
 interface FollowApi {
     @GET("/api/v1/followrequests/outgoing/{receiverId}")
-    fun getFollowStatus(@Path("receiverId") id: String): Single<FollowStatusEntity>
+    fun getFollowRequest(@Path("receiverId") id: String): Single<FollowRequestEntity>
 
     @GET("/api/v1/users/{userId}/followers")
     fun getFollowers(@Path("userId") id: String): Single<List<UserEntity>>
@@ -63,19 +63,19 @@ interface FollowApi {
     fun getIncomingRequests(): Single<List<UserEntity>>
 
     @POST("/api/v1/followrequests/send")
-    fun sendFollowRequest(@Query("receiverId") userId: String): Single<FollowStatusEntity>
+    fun sendFollowRequest(@Query("receiverId") userId: String): Single<FollowRequestEntity>
 
     @DELETE("/api/v1/followrequests/{followRequestId}/cancel")
-    fun cancelFollowRequest(@Path("followRequestId") id: String): Single<FollowStatusEntity>
+    fun cancelFollowRequest(@Path("followRequestId") id: String): Single<FollowRequestEntity>
 
     @DELETE("/api/v1/users/{userId}/unfollow")
-    fun unfollow(@Path("userId") id: String): Single<FollowStatusEntity>
+    fun unfollow(@Path("userId") id: String): Single<FollowRequestEntity>
 
     @PUT("/api/v1/followrequests/{followRequestId}/accept")
-    fun acceptRequest(@Path("followRequestId") id: String): Single<FollowStatusEntity>
+    fun acceptRequest(@Path("followRequestId") id: String): Single<FollowRequestEntity>
 
     @PUT("/api/v1/followrequests/{followRequestId}/decline")
-    fun declineRequest(@Path("followRequestId") id: String): Single<FollowStatusEntity>
+    fun declineRequest(@Path("followRequestId") id: String): Single<FollowRequestEntity>
 }
 
 interface SettingsApi {

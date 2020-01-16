@@ -9,6 +9,7 @@ import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.usecase.FollowUseCase
 import com.laixer.swabbr.domain.usecase.UserVlogsUseCase
 import com.laixer.swabbr.domain.usecase.UsersUseCase
+import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.ProfileItem
 import com.laixer.swabbr.presentation.model.VlogItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
@@ -23,7 +24,7 @@ class ProfileViewModel constructor(
 
     val profile = MutableLiveData<ProfileItem?>()
     val profileVlogs = MutableLiveData<Resource<List<VlogItem>>>()
-    val followStatus = MutableLiveData<Resource<Int>>()
+    val followRequest = MutableLiveData<Resource<FollowRequestItem>>()
     private val compositeDisposable = CompositeDisposable()
 
     fun getProfile(userId: String, refresh: Boolean = false) =
@@ -43,36 +44,36 @@ class ProfileViewModel constructor(
                 .subscribe({ profileVlogs.setSuccess(it) }, { profileVlogs.setError(it.message) })
         )
 
-    fun getFollowStatus(userId: String) =
+    fun getFollowRequest(userId: String) =
         compositeDisposable.add(
-            followUseCase.getFollowStatus(userId)
-                .doOnSubscribe { followStatus.setLoading() }
+            followUseCase.getFollowRequest(userId)
+                .doOnSubscribe { followRequest.setLoading() }
                 .subscribeOn(Schedulers.io())
-                .subscribe({ followStatus.setSuccess(it) }, { followStatus.setError(it.message) })
+                .subscribe({ followRequest.setSuccess(it.mapToPresentation()) }, { followRequest.setError(it.message) })
         )
 
     fun sendFollowRequest(userId: String) =
         compositeDisposable.add(
             followUseCase.sendFollowRequest(userId)
-                .doOnSubscribe { followStatus.setLoading() }
+                .doOnSubscribe { followRequest.setLoading() }
                 .subscribeOn(Schedulers.io())
-                .subscribe({ followStatus.setSuccess(it) }, { followStatus.setError(it.message) })
+                .subscribe({ followRequest.setSuccess(it.mapToPresentation()) }, { followRequest.setError(it.message) })
         )
 
     fun unfollow(userId: String) =
         compositeDisposable.add(
             followUseCase.unfollow(userId)
-                .doOnSubscribe { followStatus.setLoading() }
+                .doOnSubscribe { followRequest.setLoading() }
                 .subscribeOn(Schedulers.io())
-                .subscribe({ followStatus.setSuccess(it) }, { followStatus.setError(it.message) })
+                .subscribe({ followRequest.setSuccess(it.mapToPresentation()) }, { followRequest.setError(it.message) })
         )
 
     fun cancelFollowRequest(userId: String) =
         compositeDisposable.add(
             followUseCase.cancelFollowRequest(userId)
-                .doOnSubscribe { followStatus.setLoading() }
+                .doOnSubscribe { followRequest.setLoading() }
                 .subscribeOn(Schedulers.io())
-                .subscribe({ followStatus.setSuccess(it) }, { followStatus.setError(it.message) })
+                .subscribe({ followRequest.setSuccess(it.mapToPresentation()) }, { followRequest.setError(it.message) })
         )
 
     override fun onCleared() {

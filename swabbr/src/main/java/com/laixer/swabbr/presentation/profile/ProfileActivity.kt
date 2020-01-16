@@ -15,6 +15,7 @@ import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.loadAvatar
+import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.ProfileItem
 import com.laixer.swabbr.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.activity_profile.*
@@ -28,10 +29,11 @@ class ProfileActivity : AppCompatActivity() {
     private val userId by lazy { intent.getStringExtra(SwabbrNavigation.USER_ID_KEY) }
     private val snackBar by lazy {
         Snackbar.make(swipeRefreshLayout, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)
-            .setAction(getString(R.string.retry)) { vm.getProfileVlogs(userId, refresh = true) }
+            .setAction(getString(R.string.retry)) { refresh() }
     }
     private val adapter = ProfileVlogsAdapter()
-    private var followStatus: Int? = null
+    private var followStatus = -1
+    private var followRequestId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +43,7 @@ class ProfileActivity : AppCompatActivity() {
         followButton.setOnClickListener {
             when (followStatus) {
                 1 -> vm.unfollow(userId)
-                0 -> vm.cancelFollowRequest(userId)
+                0 -> vm.cancelFollowRequest(followRequestId)
                 else -> vm.sendFollowRequest(userId)
             }
         }
@@ -51,7 +53,7 @@ class ProfileActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             vm.getProfile(userId)
             vm.getProfileVlogs(userId)
-            vm.getFollowStatus(userId)
+            vm.getFollowRequest(userId)
         }
 
         profilevlogsRecyclerView.isNestedScrollingEnabled = false
@@ -59,10 +61,11 @@ class ProfileActivity : AppCompatActivity() {
 
         vm.profile.observe(this, Observer { updateProfile(it) })
         vm.profileVlogs.observe(this, Observer { updateProfileVlogs(it) })
-        vm.followStatus.observe(this, Observer { updateFollowStatus(it) })
+        vm.followRequest.observe(this, Observer { updateFollowRequest(it) })
         swipeRefreshLayout.setOnRefreshListener {
+            vm.getProfile(userId)
             vm.getProfileVlogs(userId, refresh = true)
-            vm.getFollowStatus(userId)
+            vm.getFollowRequest(userId)
         }
     }
 
@@ -84,7 +87,7 @@ class ProfileActivity : AppCompatActivity() {
         res.message?.let { snackBar.show() }
     }
 
-    private fun updateFollowStatus(res: Resource<Int?>) {
+    private fun updateFollowRequest(res: Resource<FollowRequestItem?>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 followButton.isEnabled = false
@@ -92,7 +95,8 @@ class ProfileActivity : AppCompatActivity() {
             }
             ResourceState.SUCCESS -> {
                 swipeRefreshLayout.stopRefreshing()
-                this.followStatus = res.data
+                this.followStatus = res.data!!.status
+                this.followRequestId = res.data!!.followRequestId
                 followButton.text = when (followStatus) {
                     0 -> getString(R.string.requested)
                     1 -> getString(R.string.following)
@@ -122,5 +126,11 @@ class ProfileActivity : AppCompatActivity() {
         else -> {
             super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun refresh() {
+        vm.getProfile(userId)
+        vm.getProfileVlogs(userId)
+        vm.getFollowRequest(userId)
     }
 }

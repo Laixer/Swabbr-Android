@@ -101,11 +101,11 @@ class ProfileViewModelTest {
     @Test
     fun `get followstatus succeeds`() {
         // given
-        whenever(mockFollowUseCase.getFollowStatus(userId))
+        whenever(mockFollowUseCase.getFollowRequest(userId))
             .thenReturn(Single.just("pending"))
 
         // when
-        viewModel.getFollowStatus(userId)
+        viewModel.getFollowRequest(userId)
 
         // then
         verify(mockFollowUseCase).getFollowStatus(userId)
@@ -114,7 +114,7 @@ class ProfileViewModelTest {
                 state = ResourceState.SUCCESS,
                 data = followStatus,
                 message = null
-            ), viewModel.followStatus.value
+            ), viewModel.getFollowRequest.value
         )
     }
 

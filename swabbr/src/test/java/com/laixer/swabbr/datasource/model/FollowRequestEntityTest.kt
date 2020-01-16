@@ -6,7 +6,7 @@ import com.laixer.swabbr.followStatusEntity
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class FollowStatusEntityTest {
+class FollowRequestEntityTest {
 
     @Test
     fun `map entity to domain`() {
