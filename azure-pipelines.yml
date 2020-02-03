@@ -1,0 +1,60 @@
+# Android
+# Build your Android project with Gradle.
+# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/android
+
+trigger:
+- master
+- dev
+
+pool:
+  vmImage: 'macos-latest'
+
+stages:
+  - stage: setup
+    displayName: Setting up environment
+    jobs:
+    - job: insert_sdk_key
+      displayName: Inserting GoCoder SDK key
+      steps:
+      - bash: echo "GOCODER_SDK_KEY=\"$GOCODER_SDK_KEY\"" >> ~/Swabbr/local.properties
+    - job: insert_google_services_json
+      displayName: Creating google-services.json
+      steps:
+      - bash: echo $GOOGLE_SERVICES | base64 --decode > ~/Swabbr/app/google-services.json
+  - stage: build
+    displayName: Building dependencies
+    dependsOn: setup
+    jobs:
+    - job: download
+      displayName: Download dependencies
+      steps:
+      - script: ./gradlew dependencies
+    - job: dependencies
+      displayName: Build
+      steps:
+      - script: ./gradlew assembleDebugUnittest
+  - stage: check
+    displayName: Checking style
+    dependsOn: build
+    jobs:
+    - job: detekt
+      displayName: Run Detekt
+      steps:
+      - script: ./gradlew detekt
+    - job: ktlint
+      displayName: Run Ktlint
+      steps:
+      - script: ./gradlew ktlint
+    - job: lint
+      displayName: Run Lint
+      steps:
+      - script: ./gradlew lintDebug
+  - stage: test
+    displayName: Running tests
+    dependsOn: build
+    jobs:
+    - job: unit_tests
+      displayName: Running unit tests
+      steps:
+      - script: ./gradlew testDebugUnitTest
