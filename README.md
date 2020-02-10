@@ -1,5 +1,5 @@
 Swabbr Android App
 =
 
-[![CircleCI](https://circleci.com/gh/Laixer/Swabbr-Android/tree/master.svg?style=svg)](https://circleci.com/gh/Laixer/Swabbr-Android/tree/master)
+[![Build Status](https://dev.azure.com/Laixer/Swabbr/_apis/build/status/Laixer.Swabbr-Android?branchName=dev)](https://dev.azure.com/Laixer/Swabbr/_build/latest?definitionId=7&branchName=dev)
 [![Kotlin Version](https://img.shields.io/badge/kotlin-1.3.50-blue.svg)](http://kotlinlang.org/)
