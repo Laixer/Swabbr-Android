@@ -1,7 +1,6 @@
 package com.laixer.cache
 
 import android.content.Context
-
 import com.pacoworks.rxpaper2.RxPaperBook
 import io.paperdb.Book
 import io.paperdb.Paper
@@ -12,8 +11,8 @@ import io.reactivex.schedulers.Schedulers.io
  * Paper is a fast NoSQL-like storage for Java/Kotlin objects on Android with automatic schema migration support.
  * See: https://github.com/pakoito/RxPaper2
  */
-
 object CacheLibrary {
+
     fun init(context: Context) = RxPaperBook.init(context)
 }
 

@@ -15,15 +15,10 @@ import org.junit.Test
 class VlogRemoteDataSourceImplTest {
 
     private lateinit var dataSource: VlogRemoteDataSourceImpl
-
     private val mockApi: VlogsApi = mock()
-
     private val vlogId = vlog.id
-
     private val remoteItem = vlogEntity.copy(id = "remote")
-
     private val remoteList = listOf(remoteItem)
-
     private val throwable = Throwable()
 
     @Before
@@ -35,10 +30,8 @@ class VlogRemoteDataSourceImplTest {
     fun `get vlogs remote success`() {
         // given
         whenever(mockApi.getVlogs()).thenReturn(Single.just(remoteList))
-
         // when
         val test = dataSource.get().test()
-
         // then
         verify(mockApi).getVlogs()
         test.assertValue(remoteList.mapToDomain())
@@ -48,10 +41,8 @@ class VlogRemoteDataSourceImplTest {
     fun `get vlogs remote fail`() {
         // given
         whenever(mockApi.getVlogs()).thenReturn(Single.error(throwable))
-
         // when
         val test = dataSource.get().test()
-
         // then
         verify(mockApi).getVlogs()
         test.assertError(throwable)
@@ -61,10 +52,8 @@ class VlogRemoteDataSourceImplTest {
     fun `get vlog remote success`() {
         // given
         whenever(mockApi.getVlog(vlogId)).thenReturn(Single.just(remoteItem))
-
         // when
         val test = dataSource.get(vlogId).test()
-
         // then
         verify(mockApi).getVlog(vlogId)
         test.assertValue(remoteItem.mapToDomain())
@@ -74,10 +63,8 @@ class VlogRemoteDataSourceImplTest {
     fun `get vlog remote fail`() {
         // given
         whenever(mockApi.getVlog(vlogId)).thenReturn(Single.error(throwable))
-
         // when
         val test = dataSource.get(vlogId).test()
-
         // then
         verify(mockApi).getVlog(vlogId)
         test.assertError(throwable)

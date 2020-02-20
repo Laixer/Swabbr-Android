@@ -3,11 +3,11 @@
 package com.laixer.swabbr.domain.usecase
 
 import com.laixer.swabbr.domain.repository.FollowRepository
+import com.laixer.swabbr.followStatus
+import com.laixer.swabbr.user
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import com.laixer.swabbr.followStatus
-import com.laixer.swabbr.user
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
@@ -15,9 +15,7 @@ import org.junit.Test
 class FollowUseCaseTest {
 
     private lateinit var usecase: FollowUseCase
-
     private val mockRepository: FollowRepository = mock()
-
     private val userId = user.id
 
     @Before
@@ -29,10 +27,8 @@ class FollowUseCaseTest {
     fun `repository get success`() {
         // given
         whenever(mockRepository.getFollowStatus(userId)).thenReturn(Single.just(followStatus))
-
         // when
         val test = usecase.getFollowStatus(userId).test()
-
         // then
         verify(mockRepository).getFollowStatus(userId)
 
@@ -47,10 +43,8 @@ class FollowUseCaseTest {
         // given
         val throwable = Throwable()
         whenever(mockRepository.getFollowStatus(userId)).thenReturn(Single.error(throwable))
-
         // when
         val test = usecase.getFollowStatus(userId).test()
-
         // then
         verify(mockRepository).getFollowStatus(userId)
 

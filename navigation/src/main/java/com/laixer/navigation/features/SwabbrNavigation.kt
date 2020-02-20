@@ -9,18 +9,16 @@ object SwabbrNavigation : DynamicFeature<Intent> {
     const val VLOG_ID_KEYS = "VLOG_ID_KEYS"
     const val USER_ID_KEY = "VLOG_ID_KEY"
     const val CONNECTION_SETTINGS = "CONNECTION_SETTINGS"
-
+    private const val MAIN_ACTIVITY = "com.laixer.swabbr.presentation.MainActivity"
     private const val PROFILE = "com.laixer.swabbr.presentation.profile.ProfileActivity"
     private const val VLOG_LIST = "com.laixer.swabbr.presentation.vloglist.VlogListActivity"
     private const val VLOG_DETAILS =
         "com.laixer.swabbr.presentation.vlogdetails.VlogDetailsActivity"
     private const val SEARCH = "com.laixer.swabbr.presentation.search.SearchActivity"
     private const val RECORD = "com.laixer.swabbr.presentation.recordvlog.RecordVlogActivity"
-
     private const val SETTINGS = "com.laixer.swabbr.presentation.settings.SettingsActivity"
-
     override val dynamicStart: Intent?
-        get() = VLOG_LIST.loadIntentOrNull()
+        get() = MAIN_ACTIVITY.loadIntentOrNull()
 
     fun vlogDetails(vlogIds: ArrayList<String>): Intent? =
         VLOG_DETAILS.loadIntentOrNull()

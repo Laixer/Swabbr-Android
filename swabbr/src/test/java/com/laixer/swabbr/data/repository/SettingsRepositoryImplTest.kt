@@ -15,13 +15,10 @@ import org.junit.Test
 class SettingsRepositoryImplTest {
 
     private lateinit var repository: SettingsRepositoryImpl
-
     private val mockCacheDataSource: SettingsCacheDataSource = mock()
     private val mockRemoteDataSource: SettingsRemoteDataSource = mock()
-
     private val cacheItem = settings
     private val remoteItem = settings
-
     private val cacheThrowable = Throwable()
     private val remoteThrowable = Throwable()
 
@@ -34,10 +31,8 @@ class SettingsRepositoryImplTest {
     fun `get settings cache success`() {
         // given
         whenever(mockCacheDataSource.get()).thenReturn(Single.just(cacheItem))
-
         // when
         val test = repository.get(false).test()
-
         // then
         verify(mockCacheDataSource).get()
         test.assertValue(cacheItem)
@@ -49,10 +44,8 @@ class SettingsRepositoryImplTest {
         whenever(mockCacheDataSource.get()).thenReturn(Single.error(cacheThrowable))
         whenever(mockRemoteDataSource.get()).thenReturn(Single.just(remoteItem))
         whenever(mockCacheDataSource.set(remoteItem)).thenReturn(Single.just(remoteItem))
-
         // when
         val test = repository.get(false).test()
-
         // then
         verify(mockCacheDataSource).get()
         verify(mockRemoteDataSource).get()
@@ -65,10 +58,8 @@ class SettingsRepositoryImplTest {
         // given
         whenever(mockCacheDataSource.get()).thenReturn(Single.error(cacheThrowable))
         whenever(mockRemoteDataSource.get()).thenReturn(Single.error(remoteThrowable))
-
         // when
         val test = repository.get(false).test()
-
         // then
         verify(mockCacheDataSource).get()
         verify(mockRemoteDataSource).get()
@@ -80,10 +71,8 @@ class SettingsRepositoryImplTest {
         // given
         whenever(mockRemoteDataSource.get()).thenReturn(Single.just(remoteItem))
         whenever(mockCacheDataSource.set(remoteItem)).thenReturn(Single.just(remoteItem))
-
         // when
         val test = repository.get(true).test()
-
         // then
         verify(mockRemoteDataSource).get()
         verify(mockCacheDataSource).set(remoteItem)
@@ -94,10 +83,8 @@ class SettingsRepositoryImplTest {
     fun `get settings remote fail`() {
         // given
         whenever(mockRemoteDataSource.get()).thenReturn(Single.error(remoteThrowable))
-
         // when
         val test = repository.get(true).test()
-
         // then
         verify(mockRemoteDataSource).get()
         test.assertError(remoteThrowable)

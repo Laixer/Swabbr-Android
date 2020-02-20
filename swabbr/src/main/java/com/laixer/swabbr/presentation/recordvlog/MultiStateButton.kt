@@ -2,13 +2,14 @@ package com.laixer.swabbr.presentation.recordvlog
 
 import android.content.Context
 import android.content.res.TypedArray
-import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import com.laixer.swabbr.R
 
 class MultiStateButton(context: Context, attrs: AttributeSet?) : AppCompatImageView(context, attrs) {
@@ -18,7 +19,6 @@ class MultiStateButton(context: Context, attrs: AttributeSet?) : AppCompatImageV
     private lateinit var mOffDrawable: Drawable
     private var mPressedColor: Int = 0
     private var mDisabledColor: Int = 0
-
     var isOn: Boolean = false
         set(value) {
             field = value
@@ -59,7 +59,11 @@ class MultiStateButton(context: Context, attrs: AttributeSet?) : AppCompatImageV
                 if (!imageView.isClickable) return false
 
                 if (event?.action == MotionEvent.ACTION_DOWN) {
-                    imageView.drawable.setColorFilter(mPressedColor, PorterDuff.Mode.SRC_IN)
+                    imageView.drawable.colorFilter =
+                        BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                            mPressedColor,
+                            BlendModeCompat.SRC_IN
+                        )
                 } else if (event?.action == MotionEvent.ACTION_UP) {
                     imageView.drawable.clearColorFilter()
                 }
@@ -85,9 +89,9 @@ class MultiStateButton(context: Context, attrs: AttributeSet?) : AppCompatImageV
         if (enabled) {
             drawable.clearColorFilter()
         } else {
-            drawable.setColorFilter(mDisabledColor, PorterDuff.Mode.SRC_IN)
+            drawable.colorFilter =
+                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(mDisabledColor, BlendModeCompat.SRC_IN)
         }
-
         invalidate()
         requestLayout()
     }

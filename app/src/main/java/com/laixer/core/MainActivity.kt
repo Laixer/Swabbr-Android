@@ -14,15 +14,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        mainActivity = this
         registerWithNotificationHubs()
-        FirebaseService.createChannelAndHandleNotifications(applicationContext)
+        FirebaseService.createChannelAndHandleNotifications(baseContext)
 
         FirebaseMessaging.getInstance().subscribeToTopic("DEV")
 
-        startVlogList()
+        SwabbrNavigation.dynamicStart?.let {
+            startActivity(it.apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            })
+        }
     }
 
     private fun registerWithNotificationHubs() {
@@ -68,8 +71,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(it)
         }
 
-    private fun startVlogList() = SwabbrNavigation.dynamicStart?.let { startActivity(it) }
-
     /**
      * Check the device to make sure it has the Google Play Services APK. If
      * it doesn't, display a dialog box that enables  users to download the APK from
@@ -96,7 +97,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        var mainActivity: MainActivity? = null
         var isVisible: Boolean = false
         private const val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
         private const val TAG = "MainActivity"

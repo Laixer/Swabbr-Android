@@ -11,4 +11,5 @@
     <color name="color_body">@color/color_grey_700</color>
 
     <color name="color_window_background">@color/color_grey_50</color>
+    <color name="color_window_background_transparent">#40FAFAFA</color>
 </resources>

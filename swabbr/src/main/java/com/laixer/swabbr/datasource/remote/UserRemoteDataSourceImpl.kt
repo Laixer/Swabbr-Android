@@ -16,4 +16,8 @@ class UserRemoteDataSourceImpl constructor(
     override fun get(userId: String): Single<User> =
         api.getUser(userId)
             .map { it.mapToDomain() }
+
+    override fun search(name: String): Single<List<User>> =
+        api.searchUserByFirstname(name)
+            .map { it.mapToDomain() }
 }

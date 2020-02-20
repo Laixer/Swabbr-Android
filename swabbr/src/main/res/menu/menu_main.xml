@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_dashboard"
+        android:icon="@drawable/ic_dashboard_24dp"
+        android:title="@string/dashboard" />
+
+    <item
+        android:id="@+id/nav_search"
+        android:icon="@drawable/ic_search_24dp"
+        android:title="@string/search" />
+
+    <item
+        android:id="@+id/nav_vlogs"
+        android:icon="@drawable/ic_personal_video_24dp"
+        android:title="@string/vlogs" />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_person_24dp"
+        android:title="@string/userProfile" />
+</menu>

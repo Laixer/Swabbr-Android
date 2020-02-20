@@ -8,6 +8,7 @@ import io.reactivex.Single
 class VlogCacheDataSourceImpl constructor(
     private val cache: ReactiveCache<List<Vlog>>
 ) : VlogCacheDataSource {
+
     val key = "Vlog List"
 
     override fun get(): Single<List<Vlog>> =

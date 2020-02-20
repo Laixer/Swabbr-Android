@@ -16,9 +16,9 @@
             android:id="@+id/userUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="textEnd"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textAlignment="textEnd"
             android:textColor="@color/colorAccent"
             tools:text="Username" />
 
@@ -26,9 +26,9 @@
             android:id="@+id/userName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="textEnd"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textAlignment="textEnd"
             android:textAppearance="@style/SmallTextAppearance"
             tools:text="Name" />
 

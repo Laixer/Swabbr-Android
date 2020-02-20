@@ -13,8 +13,6 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-        <include layout="@layout/toolbar" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,5 +45,15 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_list_profilevlog" />
 
+        <TextView
+            android:id="@+id/no_vlogs_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/user_no_vlogs"
+            android:visibility="gone" />
+
     </LinearLayout>
+
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+

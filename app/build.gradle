@@ -5,6 +5,7 @@ apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion Versions.compileSdk
+    buildToolsVersion Versions.buildTools
     defaultConfig {
         applicationId ApplicationId.id
         minSdkVersion Versions.minSdk

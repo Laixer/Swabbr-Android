@@ -11,10 +11,8 @@ class ReactionEntityTest {
     @Test
     fun `map entity to domain`() {
         // given
-
         // when
         val model = reactionEntity.mapToDomain()
-
         // then
         assertEquals(model.userId, reactionEntity.userId)
         assertEquals(model.vlogId, reactionEntity.vlogId)

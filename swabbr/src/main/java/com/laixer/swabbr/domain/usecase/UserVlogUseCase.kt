@@ -1,9 +1,9 @@
 package com.laixer.swabbr.domain.usecase
 
-import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.model.User
-import com.laixer.swabbr.domain.repository.VlogRepository
+import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.repository.UserRepository
+import com.laixer.swabbr.domain.repository.VlogRepository
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 
@@ -23,7 +23,7 @@ class UsersVlogsUseCase constructor(
         Single.zip(userRepository.get(refresh), vlogRepository.get(refresh),
             BiFunction { userList, vlogList -> map(userList, vlogList) })
 
-    fun get(ids: ArrayList<String>, refresh: Boolean): Single<List<Pair<User, Vlog>>> =
+    fun get(ids: Array<String>, refresh: Boolean): Single<List<Pair<User, Vlog>>> =
         Single.zip(userRepository.get(refresh), vlogRepository.get(refresh),
             BiFunction { user, vlog -> map(user, vlog.filter { ids.contains(it.id) }) })
 }

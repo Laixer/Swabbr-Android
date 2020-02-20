@@ -13,10 +13,8 @@ class ProfileVlogItemTest {
     fun `map domain to presentation`() {
         // given
         val pairUserVlog = Pair(user, vlog)
-
         // when
         val profileVlogItem = pairUserVlog.mapToPresentation()
-
         // then
         assertEquals(profileVlogItem.userId, user.id)
         assertEquals(profileVlogItem.nickname, user.nickname)

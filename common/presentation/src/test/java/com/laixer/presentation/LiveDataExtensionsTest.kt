@@ -11,10 +11,8 @@ import org.junit.rules.TestRule
 class LiveDataExtensionsTest {
 
     private lateinit var liveData: MutableLiveData<Resource<Int>>
-
     private val data = 1
     private val errorMessage = "Error"
-
     @Rule
     @JvmField
     val instantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
@@ -28,10 +26,8 @@ class LiveDataExtensionsTest {
     fun `loading to success`() {
         // given
         liveData.setLoading()
-
         // when
         liveData.setSuccess(data)
-
         // then
         assertEquals(Resource(ResourceState.SUCCESS, data, null), liveData.value)
     }
@@ -41,10 +37,8 @@ class LiveDataExtensionsTest {
         // given
         liveData.setLoading()
         liveData.setSuccess(data)
-
         // when
         liveData.setLoading()
-
         // then
         assertEquals(Resource(ResourceState.LOADING, data, null), liveData.value)
     }
@@ -55,10 +49,8 @@ class LiveDataExtensionsTest {
         liveData.setLoading()
         liveData.setSuccess(data)
         liveData.setLoading()
-
         // when
         liveData.setError(errorMessage)
-
         // then
         assertEquals(Resource(ResourceState.ERROR, data, errorMessage), liveData.value)
     }
@@ -67,10 +59,8 @@ class LiveDataExtensionsTest {
     fun `loading to error`() {
         // given
         liveData.setLoading()
-
         // when
         liveData.setError(errorMessage)
-
         // then
         assertEquals(Resource(ResourceState.ERROR, null, errorMessage), liveData.value)
     }
@@ -81,10 +71,8 @@ class LiveDataExtensionsTest {
         liveData.setLoading()
         liveData.setError(errorMessage)
         liveData.setLoading()
-
         // when
         liveData.setSuccess(data)
-
         // then
         assertEquals(Resource(ResourceState.SUCCESS, data, null), liveData.value)
     }

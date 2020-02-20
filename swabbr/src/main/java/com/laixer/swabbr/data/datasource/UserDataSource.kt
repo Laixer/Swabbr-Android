@@ -19,4 +19,6 @@ interface UserRemoteDataSource {
     fun get(): Single<List<User>>
 
     fun get(userId: String): Single<User>
+
+    fun search(name: String): Single<List<User>>
 }

@@ -15,7 +15,6 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.laixer.swabbr.presentation.model.ProfileVlogItem
-import com.laixer.swabbr.presentation.model.getUrlString
 
 class VlogFragment : Fragment() {
 
@@ -26,19 +25,19 @@ class VlogFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         profileVlogItem = arguments!!.getSerializable(PROFILEVLOGITEM_KEY) as ProfileVlogItem
-
         val dataSourceFactory: DataSource.Factory = when (profileVlogItem.isLive) {
             true -> DefaultHttpDataSourceFactory(Util.getUserAgent(this.context, "Swabbr"))
-            false -> DefaultDataSourceFactory(this.context, Util.getUserAgent(this.context, "Swabbr"))
+            false -> DefaultDataSourceFactory(
+                this.context,
+                Util.getUserAgent(this.context, "Swabbr")
+            )
         }
-
         // Check if we need to create a progressive or HLS datasource
         val mediaSourceFactory = when (profileVlogItem.isLive) {
             true -> HlsMediaSource.Factory(dataSourceFactory).setAllowChunklessPreparation(true)
             false -> ProgressiveMediaSource.Factory(dataSourceFactory)
         }
-
-        val uri = Uri.parse(profileVlogItem.getUrlString())
+        val uri = Uri.parse(profileVlogItem.url)
         val mediaSource = mediaSourceFactory.createMediaSource(uri)
 
         exoPlayer = ExoPlayerFactory.newSimpleInstance(this.context)

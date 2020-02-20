@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit
 
 class TimerView(context: Context, attrs: AttributeSet?) : AppCompatTextView(context, attrs) {
     var mTimerStart = 0L
-
     private var mTimerThread: ScheduledExecutorService? = null
     private var events = ArrayList<Pair<Pair<Int, Int>, () -> Unit>>()
 
@@ -52,7 +51,6 @@ class TimerView(context: Context, attrs: AttributeSet?) : AppCompatTextView(cont
             Handler(Looper.getMainLooper()).post {
                 val durationMs = mTimerProvider.getDuration()
                 val timecodeMs = mTimerProvider.getTimecode()
-
                 val timecodeTotalSeconds = timecodeMs / MILLISECONDS_PER_SECOND
                 val timecodeMinutes = ((timecodeTotalSeconds / SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE).toInt()
                 val timecodeSeconds = (timecodeTotalSeconds % SECONDS_PER_MINUTE).toInt()

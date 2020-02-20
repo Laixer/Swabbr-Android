@@ -12,10 +12,8 @@ class SettingsItemTest {
     fun `map domain to presentation`() {
         // given
         val settings = settings
-
         // when
         val settingsItem = settings.mapToPresentation()
-
         // then
         assertEquals(settingsItem.private, settings.private)
         assertEquals(settingsItem.dailyVlogRequestLimit, settings.dailyVlogRequestLimit)
