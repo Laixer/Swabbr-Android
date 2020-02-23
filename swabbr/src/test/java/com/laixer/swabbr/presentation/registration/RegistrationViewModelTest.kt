@@ -1,6 +1,4 @@
-@file:Suppress("IllegalIdentifier")
-
-package com.laixer.swabbr.presentation.settings
+package com.laixer.swabbr.presentation.registration
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.mock
@@ -9,8 +7,10 @@ import com.nhaarman.mockitokotlin2.whenever
 import com.laixer.swabbr.presentation.RxSchedulersOverrideRule
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
-import com.laixer.swabbr.*
 import com.laixer.swabbr.domain.usecase.AuthUseCase
+import com.laixer.swabbr.registration
+import com.laixer.swabbr.settings
+import com.laixer.swabbr.user
 import io.reactivex.Single
 import org.junit.Assert.assertEquals
 import org.junit.Before

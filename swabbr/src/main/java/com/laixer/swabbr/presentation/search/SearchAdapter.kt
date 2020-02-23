@@ -5,13 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.laixer.swabbr.R
 import com.laixer.presentation.inflate
+import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.ProfileItem
 import kotlinx.android.synthetic.main.include_user_info.view.*
 
-class SearchAdapter(val context: Context) : ListAdapter<ProfileItem, SearchAdapter.ViewHolder>(ProfileDiffCallback()) {
+class SearchAdapter(val context: Context, val onClick: (ProfileItem) -> Unit) :
+    ListAdapter<ProfileItem, SearchAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(parent)
@@ -26,6 +27,8 @@ class SearchAdapter(val context: Context) : ListAdapter<ProfileItem, SearchAdapt
             itemView.userAvatar.loadAvatar(item.id)
             itemView.userUsername.text = context.getString(R.string.nickname, item.nickname)
             itemView.userName.text = context.getString(R.string.full_name, item.firstName, item.lastName)
+
+            itemView.setOnClickListener { onClick.invoke(item) }
         }
     }
 }

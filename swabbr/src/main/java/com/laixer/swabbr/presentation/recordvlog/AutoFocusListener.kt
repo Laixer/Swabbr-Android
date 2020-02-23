@@ -23,7 +23,8 @@ class AutoFocusListener(context: Context, cameraView: WOWZCameraView) :
     override fun onDoubleTap(e: MotionEvent?): Boolean {
         mCameraView?.camera?.let {
             if (it.hasCapability(WOWZCamera.FOCUS_MODE_CONTINUOUS) &&
-                it.focusMode != WOWZCamera.FOCUS_MODE_CONTINUOUS) {
+                it.focusMode != WOWZCamera.FOCUS_MODE_CONTINUOUS
+            ) {
                 it.focusMode = WOWZCamera.FOCUS_MODE_CONTINUOUS
                 Toast.makeText(mContext, "Continuous video focus on", Toast.LENGTH_SHORT).show()
             } else {

@@ -15,9 +15,7 @@ import com.wowza.gocoder.sdk.api.graphics.WOWZColor
 import com.wowza.gocoder.sdk.api.logging.WOWZLog
 import com.wowza.gocoder.sdk.api.status.WOWZBroadcastStatusCallback
 import com.wowza.gocoder.sdk.support.status.WOWZStatus
-
 import kotlinx.android.synthetic.main.activity_record.*
-import java.util.*
 
 abstract class CameraActivityBase : GoCoderSDKActivityBase(), WOWZCameraView.PreviewStatusListener,
     WOWZBroadcastStatusCallback {
@@ -27,10 +25,8 @@ abstract class CameraActivityBase : GoCoderSDKActivityBase(), WOWZCameraView.Pre
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_record)
-
         // Set mirror capability
         // camera_view.setSurfaceExtension(WOWZCameraView.EXTENSION_MIRROR)
-
         camera_view.scaleMode = WOWZMediaConfig.FILL_VIEW
         camera_view.videoBackgroundColor = WOWZColor.DARKGREY
 
@@ -84,12 +80,16 @@ abstract class CameraActivityBase : GoCoderSDKActivityBase(), WOWZCameraView.Pre
         Toast.makeText(this, wzError.toString(), Toast.LENGTH_LONG).show()
     }
 
-    override fun onWZCameraPreviewStarted(wzCamera: WOWZCamera, wSize: WOWZSize, i: Int) { return }
-    override fun onWZCameraPreviewStopped(p0: Int) { return }
+    override fun onWZCameraPreviewStarted(wzCamera: WOWZCamera, wSize: WOWZSize, i: Int) {
+        return
+    }
+
+    override fun onWZCameraPreviewStopped(p0: Int) {
+        return
+    }
 
     override fun onResume() {
         super.onResume()
-
         // Check if we have permissions
         ifAllPermissionsGranted {
             camera_view?.let {
@@ -98,10 +98,8 @@ abstract class CameraActivityBase : GoCoderSDKActivityBase(), WOWZCameraView.Pre
                         it.onResume()
                     else
                         it.startPreview(this) // Apply the configuration to the broadcaster and start previewing
-
                     if (autoFocusDetector == null) autoFocusDetector =
                         GestureDetectorCompat(this, AutoFocusListener(this, camera_view))
-
                     // Enable continuous focus on the initial camera
                     setContinuousFocus(it.camera)
                     setTorch(it.camera)
@@ -118,6 +116,7 @@ abstract class CameraActivityBase : GoCoderSDKActivityBase(), WOWZCameraView.Pre
         autoFocusDetector?.onTouchEvent(event)
         return super.onTouchEvent(event)
     }
+
     override fun onPause() {
         super.onPause()
         camera_view.clearView()

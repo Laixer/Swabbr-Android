@@ -2,7 +2,6 @@ package com.laixer.swabbr.presentation.vlogdetails
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.laixer.swabbr.presentation.model.mapToPresentation
 import com.laixer.presentation.Resource
 import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
@@ -11,6 +10,7 @@ import com.laixer.swabbr.domain.usecase.UserReactionUseCase
 import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
 import com.laixer.swabbr.presentation.model.ProfileVlogItem
 import com.laixer.swabbr.presentation.model.ReactionItem
+import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
@@ -20,11 +20,10 @@ class VlogDetailsViewModel constructor(
 ) : ViewModel() {
 
     val vlogs = MutableLiveData<Resource<List<ProfileVlogItem>>>()
-
     val reactions = MutableLiveData<Resource<List<ReactionItem>>>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun getVlogs(ids: ArrayList<String>, refresh: Boolean = false) =
+    fun getVlogs(ids: Array<String>, refresh: Boolean = false) =
         compositeDisposable.add(usersVlogsUseCase.get(ids, refresh)
             .doOnSubscribe { vlogs.setLoading() }
             .subscribeOn(Schedulers.io())

@@ -2,12 +2,12 @@ package com.laixer.core
 
 import android.app.IntentService
 import android.content.Intent
-import com.microsoft.windowsazure.messaging.NotificationHub
-import com.microsoft.windowsazure.messaging.RegistrationGoneException
-import com.google.firebase.iid.FirebaseInstanceId
 import android.util.Log
 import android.widget.Toast
+import com.google.firebase.iid.FirebaseInstanceId
 import com.laixer.cache.MemoryCache
+import com.microsoft.windowsazure.messaging.NotificationHub
+import com.microsoft.windowsazure.messaging.RegistrationGoneException
 import java.util.concurrent.TimeUnit
 
 class RegistrationIntentService : IntentService(TAG) {
@@ -97,7 +97,7 @@ class RegistrationIntentService : IntentService(TAG) {
 
         // Notify UI that registration has completed.
         if (MainActivity.isVisible) {
-            Toast.makeText(MainActivity.mainActivity, resultString, Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, resultString, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -105,8 +105,8 @@ class RegistrationIntentService : IntentService(TAG) {
         const val HubName = "swabbr"
         const val HubListenConnectionString =
             "Endpoint=sb://swabbr-notificationhubs.servicebus.windows.net/;" +
-            "SharedAccessKeyName=DefaultListenSharedAccessSignature;" +
-            "SharedAccessKey=FjhpRaNYK6WrnEYQKQcnfmXBLdUP/4xMVQaCnCIqzYQ="
+                    "SharedAccessKeyName=DefaultListenSharedAccessSignature;" +
+                    "SharedAccessKey=FjhpRaNYK6WrnEYQKQcnfmXBLdUP/4xMVQaCnCIqzYQ="
     }
 
     companion object {

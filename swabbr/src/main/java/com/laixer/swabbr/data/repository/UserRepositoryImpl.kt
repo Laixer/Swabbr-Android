@@ -26,4 +26,7 @@ class UserRepositoryImpl constructor(
             false -> cacheDataSource.get(userId)
                 .onErrorResumeNext { get(userId, true) }
         }
+
+    override fun search(name: String): Single<List<User>> =
+        remoteDataSource.search(name).flatMap { cacheDataSource.set(it) }
 }

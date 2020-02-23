@@ -1,11 +1,11 @@
 package com.laixer.swabbr.presentation.settings
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
@@ -13,11 +13,10 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.model.SettingsItem
 import kotlinx.android.synthetic.main.activity_settings.*
-import org.koin.androidx.viewmodel.ext.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
     private val vm: SettingsViewModel by viewModel()
-
     private var settings: SettingsItem? = null
     private var savedSettings: SettingsItem? = null
 
@@ -89,7 +88,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        val spinnerWatcher = object : AdapterView.OnItemSelectedListener {
+        followmodeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 return
             }
@@ -99,7 +98,6 @@ class SettingsActivity : AppCompatActivity() {
                 checkChanges()
             }
         }
-        followmodeSpinner.onItemSelectedListener = spinnerWatcher
 
         ArrayAdapter.createFromResource(
             this,

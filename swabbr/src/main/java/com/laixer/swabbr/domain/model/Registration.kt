@@ -1,6 +1,6 @@
 package com.laixer.swabbr.domain.model
 
-import java.util.*
+import java.util.Date
 
 data class Registration(
     val firstName: String,

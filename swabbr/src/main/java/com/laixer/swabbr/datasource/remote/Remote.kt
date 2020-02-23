@@ -3,9 +3,9 @@ package com.laixer.swabbr.datasource.remote
 import com.laixer.swabbr.datasource.model.AuthenticatedUserEntity
 import com.laixer.swabbr.datasource.model.FollowStatusEntity
 import com.laixer.swabbr.datasource.model.ReactionEntity
+import com.laixer.swabbr.datasource.model.SettingsEntity
 import com.laixer.swabbr.datasource.model.UserEntity
 import com.laixer.swabbr.datasource.model.VlogEntity
-import com.laixer.swabbr.datasource.model.SettingsEntity
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -28,6 +28,9 @@ interface UsersApi {
 
     @GET("users/{id}")
     fun getUser(@Path("id") userId: String): Single<UserEntity>
+
+    @GET("users")
+    fun searchUserByFirstname(@Query("firstName_like") name: String): Single<List<UserEntity>>
 }
 
 interface ReactionsApi {

@@ -2,7 +2,6 @@ package com.laixer.swabbr.datasource.model
 
 import com.laixer.swabbr.domain.model.Vlog
 import com.squareup.moshi.Json
-import java.util.*
 
 data class VlogEntity(
     @field:Json(name = "userId") val userId: String,

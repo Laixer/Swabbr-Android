@@ -1,15 +1,19 @@
 package com.laixer.swabbr.presentation.profile
 
+import android.content.Context
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.laixer.swabbr.R
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.laixer.presentation.inflate
+import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.item_list_profilevlog.view.*
 
-class ProfileVlogsAdapter : ListAdapter<VlogItem, ProfileVlogsAdapter.ViewHolder>(ProfileDiffCallback()) {
+class ProfileVlogsAdapter(private val context: Context, private val onClick: (VlogItem) -> Unit) :
+    ListAdapter<VlogItem, ProfileVlogsAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(parent)
@@ -21,8 +25,19 @@ class ProfileVlogsAdapter : ListAdapter<VlogItem, ProfileVlogsAdapter.ViewHolder
         RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_profilevlog)) {
 
         fun bind(item: VlogItem) {
+            val url = item.url.replace("http://", "https://")
+
+            Glide.with(context)
+                .load(url)
+                .placeholder(R.drawable.thumbnail_placeholder)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .dontAnimate()
+                .dontTransform()
+                .into(itemView.thumbnail)
             itemView.vlogPostDate.text = item.startDate
             itemView.vlogDuration.text = item.duration
+
+            itemView.setOnClickListener { onClick.invoke(item) }
         }
     }
 }

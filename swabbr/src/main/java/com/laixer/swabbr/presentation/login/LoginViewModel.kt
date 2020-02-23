@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.settings
+package com.laixer.swabbr.presentation.login
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

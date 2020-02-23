@@ -8,4 +8,6 @@ interface UserRepository {
     fun get(refresh: Boolean): Single<List<User>>
 
     fun get(userId: String, refresh: Boolean): Single<User>
+
+    fun search(name: String): Single<List<User>>
 }

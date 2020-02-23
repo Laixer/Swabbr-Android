@@ -1,39 +1,45 @@
 package com.laixer.swabbr.presentation.registration
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.DatePicker
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.laixer.navigation.features.SwabbrNavigation
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.model.Registration
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.settings.RegistrationViewModel
-import kotlinx.android.synthetic.main.activity_login.passwordInput
-import kotlinx.android.synthetic.main.activity_login.registerButton
-import kotlinx.android.synthetic.main.activity_registration.*
-import org.koin.androidx.viewmodel.ext.viewModel
+import kotlinx.android.synthetic.main.fragment_login.passwordInput
+import kotlinx.android.synthetic.main.fragment_login.registerButton
+import kotlinx.android.synthetic.main.fragment_registration.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
-import java.util.*
-import android.app.DatePickerDialog
-import android.widget.DatePicker
-import com.laixer.navigation.features.SwabbrNavigation
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
-class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
+class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private val vm: RegistrationViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_registration)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_registration, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         prepareUI()
 
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", resources.configuration.locales[0])
 
         registerButton.setOnClickListener {
             vm.register(
@@ -44,7 +50,7 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
                     countrySpinner.selectedItem.toString(),
                     emailAddressInput.text.toString(),
                     passwordInput.text.toString(),
-                    dateFormat.parse(birthDatePicker.text.toString()),
+                    dateFormat.parse(birthDatePicker.text.toString())!!,
                     TimeZone.getDefault().getDisplayName(false, TimeZone.SHORT),
                     nicknameInput.text.toString(),
                     "",
@@ -56,7 +62,7 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
 
         injectFeature()
 
-        vm.authorized.observe(this, Observer { register(it) })
+        vm.authorized.observe(viewLifecycleOwner, Observer { register(it) })
     }
 
     private fun register(res: Resource<Boolean>) {
@@ -68,7 +74,7 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
             }
             ResourceState.ERROR -> {
                 passwordInput.text.clear()
-                Toast.makeText(this, res.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity!!.applicationContext, res.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -118,7 +124,7 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
         countrySpinner.onItemSelectedListener = spinnerWatcher
 
         ArrayAdapter.createFromResource(
-            this,
+            context!!,
             R.array.gender_array,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
@@ -130,13 +136,13 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
             it.getDisplayCountry(Locale.getDefault())
         }.filter { !it.isNullOrEmpty() }.toSortedSet().toTypedArray()
 
-        var adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, countries)
+        var adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, countries)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         countrySpinner.adapter = adapter
         countrySpinner.setSelection(countries.indexOf(Locale.getDefault().getDisplayCountry(Locale.getDefault())))
 
         ArrayAdapter.createFromResource(
-            this,
+            context!!,
             R.array.gender_array,
             android.R.layout.simple_spinner_item
         ).also {
@@ -161,19 +167,19 @@ class RegistrationActivity : AppCompatActivity(), DatePickerDialog.OnDateSetList
 
     private fun checkChanges() {
         registerButton.isEnabled = !(
-                firstNameInput.text.isNullOrEmpty() ||
-                        lastNameInput.text.isNullOrEmpty() ||
-                        phoneNumberInput.text.isNullOrEmpty() ||
-                        nicknameInput.text.isNullOrEmpty() ||
-                        emailAddressInput.text.isNullOrEmpty() ||
-                        passwordInput.text.isNullOrEmpty() ||
-                        confirmPasswordInput.text.isNullOrEmpty()) &&
-                (passwordInput.text.toString() == confirmPasswordInput.text.toString())
+            firstNameInput.text.isNullOrEmpty() ||
+                lastNameInput.text.isNullOrEmpty() ||
+                phoneNumberInput.text.isNullOrEmpty() ||
+                nicknameInput.text.isNullOrEmpty() ||
+                emailAddressInput.text.isNullOrEmpty() ||
+                passwordInput.text.isNullOrEmpty() ||
+                confirmPasswordInput.text.isNullOrEmpty()) &&
+            (passwordInput.text.toString() == confirmPasswordInput.text.toString())
     }
 
     private fun showDatePickerDialog() {
         val datePickerDialog = DatePickerDialog(
-            this,
+            context!!,
             this,
             Calendar.getInstance().get(Calendar.YEAR),
             Calendar.getInstance().get(Calendar.MONTH),

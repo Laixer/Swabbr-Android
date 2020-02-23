@@ -2,7 +2,6 @@ package com.laixer.swabbr.datasource.model
 
 import com.laixer.swabbr.domain.model.Reaction
 import com.squareup.moshi.Json
-import java.util.*
 
 data class ReactionEntity(
     @field:Json(name = "userId") val userId: String,

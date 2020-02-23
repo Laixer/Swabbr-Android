@@ -11,8 +11,12 @@ android {
     }
 
     compileOptions {
-            sourceCompatibility 1.8
-            targetCompatibility 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
 
@@ -47,8 +51,11 @@ dependencies {
     implementation Libraries.ktx
     implementation JetpackLibraries.appcompat
     implementation JetpackLibraries.fragment
-    implementation JetpackLibraries.viewpager2
-    implementation JetpackLibraries.swiperefreshlayout
+    implementation JetpackLibraries.viewPager2
+    implementation JetpackLibraries.swiperefreshLayout
+    implementation JetpackLibraries.constraintLayout
+    implementation "androidx.navigation:navigation-fragment-ktx:2.2.1"
+    implementation "androidx.navigation:navigation-ui-ktx:2.2.1"
 
     implementation GoogleLibraries.material
     implementation GoogleLibraries.exoplayer

@@ -9,35 +9,72 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/content_margin"
         android:orientation="vertical">
 
-        <include layout="@layout/include_user_info" />
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="150dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/thumbnail_placeholder" />
+
+        </com.google.android.material.card.MaterialCardView>
 
         <View
             style="@style/Divider"
             android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginTop="@dimen/divider_margin"
-            android:layout_marginBottom="@dimen/divider_margin" />
+            android:layout_height="1px" />
 
-        <TextView
-            android:id="@+id/vlogPostDate"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textAppearance="@style/SubtitleTextAppearance"
-            tools:text="Vlog Post Date" />
+            android:layout_margin="@dimen/content_margin"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/vlogDuration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textAppearance="@style/SmallTextAppearance"
-            tools:text="Vlog Duration" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center">
+
+                <include layout="@layout/include_user_info" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/vlogPostDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@style/SubtitleTextAppearance"
+                    tools:text="Vlog Post Date" />
+
+                <TextView
+                    android:id="@+id/vlogDuration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@style/SmallTextAppearance"
+                    tools:text="Vlog Duration" />
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </LinearLayout>
 

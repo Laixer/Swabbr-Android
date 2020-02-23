@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.settings
+package com.laixer.swabbr.presentation.registration
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
