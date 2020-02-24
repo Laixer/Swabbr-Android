@@ -1,22 +1,28 @@
 package com.laixer.swabbr
 
+import com.laixer.swabbr.datasource.model.AuthenticatedUserEntity
 import com.laixer.swabbr.datasource.model.FollowStatusEntity
 import com.laixer.swabbr.datasource.model.ReactionEntity
 import com.laixer.swabbr.datasource.model.SettingsEntity
 import com.laixer.swabbr.datasource.model.UserEntity
 import com.laixer.swabbr.datasource.model.VlogEntity
+import com.laixer.swabbr.domain.model.Login
 import com.laixer.swabbr.domain.model.Reaction
+import com.laixer.swabbr.domain.model.Registration
 import com.laixer.swabbr.domain.model.Settings
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.model.Vlog
+import com.laixer.swabbr.presentation.model.LoginItem
+import com.laixer.swabbr.presentation.model.RegistrationItem
 import java.util.Calendar
+import java.util.Date
 
 private val date = Calendar.getInstance().time.toString()
 val user = User(
     "userId",
     "name",
-    "username",
-    "email",
+    "lastname",
+    "male",
     "country",
     "email",
     "timezone",
@@ -52,6 +58,47 @@ val settings = Settings(
     2,
     1
 )
+
+val login = Login(
+    "username",
+    "password"
+)
+
+val registration = Registration(
+    "firstname",
+    "lastname",
+    0,
+    "country",
+    "email@email.com",
+    "password",
+    Date.from(Date().toInstant()),
+    "GMT+01:00",
+    "nickname",
+    "profileImageUrl",
+    false,
+    "0612345678"
+)
+
+val loginItem = LoginItem(
+    "username",
+    "password"
+)
+
+val registrationItem = RegistrationItem(
+    "firstname",
+    "lastname",
+    0,
+    "country",
+    "email@email.com",
+    "password",
+    Date.from(Date().toInstant()),
+    "GMT+01:00",
+    "nickname",
+    "profileImageUrl",
+    false,
+    "0612345678"
+)
+
 val followStatus = "Pending"
 val pairUserVlog = Pair(user, vlog)
 val userEntity = UserEntity(
@@ -96,4 +143,10 @@ val settingsEntity = SettingsEntity(
 )
 val followStatusEntity = FollowStatusEntity(
     "pending"
+)
+
+val authenticatedUserEntity = AuthenticatedUserEntity(
+    "token",
+    userEntity,
+    settingsEntity
 )

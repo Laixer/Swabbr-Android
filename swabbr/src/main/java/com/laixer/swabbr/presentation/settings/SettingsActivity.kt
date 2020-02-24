@@ -23,7 +23,7 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-        loadSpinners()
+        prepareUI()
 
         saveSettings.setOnClickListener {
             settings?.let {
@@ -64,12 +64,19 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadSpinners() {
+    private fun prepareUI() {
+        prepareSwitch()
+        prepareSpinners()
+    }
+
+    private fun prepareSwitch() {
         privateSwitch.setOnCheckedChangeListener { _, isChecked ->
             settings?.private = isChecked
             checkChanges()
         }
+    }
 
+    private fun prepareSpinners() {
         dailyVlogRequestLimitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 return

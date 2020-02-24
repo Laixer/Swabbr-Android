@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_authentication"
+    app:startDestination="@id/login_dest">
+
+    <fragment
+        android:id="@+id/login_dest"
+        android:name="com.laixer.swabbr.presentation.login.LoginFragment"
+        android:label="@string/login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_register"
+            app:destination="@id/register_dest" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/register_dest"
+        android:name="com.laixer.swabbr.presentation.registration.RegistrationFragment"
+        android:label="@string/register"
+        tools:layout="@layout/fragment_registration" />
+
+</navigation>

@@ -24,6 +24,9 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
+            android:name="com.laixer.swabbr.presentation.AuthActivity" />
+
+        <activity
             android:name="com.laixer.swabbr.presentation.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

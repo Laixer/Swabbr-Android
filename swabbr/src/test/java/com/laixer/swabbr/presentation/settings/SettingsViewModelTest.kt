@@ -37,7 +37,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `get profiles succeeds`() {
+    fun `get settings succeeds`() {
         // given
         whenever(mockSettingsUseCase.get(false))
             .thenReturn(Single.just(settings))
@@ -52,7 +52,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `get profiles fails`() {
+    fun `get settings fails`() {
         // given
         whenever(mockSettingsUseCase.get(true)).thenReturn(Single.error(throwable))
         // when

@@ -1,5 +1,6 @@
 package com.laixer.swabbr.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
@@ -15,6 +16,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkAuthentication()
+
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
@@ -27,6 +30,16 @@ class MainActivity : AppCompatActivity() {
         // and its selectedItemId, we can proceed with setting up the
         // BottomNavigationBar with Navigation
         setupBottomNavigationBar()
+    }
+
+    override fun onResume() {
+        checkAuthentication()
+        super.onResume()
+    }
+
+    override fun onRestart() {
+        checkAuthentication()
+        super.onRestart()
     }
 
     /**
@@ -53,6 +66,15 @@ class MainActivity : AppCompatActivity() {
             setupActionBarWithNavController(navController)
         })
         currentNavController = controller
+    }
+
+    private fun checkAuthentication() {
+        /** Check if authenticated, if not, redirect to [AuthActivity] **/
+        val intent = Intent(this, AuthActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        }
+        startActivity(intent)
+        finish()
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -123,7 +123,7 @@ object JetpackLibraries {
     val cardView = "androidx.cardview:cardview:${Versions.androidx}"
     val recyclerView = "androidx.recyclerview:recyclerview:${Versions.androidx}"
     val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintlayout}"
-    val fragment = "androidx.fragment:fragment-ktx:1.2.1"
+    val fragment = "androidx.fragment:fragment-ktx:1.2.2"
     val viewPager2 = "androidx.viewpager2:viewpager2:${Versions.viewpager2}"
     val swiperefreshLayout = "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.swiperefreshlayout}"
 }

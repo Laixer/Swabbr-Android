@@ -54,4 +54,31 @@
     <string name="acceptall">Accept all</string>
     <string name="denyall">Deny all</string>
 
+    <string name="profileIsPrivate">Profile is private</string>
+    <string name="dailyVlogRequestLimit">Daily vlog request limit</string>
+    <string name="followMode">Follow mode</string>
+    <string name="save">Save</string>
+
+    <string name="usernameEmail">Username/Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="signin">Signin</string>
+    <string name="register">Register</string>
+    <string name="forgot">Forgot password?</string>
+
+    <string name="firstName">First name</string>
+    <string name="lastName">Last name</string>
+    <string name="gender">Gender</string>
+    <string name="country">Country</string>
+    <string name="birthDate">Birth date</string>
+    <string name="phoneNumber">Phone number</string>
+    <string name="emailAddress">Email address</string>
+    <string name="confirmPassword">Confirm password</string>
+
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other">Other</string>
+
+    <string name="birthDatePicker">%1$s/%2$s/%3$s</string>
+
 </resources>

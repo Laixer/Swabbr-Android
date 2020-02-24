@@ -54,8 +54,8 @@ dependencies {
     implementation JetpackLibraries.viewPager2
     implementation JetpackLibraries.swiperefreshLayout
     implementation JetpackLibraries.constraintLayout
-    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha01"
-    implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha01"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.2.1"
+    implementation "androidx.navigation:navigation-ui-ktx:2.2.1"
 
     implementation GoogleLibraries.material
     implementation GoogleLibraries.exoplayer

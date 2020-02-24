@@ -14,6 +14,5 @@ class SettingsCacheDataSourceImpl constructor(
     override fun get(): Single<Settings> =
         cache.load(key)
 
-    override fun set(settings: Settings): Single<Settings> =
-        cache.save(key, settings)
+    override fun set(settings: Settings): Single<Settings> = cache.save(key, settings)
 }
