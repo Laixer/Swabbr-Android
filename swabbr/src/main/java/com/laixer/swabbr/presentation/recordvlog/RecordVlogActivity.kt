@@ -19,17 +19,14 @@ import kotlinx.android.synthetic.main.activity_record.*
 class RecordVlogActivity : CameraActivityBase(), WOWZBroadcastStatusCallback {
 
     private var broadcasting = false
-
     private lateinit var streamConfig: WOWZBroadcastConfig
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val connectionSettings: SwabbrNavigation.ConnectionSettings? =
             intent.getSerializableExtra(SwabbrNavigation.CONNECTION_SETTINGS) as SwabbrNavigation.ConnectionSettings?
 
         toggle_broadcast.isEnabled = false
-
         // Check if we received connection credentials
         if (connectionSettings == null) {
             Toast.makeText(
@@ -39,7 +36,6 @@ class RecordVlogActivity : CameraActivityBase(), WOWZBroadcastStatusCallback {
             ).show()
             return
         }
-
         // Create a stream configuration
         streamConfig = WOWZBroadcastConfig(WOWZMediaConfig.FRAME_SIZE_1920x1080)
 
@@ -51,7 +47,6 @@ class RecordVlogActivity : CameraActivityBase(), WOWZBroadcastStatusCallback {
         streamConfig.applicationName = connectionSettings.appName
         streamConfig.streamName = connectionSettings.streamName
         streamConfig.portNumber = connectionSettings.port
-
         // Check if the config is valid
         streamConfig.validateForBroadcast()?.let { error ->
             Toast.makeText(
@@ -82,12 +77,12 @@ class RecordVlogActivity : CameraActivityBase(), WOWZBroadcastStatusCallback {
                     Toast.makeText(
                         this,
                         "Started broadcasting" +
-                                "\n${mWZBroadcast.broadcastConfig.getLabel(
-                                    true,
-                                    true,
-                                    true,
-                                    true
-                                )}",
+                            "\n${mWZBroadcast.broadcastConfig.getLabel(
+                                true,
+                                true,
+                                true,
+                                true
+                            )}",
                         Toast.LENGTH_LONG
                     ).show()
 
@@ -105,7 +100,6 @@ class RecordVlogActivity : CameraActivityBase(), WOWZBroadcastStatusCallback {
                     ) {
                         stopBroadcasting("Time limit reached, stopping broadcast.")
                     }
-
                     // Start the timer when the user starts streaming
                     timer_view.startTimer()
                 }

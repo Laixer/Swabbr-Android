@@ -12,9 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.laixer.navigation.features.SwabbrNavigation
-import java.lang.UnsupportedOperationException
-import java.util.*
-import kotlin.IllegalArgumentException
+import java.util.Locale
 
 enum class Action {
     VLOG_NEW_REACTION,
@@ -128,7 +126,9 @@ class FirebaseService : FirebaseMessagingService() {
                     )!!
                 }
             } catch (e: IllegalArgumentException) {
-                Log.e(TAG, e.message)
+                e.message?.let {
+                    Log.e(TAG, it)
+                }
             }
         }
 

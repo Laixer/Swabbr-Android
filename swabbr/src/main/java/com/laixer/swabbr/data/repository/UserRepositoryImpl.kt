@@ -11,26 +11,15 @@ class UserRepositoryImpl constructor(
     private val remoteDataSource: UserRemoteDataSource
 ) : UserRepository {
 
-    override fun get(refresh: Boolean): Single<List<User>> =
-        when (refresh) {
-            true -> remoteDataSource.get()
-                .flatMap { cacheDataSource.set(it) }
-            false -> cacheDataSource.get()
-                .onErrorResumeNext { get(true) }
-        }
-
     override fun get(userId: String, refresh: Boolean): Single<User> =
         when (refresh) {
-            true -> remoteDataSource.get(userId)
-                .flatMap { cacheDataSource.set(it) }
-            false -> cacheDataSource.get(userId)
-                .onErrorResumeNext { get(userId, true) }
+            true -> remoteDataSource.get(userId).flatMap { cacheDataSource.set(it) }
+            false -> cacheDataSource.get(userId).onErrorResumeNext { get(userId, true) }
         }
-
-    override fun searchUser(userId: String): Single<List<User>> =
-            remoteDataSource.searchUser(userId)
-                .flatMap { cacheDataSource.set(it) }
 
     override fun set(user: User): Single<User> =
         cacheDataSource.set(user)
+
+    override fun search(name: String): Single<List<User>> =
+        remoteDataSource.search(name).flatMap { cacheDataSource.set(it) }
 }

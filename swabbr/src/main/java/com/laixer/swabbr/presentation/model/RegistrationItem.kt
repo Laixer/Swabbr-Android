@@ -1,7 +1,6 @@
 package com.laixer.swabbr.presentation.model
 
 import com.laixer.swabbr.domain.model.Registration
-import java.util.*
 
 data class RegistrationItem(
     val firstName: String,

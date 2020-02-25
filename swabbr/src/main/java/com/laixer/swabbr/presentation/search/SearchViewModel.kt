@@ -20,7 +20,7 @@ class SearchViewModel constructor(private val usersUseCase: UsersUseCase) :
 
     fun search(query: String) =
         compositeDisposable.add(
-            usersUseCase.searchUser(query)
+            usersUseCase.search(query)
                 .doOnSubscribe { profiles.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .map { it.mapToPresentation() }

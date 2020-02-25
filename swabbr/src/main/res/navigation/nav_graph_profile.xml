@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/nav_profile"
+    app:startDestination="@id/profile_dest">
+
+    <fragment
+        android:id="@+id/profile_dest"
+        android:name="com.laixer.swabbr.presentation.profile.ProfileFragment"
+        android:label="@string/userProfile"
+        tools:layout="@layout/fragment_profile">
+        <deepLink
+            android:id="@+id/deepLink"
+            android:autoVerify="true"
+            app:uri="profile/{userId}" />
+        <argument
+            android:name="userId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_view_vlog"
+            app:destination="@id/profile_vlog_details_dest" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profile_vlog_details_dest"
+        android:name="com.laixer.swabbr.presentation.vlogdetails.VlogDetailsFragment"
+        android:label="Vlog"
+        tools:layout="@layout/fragment_vlog_details">
+        <deepLink
+            android:id="@+id/deepLink"
+            android:autoVerify="true"
+            app:uri="profile/{vlogId}" />
+        <argument
+            android:name="vlogIds"
+            app:argType="string[]" />
+    </fragment>
+
+</navigation>

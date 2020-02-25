@@ -12,17 +12,16 @@ object SwabbrNavigation : DynamicFeature<Intent> {
 
     private const val LOGIN = "com.laixer.swabbr.presentation.login.LoginActivity"
     private const val REGISTRATION = "com.laixer.swabbr.presentation.registration.RegistrationActivity"
+    private const val MAIN_ACTIVITY = "com.laixer.swabbr.presentation.MainActivity"
     private const val PROFILE = "com.laixer.swabbr.presentation.profile.ProfileActivity"
     private const val VLOG_LIST = "com.laixer.swabbr.presentation.vloglist.VlogListActivity"
     private const val VLOG_DETAILS =
         "com.laixer.swabbr.presentation.vlogdetails.VlogDetailsActivity"
     private const val SEARCH = "com.laixer.swabbr.presentation.search.SearchActivity"
     private const val RECORD = "com.laixer.swabbr.presentation.recordvlog.RecordVlogActivity"
-
     private const val SETTINGS = "com.laixer.swabbr.presentation.settings.SettingsActivity"
-
     override val dynamicStart: Intent?
-        get() = LOGIN.loadIntentOrNull()
+    get() = MAIN_ACTIVITY.loadIntentOrNull()
 
     fun login(): Intent? =
         LOGIN.loadIntentOrNull()

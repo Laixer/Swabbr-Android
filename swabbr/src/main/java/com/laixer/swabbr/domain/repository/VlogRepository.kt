@@ -9,5 +9,5 @@ interface VlogRepository {
 
     fun get(vlogId: String, refresh: Boolean): Single<Vlog>
 
-    fun getFeaturedVlogs(): Single<List<Vlog>>
+    fun getFeaturedVlogs(refresh: Boolean): Single<List<Vlog>>
 }

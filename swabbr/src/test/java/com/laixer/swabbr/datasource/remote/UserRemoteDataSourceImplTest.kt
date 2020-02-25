@@ -1,13 +1,11 @@
-@file:Suppress("IllegalIdentifier")
-
 package com.laixer.swabbr.datasource.remote
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import com.laixer.swabbr.datasource.model.mapToDomain
 import com.laixer.swabbr.user
 import com.laixer.swabbr.userEntity
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
@@ -15,15 +13,10 @@ import org.junit.Test
 class UserRemoteDataSourceImplTest {
 
     private lateinit var dataSource: UserRemoteDataSourceImpl
-
     private val mockApi: UsersApi = mock()
-
     private val userId = user.id
-
     private val remoteItem = userEntity.copy(id = "remote")
-
     private val remoteList = listOf(remoteItem)
-
     private val throwable = Throwable()
 
     @Before
@@ -32,28 +25,24 @@ class UserRemoteDataSourceImplTest {
     }
 
     @Test
-    fun `get users remote success`() {
+    fun `search users remote success`() {
         // given
-        whenever(mockApi.getUsers()).thenReturn(Single.just(remoteList))
-
+        whenever(mockApi.searchUserByFirstname(user.firstName)).thenReturn(Single.just(remoteList))
         // when
-        val test = dataSource.get().test()
-
+        val test = dataSource.search(user.firstName).test()
         // then
-        verify(mockApi).getUsers()
+        verify(mockApi).searchUserByFirstname(user.firstName)
         test.assertValue(remoteList.mapToDomain())
     }
 
     @Test
-    fun `get users remote fail`() {
+    fun `search users remote fail`() {
         // given
-        whenever(mockApi.getUsers()).thenReturn(Single.error(throwable))
-
+        whenever(mockApi.searchUserByFirstname(user.firstName)).thenReturn(Single.error(throwable))
         // when
-        val test = dataSource.get().test()
-
+        val test = dataSource.search(user.firstName).test()
         // then
-        verify(mockApi).getUsers()
+        verify(mockApi).searchUserByFirstname(user.firstName)
         test.assertError(throwable)
     }
 
@@ -61,10 +50,8 @@ class UserRemoteDataSourceImplTest {
     fun `get user remote success`() {
         // given
         whenever(mockApi.getUser(userId)).thenReturn(Single.just(remoteItem))
-
         // when
         val test = dataSource.get(userId).test()
-
         // then
         verify(mockApi).getUser(userId)
         test.assertValue(remoteItem.mapToDomain())
@@ -74,10 +61,8 @@ class UserRemoteDataSourceImplTest {
     fun `get user remote fail`() {
         // given
         whenever(mockApi.getUser(userId)).thenReturn(Single.error(throwable))
-
         // when
         val test = dataSource.get(userId).test()
-
         // then
         verify(mockApi).getUser(userId)
         test.assertError(throwable)

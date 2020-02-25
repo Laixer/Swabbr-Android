@@ -1,5 +1,3 @@
-@file:Suppress("IllegalIdentifier")
-
 package com.laixer.swabbr.presentation.model
 
 import com.laixer.swabbr.user
@@ -13,16 +11,14 @@ class ProfileVlogItemTest {
     fun `map domain to presentation`() {
         // given
         val pairUserVlog = Pair(user, vlog)
-
         // when
         val profileVlogItem = pairUserVlog.mapToPresentation()
-
         // then
         assertEquals(profileVlogItem.userId, user.id)
         assertEquals(profileVlogItem.nickname, user.nickname)
         assertEquals(profileVlogItem.firstName, user.firstName)
         assertEquals(profileVlogItem.lastName, user.lastName)
-        assertEquals(profileVlogItem.vlogId, vlog.vlogId)
+        assertEquals(profileVlogItem.vlogId, vlog.id)
         assertEquals(profileVlogItem.startDate, vlog.startDate)
         assertEquals(profileVlogItem.isLive, vlog.isLive)
     }

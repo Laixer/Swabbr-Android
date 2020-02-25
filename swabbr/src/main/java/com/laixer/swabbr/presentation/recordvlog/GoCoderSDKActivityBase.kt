@@ -36,7 +36,6 @@ import kotlinx.android.synthetic.main.activity_record.*
 
 abstract class GoCoderSDKActivityBase : AppCompatActivity(), WOWZStatusCallback {
     private var mPermissionsGranted = false
-
     protected lateinit var mWZBroadcast: WOWZBroadcast
     protected lateinit var sGoCoderSDK: WowzaGoCoder
 
@@ -44,16 +43,13 @@ abstract class GoCoderSDKActivityBase : AppCompatActivity(), WOWZStatusCallback 
         super.onCreate(savedInstanceState)
         WOWZLog.LOGGING_ENABLED = true
         mPermissionsGranted = allPermissionsGranted()
-
         // Initalize the GoCoder SDK
         sGoCoderSDK = WowzaGoCoder.init(this, BuildConfig.GOCODER_SDK_KEY)
-
         // Make sure GoCoder was successfully initialized
         check(::sGoCoderSDK.isInitialized) { WowzaGoCoder.getLastError().errorDescription }
 
         mWZBroadcast = WOWZBroadcast()
         mWZBroadcast.logLevel = WOWZLog.LOG_LEVEL_DEBUG
-
         // Setup adaptive bitrate and framerate listeners
         mWZBroadcast.isABRActivated = true
         mWZBroadcast.registerAdaptiveFrameRateListener(abrListener)
@@ -66,7 +62,7 @@ abstract class GoCoderSDKActivityBase : AppCompatActivity(), WOWZStatusCallback 
     }
 
     protected fun checkPermissionGranted(source: String): Boolean =
-        ContextCompat.checkSelfPermission(baseContext, source) == PackageManager.PERMISSION_GRANTED
+        ContextCompat.checkSelfPermission(applicationContext, source) == PackageManager.PERMISSION_GRANTED
 
     protected fun ifAllPermissionsGranted(callback: () -> Unit) {
         if (mPermissionsGranted) {
@@ -115,18 +111,18 @@ abstract class GoCoderSDKActivityBase : AppCompatActivity(), WOWZStatusCallback 
     private fun hideSystemUI() {
         val rootView: View? = window.decorView.findViewById(android.R.id.content)
         rootView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
     }
 
     private fun showSystemUI() {
         val rootView: View? = window.decorView.findViewById(android.R.id.content)
         rootView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     }
 
     protected fun startBroadcast(
@@ -156,13 +152,11 @@ abstract class GoCoderSDKActivityBase : AppCompatActivity(), WOWZStatusCallback 
                 Toast.makeText(this, "The video stream is currently turned off", Toast.LENGTH_LONG)
                     .show()
             }
-
             // If config is invalid throw an error
             config.validateForBroadcast()?.let { error ->
                 WOWZLog.error(CameraActivityBase.TAG, error.errorDescription)
                 return error
             }
-
             // If config is valid start broadcasting
             mWZBroadcast.startBroadcast(config, callback)
         }
@@ -192,14 +186,12 @@ abstract class GoCoderSDKActivityBase : AppCompatActivity(), WOWZStatusCallback 
 
     companion object {
         private const val TAG = "GoCoderSDKActivityBase"
-
         // This is an array of all the permission specified in the manifest
         private val REQUIRED_PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.INTERNET
         )
-
         // This is an arbitrary number used to keep tab of the permission
         // request. Where an app has multiple context for requesting permission,
         // this can help differentiate the different contexts

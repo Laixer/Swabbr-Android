@@ -22,7 +22,7 @@ class AuthCacheDataSourceImpl constructor(
     }
 
     override fun getToken(): Single<String> =
-        get().flatMap { Single.just(it.first) }.onErrorResumeNext( set(Pair("", "")).flatMap { Single.just(it.first) })
+        get().flatMap { Single.just(it.first) }.onErrorResumeNext(set(Pair("", "")).flatMap { Single.just(it.first) })
 
     override fun getUserId(): Single<String> = cache.load(key).flatMap { Single.just(it.second) }
 }

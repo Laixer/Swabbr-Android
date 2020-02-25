@@ -1,5 +1,3 @@
-@file:Suppress("IllegalIdentifier")
-
 package com.laixer.swabbr.presentation.model
 
 import com.laixer.swabbr.registrationItem
@@ -12,10 +10,8 @@ class RegistrationItemTest {
     fun `map presentation to domain`() {
         // given
         val registrationItem = registrationItem
-
         // when
         val registration = registrationItem.mapToDomain()
-
         // then
         assertEquals(registration.firstName, registrationItem.firstName)
         assertEquals(registration.lastName, registrationItem.lastName)

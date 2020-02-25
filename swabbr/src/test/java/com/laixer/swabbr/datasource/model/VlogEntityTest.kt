@@ -1,5 +1,3 @@
-@file:Suppress("IllegalIdentifier")
-
 package com.laixer.swabbr.datasource.model
 
 import com.laixer.swabbr.vlogEntity
@@ -11,13 +9,11 @@ class VlogEntityTest {
     @Test
     fun `map entity to domain`() {
         // given
-
         // when
         val model = vlogEntity.mapToDomain()
-
         // then
         assertEquals(model.userId, vlogEntity.userId)
-        assertEquals(model.vlogId, vlogEntity.vlogId)
+        assertEquals(model.id, vlogEntity.id)
         assertEquals(model.startDate, vlogEntity.startDate)
         assertEquals(model.isLive, vlogEntity.isLive)
         assertEquals(model.isPrivate, vlogEntity.isPrivate)

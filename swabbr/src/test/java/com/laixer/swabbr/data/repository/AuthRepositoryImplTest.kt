@@ -1,5 +1,3 @@
-@file:Suppress("IllegalIdentifier")
-
 package com.laixer.swabbr.data.repository
 
 import com.laixer.swabbr.data.datasource.AuthCacheDataSource
@@ -19,15 +17,11 @@ import org.junit.Test
 class AuthRepositoryImplTest {
 
     private lateinit var repository: AuthRepositoryImpl
-
     private val mockAuthCacheDataSource: AuthCacheDataSource = mock()
     private val mockAuthRemoteDataSource: AuthRemoteDataSource = mock()
-
     private val cacheAuthItem = Pair("token", "userId")
     private val remoteAuthItem = AuthUser("token", user, settings)
-
     private val response = AuthUser("token", user, settings)
-
     private val throwable = Throwable()
 
     @Before
@@ -43,10 +37,8 @@ class AuthRepositoryImplTest {
         // given
         whenever(mockAuthRemoteDataSource.login(login)).thenReturn(Single.just(remoteAuthItem))
         whenever(mockAuthCacheDataSource.set(cacheAuthItem)).thenReturn(Single.just(cacheAuthItem))
-
         // when
         val test = repository.login(login).test()
-
         // then
         verify(mockAuthRemoteDataSource).login(login)
         verify(mockAuthCacheDataSource).set(cacheAuthItem)
@@ -57,10 +49,8 @@ class AuthRepositoryImplTest {
     fun `login fail`() {
         // given
         whenever(mockAuthRemoteDataSource.login(login)).thenReturn(Single.error(throwable))
-
         // when
         val test = repository.login(login).test()
-
         // then
         verify(mockAuthRemoteDataSource).login(login)
         test.assertError(throwable)
@@ -71,10 +61,8 @@ class AuthRepositoryImplTest {
         // given
         whenever(mockAuthRemoteDataSource.register(registration)).thenReturn(Single.just(remoteAuthItem))
         whenever(mockAuthCacheDataSource.set(cacheAuthItem)).thenReturn(Single.just(cacheAuthItem))
-
         // when
         val test = repository.register(registration).test()
-
         // then
         verify(mockAuthRemoteDataSource).register(registration)
         verify(mockAuthCacheDataSource).set(cacheAuthItem)
@@ -85,10 +73,8 @@ class AuthRepositoryImplTest {
     fun `registration fail`() {
         // given
         whenever(mockAuthRemoteDataSource.register(registration)).thenReturn(Single.error(throwable))
-
         // when
         val test = repository.register(registration).test()
-
         // then
         verify(mockAuthRemoteDataSource).register(registration)
         test.assertError(throwable)

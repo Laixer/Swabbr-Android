@@ -1,4 +1,5 @@
 package com.laixer.swabbr.datasource.remote
+
 import com.laixer.swabbr.data.datasource.SettingsRemoteDataSource
 import com.laixer.swabbr.datasource.model.mapToData
 import com.laixer.swabbr.datasource.model.mapToDomain

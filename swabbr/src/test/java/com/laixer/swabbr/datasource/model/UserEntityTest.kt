@@ -1,5 +1,3 @@
-@file:Suppress("IllegalIdentifier")
-
 package com.laixer.swabbr.datasource.model
 
 import com.laixer.swabbr.userEntity
@@ -12,10 +10,8 @@ class UserEntityTest {
     @Test
     fun `map entity to domain`() {
         // given
-
         // when
         val model = userEntity.mapToDomain()
-
         // then
         assertEquals(model.id, userEntity.id)
         assertEquals(model.firstName, userEntity.firstName)

@@ -11,9 +11,6 @@ class UserCacheDataSourceImpl constructor(
 
     val key = "User List"
 
-    override fun get(): Single<List<User>> =
-        cache.load(key)
-
     override fun set(list: List<User>): Single<List<User>> =
         cache.save(key, list)
 

@@ -1,13 +1,11 @@
-@file:Suppress("IllegalIdentifier")
-
 package com.laixer.swabbr.domain.usecase
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import com.laixer.swabbr.domain.repository.ReactionRepository
 import com.laixer.swabbr.reaction
 import com.laixer.swabbr.vlog
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
@@ -15,10 +13,8 @@ import org.junit.Test
 class ReactionsUseCaseTest {
 
     private lateinit var usecase: ReactionsUseCase
-
     private val mockRepository: ReactionRepository = mock()
-
-    private val vlogId = vlog.vlogId
+    private val vlogId = vlog.id
     private val reactionList = listOf(reaction)
 
     @Before
@@ -30,10 +26,8 @@ class ReactionsUseCaseTest {
     fun `repository get success`() {
         // given
         whenever(mockRepository.get(vlogId, false)).thenReturn(Single.just(reactionList))
-
         // when
         val test = usecase.get(vlogId, false).test()
-
         // then
         verify(mockRepository).get(vlogId, false)
 
@@ -48,10 +42,8 @@ class ReactionsUseCaseTest {
         // given
         val throwable = Throwable()
         whenever(mockRepository.get(vlogId, false)).thenReturn(Single.error(throwable))
-
         // when
         val test = usecase.get(vlogId, false).test()
-
         // then
         verify(mockRepository).get(vlogId, false)
 

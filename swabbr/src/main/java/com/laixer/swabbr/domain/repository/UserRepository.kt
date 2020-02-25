@@ -5,11 +5,9 @@ import io.reactivex.Single
 
 interface UserRepository {
 
-    fun get(refresh: Boolean): Single<List<User>>
-
     fun get(userId: String, refresh: Boolean): Single<User>
 
-    fun searchUser(userId: String): Single<List<User>>
-
     fun set(user: User): Single<User>
+
+    fun search(name: String): Single<List<User>>
 }

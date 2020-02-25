@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/nav_search"
+    app:startDestination="@id/search_dest">
+
+    <fragment
+        android:id="@+id/search_dest"
+        android:name="com.laixer.swabbr.presentation.search.SearchFragment"
+        android:label="@string/search"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_view_profile"
+            app:destination="@id/search_profile_dest" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/search_profile_dest"
+        android:name="com.laixer.swabbr.presentation.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
+        <deepLink
+            android:id="@+id/deepLink"
+            android:autoVerify="true"
+            app:uri="search/profile/{userId}" />
+        <argument
+            android:name="userId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_view_vlog"
+            app:destination="@id/search_vlog_details_dest" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/search_vlog_details_dest"
+        android:name="com.laixer.swabbr.presentation.vlogdetails.VlogDetailsFragment"
+        android:label="Vlog"
+        tools:layout="@layout/fragment_vlog_details">
+        <deepLink
+            android:id="@+id/deepLink"
+            android:autoVerify="true"
+            app:uri="search/profile/{vlogId}" />
+        <argument
+            android:name="vlogIds"
+            app:argType="string[]" />
+    </fragment>
+</navigation>

@@ -1,8 +1,7 @@
-@file:Suppress("IllegalIdentifier")
-
 package com.laixer.swabbr.datasource.model
 
-import com.laixer.swabbr.followStatusEntity
+import com.laixer.swabbr.followRequest
+import com.laixer.swabbr.followRequestEntity
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -11,11 +10,9 @@ class FollowRequestEntityTest {
     @Test
     fun `map entity to domain`() {
         // given
-
         // when
-        val model = followStatusEntity.mapToDomain()
-
+        val model = followRequestEntity.mapToDomain()
         // then
-        assertEquals(model, followStatusEntity.status)
+        assertEquals(model, followRequest)
     }
 }

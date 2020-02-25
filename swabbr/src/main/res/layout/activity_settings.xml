@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="200px" />
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <Switch
         android:id="@+id/privateSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/profileIsPrivate"
-        android:enabled="false" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="200px" />
+        android:enabled="false"
+        android:text="@string/profileIsPrivate" />
 
     <TextView
         android:id="@+id/dailyVlogRequestLimitLabel"
@@ -30,10 +23,6 @@
         android:layout_height="wrap_content"
         android:enabled="false" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="200px" />
-
     <TextView
         android:id="@+id/followmodeLabel"
         android:layout_width="match_parent"
@@ -45,10 +34,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:enabled="false" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="200px" />
 
     <Button
         android:id="@+id/saveSettings"

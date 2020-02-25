@@ -13,21 +13,19 @@ class VlogRepositoryImpl constructor(
 
     override fun getUserVlogs(userId: String, refresh: Boolean): Single<List<Vlog>> =
         when (refresh) {
-            true -> remoteDataSource.getUserVlogs(userId)
-                .flatMap { cacheDataSource.set(it) }
-            false -> cacheDataSource.get()
-                .onErrorResumeNext { getUserVlogs(userId, true) }
+            true -> remoteDataSource.getUserVlogs(userId).flatMap { cacheDataSource.set(it) }
+            false -> cacheDataSource.getUserVlogs(userId).onErrorResumeNext { getUserVlogs(userId, true) }
         }
 
     override fun get(vlogId: String, refresh: Boolean): Single<Vlog> =
         when (refresh) {
-            true -> remoteDataSource.get(vlogId)
-                .flatMap { cacheDataSource.set(it) }
-            false -> cacheDataSource.get(vlogId)
-                .onErrorResumeNext { get(vlogId, true) }
+            true -> remoteDataSource.get(vlogId).flatMap { cacheDataSource.set(it) }
+            false -> cacheDataSource.get(vlogId).onErrorResumeNext { get(vlogId, true) }
         }
 
-    override fun getFeaturedVlogs(): Single<List<Vlog>> =
-            remoteDataSource.getFeaturedVlogs()
-                .flatMap { cacheDataSource.set(it) }
+    override fun getFeaturedVlogs(refresh: Boolean): Single<List<Vlog>> =
+        when (refresh) {
+            true -> remoteDataSource.getFeaturedVlogs().flatMap { cacheDataSource.setFeaturedVlogs(it) }
+            false -> cacheDataSource.getFeaturedVlogs().onErrorResumeNext { getFeaturedVlogs(true) }
+        }
 }

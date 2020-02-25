@@ -8,24 +8,27 @@ data class VlogItem(
     val userId: String,
     val startDate: String,
     val isLive: Boolean,
-    val totalLikes: Int
+    val totalLikes: Int,
+    val url: String
 )
 
 fun CombinedUserVlog.mapToPresentation(): VlogItem = VlogItem(
-    vlog.vlogId,
+    vlog.id,
     vlog.userId,
     vlog.startDate,
     vlog.isLive,
-    vlog.likes.size
+    vlog.likes.size,
+    vlog.url
 )
 
 fun Vlog.mapToPresentation(): VlogItem =
     VlogItem(
-        this.vlogId,
+        this.id,
         this.userId,
         this.startDate,
         this.isLive,
-        this.likes.size
-)
+        this.likes.size,
+        this.url
+    )
 
 fun List<Vlog>.mapToPresentation(): List<VlogItem> = map { it.mapToPresentation() }

@@ -12,13 +12,9 @@ data class ProfileVlogItem(
     val vlogId: String,
     val startDate: String,
     val isLive: Boolean,
-    val totalLikes: Int
+    val totalLikes: Int,
+    val url: String
 ) : Serializable
-
-fun ProfileVlogItem.getUrlString(): String = when (this.isLive) {
-    true -> "https://wowzaprod270-i.akamaihd.net/hls/live/1003477/7ed632e7/playlist.m3u8"
-    false -> "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-}
 
 fun Pair<User, Vlog>.mapToPresentation(): ProfileVlogItem =
     ProfileVlogItem(
@@ -26,10 +22,12 @@ fun Pair<User, Vlog>.mapToPresentation(): ProfileVlogItem =
         this.first.nickname,
         this.first.firstName,
         this.first.lastName,
-        this.second.vlogId,
+        this.second.id,
         this.second.startDate,
         this.second.isLive,
-        this.second.likes.size
+        this.second.likes.size,
+        this.second.url
     )
 
-fun List<Pair<User, Vlog>>.mapToPresentation(): List<ProfileVlogItem> = map { it.mapToPresentation() }
+fun List<Pair<User, Vlog>>.mapToPresentation(): List<ProfileVlogItem> =
+    map { it.mapToPresentation() }

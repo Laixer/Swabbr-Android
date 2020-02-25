@@ -11,13 +11,10 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         // Unique initialization of Cache library to allow saving into device
         CacheLibrary.init(this)
-
         // Unique initialization of Dependency Injection library to allow the use of application context
         startKoin { androidContext(this@App) }
-
         // Random nightMode to make developer aware of day/night themes
         val nightMode = when (Random.nextBoolean()) {
             true -> AppCompatDelegate.MODE_NIGHT_YES

@@ -6,12 +6,9 @@ import io.reactivex.Single
 
 class UsersUseCase constructor(private val userRepository: UserRepository) {
 
-    fun get(refresh: Boolean): Single<List<User>> =
-        userRepository.get(refresh)
-
     fun get(userId: String, refresh: Boolean): Single<User> =
         userRepository.get(userId, refresh)
 
-    fun searchUser(userId: String): Single<List<User>> =
-        userRepository.searchUser(userId)
+    fun search(query: String): Single<List<User>> =
+        userRepository.search(query)
 }

@@ -13,9 +13,7 @@ class ReactionRepositoryImpl constructor(
 
     override fun get(vlogId: String, refresh: Boolean): Single<List<Reaction>> =
         when (refresh) {
-            true -> remoteDataSource.get(vlogId)
-                .flatMap { cacheDataSource.set(vlogId, it) }
-            false -> cacheDataSource.get(vlogId)
-                .onErrorResumeNext { get(vlogId, true) }
+            true -> remoteDataSource.get(vlogId).flatMap { cacheDataSource.set(vlogId, it) }
+            false -> cacheDataSource.get(vlogId).onErrorResumeNext { get(vlogId, true) }
         }
 }

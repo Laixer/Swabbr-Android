@@ -5,13 +5,17 @@ import io.reactivex.Single
 
 interface VlogCacheDataSource {
 
-    fun get(): Single<List<Vlog>>
+    fun getUserVlogs(userId: String): Single<List<Vlog>>
 
     fun set(list: List<Vlog>): Single<List<Vlog>>
 
     fun get(vlogId: String): Single<Vlog>
 
     fun set(item: Vlog): Single<Vlog>
+
+    fun getFeaturedVlogs(): Single<List<Vlog>>
+
+    fun setFeaturedVlogs(list: List<Vlog>): Single<List<Vlog>>
 }
 
 interface VlogRemoteDataSource {

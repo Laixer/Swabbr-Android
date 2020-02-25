@@ -5,7 +5,6 @@ import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.repository.ReactionRepository
 import com.laixer.swabbr.domain.repository.UserRepository
 import io.reactivex.Single
-import io.reactivex.functions.BiFunction
 
 /**
  * The standard library provides Pair and Triple.
@@ -17,9 +16,16 @@ class UserReactionUseCase constructor(
     private val reactionRepository: ReactionRepository
 ) {
 
+    /**
+     * For a specified vlog, get a list of all reactions paired with the user who posted them
+     */
     fun get(vlogId: String, refresh: Boolean): Single<List<Pair<User, Reaction>>> =
-        Single.zip(userRepository.get(refresh), reactionRepository.get(vlogId, refresh),
-            BiFunction { userList, reactionList -> map(userList, reactionList) })
+        reactionRepository.get(vlogId, refresh)
+            .flattenAsObservable { reactions -> reactions }
+            .flatMapSingle { reaction ->
+                userRepository.get(reaction.userId, false)
+                    .map { user -> Pair(user, reaction) }
+            }.toList()
 }
 
 /**

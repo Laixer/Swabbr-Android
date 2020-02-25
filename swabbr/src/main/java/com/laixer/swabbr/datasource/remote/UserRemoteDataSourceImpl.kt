@@ -9,15 +9,11 @@ class UserRemoteDataSourceImpl constructor(
     private val api: UsersApi
 ) : UserRemoteDataSource {
 
-    override fun get(): Single<List<User>> =
-        api.getUsers()
-            .map { it.mapToDomain() }
-
     override fun get(userId: String): Single<User> =
         api.getUser(userId)
             .map { it.mapToDomain() }
 
-    override fun searchUser(userId: String): Single<List<User>> =
-        api.searchUser(userId)
+    override fun search(name: String): Single<List<User>> =
+        api.searchUserByFirstname(name)
             .map { it.mapToDomain() }
 }

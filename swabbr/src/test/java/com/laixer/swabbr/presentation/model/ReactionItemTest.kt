@@ -1,5 +1,3 @@
-@file:Suppress("IllegalIdentifier")
-
 package com.laixer.swabbr.presentation.model
 
 import com.laixer.swabbr.reaction
@@ -13,10 +11,8 @@ class ReactionItemTest {
     fun `map domain to presentation`() {
         // given
         val userReaction = Pair(user, reaction)
-
         // when
         val reactionItem = listOf(userReaction).mapToPresentation().first()
-
         // then
         assertTrue(reactionItem.vlogId == reaction.vlogId)
         assertTrue(reactionItem.userId == reaction.userId)

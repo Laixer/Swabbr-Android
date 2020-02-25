@@ -5,8 +5,6 @@ import io.reactivex.Single
 
 interface UserCacheDataSource {
 
-    fun get(): Single<List<User>>
-
     fun set(item: User): Single<User>
 
     fun get(userId: String): Single<User>
@@ -16,9 +14,7 @@ interface UserCacheDataSource {
 
 interface UserRemoteDataSource {
 
-    fun get(): Single<List<User>>
-
     fun get(userId: String): Single<User>
 
-    fun searchUser(userId: String): Single<List<User>>
+    fun search(name: String): Single<List<User>>
 }

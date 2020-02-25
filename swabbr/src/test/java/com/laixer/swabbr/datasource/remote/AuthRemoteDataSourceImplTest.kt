@@ -1,5 +1,3 @@
-@file:Suppress("IllegalIdentifier")
-
 package com.laixer.swabbr.datasource.remote
 
 import com.laixer.swabbr.authenticatedUserEntity
@@ -19,9 +17,7 @@ import org.junit.Test
 class AuthRemoteDataSourceImplTest {
 
     private lateinit var dataSource: AuthRemoteDataSourceImpl
-
     private val mockApi: AuthApi = mock()
-
     private val throwable = Throwable()
 
     @Before
@@ -33,27 +29,25 @@ class AuthRemoteDataSourceImplTest {
     fun `login remote success`() {
         // given
         whenever(mockApi.login(loginEntity)).thenReturn(Single.just(authenticatedUserEntity))
-
         // when
         val test = dataSource.login(login).test()
-
         // then
         verify(mockApi).login(loginEntity)
-        test.assertValue(AuthUser(
-            authenticatedUserEntity.accessToken,
-            authenticatedUserEntity.user.mapToDomain(),
-            authenticatedUserEntity.userSettings.mapToDomain()
-        ))
+        test.assertValue(
+            AuthUser(
+                authenticatedUserEntity.accessToken,
+                authenticatedUserEntity.user.mapToDomain(),
+                authenticatedUserEntity.userSettings.mapToDomain()
+            )
+        )
     }
 
     @Test
     fun `login remote fail`() {
         // given
         whenever(mockApi.login(loginEntity)).thenReturn(Single.error(throwable))
-
         // when
         val test = dataSource.login(login).test()
-
         // then
         verify(mockApi).login(loginEntity)
         test.assertError(throwable)
@@ -63,27 +57,25 @@ class AuthRemoteDataSourceImplTest {
     fun `registration remote success`() {
         // given
         whenever(mockApi.register(registrationEntity)).thenReturn(Single.just(authenticatedUserEntity))
-
         // when
         val test = dataSource.register(registration).test()
-
         // then
         verify(mockApi).register(registrationEntity)
-        test.assertValue(AuthUser(
-            authenticatedUserEntity.accessToken,
-            authenticatedUserEntity.user.mapToDomain(),
-            authenticatedUserEntity.userSettings.mapToDomain()
-        ))
+        test.assertValue(
+            AuthUser(
+                authenticatedUserEntity.accessToken,
+                authenticatedUserEntity.user.mapToDomain(),
+                authenticatedUserEntity.userSettings.mapToDomain()
+            )
+        )
     }
 
     @Test
     fun `registration remote fail`() {
         // given
         whenever(mockApi.register(registrationEntity)).thenReturn(Single.error(throwable))
-
         // when
         val test = dataSource.register(registration).test()
-
         // then
         verify(mockApi).register(registrationEntity)
         test.assertError(throwable)

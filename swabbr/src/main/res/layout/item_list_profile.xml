@@ -5,14 +5,10 @@
     android:layout_margin="@dimen/item_margin"
     android:foreground="?selectableItemBackground">
 
-    <LinearLayout
+    <include
+        layout="@layout/include_user_info"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/content_margin"
-        android:orientation="vertical">
-
-        <include layout="@layout/include_user_info" />
-
-    </LinearLayout>
+        android:layout_margin="@dimen/content_margin" />
 
 </com.google.android.material.card.MaterialCardView>
