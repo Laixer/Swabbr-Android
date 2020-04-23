@@ -1,12 +1,9 @@
 package com.laixer.swabbr.datasource.remote
 
-import com.laixer.swabbr.authenticatedUserEntity
-import com.laixer.swabbr.datasource.model.mapToDomain
-import com.laixer.swabbr.domain.model.AuthUser
-import com.laixer.swabbr.login
-import com.laixer.swabbr.loginEntity
-import com.laixer.swabbr.registration
-import com.laixer.swabbr.registrationEntity
+import com.laixer.swabbr.Entities
+import com.laixer.swabbr.Models
+import com.laixer.swabbr.data.datasource.remote.AuthRemoteDataSourceImpl
+import com.laixer.swabbr.datasource.model.remote.AuthApi
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -20,6 +17,15 @@ class AuthRemoteDataSourceImplTest {
     private val mockApi: AuthApi = mock()
     private val throwable = Throwable()
 
+    private val loginEntity = Entities.login
+    private val loginModel = Models.login
+
+    private val registerEntity = Entities.registration
+    private val registerModel = Models.registration
+
+    private val responseEntity = Entities.authUser
+    private val responseModel = Models.authUser
+
     @Before
     fun setUp() {
         dataSource = AuthRemoteDataSourceImpl(mockApi)
@@ -28,18 +34,12 @@ class AuthRemoteDataSourceImplTest {
     @Test
     fun `login remote success`() {
         // given
-        whenever(mockApi.login(loginEntity)).thenReturn(Single.just(authenticatedUserEntity))
+        whenever(mockApi.login(loginEntity)).thenReturn(Single.just(responseEntity))
         // when
-        val test = dataSource.login(login).test()
+        val test = dataSource.login(loginModel).test()
         // then
         verify(mockApi).login(loginEntity)
-        test.assertValue(
-            AuthUser(
-                authenticatedUserEntity.accessToken,
-                authenticatedUserEntity.user.mapToDomain(),
-                authenticatedUserEntity.userSettings.mapToDomain()
-            )
-        )
+        test.assertValue(responseModel)
     }
 
     @Test
@@ -47,7 +47,7 @@ class AuthRemoteDataSourceImplTest {
         // given
         whenever(mockApi.login(loginEntity)).thenReturn(Single.error(throwable))
         // when
-        val test = dataSource.login(login).test()
+        val test = dataSource.login(loginModel).test()
         // then
         verify(mockApi).login(loginEntity)
         test.assertError(throwable)
@@ -56,28 +56,22 @@ class AuthRemoteDataSourceImplTest {
     @Test
     fun `registration remote success`() {
         // given
-        whenever(mockApi.register(registrationEntity)).thenReturn(Single.just(authenticatedUserEntity))
+        whenever(mockApi.register(registerEntity)).thenReturn(Single.just(responseEntity))
         // when
-        val test = dataSource.register(registration).test()
+        val test = dataSource.register(registerModel).test()
         // then
-        verify(mockApi).register(registrationEntity)
-        test.assertValue(
-            AuthUser(
-                authenticatedUserEntity.accessToken,
-                authenticatedUserEntity.user.mapToDomain(),
-                authenticatedUserEntity.userSettings.mapToDomain()
-            )
-        )
+        verify(mockApi).register(registerEntity)
+        test.assertValue(responseModel)
     }
 
     @Test
     fun `registration remote fail`() {
         // given
-        whenever(mockApi.register(registrationEntity)).thenReturn(Single.error(throwable))
+        whenever(mockApi.register(registerEntity)).thenReturn(Single.error(throwable))
         // when
-        val test = dataSource.register(registration).test()
+        val test = dataSource.register(registerModel).test()
         // then
-        verify(mockApi).register(registrationEntity)
+        verify(mockApi).register(registerEntity)
         test.assertError(throwable)
     }
 }

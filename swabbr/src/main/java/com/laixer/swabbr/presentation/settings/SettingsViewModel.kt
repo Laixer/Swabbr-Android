@@ -20,42 +20,48 @@ class SettingsViewModel constructor(
     private val authUseCase: AuthUseCase
 ) : ViewModel() {
 
-    val settings = MutableLiveData<Resource<SettingsItem?>>()
-    val logout = MutableLiveData<Resource<String?>>()
+    val settings = MutableLiveData<Resource<SettingsItem>>()
+    val logout = MutableLiveData<Resource<String>>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun getSettings(refresh: Boolean) =
-        compositeDisposable.add(
-            settingsUseCase.get(refresh)
-                .subscribeOn(Schedulers.io())
-                .subscribe({ settings.setSuccess(it.mapToPresentation()) }, { settings.setError(it.message) })
-        )
+    fun getSettings(refresh: Boolean) = compositeDisposable.add(
+        settingsUseCase
+            .get(refresh)
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                { settings.setSuccess(it.mapToPresentation()) },
+                { settings.setError(it.message) }
+            )
+    )
 
-    fun setSettings(settingsItem: SettingsItem) =
-        compositeDisposable.add(
-            settingsUseCase.set(settingsItem.mapToDomain())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ settings.setSuccess(it.mapToPresentation()) }, { settings.setError(it.message) })
-        )
+    fun setSettings(settingsItem: SettingsItem) = compositeDisposable.add(
+        settingsUseCase
+            .set(settingsItem.mapToDomain())
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                { settings.setSuccess(it.mapToPresentation()) },
+                { settings.setError(it.message) }
+            )
+    )
 
-    fun logout() =
-        compositeDisposable.add(
-            authUseCase.logout()
-                .subscribeOn(Schedulers.io())
-                .subscribeWith(object : DisposableCompletableObserver() {
-                    override fun onStart() {
-                        logout.setLoading()
-                    }
+    fun logout() = compositeDisposable.add(
+        authUseCase
+            .logout()
+            .subscribeOn(Schedulers.io())
+            .subscribeWith(object : DisposableCompletableObserver() {
+                override fun onStart() {
+                    logout.setLoading()
+                }
 
-                    override fun onError(e: Throwable) {
-                        logout.setError(e.message)
-                    }
+                override fun onError(e: Throwable) {
+                    logout.setError(e.message)
+                }
 
-                    override fun onComplete() {
-                        logout.setSuccess("Logged out")
-                    }
-                })
-        )
+                override fun onComplete() {
+                    logout.setSuccess("Logged out")
+                }
+            })
+    )
 
     override fun onCleared() {
         compositeDisposable.dispose()

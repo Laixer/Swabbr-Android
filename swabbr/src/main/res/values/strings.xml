@@ -24,17 +24,20 @@
     <string name="live">Live</string>
     <string name="user_avatar">User avatar</string>
     <string name="search">Search</string>
+    <string name="myProfile">My Profile</string>
     <string name="userProfile">User Profile</string>
     <string name="vlogs">Vlogs</string>
     <string name="dashboard">Dashboard</string>
     <string name="settings">Settings</string>
 
+    <string name="my_profile_no_vlogs">You have not published any vlogs yet.</string>
     <string name="user_no_vlogs">This user has not published any vlogs yet.</string>
     <string name="search_no_results">Unable to find users matching "%1$s".</string>
 
     <string name="requested">Requested</string>
     <string name="following">Following</string>
     <string name="follow">Follow</string>
+    <string name="followStatusError">…</string>
 
     <string name="button_dismiss">Dismiss</string>
     <string name="switch_camera">Switch Camera</string>
@@ -67,7 +70,7 @@
     <string name="signin">Signin</string>
     <string name="register">Register</string>
     <string name="forgot">Forgot password?</string>
-    <string name="usernameEmail">Username/Email</string>
+    <string name="usernameEmail">Email</string>
 
     <string name="firstName">First name</string>
     <string name="lastName">Last name</string>
@@ -78,10 +81,21 @@
     <string name="emailAddress">Email address</string>
     <string name="confirmPassword">Confirm password</string>
 
+    <string name="love_it">Love it!</string>
+    <string name="react">React</string>
+
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="other">Other</string>
 
     <string name="birthDatePicker">%1$s/%2$s/%3$s</string>
+
+    <string name="google_play_unsupported_device">This device is not supported by Google Play Services.</string>
+    <string name="vlog_count">%1$d vlogs</string>
+    <string name="view_count">%1$d</string>
+    <string name="like_count">%1$d</string>
+    <string name="reaction_count">%1$d</string>
+    <string name="duration">%1$02d:%2$02d:%3$02d</string>
+    <string name="date">%1$02d/%2$02d/%3$d</string>
 
 </resources>

@@ -14,50 +14,45 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import com.laixer.swabbr.presentation.model.ProfileVlogItem
+import com.laixer.swabbr.presentation.model.UserVlogItem
 
 class VlogFragment : Fragment() {
 
     private var videoView: VideoView? = null
     private lateinit var exoPlayer: ExoPlayer
-    private lateinit var profileVlogItem: ProfileVlogItem
+    private lateinit var userVlogItem: UserVlogItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        profileVlogItem = requireArguments().getSerializable(PROFILEVLOGITEM_KEY) as ProfileVlogItem
-        val dataSourceFactory: DataSource.Factory = when (profileVlogItem.isLive) {
+        userVlogItem = requireArguments().getSerializable(PROFILEVLOGITEM_KEY) as UserVlogItem
+        val dataSourceFactory: DataSource.Factory = when (userVlogItem.isLive) {
             true -> DefaultHttpDataSourceFactory(Util.getUserAgent(this.context, "Swabbr"))
             false -> DefaultDataSourceFactory(
-                this.context,
-                Util.getUserAgent(this.context, "Swabbr")
+                this.context, Util.getUserAgent(this.context, "Swabbr")
             )
         }
         // Check if we need to create a progressive or HLS datasource
-        val mediaSourceFactory = when (profileVlogItem.isLive) {
+        val mediaSourceFactory = when (userVlogItem.isLive) {
             true -> HlsMediaSource.Factory(dataSourceFactory).setAllowChunklessPreparation(true)
             false -> ProgressiveMediaSource.Factory(dataSourceFactory)
         }
-        val uri = Uri.parse(profileVlogItem.url)
+        val uri = Uri.parse(userVlogItem.url.toURI().toString())
         val mediaSource = mediaSourceFactory.createMediaSource(uri)
 
         exoPlayer = ExoPlayerFactory.newSimpleInstance(this.context)
         exoPlayer.prepare(mediaSource, true, false)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         videoView = VideoView(inflater, container)
         return videoView?.view
     }
 
     override fun onResume() {
         super.onResume()
-        videoView?.bind(exoPlayer, profileVlogItem, requireContext())
+        videoView?.bind(exoPlayer, userVlogItem, requireContext())
         exoPlayer.playWhenReady = true
-        if (!profileVlogItem.isLive) {
+        if (!userVlogItem.isLive) {
             exoPlayer.seekTo(0)
         }
     }
@@ -65,7 +60,7 @@ class VlogFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         videoView?.unbind()
-        if (!profileVlogItem.isLive) {
+        if (!userVlogItem.isLive) {
             exoPlayer.seekTo(0)
         }
         exoPlayer.playWhenReady = false
@@ -84,7 +79,7 @@ class VlogFragment : Fragment() {
     companion object {
         private val PROFILEVLOGITEM_KEY = "PROFILEVLOGITEM"
 
-        fun create(item: ProfileVlogItem): VlogFragment {
+        fun create(item: UserVlogItem): VlogFragment {
             val fragment = VlogFragment()
             val bundle = Bundle()
             bundle.putSerializable(PROFILEVLOGITEM_KEY, item)

@@ -3,10 +3,10 @@ package com.laixer.swabbr.presentation.search
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
+import com.laixer.swabbr.Items
+import com.laixer.swabbr.Models
 import com.laixer.swabbr.domain.usecase.UsersUseCase
 import com.laixer.swabbr.presentation.RxSchedulersOverrideRule
-import com.laixer.swabbr.presentation.model.mapToPresentation
-import com.laixer.swabbr.user
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -21,11 +21,20 @@ class SearchViewModelTest {
 
     private lateinit var viewModel: SearchViewModel
     private val mockUsersUseCase: UsersUseCase = mock()
-    private val query = user.id
+
+    private val model = Models.user
+    private val modelList = listOf(model)
+    private val item = Items.user
+    private val itemList = listOf(item)
+
+    private val query = model.firstName
+
     private val throwable = Throwable()
+
     @Rule
     @JvmField
     val rxSchedulersOverrideRule = RxSchedulersOverrideRule()
+
     @Rule
     @JvmField
     val instantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
@@ -39,13 +48,13 @@ class SearchViewModelTest {
     fun `get profiles succeeds`() {
         // given
         whenever(mockUsersUseCase.search(query))
-            .thenReturn(Single.just(listOf(user)))
+            .thenReturn(Single.just(modelList))
         // when
         viewModel.search(query)
         // then
         verify(mockUsersUseCase).search(query)
         assertEquals(
-            Resource(ResourceState.SUCCESS, listOf(user.mapToPresentation()), null),
+            Resource(ResourceState.SUCCESS, itemList, null),
             viewModel.profiles.value
         )
     }

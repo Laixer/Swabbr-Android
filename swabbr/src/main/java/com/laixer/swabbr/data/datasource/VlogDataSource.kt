@@ -2,14 +2,21 @@ package com.laixer.swabbr.data.datasource
 
 import com.laixer.swabbr.domain.model.Vlog
 import io.reactivex.Single
+import java.util.UUID
 
 interface VlogCacheDataSource {
 
-    fun getUserVlogs(userId: String): Single<List<Vlog>>
+    val key: String
+        get() = "VLOGS"
+
+    val featuredKey: String
+        get() = "FEATURED_VLOGS"
+
+    fun getUserVlogs(userId: UUID): Single<List<Vlog>>
 
     fun set(list: List<Vlog>): Single<List<Vlog>>
 
-    fun get(vlogId: String): Single<Vlog>
+    fun get(vlogId: UUID): Single<Vlog>
 
     fun set(item: Vlog): Single<Vlog>
 
@@ -20,9 +27,9 @@ interface VlogCacheDataSource {
 
 interface VlogRemoteDataSource {
 
-    fun getUserVlogs(userId: String): Single<List<Vlog>>
+    fun getUserVlogs(userId: UUID): Single<List<Vlog>>
 
-    fun get(vlogId: String): Single<Vlog>
+    fun get(vlogId: UUID): Single<Vlog>
 
-    fun getFeaturedVlogs(): Single<List<Vlog>>
+    fun getRecommendedVlogs(): Single<List<Vlog>>
 }

@@ -1,8 +1,8 @@
 package com.laixer.swabbr.data.repository
 
+import com.laixer.swabbr.Models
 import com.laixer.swabbr.data.datasource.SettingsCacheDataSource
 import com.laixer.swabbr.data.datasource.SettingsRemoteDataSource
-import com.laixer.swabbr.settings
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -15,8 +15,10 @@ class SettingsRepositoryImplTest {
     private lateinit var repository: SettingsRepositoryImpl
     private val mockCacheDataSource: SettingsCacheDataSource = mock()
     private val mockRemoteDataSource: SettingsRemoteDataSource = mock()
-    private val cacheItem = settings
-    private val remoteItem = settings
+
+    private val cacheItem = Models.settings
+    private val remoteItem = Models.settings
+
     private val cacheThrowable = Throwable()
     private val remoteThrowable = Throwable()
 
@@ -30,7 +32,7 @@ class SettingsRepositoryImplTest {
         // given
         whenever(mockCacheDataSource.get()).thenReturn(Single.just(cacheItem))
         // when
-        val test = repository.get(false).test()
+        val test = repository.get(refresh = false).test()
         // then
         verify(mockCacheDataSource).get()
         test.assertValue(cacheItem)
@@ -43,7 +45,7 @@ class SettingsRepositoryImplTest {
         whenever(mockRemoteDataSource.get()).thenReturn(Single.just(remoteItem))
         whenever(mockCacheDataSource.set(remoteItem)).thenReturn(Single.just(remoteItem))
         // when
-        val test = repository.get(false).test()
+        val test = repository.get(refresh = false).test()
         // then
         verify(mockCacheDataSource).get()
         verify(mockRemoteDataSource).get()
@@ -57,7 +59,7 @@ class SettingsRepositoryImplTest {
         whenever(mockCacheDataSource.get()).thenReturn(Single.error(cacheThrowable))
         whenever(mockRemoteDataSource.get()).thenReturn(Single.error(remoteThrowable))
         // when
-        val test = repository.get(false).test()
+        val test = repository.get(refresh = false).test()
         // then
         verify(mockCacheDataSource).get()
         verify(mockRemoteDataSource).get()
@@ -70,7 +72,7 @@ class SettingsRepositoryImplTest {
         whenever(mockRemoteDataSource.get()).thenReturn(Single.just(remoteItem))
         whenever(mockCacheDataSource.set(remoteItem)).thenReturn(Single.just(remoteItem))
         // when
-        val test = repository.get(true).test()
+        val test = repository.get(refresh = true).test()
         // then
         verify(mockRemoteDataSource).get()
         verify(mockCacheDataSource).set(remoteItem)

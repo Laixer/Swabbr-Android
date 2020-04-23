@@ -1,8 +1,7 @@
 package com.laixer.swabbr.domain.usecase
 
+import com.laixer.swabbr.Models
 import com.laixer.swabbr.domain.repository.ReactionRepository
-import com.laixer.swabbr.reaction
-import com.laixer.swabbr.vlog
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -14,8 +13,9 @@ class ReactionsUseCaseTest {
 
     private lateinit var usecase: ReactionsUseCase
     private val mockRepository: ReactionRepository = mock()
-    private val vlogId = vlog.id
-    private val reactionList = listOf(reaction)
+
+    private val vlogId = Models.user.id
+    private val reactionList = listOf(Models.reaction)
 
     @Before
     fun setUp() {
@@ -49,7 +49,7 @@ class ReactionsUseCaseTest {
 
         test.assertNoValues()
         test.assertNotComplete()
-        test.assertError(throwable)
         test.assertValueCount(0)
+        test.assertError(throwable)
     }
 }

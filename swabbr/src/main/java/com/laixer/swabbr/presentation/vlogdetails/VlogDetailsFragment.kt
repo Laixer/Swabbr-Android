@@ -16,10 +16,11 @@ import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.model.ProfileVlogItem
 import com.laixer.swabbr.presentation.model.ReactionItem
+import com.laixer.swabbr.presentation.model.UserVlogItem
 import kotlinx.android.synthetic.main.fragment_vlog_details.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.UUID
 
 class VlogDetailsFragment : Fragment() {
 
@@ -27,27 +28,23 @@ class VlogDetailsFragment : Fragment() {
     private var reactionsAdapter: ReactionsAdapter? = null
     private val args by navArgs<VlogDetailsFragmentArgs>()
     private val vlogIds by lazy { args.vlogIds }
-    private var vlogs = listOf<ProfileVlogItem>()
-    private lateinit var currentVlog: ProfileVlogItem
+    private var vlogs = listOf<UserVlogItem>()
+    private lateinit var currentVlog: UserVlogItem
     private val snackBar by lazy {
         Snackbar.make(container, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)
             .setAction(getString(R.string.retry)) {
                 vm.getReactions(
-                    currentVlog.vlogId,
-                    refresh = true
+                    currentVlog.vlogId, refresh = true
                 )
             }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_vlog_details, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+        inflater.inflate(R.layout.fragment_vlog_details, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        reactionsAdapter = ReactionsAdapter()
+        reactionsAdapter = ReactionsAdapter(requireContext())
 
         injectFeature()
 
@@ -57,14 +54,13 @@ class VlogDetailsFragment : Fragment() {
         }
 
         if (savedInstanceState == null) {
-            vm.getVlogs(vlogIds.toList())
+            vm.getVlogs(vlogIds.map { UUID.fromString(it) })
         }
 
         vlog_viewpager.run {
             // Add a fragment adapter to the ViewPager to manage fragments
             adapter = object : FragmentStateAdapter(this@VlogDetailsFragment) {
-                override fun createFragment(position: Int): Fragment =
-                    VlogFragment.create(vlogs[position])
+                override fun createFragment(position: Int): Fragment = VlogFragment.create(vlogs[position])
 
                 override fun getItemCount(): Int = vlogs.size
             }
@@ -85,7 +81,7 @@ class VlogDetailsFragment : Fragment() {
         }
     }
 
-    private fun updateVlogs(resource: Resource<List<ProfileVlogItem>?>) = resource.data?.let {
+    private fun updateVlogs(resource: Resource<List<UserVlogItem>?>) = resource.data?.let {
         vlogs = it
         vlog_viewpager?.adapter?.notifyDataSetChanged()
     }

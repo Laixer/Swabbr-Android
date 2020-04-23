@@ -1,19 +1,21 @@
 package com.laixer.swabbr.datasource.model
 
-import com.laixer.swabbr.settingsEntity
+import com.laixer.swabbr.Entities
+import com.laixer.swabbr.Models
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class SettingsEntityTest {
 
+    val entity = Entities.settings
+    val model = Models.settings
+
     @Test
     fun `map entity to domain`() {
         // given
         // when
-        val model = settingsEntity.mapToDomain()
+        val transformedEntity = entity.mapToDomain()
         // then
-        assertEquals(model.private, settingsEntity.private)
-        assertEquals(model.dailyVlogRequestLimit, settingsEntity.dailyVlogRequestLimit)
-        assertEquals(model.followMode, settingsEntity.followMode)
+        assertEquals(model, transformedEntity)
     }
 }

@@ -1,8 +1,9 @@
 package com.laixer.swabbr.datasource.cache
 
 import com.laixer.cache.ReactiveCache
+import com.laixer.swabbr.Models
+import com.laixer.swabbr.data.datasource.cache.SettingsCacheDataSourceImpl
 import com.laixer.swabbr.domain.model.Settings
-import com.laixer.swabbr.settings
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -13,9 +14,11 @@ import org.junit.Test
 class SettingsCacheDataSourceImplTest {
 
     private lateinit var dataSource: SettingsCacheDataSourceImpl
+    private val key by lazy { dataSource.key }
+
     private val mockCache: ReactiveCache<Settings> = mock()
-    val key = "Settings"
-    private val cacheItem = settings.copy(true, 0, 0)
+
+    private val model = Models.settings
     private val throwable = Throwable()
 
     @Before
@@ -26,12 +29,12 @@ class SettingsCacheDataSourceImplTest {
     @Test
     fun `get settings cache success`() {
         // given
-        whenever(mockCache.load(key)).thenReturn(Single.just(cacheItem))
+        whenever(mockCache.load(key)).thenReturn(Single.just(model))
         // when
         val test = dataSource.get().test()
         // then
         verify(mockCache).load(key)
-        test.assertValue(cacheItem)
+        test.assertValue(model)
     }
 
     @Test

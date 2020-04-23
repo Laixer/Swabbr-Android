@@ -9,22 +9,15 @@ class AuthInterceptor(
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val token = authCacheDataSource.getToken().blockingGet()
-
         with(chain.request()) {
-            if (!header("No-Authentication").isNullOrEmpty() ||
-                token.isNullOrEmpty()
-            ) {
+            if (!header("No-Authentication").isNullOrEmpty()) {
                 return chain.proceed(
-                    newBuilder()
-                        .build()
+                    newBuilder().build()
                 )
             }
-
+            val token = authCacheDataSource.get().blockingGet().accessToken
             return chain.proceed(
-                newBuilder()
-                    .addHeader("Authorization", "Bearer $token")
-                    .build()
+                newBuilder().addHeader("Authorization", "Bearer $token").build()
             )
         }
     }

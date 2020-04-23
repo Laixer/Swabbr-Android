@@ -1,8 +1,7 @@
 package com.laixer.swabbr.domain.usecase
 
+import com.laixer.swabbr.Models
 import com.laixer.swabbr.domain.repository.FollowRepository
-import com.laixer.swabbr.followRequest
-import com.laixer.swabbr.user
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -14,7 +13,9 @@ class FollowUseCaseTest {
 
     private lateinit var usecase: FollowUseCase
     private val mockRepository: FollowRepository = mock()
-    private val userId = user.id
+
+    private val userId = Models.user.id
+    private val followRequest = Models.followRequest
 
     @Before
     fun setUp() {

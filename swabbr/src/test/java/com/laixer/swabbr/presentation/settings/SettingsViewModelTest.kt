@@ -3,11 +3,11 @@ package com.laixer.swabbr.presentation.settings
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
+import com.laixer.swabbr.Items
+import com.laixer.swabbr.Models
 import com.laixer.swabbr.domain.usecase.AuthUseCase
 import com.laixer.swabbr.domain.usecase.SettingsUseCase
 import com.laixer.swabbr.presentation.RxSchedulersOverrideRule
-import com.laixer.swabbr.presentation.model.mapToPresentation
-import com.laixer.swabbr.settings
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -24,10 +24,15 @@ class SettingsViewModelTest {
     private val mockSettingsUseCase: SettingsUseCase = mock()
     private val mockAuthUseCase: AuthUseCase = mock()
 
+    private val model = Models.settings
+    private val item = Items.settings
+
     private val throwable = Throwable()
+
     @Rule
     @JvmField
     val rxSchedulersOverrideRule = RxSchedulersOverrideRule()
+
     @Rule
     @JvmField
     val instantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
@@ -41,13 +46,13 @@ class SettingsViewModelTest {
     fun `get settings succeeds`() {
         // given
         whenever(mockSettingsUseCase.get(false))
-            .thenReturn(Single.just(settings))
+            .thenReturn(Single.just(model))
         // when
         viewModel.getSettings(false)
         // then
         verify(mockSettingsUseCase).get(false)
         assertEquals(
-            Resource(ResourceState.SUCCESS, settings.mapToPresentation(), null),
+            Resource(ResourceState.SUCCESS, item, null),
             viewModel.settings.value
         )
     }

@@ -1,11 +1,11 @@
 package com.laixer.core
 
 import android.app.Application
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import com.laixer.cache.CacheLibrary
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import kotlin.random.Random
 
 class App : Application() {
 
@@ -15,10 +15,10 @@ class App : Application() {
         CacheLibrary.init(this)
         // Unique initialization of Dependency Injection library to allow the use of application context
         startKoin { androidContext(this@App) }
-        // Random nightMode to make developer aware of day/night themes
-        val nightMode = when (Random.nextBoolean()) {
-            true -> AppCompatDelegate.MODE_NIGHT_YES
-            false -> AppCompatDelegate.MODE_NIGHT_NO
+        // Determine if user is in night mode
+        val nightMode = when (resources.configuration.uiMode) {
+            Configuration.UI_MODE_NIGHT_YES -> AppCompatDelegate.MODE_NIGHT_YES
+            else -> AppCompatDelegate.MODE_NIGHT_NO
         }
         AppCompatDelegate.setDefaultNightMode(nightMode)
     }

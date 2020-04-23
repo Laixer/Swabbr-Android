@@ -1,8 +1,9 @@
 package com.laixer.swabbr.datasource.remote
 
-import com.laixer.swabbr.datasource.model.mapToDomain
-import com.laixer.swabbr.followRequestEntity
-import com.laixer.swabbr.user
+import com.laixer.swabbr.Entities
+import com.laixer.swabbr.Models
+import com.laixer.swabbr.data.datasource.remote.FollowDataSourceImpl
+import com.laixer.swabbr.datasource.model.remote.FollowApi
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -14,7 +15,12 @@ class FollowDataSourceImplTest {
 
     private lateinit var dataSource: FollowDataSourceImpl
     private val mockApi: FollowApi = mock()
-    private val userId = user.id
+
+    private val userId = Models.user.id
+
+    private val entity = Entities.followRequest
+    private val model = Models.followRequest
+
     private val throwable = Throwable()
 
     @Before
@@ -25,12 +31,12 @@ class FollowDataSourceImplTest {
     @Test
     fun `get followrequest remote success`() {
         // given
-        whenever(mockApi.getFollowRequest(userId)).thenReturn(Single.just(followRequestEntity))
+        whenever(mockApi.getFollowRequest(userId)).thenReturn(Single.just(entity))
         // when
         val test = dataSource.getFollowStatus(userId).test()
         // then
         verify(mockApi).getFollowRequest(userId)
-        test.assertValue(followRequestEntity.mapToDomain())
+        test.assertValue(model)
     }
 
     @Test

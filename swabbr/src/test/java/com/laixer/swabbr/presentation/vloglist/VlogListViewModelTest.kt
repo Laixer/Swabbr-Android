@@ -3,10 +3,10 @@ package com.laixer.swabbr.presentation.vloglist
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
+import com.laixer.swabbr.Items
+import com.laixer.swabbr.Models
 import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
-import com.laixer.swabbr.pairUserVlog
 import com.laixer.swabbr.presentation.RxSchedulersOverrideRule
-import com.laixer.swabbr.presentation.model.mapToPresentation
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -21,11 +21,24 @@ class VlogListViewModelTest {
 
     private lateinit var viewModel: VlogListViewModel
     private val mockUseCase: UsersVlogsUseCase = mock()
-    private val pairUserVlogList = listOf(pairUserVlog)
+
+    private val userModel = Models.user
+    private val userItem = Items.user
+
+    private val vlogModel = Models.vlog
+    private val vlogItem = Items.vlog
+
+    private val pairUserVlogModel = Pair(userModel, vlogModel)
+    private val pairUserVlogModelList = listOf(pairUserVlogModel)
+    private val pairUserVlogItem = Items.uservlog
+    private val pairUserVlogItemList = listOf(pairUserVlogItem)
+
     private val throwable = Throwable()
+
     @Rule
     @JvmField
     val rxSchedulersOverrideRule = RxSchedulersOverrideRule()
+
     @Rule
     @JvmField
     val instantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
@@ -38,7 +51,7 @@ class VlogListViewModelTest {
     @Test
     fun `get featured vlog item list succeeds`() {
         // given
-        whenever(mockUseCase.getFeaturedVlogs(false)).thenReturn(Single.just(pairUserVlogList))
+        whenever(mockUseCase.getFeaturedVlogs(false)).thenReturn(Single.just(pairUserVlogModelList))
         // when
         viewModel.get(false)
         // then
@@ -46,7 +59,7 @@ class VlogListViewModelTest {
         assertEquals(
             Resource(
                 ResourceState.SUCCESS,
-                pairUserVlogList.map { Pair(it.first, it.second).mapToPresentation() },
+                pairUserVlogItemList,
                 null
             ),
             viewModel.vlogs.value

@@ -29,18 +29,15 @@ class MultiStateButton(context: Context, attrs: AttributeSet?) : AppCompatImageV
     init {
         mDisabledColor = context.getColor(R.color.multiStateButtonDisabled)
         val a: TypedArray = context.theme.obtainStyledAttributes(
-            attrs,
-            R.styleable.MultiStateButton, 0, 0
+            attrs, R.styleable.MultiStateButton, 0, 0
         )
 
         try {
             val isOn = a.getBoolean(R.styleable.MultiStateButton_isOn, true)
             val offDrawable = a.getDrawable(R.styleable.MultiStateButton_offSrc)
-            val pressedColor =
-                a.getColor(
-                    R.styleable.MultiStateButton_pressedColor,
-                    context.getColor(R.color.multiStateButtonPressed)
-                )
+            val pressedColor = a.getColor(
+                R.styleable.MultiStateButton_pressedColor, context.getColor(R.color.multiStateButtonPressed)
+            )
 
             init(isOn, offDrawable, pressedColor)
         } finally {
@@ -59,11 +56,9 @@ class MultiStateButton(context: Context, attrs: AttributeSet?) : AppCompatImageV
                 if (!imageView.isClickable) return false
 
                 if (event?.action == MotionEvent.ACTION_DOWN) {
-                    imageView.drawable.colorFilter =
-                        BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                            mPressedColor,
-                            BlendModeCompat.SRC_IN
-                        )
+                    imageView.drawable.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                        mPressedColor, BlendModeCompat.SRC_IN
+                    )
                 } else if (event?.action == MotionEvent.ACTION_UP) {
                     imageView.drawable.clearColorFilter()
                 }
@@ -89,8 +84,9 @@ class MultiStateButton(context: Context, attrs: AttributeSet?) : AppCompatImageV
         if (enabled) {
             drawable.clearColorFilter()
         } else {
-            drawable.colorFilter =
-                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(mDisabledColor, BlendModeCompat.SRC_IN)
+            drawable.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                mDisabledColor, BlendModeCompat.SRC_IN
+            )
         }
         invalidate()
         requestLayout()

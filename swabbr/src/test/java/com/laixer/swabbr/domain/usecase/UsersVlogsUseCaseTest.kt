@@ -1,9 +1,8 @@
 package com.laixer.swabbr.domain.usecase
 
+import com.laixer.swabbr.Models
 import com.laixer.swabbr.domain.repository.UserRepository
 import com.laixer.swabbr.domain.repository.VlogRepository
-import com.laixer.swabbr.user
-import com.laixer.swabbr.vlog
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -16,8 +15,12 @@ class UsersVlogsUseCaseTest {
     private lateinit var usersVlogsUseCase: UsersVlogsUseCase
     private val mockUserRepository: UserRepository = mock()
     private val mockVlogRepository: VlogRepository = mock()
-    private val vlogId = vlog.id
-    private val userId = vlog.userId
+
+    private val vlogId = Models.vlog.id
+    private val userId = Models.vlog.userId
+
+    private val user = Models.user
+    private val vlog = Models.vlog
 
     @Before
     fun setUp() {
@@ -63,8 +66,12 @@ class UserVlogUseCaseTest {
     private lateinit var userVlogUseCase: UserVlogUseCase
     private val mockUserRepository: UserRepository = mock {}
     private val mockVlogRepository: VlogRepository = mock {}
-    private val vlogId = vlog.id
-    private val userId = vlog.userId
+
+    private val vlogId = Models.vlog.id
+    private val userId = Models.vlog.userId
+
+    private val user = Models.user
+    private val vlog = Models.vlog
 
     @Before
     fun setUp() {
@@ -108,8 +115,10 @@ class UserVlogUseCaseTest {
 class UserVlogsUseCaseTest {
     private lateinit var userVlogsUseCase: UserVlogsUseCase
     private val mockVlogRepository: VlogRepository = mock {}
-    private val vlogId = vlog.id
-    private val userId = vlog.userId
+
+    private val userId = Models.vlog.userId
+
+    private val vlog = Models.vlog
 
     @Before
     fun setUp() {

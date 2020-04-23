@@ -1,8 +1,6 @@
 package com.laixer.swabbr.domain.model
 
-data class Like(
-    val vlogLikeId: String,
-    val vlogId: String,
-    val userId: String,
-    val timeCreated: String
-)
+import java.time.ZonedDateTime
+import java.util.UUID
+
+data class Like(val id: UUID, val vlogId: UUID, val userId: UUID, val timeCreated: ZonedDateTime)

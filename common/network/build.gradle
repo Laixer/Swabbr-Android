@@ -6,9 +6,6 @@ dependencies {
 
     implementation Libraries.retrofit
     implementation Libraries.moshiConverter
-    implementation Libraries.loggingInterceptor
-    implementation Libraries.rxjavaAdapter
+
 }
-repositories {
-    mavenCentral()
-}
+

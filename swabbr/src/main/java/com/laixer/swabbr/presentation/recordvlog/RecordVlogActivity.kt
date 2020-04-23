@@ -30,9 +30,7 @@ class RecordVlogActivity : CameraActivityBase(), WOWZBroadcastStatusCallback {
         // Check if we received connection credentials
         if (connectionSettings == null) {
             Toast.makeText(
-                this,
-                resources.getString(R.string.status_error),
-                Toast.LENGTH_LONG
+                this, resources.getString(R.string.status_error), Toast.LENGTH_LONG
             ).show()
             return
         }
@@ -50,9 +48,7 @@ class RecordVlogActivity : CameraActivityBase(), WOWZBroadcastStatusCallback {
         // Check if the config is valid
         streamConfig.validateForBroadcast()?.let { error ->
             Toast.makeText(
-                this,
-                error.errorDescription ?: resources.getString(R.string.status_error),
-                Toast.LENGTH_LONG
+                this, error.errorDescription ?: resources.getString(R.string.status_error), Toast.LENGTH_LONG
             ).show()
             return
         }
@@ -75,28 +71,20 @@ class RecordVlogActivity : CameraActivityBase(), WOWZBroadcastStatusCallback {
                     broadcasting = true
 
                     Toast.makeText(
-                        this,
-                        "Started broadcasting" +
-                            "\n${mWZBroadcast.broadcastConfig.getLabel(
-                                true,
-                                true,
-                                true,
-                                true
-                            )}",
-                        Toast.LENGTH_LONG
+                        this, "Started broadcasting" + "\n${mWZBroadcast.broadcastConfig.getLabel(
+                            true, true, true, true
+                        )}", Toast.LENGTH_LONG
                     ).show()
 
                     timer_view.addEventAt(
-                        DEFAULT_MINIMUM_RECORD_TIME_MINUTES,
-                        DEFAULT_MINIMUM_RECORD_TIME_SECONDS
+                        DEFAULT_MINIMUM_RECORD_TIME_MINUTES, DEFAULT_MINIMUM_RECORD_TIME_SECONDS
                     ) {
                         // Allow for broadcast to be stopped
                         toggle_broadcast.isEnabled = true
                     }
 
                     timer_view.addEventAt(
-                        DEFAULT_MAXIMUM_RECORD_TIME_MINUTES,
-                        DEFAULT_MAXIMUM_RECORD_TIME_SECONDS
+                        DEFAULT_MAXIMUM_RECORD_TIME_MINUTES, DEFAULT_MAXIMUM_RECORD_TIME_SECONDS
                     ) {
                         stopBroadcasting("Time limit reached, stopping broadcast.")
                     }
@@ -154,17 +142,16 @@ class RecordVlogActivity : CameraActivityBase(), WOWZBroadcastStatusCallback {
 
     private fun countDownFrom(countdownMs: Long, onFinish: () -> Unit) {
         countdown.visibility = View.VISIBLE
-        val timer =
-            object : CountDownTimer(countdownMs, COUNTDOWN_INTERVAL_MILLISECONDS) {
-                override fun onTick(millisUntilFinished: Long) {
-                    countdown.text = String.format("%1d", (millisUntilFinished / COUNTDOWN_INTERVAL_MILLISECONDS) + 1)
-                }
-
-                override fun onFinish() {
-                    countdown.visibility = View.INVISIBLE
-                    runOnUiThread(onFinish)
-                }
+        val timer = object : CountDownTimer(countdownMs, COUNTDOWN_INTERVAL_MILLISECONDS) {
+            override fun onTick(millisUntilFinished: Long) {
+                countdown.text = String.format("%1d", (millisUntilFinished / COUNTDOWN_INTERVAL_MILLISECONDS) + 1)
             }
+
+            override fun onFinish() {
+                countdown.visibility = View.INVISIBLE
+                runOnUiThread(onFinish)
+            }
+        }
         timer.start()
     }
 

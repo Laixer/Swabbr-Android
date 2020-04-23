@@ -5,64 +5,94 @@ def localProperties = new Properties()
 localProperties.load(new FileInputStream(localPropertiesFile))
 
 android {
+  defaultConfig {
+    applicationId ApplicationId.id
+    buildConfigField("String", "GOCODER_SDK_KEY", localProperties['GOCODER_SDK_KEY'])
+  }
 
-    defaultConfig {
-        buildConfigField("String", "GOCODER_SDK_KEY", localProperties['GOCODER_SDK_KEY'])
-    }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_1_8.toString()
+  }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+  flavorDimensions "default"
+
+  lintOptions {
+    abortOnError false
+  }
+
+  productFlavors {
+    dev {
+      dimension "default"
     }
+    prod {
+      dimension "default"
+    }
+  }
 }
 
 repositories {
-    flatDir {
-        dirs 'libs'
-    }
+  flatDir {
+    dirs 'libs'
+  }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(Modules.cache)
-    implementation project(Modules.network)
-    implementation project(Modules.navigation)
-    implementation project(Modules.presentation)
+  implementation project(Modules.cache)
+  implementation project(Modules.network)
+  implementation project(Modules.navigation)
+  implementation project(Modules.presentation)
 
-    implementation Modules.gocodersdk
+  implementation Modules.gocodersdk
 
-    implementation Libraries.koinAndroid
-    implementation Libraries.koinViewModel
+  implementation Libraries.lifecycleExtensions
 
-    implementation Libraries.lifecycleExtensions
+  implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.70"
 
-    implementation Libraries.rxjava
-    implementation Libraries.rxkotlin
+  // Koin
+  implementation Libraries.koinAndroid
+  implementation Libraries.koinViewModel
 
-    implementation Libraries.moshiConverter
+  // Firebase
+  implementation FirebaseLibraries.analytics
+  implementation FirebaseLibraries.messaging
+  implementation FirebaseLibraries.iid
 
-    implementation Libraries.camera2
+  // Rxjava
+  implementation Libraries.rxjava
+  implementation Libraries.rxkotlin
+  implementation Libraries.loggingInterceptor
+  implementation Libraries.rxjavaAdapter
+  implementation Libraries.moshiConverter
 
-    implementation Libraries.ktx
-    implementation JetpackLibraries.appcompat
-    implementation JetpackLibraries.fragment
-    implementation JetpackLibraries.viewPager2
-    implementation JetpackLibraries.swiperefreshLayout
-    implementation JetpackLibraries.constraintLayout
-    implementation "androidx.navigation:navigation-fragment-ktx:2.2.1"
-    implementation "androidx.navigation:navigation-ui-ktx:2.2.1"
+  // AndroidX
+  implementation JetpackLibraries.ktx
+  implementation JetpackLibraries.appcompat
+  implementation JetpackLibraries.fragment
+  implementation JetpackLibraries.viewPager2
+  implementation JetpackLibraries.swiperefreshLayout
+  implementation JetpackLibraries.constraintLayout
+  implementation JetpackLibraries.camera2
+  implementation JetpackLibraries.navFragmentKtx
+  implementation JetpackLibraries.navUiKtx
 
-    implementation GoogleLibraries.material
-    implementation GoogleLibraries.exoplayer
+  implementation "fr.speekha.httpmocker:moshi-adapter:1.2.0"
 
-    testImplementation TestLibraries.junit
-    testImplementation TestLibraries.assertjCore
-    testImplementation TestLibraries.mockitoKotlin
-    testImplementation TestLibraries.mockitoInline
-    testImplementation TestLibraries.lifecycleTesting
+  // Google
+  implementation GoogleLibraries.material
+  implementation GoogleLibraries.exoplayer
+
+  // Testing dependencies
+  testImplementation TestLibraries.junit
+  testImplementation TestLibraries.assertjCore
+  testImplementation TestLibraries.mockitoKotlin
+  testImplementation TestLibraries.mockitoInline
+  testImplementation TestLibraries.lifecycleTesting
+
 }

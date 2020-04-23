@@ -70,9 +70,7 @@ abstract class GoCoderSDKActivityBase : AppCompatActivity(), WOWZStatusCallback 
         } else {
             // Request camera permissions
             ActivityCompat.requestPermissions(
-                this,
-                REQUIRED_PERMISSIONS,
-                PERMISSION_REQUEST_CODE
+                this, REQUIRED_PERMISSIONS, PERMISSION_REQUEST_CODE
             )
         }
     }
@@ -87,11 +85,7 @@ abstract class GoCoderSDKActivityBase : AppCompatActivity(), WOWZStatusCallback 
     /**
      * Callback for when a permission request has been processed
      */
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         mPermissionsGranted = when (requestCode) {
             PERMISSION_REQUEST_CODE -> grantResults.all { it == PackageManager.PERMISSION_GRANTED }
             else -> false
@@ -110,19 +104,25 @@ abstract class GoCoderSDKActivityBase : AppCompatActivity(), WOWZStatusCallback 
 
     private fun hideSystemUI() {
         val rootView: View? = window.decorView.findViewById(android.R.id.content)
-        rootView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            or View.SYSTEM_UI_FLAG_FULLSCREEN
-            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+        rootView?.systemUiVisibility =
+            (
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                )
     }
 
     private fun showSystemUI() {
         val rootView: View? = window.decorView.findViewById(android.R.id.content)
-        rootView?.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+        rootView?.systemUiVisibility =
+            (
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                )
     }
 
     protected fun startBroadcast(
@@ -132,9 +132,7 @@ abstract class GoCoderSDKActivityBase : AppCompatActivity(), WOWZStatusCallback 
         if (mWZBroadcast.status.isIdle) {
             if (!config.isVideoEnabled && !config.isAudioEnabled) {
                 Toast.makeText(
-                    this,
-                    "Unable to publish if both audio and video are disabled",
-                    Toast.LENGTH_LONG
+                    this, "Unable to publish if both audio and video are disabled", Toast.LENGTH_LONG
                 ).show()
                 return WOWZStreamingError(WOWZStreamingError.VIDEO_SOURCE_NOT_SPECIFIED)
             }
@@ -144,13 +142,11 @@ abstract class GoCoderSDKActivityBase : AppCompatActivity(), WOWZStatusCallback 
             config.frameRateLowBandwidthSkipCount = 1
 
             if (!config.isAudioEnabled) {
-                Toast.makeText(this, "The audio stream is currently turned off", Toast.LENGTH_LONG)
-                    .show()
+                Toast.makeText(this, "The audio stream is currently turned off", Toast.LENGTH_LONG).show()
             }
 
             if (!config.isVideoEnabled) {
-                Toast.makeText(this, "The video stream is currently turned off", Toast.LENGTH_LONG)
-                    .show()
+                Toast.makeText(this, "The video stream is currently turned off", Toast.LENGTH_LONG).show()
             }
             // If config is invalid throw an error
             config.validateForBroadcast()?.let { error ->
@@ -170,10 +166,7 @@ abstract class GoCoderSDKActivityBase : AppCompatActivity(), WOWZStatusCallback 
             return newBitrate
         }
 
-        override fun adaptiveFrameRateChange(
-            broadcastStat: WOWZStreamingStat,
-            newFrameRate: Int
-        ): Int {
+        override fun adaptiveFrameRateChange(broadcastStat: WOWZStreamingStat, newFrameRate: Int): Int {
             WOWZLog.debug(TAG, "adaptiveFrameRateChange[$newFrameRate]")
             mWZBroadcast.broadcastConfig.videoFramerate = newFrameRate
             return newFrameRate
@@ -186,12 +179,12 @@ abstract class GoCoderSDKActivityBase : AppCompatActivity(), WOWZStatusCallback 
 
     companion object {
         private const val TAG = "GoCoderSDKActivityBase"
+
         // This is an array of all the permission specified in the manifest
         private val REQUIRED_PERMISSIONS = arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.INTERNET
+            Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.INTERNET
         )
+
         // This is an arbitrary number used to keep tab of the permission
         // request. Where an app has multiple context for requesting permission,
         // this can help differentiate the different contexts

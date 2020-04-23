@@ -11,75 +11,39 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.laixer.navigation.features.SwabbrNavigation
-import java.util.Locale
-
-enum class Action {
-    VLOG_NEW_REACTION,
-    VLOG_RECORD_REQUEST
-}
+import com.laixer.cache.MemoryCache
 
 class FirebaseService : FirebaseMessagingService() {
+
+    private val notificationHandler = NotificationHandler()
 
     /**
      * Called when message is received.
      *
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
-    // [START receive_message]
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-
         Log.d(TAG, "From: ${remoteMessage.from}")
 
         // Check if message contains a notification payload.
         remoteMessage.data.let {
-            val notificationManager = NotificationManager()
-            val notification = notificationManager.handleNotification(remoteMessage.data)
+            val notification = notificationHandler.parse(remoteMessage.data)
 
             sendNotification(notification)
         }
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
     }
-    // [END receive_message]
 
-    // [START on_new_token]
     /**
      * Called if InstanceID token is updated. This may occur if the security of
      * the previous token had been compromised. Note that this is called when the InstanceID token
      * is initially generated so this is where you would retrieve the token.
      */
     override fun onNewToken(token: String) {
-        Log.d(TAG, "Refreshed token: $token")
 
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
-        // sendRegistrationToServer(token)
-    }
-    // [END on_new_token]
+        Log.d(TAG, "Refreshed Firebase token: $token")
 
-    /**
-     * Schedule async work using WorkManager.
-     */
-//    private fun scheduleJob(remoteMessage: RemoteMessage) {
-//        // [START dispatch_job]
-//        val work = OneTimeWorkRequest.Builder(MyWorker::class.java).build()
-//        WorkManager.getInstance(this.baseContext).beginWith(work).enqueue()
-//        // [END dispatch_job]
-//
-//        if (!remoteMessage.notification?.clickAction.isNullOrEmpty()) {
-//
-//        }
-//    }
-
-    /**
-     * Handle time allotted to BroadcastReceivers.
-     */
-    private fun handleNow() {
-        Log.d(TAG, "Short lived task is done.")
+        // Manage the Firebase subscription on the server side
     }
 
     /**
@@ -99,43 +63,14 @@ class FirebaseService : FirebaseMessagingService() {
      *
      * @param notification FCM message body received.
      */
-    private fun sendNotification(notification: Notification?) {
+    private fun sendNotification(notification: SwabbrNotification?) {
         // Set default intent
-        var intent = Intent(this, MainActivity::class.java)
-
-        // Retrieve action from notification payload or null if none exists
-        val action = notification?.data?.clickAction?.toUpperCase(Locale.ROOT)
-
-        // Assign correct action if notification contains payload
-        action?.let {
-            try {
-                intent = when (Action.valueOf(action)) {
-                    Action.VLOG_RECORD_REQUEST -> SwabbrNavigation.record(
-                        SwabbrNavigation.ConnectionSettings(
-                            notification.data.cloudCode,
-                            notification.data.hostAddress,
-                            notification.data.appName,
-                            notification.data.streamName,
-                            notification.data.port
-                        )
-                    )!!
-                    Action.VLOG_NEW_REACTION -> SwabbrNavigation.vlogDetails(
-                        arrayListOf(
-                            notification.data.port.toString()
-                        )
-                    )!!
-                }
-            } catch (e: IllegalArgumentException) {
-                e.message?.let {
-                    Log.e(TAG, it)
-                }
-            }
-        }
+        var intent = notificationHandler.getIntent(baseContext, notification)
 
         // Clear activity stack
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
-        // Blabla
+        // Create a pending intent
         val pendingIntent = PendingIntent.getActivity(
             this, 0 /* Request code */, intent,
             PendingIntent.FLAG_ONE_SHOT
@@ -144,7 +79,7 @@ class FirebaseService : FirebaseMessagingService() {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_stat_ic_notification)
-            .setContentTitle(notification?.data?.title ?: "Swabbr Notification")
+            .setContentTitle(notification?.data?.title ?: getString(R.string.default_notification_title))
             .setContentText(notification?.data?.message)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
@@ -164,17 +99,18 @@ class FirebaseService : FirebaseMessagingService() {
         }
 
         notificationManager.notify(
-            NOTIFICATION_ID /* ID of notification */,
+            NOTIFICATION_ID,
             notificationBuilder.build()
         )
     }
 
     companion object {
-        private const val TAG = "MyFirebaseMsgService"
+        private const val TAG = "FirebaseService"
         private const val NOTIFICATION_CHANNEL_ID = "nh-demo-channel-id"
         private const val NOTIFICATION_CHANNEL_NAME = "Notification Hubs Demo Channel"
         private const val NOTIFICATION_CHANNEL_DESCRIPTION = "Notification Hubs Demo Channel"
         private const val NOTIFICATION_ID = 1
+        private var cache: MemoryCache<String?> = MemoryCache()
 
         fun createChannelAndHandleNotifications(context: Context) {
 
@@ -184,11 +120,11 @@ class FirebaseService : FirebaseMessagingService() {
                     NOTIFICATION_CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_HIGH
                 )
-                channel.description = NOTIFICATION_CHANNEL_DESCRIPTION
+                channel.description =
+                    NOTIFICATION_CHANNEL_DESCRIPTION
                 channel.setShowBadge(true)
 
-                val notificationManager = context.getSystemService(NotificationManager::class.java)
-                notificationManager.createNotificationChannel(channel)
+                context.getSystemService(NotificationManager::class.java)?.createNotificationChannel(channel)
             }
         }
     }

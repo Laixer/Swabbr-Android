@@ -1,8 +1,9 @@
 package com.laixer.swabbr.datasource.cache
 
 import com.laixer.cache.ReactiveCache
+import com.laixer.swabbr.Models
+import com.laixer.swabbr.data.datasource.cache.VlogCacheDataSourceImpl
 import com.laixer.swabbr.domain.model.Vlog
-import com.laixer.swabbr.vlog
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -13,15 +14,14 @@ import org.junit.Test
 class VlogCacheDataSourceImplTest {
 
     private lateinit var dataSource: VlogCacheDataSourceImpl
-    private val mockCache: ReactiveCache<List<Vlog>> = mock()
-    val key = "Vlog List"
-    val featuredKey = "Featured Vlog List"
+    private val key by lazy { dataSource.key }
+    private val featuredKey by lazy { dataSource.featuredKey }
 
-    private val vlogId = vlog.id
-    private val cacheItem = vlog.copy(userId = "cache")
-    private val remoteItem = vlog.copy(userId = "remote")
-    private val cacheList = listOf(cacheItem)
-    private val remoteList = listOf(remoteItem)
+    private val mockCache: ReactiveCache<List<Vlog>> = mock()
+
+    private val vlogId = Models.vlog.id
+    private val model = Models.vlog
+    private val list = listOf(model)
     private val throwable = Throwable()
 
     @Before
@@ -32,12 +32,12 @@ class VlogCacheDataSourceImplTest {
     @Test
     fun `get featured vlogs cache success`() {
         // given
-        whenever(mockCache.load(featuredKey)).thenReturn(Single.just(cacheList))
+        whenever(mockCache.load(featuredKey)).thenReturn(Single.just(list))
         // when
         val test = dataSource.getFeaturedVlogs().test()
         // then
         verify(mockCache).load(featuredKey)
-        test.assertValue(cacheList)
+        test.assertValue(list)
     }
 
     @Test
@@ -54,12 +54,12 @@ class VlogCacheDataSourceImplTest {
     @Test
     fun `get vlog cache success`() {
         // given
-        whenever(mockCache.load(key)).thenReturn(Single.just(cacheList))
+        whenever(mockCache.load(key)).thenReturn(Single.just(list))
         // when
         val test = dataSource.get(vlogId).test()
         // then
         verify(mockCache).load(key)
-        test.assertValue(cacheItem)
+        test.assertValue(model)
     }
 
     @Test
@@ -76,22 +76,22 @@ class VlogCacheDataSourceImplTest {
     @Test
     fun `set featured vlogs cache success`() {
         // given
-        whenever(mockCache.save(featuredKey, remoteList)).thenReturn(Single.just(remoteList))
+        whenever(mockCache.save(featuredKey, list)).thenReturn(Single.just(list))
         // when
-        val test = dataSource.setFeaturedVlogs(remoteList).test()
+        val test = dataSource.setFeaturedVlogs(list).test()
         // then
-        verify(mockCache).save(featuredKey, remoteList)
-        test.assertValue(remoteList)
+        verify(mockCache).save(featuredKey, list)
+        test.assertValue(list)
     }
 
     @Test
     fun `set featured vlogs cache fail`() {
         // given
-        whenever(mockCache.save(featuredKey, remoteList)).thenReturn(Single.error(throwable))
+        whenever(mockCache.save(featuredKey, list)).thenReturn(Single.error(throwable))
         // when
-        val test = dataSource.setFeaturedVlogs(remoteList).test()
+        val test = dataSource.setFeaturedVlogs(list).test()
         // then
-        verify(mockCache).save(featuredKey, remoteList)
+        verify(mockCache).save(featuredKey, list)
         test.assertError(throwable)
     }
 
@@ -99,23 +99,23 @@ class VlogCacheDataSourceImplTest {
     fun `set vlog cache success`() {
         // given
         whenever(mockCache.load(key)).thenReturn(Single.just(emptyList()))
-        whenever(mockCache.save(key, remoteList)).thenReturn(Single.just(remoteList))
+        whenever(mockCache.save(key, list)).thenReturn(Single.just(list))
         // when
-        val test = dataSource.set(remoteItem).test()
+        val test = dataSource.set(list).test()
         // then
-        verify(mockCache).save(key, remoteList)
-        test.assertValue(remoteItem)
+        verify(mockCache).save(key, list)
+        test.assertValue(list)
     }
 
     @Test
     fun `set vlog cache fail`() {
         // given
         whenever(mockCache.load(key)).thenReturn(Single.just(emptyList()))
-        whenever(mockCache.save(key, remoteList)).thenReturn(Single.error(throwable))
+        whenever(mockCache.save(key, list)).thenReturn(Single.error(throwable))
         // when
-        val test = dataSource.set(remoteItem).test()
+        val test = dataSource.set(list).test()
         // then
-        verify(mockCache).save(key, remoteList)
+        verify(mockCache).save(key, list)
         test.assertError(throwable)
     }
 }

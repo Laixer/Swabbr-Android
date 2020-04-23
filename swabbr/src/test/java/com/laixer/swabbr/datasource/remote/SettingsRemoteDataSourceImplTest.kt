@@ -1,7 +1,9 @@
 package com.laixer.swabbr.datasource.remote
 
-import com.laixer.swabbr.datasource.model.mapToDomain
-import com.laixer.swabbr.settingsEntity
+import com.laixer.swabbr.Entities
+import com.laixer.swabbr.Models
+import com.laixer.swabbr.data.datasource.remote.SettingsRemoteDataSourceImpl
+import com.laixer.swabbr.datasource.model.remote.SettingsApi
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -15,6 +17,9 @@ class SettingsRemoteDataSourceImplTest {
     private val mockApi: SettingsApi = mock()
     private val throwable = Throwable()
 
+    private val entity = Entities.settings
+    private val model = Models.settings
+
     @Before
     fun setUp() {
         dataSource = SettingsRemoteDataSourceImpl(mockApi)
@@ -23,12 +28,12 @@ class SettingsRemoteDataSourceImplTest {
     @Test
     fun `get settings remote success`() {
         // given
-        whenever(mockApi.get()).thenReturn(Single.just(settingsEntity))
+        whenever(mockApi.get()).thenReturn(Single.just(entity))
         // when
         val test = dataSource.get().test()
         // then
         verify(mockApi).get()
-        test.assertValue(settingsEntity.mapToDomain())
+        test.assertValue(model)
     }
 
     @Test

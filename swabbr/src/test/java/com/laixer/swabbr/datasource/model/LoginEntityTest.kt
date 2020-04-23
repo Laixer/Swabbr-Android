@@ -1,18 +1,21 @@
 package com.laixer.swabbr.datasource.model
 
-import com.laixer.swabbr.login
+import com.laixer.swabbr.Entities
+import com.laixer.swabbr.Models
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class LoginEntityTest {
 
+    val entity = Entities.login
+    val model = Models.login
+
     @Test
     fun `map entity to domain`() {
         // given
         // when
-        val item = login.mapToData()
+        val transformedEntity = entity.mapToDomain()
         // then
-        assertEquals(item.username, login.username)
-        assertEquals(item.password, login.password)
+        assertEquals(model, transformedEntity)
     }
 }

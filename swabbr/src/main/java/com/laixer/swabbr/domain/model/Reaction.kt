@@ -1,9 +1,11 @@
 package com.laixer.swabbr.domain.model
 
+import java.time.ZonedDateTime
+import java.util.UUID
+
 data class Reaction(
-    val userId: String,
-    val vlogId: String,
-    val id: String,
-    val duration: String,
-    val postDate: String
+    val id: UUID,
+    val userId: UUID,
+    val vlogId: UUID,
+    val datePosted: ZonedDateTime
 )

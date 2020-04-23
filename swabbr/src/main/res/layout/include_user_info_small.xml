@@ -6,12 +6,13 @@
     android:gravity="center"
     android:orientation="horizontal">
 
-    <ImageButton
+    <ImageView
         android:id="@+id/userAvatar"
         android:layout_width="@dimen/small_icon_size"
         android:layout_height="@dimen/small_icon_size"
         android:background="?selectableItemBackgroundBorderless"
-        tools:src="@mipmap/ic_launcher" />
+        android:scaleType="fitCenter"
+        tools:src="@mipmap/ic_avatar_placeholder_round" />
 
     <TextView
         android:id="@+id/userName"

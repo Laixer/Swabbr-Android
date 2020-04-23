@@ -55,10 +55,11 @@ class TimerView(context: Context, attrs: AttributeSet?) : AppCompatTextView(cont
                 val timecodeMinutes = ((timecodeTotalSeconds / SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE).toInt()
                 val timecodeSeconds = (timecodeTotalSeconds % SECONDS_PER_MINUTE).toInt()
 
-                text = genTimerDisplay(durationMs, timecodeMs, timecodeSeconds, timecodeMinutes)
+                text = genTimerDisplay(
+                    durationMs, timecodeMs, timecodeSeconds, timecodeMinutes
+                )
 
-                events
-                    .filter { it.first.first == timecodeMinutes && it.first.second == timecodeSeconds }
+                events.filter { it.first.first == timecodeMinutes && it.first.second == timecodeSeconds }
                     .map { it.second() }
             }
         }, refreshInterval, refreshInterval, TimeUnit.MILLISECONDS)

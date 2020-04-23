@@ -1,24 +1,24 @@
 package com.laixer.swabbr.data.repository
 
+import com.laixer.swabbr.Models
 import com.laixer.swabbr.data.datasource.ReactionCacheDataSource
 import com.laixer.swabbr.data.datasource.ReactionRemoteDataSource
-import com.laixer.swabbr.reaction
-import com.laixer.swabbr.vlog
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
+import java.util.UUID
 
 class ReactionRepositoryImplTest {
 
     private lateinit var repository: ReactionRepositoryImpl
     private val mockCacheDataSource: ReactionCacheDataSource = mock()
     private val mockRemoteDataSource: ReactionRemoteDataSource = mock()
-    private val vlogId = vlog.id
-    private val cacheItem = reaction.copy(id = "cache")
-    private val remoteItem = reaction.copy(id = "remote")
+    private val vlogId = Models.vlog.id
+    private val cacheItem = Models.reaction.copy(id = UUID.randomUUID())
+    private val remoteItem = Models.reaction.copy(id = UUID.randomUUID())
     private val cacheList = listOf(cacheItem)
     private val remoteList = listOf(remoteItem)
     private val throwable = Throwable()
