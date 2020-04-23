@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/content_margin"
         android:orientation="vertical">
 
         <com.google.android.material.card.MaterialCardView
@@ -23,38 +22,112 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/thumbnail_placeholder" />
 
-            <View
-                style="@style/Divider"
-                android:layout_width="match_parent"
-                android:layout_height="1px" />
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/color_window_background_transparent"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:padding="@dimen/content_margin">
 
-                <TextView
-                    android:id="@+id/vlogPostDate"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textAppearance="@style/SubtitleTextAppearance"
-                    tools:text="Vlog Post Date" />
+                    android:layout_alignParentEnd="true"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/view_count"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_eye"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textAlignment="textStart"
+                            android:textAppearance="@style/SmallTextAppearance"
+                            tools:text="@string/view_count" />
+
+                        <TextView
+                            android:id="@+id/like_count"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_thumb_up"
+                            android:ellipsize="end"
+                            android:maxLines="2"
+                            android:textAlignment="textStart"
+                            android:textAppearance="@style/SmallTextAppearance"
+                            tools:text="@string/like_count" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="@dimen/content_margin">
+                        <TextView
+                            android:id="@+id/vlogPostDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_date_range"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textAlignment="textStart"
+                            android:textAppearance="@style/SmallTextAppearance"
+                            tools:text="@string/date" />
+
+                        <TextView
+                            android:id="@+id/vlogDuration"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_access_time"
+                            android:ellipsize="end"
+                            android:maxLines="2"
+                            android:textAlignment="textStart"
+                            android:textAppearance="@style/SmallTextAppearance"
+                            tools:text="@string/duration" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end">
 
                 <TextView
-                    android:id="@+id/vlogDuration"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="3dp"
+                    android:id="@+id/reaction_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:drawableEnd="@drawable/ic_message"
+                    android:drawableTint="@color/colorPrimary"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textAppearance="@style/SmallTextAppearance"
-                    tools:text="Vlog Duration" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/colorPrimary"
+                    tools:text="Reaction Count" />
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
+
+        <View
+            style="@style/Divider"
+            android:layout_width="match_parent"
+            android:layout_height="1px" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/content_margin"
+            android:orientation="horizontal">
+        </RelativeLayout>
 
     </LinearLayout>
 

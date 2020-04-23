@@ -1,8 +1,9 @@
 package com.laixer.swabbr.datasource.cache
 
 import com.laixer.cache.ReactiveCache
+import com.laixer.swabbr.Models
+import com.laixer.swabbr.data.datasource.cache.UserCacheDataSourceImpl
 import com.laixer.swabbr.domain.model.User
-import com.laixer.swabbr.user
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -13,13 +14,14 @@ import org.junit.Test
 class UserCacheDataSourceImplTest {
 
     private lateinit var dataSource: UserCacheDataSourceImpl
+    private val key by lazy { dataSource.key }
+
     private val mockCache: ReactiveCache<List<User>> = mock()
-    val key = "User List"
-    private val userId = user.id
-    private val cacheItem = user.copy(nickname = "cache")
-    private val remoteItem = user.copy(nickname = "remote")
-    private val cacheList = listOf(cacheItem)
-    private val remoteList = listOf(remoteItem)
+
+    private val userId = Models.user.id
+    private val model = Models.user
+
+    private val list = listOf(model)
     private val throwable = Throwable()
 
     @Before
@@ -52,12 +54,12 @@ class UserCacheDataSourceImplTest {
     @Test
     fun `get user cache success`() {
         // given
-        whenever(mockCache.load(key)).thenReturn(Single.just(cacheList))
+        whenever(mockCache.load(key)).thenReturn(Single.just(list))
         // when
         val test = dataSource.get(userId).test()
         // then
         verify(mockCache).load(key)
-        test.assertValue(cacheItem)
+        test.assertValue(model)
     }
 
     @Test
@@ -74,22 +76,22 @@ class UserCacheDataSourceImplTest {
     @Test
     fun `set users cache success`() {
         // given
-        whenever(mockCache.save(key, remoteList)).thenReturn(Single.just(remoteList))
+        whenever(mockCache.save(key, list)).thenReturn(Single.just(list))
         // when
-        val test = dataSource.set(remoteList).test()
+        val test = dataSource.set(list).test()
         // then
-        verify(mockCache).save(key, remoteList)
-        test.assertValue(remoteList)
+        verify(mockCache).save(key, list)
+        test.assertValue(list)
     }
 
     @Test
     fun `set users cache fail`() {
         // given
-        whenever(mockCache.save(key, remoteList)).thenReturn(Single.error(throwable))
+        whenever(mockCache.save(key, list)).thenReturn(Single.error(throwable))
         // when
-        val test = dataSource.set(remoteList).test()
+        val test = dataSource.set(list).test()
         // then
-        verify(mockCache).save(key, remoteList)
+        verify(mockCache).save(key, list)
         test.assertError(throwable)
     }
 
@@ -97,23 +99,23 @@ class UserCacheDataSourceImplTest {
     fun `set user cache success`() {
         // given
         whenever(mockCache.load(key)).thenReturn(Single.just(emptyList()))
-        whenever(mockCache.save(key, remoteList)).thenReturn(Single.just(remoteList))
+        whenever(mockCache.save(key, list)).thenReturn(Single.just(list))
         // when
-        val test = dataSource.set(remoteItem).test()
+        val test = dataSource.set(list).test()
         // then
-        verify(mockCache).save(key, remoteList)
-        test.assertValue(remoteItem)
+        verify(mockCache).save(key, list)
+        test.assertValue(list)
     }
 
     @Test
     fun `set user cache fail`() {
         // given
         whenever(mockCache.load(key)).thenReturn(Single.just(emptyList()))
-        whenever(mockCache.save(key, remoteList)).thenReturn(Single.error(throwable))
+        whenever(mockCache.save(key, list)).thenReturn(Single.error(throwable))
         // when
-        val test = dataSource.set(remoteItem).test()
+        val test = dataSource.set(list).test()
         // then
-        verify(mockCache).save(key, remoteList)
+        verify(mockCache).save(key, list)
         test.assertError(throwable)
     }
 }

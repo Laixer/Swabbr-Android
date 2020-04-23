@@ -1,8 +1,9 @@
 package com.laixer.swabbr.datasource.remote
 
-import com.laixer.swabbr.datasource.model.mapToDomain
-import com.laixer.swabbr.vlog
-import com.laixer.swabbr.vlogEntity
+import com.laixer.swabbr.Entities
+import com.laixer.swabbr.Models
+import com.laixer.swabbr.data.datasource.remote.VlogRemoteDataSourceImpl
+import com.laixer.swabbr.datasource.model.remote.VlogsApi
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -14,9 +15,15 @@ class VlogRemoteDataSourceImplTest {
 
     private lateinit var dataSource: VlogRemoteDataSourceImpl
     private val mockApi: VlogsApi = mock()
-    private val vlogId = vlog.id
-    private val remoteItem = vlogEntity.copy(id = "remote")
-    private val remoteList = listOf(remoteItem)
+
+    private val vlogId = Models.vlog.id
+
+    private val entity = Entities.vlog
+    private val model = Models.vlog
+
+    private val entityList = listOf(entity)
+    private val modelList = listOf(model)
+
     private val throwable = Throwable()
 
     @Before
@@ -25,36 +32,36 @@ class VlogRemoteDataSourceImplTest {
     }
 
     @Test
-    fun `get featured vlogs remote success`() {
+    fun `get recommended vlogs remote success`() {
         // given
-        whenever(mockApi.getFeaturedVlogs()).thenReturn(Single.just(remoteList))
+        whenever(mockApi.getRecommendedVlogs()).thenReturn(Single.just(entityList))
         // when
-        val test = dataSource.getFeaturedVlogs().test()
+        val test = dataSource.getRecommendedVlogs().test()
         // then
-        verify(mockApi).getFeaturedVlogs()
-        test.assertValue(remoteList.mapToDomain())
+        verify(mockApi).getRecommendedVlogs()
+        test.assertValue(modelList)
     }
 
     @Test
-    fun `get featured vlogs remote fail`() {
+    fun `get recommended vlogs remote fail`() {
         // given
-        whenever(mockApi.getFeaturedVlogs()).thenReturn(Single.error(throwable))
+        whenever(mockApi.getRecommendedVlogs()).thenReturn(Single.error(throwable))
         // when
-        val test = dataSource.getFeaturedVlogs().test()
+        val test = dataSource.getRecommendedVlogs().test()
         // then
-        verify(mockApi).getFeaturedVlogs()
+        verify(mockApi).getRecommendedVlogs()
         test.assertError(throwable)
     }
 
     @Test
     fun `get vlog remote success`() {
         // given
-        whenever(mockApi.getVlog(vlogId)).thenReturn(Single.just(remoteItem))
+        whenever(mockApi.getVlog(vlogId)).thenReturn(Single.just(entity))
         // when
         val test = dataSource.get(vlogId).test()
         // then
         verify(mockApi).getVlog(vlogId)
-        test.assertValue(remoteItem.mapToDomain())
+        test.assertValue(model)
     }
 
     @Test

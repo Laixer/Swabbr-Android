@@ -1,18 +1,21 @@
 package com.laixer.swabbr.datasource.model
 
-import com.laixer.swabbr.followRequest
-import com.laixer.swabbr.followRequestEntity
+import com.laixer.swabbr.Entities
+import com.laixer.swabbr.Models
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class FollowRequestEntityTest {
 
+    val entity = Entities.followRequest
+    val model = Models.followRequest
+
     @Test
     fun `map entity to domain`() {
         // given
         // when
-        val model = followRequestEntity.mapToDomain()
+        val transformedEntity = entity.mapToDomain()
         // then
-        assertEquals(model, followRequest)
+        assertEquals(model, transformedEntity)
     }
 }

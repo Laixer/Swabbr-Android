@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation
+package com.laixer.swabbr.presentation.dashboard
 
 import android.os.Bundle
 import android.view.LayoutInflater

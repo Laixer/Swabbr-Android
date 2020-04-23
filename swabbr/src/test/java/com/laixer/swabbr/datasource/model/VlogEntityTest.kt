@@ -1,21 +1,21 @@
 package com.laixer.swabbr.datasource.model
 
-import com.laixer.swabbr.vlogEntity
+import com.laixer.swabbr.Entities
+import com.laixer.swabbr.Models
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class VlogEntityTest {
 
+    val entity = Entities.vlog
+    val model = Models.vlog
+
     @Test
     fun `map entity to domain`() {
         // given
         // when
-        val model = vlogEntity.mapToDomain()
+        val transformedEntity = entity.mapToDomain()
         // then
-        assertEquals(model.userId, vlogEntity.userId)
-        assertEquals(model.id, vlogEntity.id)
-        assertEquals(model.startDate, vlogEntity.startDate)
-        assertEquals(model.isLive, vlogEntity.isLive)
-        assertEquals(model.isPrivate, vlogEntity.isPrivate)
+        assertEquals(model, transformedEntity)
     }
 }

@@ -5,6 +5,9 @@ import io.reactivex.Single
 
 interface SettingsCacheDataSource {
 
+    val key: String
+        get() = "SETTINGS"
+
     fun get(): Single<Settings>
 
     fun set(settings: Settings): Single<Settings>

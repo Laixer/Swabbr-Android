@@ -7,21 +7,15 @@
 
     <fragment
         android:id="@+id/profile_dest"
-        android:name="com.laixer.swabbr.presentation.profile.ProfileFragment"
-        android:label="@string/userProfile"
-        tools:layout="@layout/fragment_profile">
-        <deepLink
-            android:id="@+id/deepLink"
-            android:autoVerify="true"
-            app:uri="profile/{userId}" />
-        <argument
-            android:name="userId"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
+        android:name="com.laixer.swabbr.presentation.profile.AuthProfileFragment"
+        android:label="@string/myProfile"
+        tools:layout="@layout/fragment_auth_profile">
         <action
             android:id="@+id/action_view_vlog"
             app:destination="@id/profile_vlog_details_dest" />
+        <action
+            android:id="@+id/action_view_settings"
+            app:destination="@id/settings_dest"/>
     </fragment>
 
     <fragment
@@ -36,6 +30,13 @@
         <argument
             android:name="vlogIds"
             app:argType="string[]" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settings_dest"
+        android:name="com.laixer.swabbr.presentation.settings.SettingsFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_settings">
     </fragment>
 
 </navigation>

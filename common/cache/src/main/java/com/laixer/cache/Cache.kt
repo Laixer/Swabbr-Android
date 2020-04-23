@@ -30,6 +30,8 @@ class ReactiveCache<T> {
 
     fun load(key: String): Single<T> = book.read(key)
 
+    fun loadOrNull(key: String): Single<T?> = book.read(key, null)
+
     fun save(key: String, anyObject: T): Single<T> =
         book.write(key, anyObject).toSingleDefault(anyObject)
 

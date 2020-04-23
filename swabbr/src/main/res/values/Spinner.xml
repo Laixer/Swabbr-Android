@@ -14,8 +14,8 @@
     </string-array>
 
     <string-array name="gender_array">
-        <item>@string/male</item>
         <item>@string/female</item>
+        <item>@string/male</item>
         <item>@string/other</item>
     </string-array>
 </resources>

@@ -6,9 +6,7 @@ import io.reactivex.Single
 
 class SettingsUseCase constructor(private val settingsRepository: SettingsRepository) {
 
-    fun get(refresh: Boolean): Single<Settings> =
-        settingsRepository.get(refresh)
+    fun get(refresh: Boolean): Single<Settings> = settingsRepository.get(refresh)
 
-    fun set(settings: Settings): Single<Settings> =
-        settingsRepository.set(settings)
+    fun set(settings: Settings): Single<Settings> = settingsRepository.set(settings)
 }

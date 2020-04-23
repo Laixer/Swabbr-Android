@@ -1,7 +1,7 @@
 package com.laixer.swabbr.domain.usecase
 
+import com.laixer.swabbr.Models
 import com.laixer.swabbr.domain.repository.SettingsRepository
-import com.laixer.swabbr.settings
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -13,6 +13,8 @@ class SettingsUseCaseTest {
 
     private lateinit var usecase: SettingsUseCase
     private val mockRepository: SettingsRepository = mock()
+
+    private val settings = Models.settings
 
     @Before
     fun setUp() {

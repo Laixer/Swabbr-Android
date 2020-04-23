@@ -11,15 +11,13 @@ class SettingsRepositoryImpl constructor(
     private val remoteDataSource: SettingsRemoteDataSource
 ) : SettingsRepository {
 
-    override fun get(refresh: Boolean): Single<Settings> =
-        when (refresh) {
-            true -> remoteDataSource.get().flatMap { cacheDataSource.set(it) }
-            false -> cacheDataSource.get().onErrorResumeNext { get(true) }
-        }
+    override fun get(refresh: Boolean): Single<Settings> = when (refresh) {
+        true -> remoteDataSource.get().flatMap { cacheDataSource.set(it) }
+        false -> cacheDataSource.get().onErrorResumeNext { get(true) }
+    }
 
-    override fun set(settings: Settings, updateRemote: Boolean): Single<Settings> =
-        when (updateRemote) {
-            true -> remoteDataSource.set(settings).flatMap { cacheDataSource.set(it) }
-            false -> cacheDataSource.set(settings)
-        }
+    override fun set(settings: Settings, updateRemote: Boolean): Single<Settings> = when (updateRemote) {
+        true -> remoteDataSource.set(settings).flatMap { cacheDataSource.set(it) }
+        false -> cacheDataSource.set(settings)
+    }
 }

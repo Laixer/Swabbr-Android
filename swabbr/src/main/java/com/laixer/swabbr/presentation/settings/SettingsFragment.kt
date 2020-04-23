@@ -1,31 +1,37 @@
 package com.laixer.swabbr.presentation.settings
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.laixer.navigation.features.SwabbrNavigation
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
+import com.laixer.swabbr.domain.model.FollowMode
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.model.SettingsItem
-import kotlinx.android.synthetic.main.activity_settings.*
+import kotlinx.android.synthetic.main.fragment_settings.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : Fragment() {
     private val vm: SettingsViewModel by viewModel()
     private var settings: SettingsItem? = null
     private var savedSettings: SettingsItem? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_settings, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        injectFeature()
         prepareUI()
 
         saveSettings.setOnClickListener {
@@ -44,8 +50,8 @@ class SettingsActivity : AppCompatActivity() {
             vm.getSettings(false)
         }
 
-        vm.settings.observe(this, Observer { loadSettings(it) })
-        vm.logout.observe(this, Observer { logout(it) })
+        vm.settings.observe(viewLifecycleOwner, Observer { loadSettings(it) })
+        vm.logout.observe(viewLifecycleOwner, Observer { logout(it) })
     }
 
     private fun loadSettings(res: Resource<SettingsItem?>) {
@@ -60,13 +66,13 @@ class SettingsActivity : AppCompatActivity() {
 
                     privateSwitch.isChecked = it.private
                     dailyVlogRequestLimitSpinner.setSelection(it.dailyVlogRequestLimit)
-                    followmodeSpinner.setSelection(it.followMode)
+                    followmodeSpinner.setSelection(it.followMode.ordinal)
 
                     enableSettings(true)
                 }
             }
             ResourceState.ERROR -> {
-                Toast.makeText(this, res.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), res.message, Toast.LENGTH_SHORT).show()
                 enableSettings(true)
             }
         }
@@ -80,10 +86,10 @@ class SettingsActivity : AppCompatActivity() {
             }
             ResourceState.SUCCESS -> {
                 progressBar.gone()
-                startActivity(SwabbrNavigation.login())
+//                startActivity(SwabbrNavigation.login())
             }
             ResourceState.ERROR -> {
-                Toast.makeText(this, res.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), res.message, Toast.LENGTH_SHORT).show()
                 progressBar.gone()
                 enableSettings(true)
             }
@@ -120,23 +126,19 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                settings?.followMode = position
+                settings?.followMode = FollowMode.values().first { it.ordinal == position }
                 checkChanges()
             }
         }
 
         ArrayAdapter.createFromResource(
-            this,
-            R.array.dailyvlogrequestlimit_array,
-            android.R.layout.simple_spinner_item
+            requireContext(), R.array.dailyvlogrequestlimit_array, android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             dailyVlogRequestLimitSpinner.adapter = adapter
         }
         ArrayAdapter.createFromResource(
-            this,
-            R.array.followmode_array,
-            android.R.layout.simple_spinner_item
+            requireContext(), R.array.followmode_array, android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             followmodeSpinner.adapter = adapter

@@ -1,21 +1,21 @@
 package com.laixer.swabbr.datasource.model
 
-import com.laixer.swabbr.reactionEntity
+import com.laixer.swabbr.Entities
+import com.laixer.swabbr.Models
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ReactionEntityTest {
 
+    val entity = Entities.reaction
+    val model = Models.reaction
+
     @Test
     fun `map entity to domain`() {
         // given
         // when
-        val model = reactionEntity.mapToDomain()
+        val transformedEntity = entity.mapToDomain()
         // then
-        assertEquals(model.userId, reactionEntity.userId)
-        assertEquals(model.vlogId, reactionEntity.vlogId)
-        assertEquals(model.id, reactionEntity.id)
-        assertEquals(model.duration, reactionEntity.duration)
-        assertEquals(model.postDate, reactionEntity.postDate)
+        assertEquals(model, transformedEntity)
     }
 }

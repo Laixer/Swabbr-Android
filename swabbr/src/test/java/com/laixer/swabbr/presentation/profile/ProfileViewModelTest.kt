@@ -3,23 +3,23 @@ package com.laixer.swabbr.presentation.profile
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
+import com.laixer.swabbr.Items
+import com.laixer.swabbr.Models
 import com.laixer.swabbr.domain.usecase.FollowUseCase
 import com.laixer.swabbr.domain.usecase.UserVlogsUseCase
 import com.laixer.swabbr.domain.usecase.UsersUseCase
-import com.laixer.swabbr.followRequest
 import com.laixer.swabbr.presentation.RxSchedulersOverrideRule
-import com.laixer.swabbr.presentation.model.mapToPresentation
-import com.laixer.swabbr.user
-import com.laixer.swabbr.vlog
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
+import org.mockito.internal.matchers.apachecommons.ReflectionEquals
 
 class ProfileViewModelTest {
 
@@ -27,12 +27,27 @@ class ProfileViewModelTest {
     private val mockUsersUseCase: UsersUseCase = mock()
     private val mockUserVlogsUseCase: UserVlogsUseCase = mock()
     private val mockFollowUseCase: FollowUseCase = mock()
-    private val profileVlogs = Pair(user, listOf(vlog))
-    private val userId = user.id
+
+    private val model = Models.user
+    private val item = Items.user
+
+    private val vlogModel = Models.vlog
+    private val vlogModelList = listOf(vlogModel)
+
+    private val vlogItem = Items.vlog
+    private val vlogItemList = listOf(vlogItem)
+
+    private val followRequestModel = Models.followRequest
+    private val followRequestItem = Items.followRequest
+
+    private val profileVlogs = Pair(model, vlogModelList)
+    private val userId = Models.user.id
     private val throwable = Throwable()
+
     @Rule
     @JvmField
     val rxSchedulersOverrideRule = RxSchedulersOverrideRule()
+
     @Rule
     @JvmField
     val instantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
@@ -46,12 +61,12 @@ class ProfileViewModelTest {
     fun `get profile succeeds`() {
         // given
         whenever(mockUsersUseCase.get(userId, false))
-            .thenReturn(Single.just(user))
+            .thenReturn(Single.just(model))
         // when
         viewModel.getProfile(userId, false)
         // then
         verify(mockUsersUseCase).get(userId, false)
-        assertEquals(user.mapToPresentation(), viewModel.profile.value)
+        assertTrue(ReflectionEquals(item).matches(viewModel.profile.value))
     }
 
     @Test
@@ -65,7 +80,7 @@ class ProfileViewModelTest {
         assertEquals(
             Resource(
                 state = ResourceState.SUCCESS,
-                data = profileVlogs.second.mapToPresentation(),
+                data = vlogItemList,
                 message = null
             ), viewModel.profileVlogs.value
         )
@@ -89,7 +104,7 @@ class ProfileViewModelTest {
     fun `get followstatus succeeds`() {
         // given
         whenever(mockFollowUseCase.getFollowRequest(userId))
-            .thenReturn(Single.just(followRequest))
+            .thenReturn(Single.just(followRequestModel))
         // when
         viewModel.getFollowRequest(userId)
 
@@ -98,7 +113,7 @@ class ProfileViewModelTest {
         assertEquals(
             Resource(
                 state = ResourceState.SUCCESS,
-                data = followRequest.mapToPresentation(),
+                data = followRequestItem,
                 message = null
             ), viewModel.followRequest.value
         )

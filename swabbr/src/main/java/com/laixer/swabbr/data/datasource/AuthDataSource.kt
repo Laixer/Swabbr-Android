@@ -6,6 +6,18 @@ import com.laixer.swabbr.domain.model.Registration
 import io.reactivex.Completable
 import io.reactivex.Single
 
+interface AuthCacheDataSource {
+
+    val key: String
+        get() = "AUTH"
+
+    fun set(authUser: AuthUser, remember: Boolean = true): Single<AuthUser>
+
+    fun get(): Single<AuthUser>
+
+    fun logout()
+}
+
 interface AuthRemoteDataSource {
 
     fun login(login: Login): Single<AuthUser>
@@ -13,16 +25,4 @@ interface AuthRemoteDataSource {
     fun register(registration: Registration): Single<AuthUser>
 
     fun logout(): Completable
-}
-
-interface AuthCacheDataSource {
-    fun set(authUser: Pair<String, String>): Single<Pair<String, String>>
-
-    fun get(): Single<Pair<String, String>>
-
-    fun logout()
-
-    fun getToken(): Single<String>
-
-    fun getUserId(): Single<String>
 }

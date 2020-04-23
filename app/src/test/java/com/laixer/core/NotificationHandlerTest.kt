@@ -5,26 +5,31 @@ package com.laixer.core
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class NotificationManagerTest {
+class NotificationHandlerTest {
     private val mockData = mapOf(
         "protocol" to "swabbr",
         "protocol_version" to 1,
         "data_type" to "notification",
         "data_type_version" to 1,
-        "data" to "{\"id\":\"101\",\"title\":\"Reactie\",\"message\":\"Nieuwe reactie op vlog\",\"click_action\":\"vlog_new_reaction\"}",
+        "data" to "{" +
+            "\"id\":\"101\"," +
+            "\"title\":\"Reactie\"," +
+            "\"message\":\"Nieuwe reactie op vlog\"," +
+            "\"click_action\":\"vlog_new_reaction\"" +
+            "}",
         "content_type" to "json",
         "timestamp" to "2019-10-01",
         "user_agent" to "<user_agent>"
     )
 
-    private val notificationManager = NotificationManager()
+    private val notificationHandler = NotificationHandler()
 
     @Test
     fun `create notification object from message`() {
         // given
 
         // when
-        val handledData = notificationManager.handleNotification(mockData)
+        val handledData = notificationHandler.parse(mockData)
 
         // then
         assertEquals(handledData?.protocol, mockData["protocol"])

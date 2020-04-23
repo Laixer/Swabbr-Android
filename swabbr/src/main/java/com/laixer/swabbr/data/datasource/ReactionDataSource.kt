@@ -2,15 +2,19 @@ package com.laixer.swabbr.data.datasource
 
 import com.laixer.swabbr.domain.model.Reaction
 import io.reactivex.Single
+import java.util.UUID
 
 interface ReactionCacheDataSource {
 
-    fun get(vlogId: String): Single<List<Reaction>>
+    val key: String
+        get() = "REACTIONS"
 
-    fun set(vlogId: String, list: List<Reaction>): Single<List<Reaction>>
+    fun get(vlogId: UUID): Single<List<Reaction>>
+
+    fun set(vlogId: UUID, list: List<Reaction>): Single<List<Reaction>>
 }
 
 interface ReactionRemoteDataSource {
 
-    fun get(vlogId: String): Single<List<Reaction>>
+    fun get(vlogId: UUID): Single<List<Reaction>>
 }

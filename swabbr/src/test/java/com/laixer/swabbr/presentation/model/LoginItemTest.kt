@@ -1,19 +1,21 @@
 package com.laixer.swabbr.presentation.model
 
-import com.laixer.swabbr.loginItem
+import com.laixer.swabbr.Items
+import com.laixer.swabbr.Models
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class LoginItemTest {
 
+    private val item = Items.login
+    private val model = Models.login
+
     @Test
     fun `map presentation to domain`() {
         // given
-        val loginItem = loginItem
         // when
-        val login = loginItem.mapToDomain()
+        val transformedItem = item.mapToDomain()
         // then
-        assertEquals(login.username, loginItem.username)
-        assertEquals(login.password, loginItem.password)
+        assertEquals(model, transformedItem)
     }
 }

@@ -8,13 +8,14 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.model.ProfileItem
+import com.laixer.swabbr.presentation.model.UserItem
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -23,6 +24,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
     private val vm: SearchViewModel by viewModel()
     private var lastQuery = ""
     private var searchAdapter: SearchAdapter? = null
+    private var currentPage = 1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_search, container, false)
@@ -36,12 +38,20 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         injectFeature()
 
         if (savedInstanceState == null) {
-            vm.search("")
+            search("", page = currentPage)
         }
 
-        searchRecyclerView.run {
-            searchRecyclerView.isNestedScrollingEnabled = false
-            searchRecyclerView.adapter = searchAdapter
+        searchRecyclerView.apply {
+            isNestedScrollingEnabled = false
+            adapter = searchAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (canScrollVertically(1)) {
+                        vm.search(lastQuery, page = currentPage + 1, refreshList = false)
+                    }
+                }
+            })
         }
 
         vm.run {
@@ -55,15 +65,19 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         }
     }
 
-    private fun search(query: String) {
+    private fun search(query: String, page: Int, refreshList: Boolean = false) {
         lastQuery = query
-        vm.search(query)
+        currentPage = page
+        vm.search(query, page, refreshList = refreshList)
     }
 
-    private val onClick: (ProfileItem) -> Unit =
-        { findNavController().navigate(SearchFragmentDirections.actionViewProfile(it.id)) }
+    private val onClick: (UserItem) -> Unit = {
+        findNavController().navigate(
+            SearchFragmentDirections.actionViewProfile(it.id.toString())
+        )
+    }
 
-    private fun updateUsers(resource: Resource<List<ProfileItem>?>) {
+    private fun updateUsers(resource: Resource<List<UserItem>?>) {
         resource.run {
             swipeRefreshLayout.run {
                 when (state) {
@@ -80,7 +94,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         query?.let {
-            search(it)
+            search(it, page = 1, refreshList = true)
         }
         return true
     }

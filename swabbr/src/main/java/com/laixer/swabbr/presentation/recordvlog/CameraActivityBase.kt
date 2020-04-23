@@ -32,9 +32,7 @@ abstract class CameraActivityBase : GoCoderSDKActivityBase(), WOWZCameraView.Pre
 
         if (camera_view.cameras.isEmpty()) {
             Toast.makeText(
-                this,
-                resources.getString(R.string.no_devices_available),
-                Toast.LENGTH_LONG
+                this, resources.getString(R.string.no_devices_available), Toast.LENGTH_LONG
             ).show()
             return
         }
@@ -94,12 +92,13 @@ abstract class CameraActivityBase : GoCoderSDKActivityBase(), WOWZCameraView.Pre
         ifAllPermissionsGranted {
             camera_view?.let {
                 Handler().postDelayed({
-                    if (it.isPreviewPaused)
-                        it.onResume()
-                    else
-                        it.startPreview(this) // Apply the configuration to the broadcaster and start previewing
-                    if (autoFocusDetector == null) autoFocusDetector =
-                        GestureDetectorCompat(this, AutoFocusListener(this, camera_view))
+                    if (it.isPreviewPaused) it.onResume()
+                    else it.startPreview(this) // Apply the configuration to the broadcaster and start previewing
+                    if (autoFocusDetector == null) autoFocusDetector = GestureDetectorCompat(
+                        this, AutoFocusListener(
+                            this, camera_view
+                        )
+                    )
                     // Enable continuous focus on the initial camera
                     setContinuousFocus(it.camera)
                     setTorch(it.camera)

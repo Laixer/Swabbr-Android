@@ -1,20 +1,21 @@
 package com.laixer.swabbr.presentation.model
 
-import com.laixer.swabbr.settings
+import com.laixer.swabbr.Items
+import com.laixer.swabbr.Models
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class SettingsItemTest {
 
+    private val item = Items.settings
+    private val model = Models.settings
+
     @Test
-    fun `map domain to presentation`() {
+    fun `map presentation to domain`() {
         // given
-        val settings = settings
         // when
-        val settingsItem = settings.mapToPresentation()
+        val transformedItem = item.mapToDomain()
         // then
-        assertEquals(settingsItem.private, settings.private)
-        assertEquals(settingsItem.dailyVlogRequestLimit, settings.dailyVlogRequestLimit)
-        assertEquals(settingsItem.followMode, settings.followMode)
+        assertEquals(model, transformedItem)
     }
 }

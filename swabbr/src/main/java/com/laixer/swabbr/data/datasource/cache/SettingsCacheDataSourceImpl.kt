@@ -1,4 +1,4 @@
-package com.laixer.swabbr.datasource.cache
+package com.laixer.swabbr.data.datasource.cache
 
 import com.laixer.cache.ReactiveCache
 import com.laixer.swabbr.data.datasource.SettingsCacheDataSource
@@ -9,10 +9,7 @@ class SettingsCacheDataSourceImpl constructor(
     private val cache: ReactiveCache<Settings>
 ) : SettingsCacheDataSource {
 
-    val key = "Settings"
-
-    override fun get(): Single<Settings> =
-        cache.load(key)
+    override fun get(): Single<Settings> = cache.load(key)
 
     override fun set(settings: Settings): Single<Settings> = cache.save(key, settings)
 }

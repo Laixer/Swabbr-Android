@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/dashboard_dest"
-        android:name="com.laixer.swabbr.presentation.DashboardFragment"
+        android:name="com.laixer.swabbr.presentation.dashboard.DashboardFragment"
         android:label="@string/dashboard"
         tools:layout="@layout/fragment_dashboard" />
 

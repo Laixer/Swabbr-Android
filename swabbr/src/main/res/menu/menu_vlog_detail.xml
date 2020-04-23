@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/like_button"
+        android:icon="@drawable/ic_thumb_up"
+        android:title="@string/love_it" />
+
+    <item
+        android:id="@+id/react_button"
+        android:icon="@drawable/ic_message"
+        android:title="@string/react" />
+</menu>

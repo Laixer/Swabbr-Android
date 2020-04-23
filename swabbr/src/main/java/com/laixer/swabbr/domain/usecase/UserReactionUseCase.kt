@@ -5,6 +5,7 @@ import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.repository.ReactionRepository
 import com.laixer.swabbr.domain.repository.UserRepository
 import io.reactivex.Single
+import java.util.UUID
 
 /**
  * The standard library provides Pair and Triple.
@@ -19,12 +20,10 @@ class UserReactionUseCase constructor(
     /**
      * For a specified vlog, get a list of all reactions paired with the user who posted them
      */
-    fun get(vlogId: String, refresh: Boolean): Single<List<Pair<User, Reaction>>> =
-        reactionRepository.get(vlogId, refresh)
-            .flattenAsObservable { reactions -> reactions }
+    fun get(vlogId: UUID, refresh: Boolean): Single<List<Pair<User, Reaction>>> =
+        reactionRepository.get(vlogId, refresh).flattenAsObservable { reactions -> reactions }
             .flatMapSingle { reaction ->
-                userRepository.get(reaction.userId, false)
-                    .map { user -> Pair(user, reaction) }
+                userRepository.get(reaction.userId, false).map { user -> Pair(user, reaction) }
             }.toList()
 }
 
@@ -34,10 +33,8 @@ class UserReactionUseCase constructor(
  */
 fun map(user: User, reaction: Reaction): Pair<User, Reaction> = Pair(user, reaction)
 
-fun map(userList: List<User>, reactionList: List<Reaction>): List<Pair<User, Reaction>> =
-    reactionList.map { reaction ->
-        Pair(
-            userList.first { reaction.userId == it.id },
-            reaction
-        )
-    }
+fun map(userList: List<User>, reactionList: List<Reaction>): List<Pair<User, Reaction>> = reactionList.map { reaction ->
+    Pair(
+        userList.first { reaction.userId == it.id }, reaction
+    )
+}

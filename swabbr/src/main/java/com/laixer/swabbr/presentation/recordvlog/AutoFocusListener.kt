@@ -7,8 +7,7 @@ import android.widget.Toast
 import com.wowza.gocoder.sdk.api.devices.WOWZCamera
 import com.wowza.gocoder.sdk.api.devices.WOWZCameraView
 
-class AutoFocusListener(context: Context, cameraView: WOWZCameraView) :
-    GestureDetector.SimpleOnGestureListener() {
+class AutoFocusListener(context: Context, cameraView: WOWZCameraView) : GestureDetector.SimpleOnGestureListener() {
 
     private var mCameraView: WOWZCameraView? = null
     private var mContext: Context? = null
@@ -38,8 +37,7 @@ class AutoFocusListener(context: Context, cameraView: WOWZCameraView) :
     override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
         mCameraView?.camera?.let {
             if (it.hasCapability(WOWZCamera.FOCUS_MODE_AUTO)) {
-                Toast.makeText(mContext, "Auto focusing at (${e.x}, ${e.y})", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(mContext, "Auto focusing at (${e.x}, ${e.y})", Toast.LENGTH_SHORT).show()
                 it.setFocusPoint(e.x, e.y, DEFAULT_FOCUS_AREA_SIZE)
             }
         }

@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation
+package com.laixer.swabbr.presentation.auth
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

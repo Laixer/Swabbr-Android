@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/search_profile_dest"
         android:name="com.laixer.swabbr.presentation.profile.ProfileFragment"
-        android:label="Profile"
+        android:label="@string/userProfile"
         tools:layout="@layout/fragment_profile">
         <deepLink
             android:id="@+id/deepLink"

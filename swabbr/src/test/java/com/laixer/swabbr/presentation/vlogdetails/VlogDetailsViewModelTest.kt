@@ -3,14 +3,11 @@ package com.laixer.swabbr.presentation.vlogdetails
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
+import com.laixer.swabbr.Items
+import com.laixer.swabbr.Models
 import com.laixer.swabbr.domain.usecase.UserReactionUseCase
 import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
-import com.laixer.swabbr.pairUserVlog
 import com.laixer.swabbr.presentation.RxSchedulersOverrideRule
-import com.laixer.swabbr.presentation.model.mapToPresentation
-import com.laixer.swabbr.reaction
-import com.laixer.swabbr.user
-import com.laixer.swabbr.vlog
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -20,23 +17,37 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
+import java.util.UUID
 
 class VlogDetailsViewModelTest {
 
     private lateinit var viewModel: VlogDetailsViewModel
     private val mockUsersVlogsUseCase: UsersVlogsUseCase = mock()
     private val mockUserReactionUseCase: UserReactionUseCase = mock()
-    private val combinedUserReaction = Pair(user, reaction)
-    private val reactions = listOf(combinedUserReaction)
 
-    private val userId = user.id
-    private val vlogId = vlog.id
+    private val combinedUserReactionModel = Pair(Models.user, Models.reaction)
+    private val combindUserReactionsModelList = listOf(combinedUserReactionModel)
+
+    private val userModel = Models.user
+    private val vlogModel = Models.vlog
+
+    private val userVlogModel = Pair(userModel, vlogModel)
+    private val userVlogModelList = listOf(userVlogModel)
+    private val userVlogItem = Items.uservlog
+    private val userVlogItemList = listOf(userVlogItem)
+
+    private val reactionItem = Items.reaction
+    private val reactionItemList = listOf(reactionItem)
+
+    private val userId = Models.user.id
+    private val vlogId = Models.vlog.id
 
     private val throwable = Throwable()
 
     @Rule
     @JvmField
     val rxSchedulersOverrideRule = RxSchedulersOverrideRule()
+
     @Rule
     @JvmField
     val instantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
@@ -51,12 +62,12 @@ class VlogDetailsViewModelTest {
         // given
         val idList = listOf(vlogId)
         whenever(mockUsersVlogsUseCase.get(idList, false))
-            .thenReturn(Single.just(listOf(pairUserVlog)))
+            .thenReturn(Single.just(userVlogModelList))
         // when
         viewModel.getVlogs(idList)
         // then
         verify(mockUsersVlogsUseCase).get(idList, false)
-        assertEquals(pairUserVlog.mapToPresentation(), viewModel.vlogs.value?.data?.get(0))
+        assertEquals(userVlogItem, viewModel.vlogs.value?.data?.get(0))
     }
 
     @Test
@@ -64,32 +75,32 @@ class VlogDetailsViewModelTest {
         // given
         val idList = listOf(vlogId, vlogId)
         whenever(mockUsersVlogsUseCase.get(idList, false))
-            .thenReturn(Single.just(listOf(pairUserVlog, pairUserVlog)))
+            .thenReturn(Single.just(listOf(userVlogModel, userVlogModel)))
         // when
         viewModel.getVlogs(idList)
         // then
         verify(mockUsersVlogsUseCase).get(idList, false)
-        assertEquals(pairUserVlog.mapToPresentation(), viewModel.vlogs.value?.data?.get(0))
-        assertEquals(pairUserVlog.mapToPresentation(), viewModel.vlogs.value?.data?.get(1))
+        assertEquals(userVlogItem, viewModel.vlogs.value?.data?.get(0))
+        assertEquals(userVlogItem, viewModel.vlogs.value?.data?.get(1))
     }
 
     @Test
     fun `get zero vlogs succeeds`() {
         // given
-        val idList = listOf<String>()
+        val idList = listOf<UUID>()
         whenever(mockUsersVlogsUseCase.get(idList, false))
             .thenReturn(Single.just(listOf()))
         // when
         viewModel.getVlogs(idList)
         // then
         verify(mockUsersVlogsUseCase).get(idList, false)
-        assert(viewModel.vlogs.value!!.data!!.isNullOrEmpty())
+        assert(viewModel.vlogs.value?.data?.isEmpty() ?: false)
     }
 
     @Test
     fun `get reactions succeeds`() {
         // given
-        whenever(mockUserReactionUseCase.get(vlogId, false)).thenReturn(Single.just(reactions))
+        whenever(mockUserReactionUseCase.get(vlogId, false)).thenReturn(Single.just(combindUserReactionsModelList))
         // when
         viewModel.getReactions(vlogId, false)
         // then
@@ -97,7 +108,7 @@ class VlogDetailsViewModelTest {
         assertEquals(
             Resource(
                 state = ResourceState.SUCCESS,
-                data = reactions.mapToPresentation(),
+                data = reactionItemList,
                 message = null
             ), viewModel.reactions.value
         )
