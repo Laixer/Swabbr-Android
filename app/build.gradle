@@ -4,73 +4,96 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion Versions.compileSdk
-    buildToolsVersion Versions.buildTools
-    defaultConfig {
-        applicationId ApplicationId.id
-        minSdkVersion Versions.minSdk
-        targetSdkVersion Versions.targetSdk
-        versionCode Releases.versionCode
-        versionName Releases.versionName
-        multiDexEnabled true
-    }
+  compileSdkVersion Versions.compileSdk
+  buildToolsVersion Versions.buildTools
+  defaultConfig {
+    applicationId ApplicationId.id
+    minSdkVersion Versions.minSdk
+    targetSdkVersion Versions.targetSdk
+    versionCode Releases.versionCode
+    versionName Releases.versionName
+    multiDexEnabled true
+    signingConfig signingConfigs.debug
+  }
 
-    compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
-    }
+  lintOptions {
+    abortOnError false
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_1_8.toString()
+  }
 
-    buildTypes {
-        release {
-            minifyEnabled true
-        }
-    }
+  flavorDimensions "default"
 
-    testOptions {
-        unitTests.returnDefaultValues = true
+  productFlavors {
+    dev {
+      dimension "default"
+
     }
-    dynamicFeatures = [Modules.swabbr]
+    prod {
+      dimension "default"
+
+    }
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled true
+    }
+    debug {
+      debuggable true
+      signingConfig signingConfigs.debug
+    }
+  }
+
+  testOptions {
+    unitTests.returnDefaultValues = true
+  }
+  dynamicFeatures = [Modules.swabbr]
 }
 
 dependencies {
-    implementation project(Modules.cache)
-    implementation project(Modules.network)
-    implementation project(Modules.navigation)
-    implementation project(Modules.presentation)
+  implementation project(Modules.cache)
+  implementation project(Modules.network)
+  implementation project(Modules.navigation)
+  implementation project(Modules.presentation)
 
-    implementation Libraries.kotlin
-    implementation FirebaseLibraries.analytics
-    implementation FirebaseLibraries.messaging
-    implementation Libraries.crashlytics
+  implementation Libraries.kotlin
 
-    implementation MicrosoftLibraries.notificationshub
+  implementation Libraries.koinAndroid
+  implementation Libraries.koinViewModel
 
-    implementation GoogleLibraries.material
-    implementation JetpackLibraries.appcompat
+  implementation Libraries.lifecycleExtensions
 
-    implementation Libraries.koinAndroid
-    implementation Libraries.koinViewModel
+  implementation Libraries.rxjava
+  implementation Libraries.rxkotlin
 
-    implementation Libraries.lifecycleExtensions
+  implementation Libraries.moshiConverter
+  implementation Libraries.workmanager
+  implementation Libraries.workmanagerRxjava
 
-    implementation Libraries.rxjava
-    implementation Libraries.rxkotlin
+  implementation GoogleLibraries.material
 
-    implementation Libraries.moshiConverter
-    implementation Libraries.workmanager
-    implementation Libraries.workmanagerRxjava // RxJava2 compatibility
+  implementation JetpackLibraries.appcompat
+  // Firebase
+  implementation FirebaseLibraries.analytics
+  implementation FirebaseLibraries.messaging
+  implementation FirebaseLibraries.iid
+  implementation FirebaseLibraries.crashlytics
 
-    debugImplementation Libraries.leakCanaryAndroid
+  debugImplementation FirebaseLibraries.leakCanaryAndroid
 
-    testImplementation TestLibraries.junit
+  testImplementation TestLibraries.junit
+
 }
 
 repositories {
-    google()
+  google()
 }
 
 apply plugin: 'com.google.gms.google-services'
