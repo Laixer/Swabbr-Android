@@ -1,7 +1,7 @@
 plugins {
-    id("io.gitlab.arturbosch.detekt") version "1.4.0"
-    id("org.jlleitschuh.gradle.ktlint") version "9.1.1"
-    id("com.github.ben-manes.versions") version "0.21.0"
+    id("io.gitlab.arturbosch.detekt") version "1.7.0-beta2"
+    id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
+    id("com.github.ben-manes.versions") version "0.28.0"
 }
 
 buildscript {
@@ -11,7 +11,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:4.0.0-beta01")
+        classpath("com.android.tools.build:gradle:4.0.0-beta02")
         classpath("com.google.gms:google-services:${Versions.googleServices}")
         classpath("io.fabric.tools:gradle:${Versions.fabric}")
         classpath(kotlin("gradle-plugin", version = Versions.kotlin))

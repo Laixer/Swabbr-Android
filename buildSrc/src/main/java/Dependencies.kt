@@ -1,157 +1,144 @@
 object ApplicationId {
-    val id = "com.laixer.core"
+    const val id = "com.laixer.core"
 }
 
 object Modules {
-    val app = ":app"
-    val navigation = ":navigation"
+    const val app = ":app"
+    const val navigation = ":navigation"
 
-    val cache = ":common:cache"
-    val network = ":common:network"
+    const val cache = ":common:cache"
+    const val network = ":common:network"
 
-    val presentation = ":common:presentation"
+    const val presentation = ":common:presentation"
 
-    val swabbr = ":swabbr"
+    const val swabbr = ":swabbr"
 
-    val gocodersdk = "com.wowza.gocoder.sdk.android:com.wowza.gocoder.sdk:2.0.0@aar"
+    const val gocodersdk = "com.wowza.gocoder.sdk.android:com.wowza.gocoder.sdk:2.0.0@aar"
 }
 
 object Releases {
-    val versionCode = 1
-    val versionName = "1.0"
+    const val versionCode = 1
+    const val versionName = "1.0"
 }
 
 object Versions {
-    val gradle = "3.4.2"
+    const val gradle = "4.0.0-beta01"
 
-    val compileSdk = 28
-    val minSdk = 26
-    val buildTools = "29.0.3"
+    const val compileSdk = 29
+    const val minSdk = 26
+    const val buildTools = "29.0.3"
 
-    val targetSdk = 28
+    const val targetSdk = 29
 
-    val googleAuth = "16.0.1"
+    const val googleServices = "4.3.3"
 
-    val googleServices = "4.3.2"
+    const val firebaseAnalytics = "17.2.2"
+    const val firebaseMessaging = "20.1.0"
+    const val firebaseIid = "20.0.2"
 
-    val firebaseAuth = "19.0.0"
-    val firebaseAnalytics = "17.2.2"
-    val firebaseMessaging = "20.1.0"
+    const val fabric = "1.31.2"
 
-    val notificationsHub = "0.6@aar"
+    const val androidx = "1.2.0-alpha02"
 
-    val fabric = "1.30.0"
+    const val ktx = "1.2.0-beta01"
+    const val material = "1.1.0"
 
-    val androidx = "1.2.0-alpha02"
+    const val nav = "2.2.1"
+    const val kotlin = "1.3.70"
+    const val timber = "4.7.1"
+    const val rxjava = "2.2.17"
+    const val rxkotlin = "2.4.0"
+    const val retrofit = "2.7.0"
+    const val loggingInterceptor = "4.2.2"
+    const val glide = "4.11.0"
+    const val rxpaper = "1.4.0"
+    const val paperdb = "2.6"
+    const val moshi = "1.8.0"
+    const val lifecycle = "2.2.0"
+    const val lifecycletesting = "2.1.0"
+    const val workmanager = "2.3.1"
+    const val leakCanary = "2.2"
+    const val crashlytics = "2.10.1"
+    const val koin = "2.0.1"
 
-    val ktx = "1.2.0-beta01"
-    val material = "1.1.0"
+    const val playCore = "1.6.4"
 
-    val nav = "2.1.0"
-    val kotlin = "1.3.61"
-    val timber = "4.7.1"
-    val rxjava = "2.2.17"
-    val rxkotlin = "2.4.0"
-    val retrofit = "2.6.0"
-    val loggingInterceptor = "4.0.0"
-    val glide = "4.11.0"
-    val rxpaper = "1.4.0"
-    val paperdb = "2.6"
-    val moshi = "1.8.0"
-    val lifecycle = "2.2.0"
-    val lifecycletesting = "2.1.0"
-    val workmanager = "2.3.1"
-    val leakCanary = "2.2"
-    val crashlytics = "2.10.1"
-    val koin = "2.0.1"
+    const val junit = "4.13"
+    const val assertjCore = "3.15.0"
+    const val mockitoKotlin = "2.1.0"
+    const val mockitoInline = "3.2.4"
 
-    val playCore = "1.6.4"
-
-    val junit = "4.13"
-    val assertjCore = "3.15.0"
-    val mockitoKotlin = "2.1.0"
-    val mockitoInline = "3.2.4"
-
-    val exoplayer = "2.10.5"
-    val camera = "1.0.0-alpha10"
-    val swiperefreshlayout = "1.1.0-alpha03"
-    val viewpager2 = "1.0.0"
-    val constraintlayout = "2.0.0-beta4"
+    const val exoplayer = "2.10.5"
+    const val camera = "1.0.0-alpha10"
+    const val swiperefreshlayout = "1.1.0-alpha03"
+    const val viewpager2 = "1.0.0"
+    const val constraintlayout = "2.0.0-beta4"
 }
 
 object Libraries {
-    val kotlin = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
+    const val kotlin = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
 
-    val ktx = "androidx.core:core-ktx:${Versions.ktx}"
+    const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
 
-    val timber = "com.jakewharton.timber:timber:${Versions.timber}"
+    const val rxjava = "io.reactivex.rxjava2:rxjava:${Versions.rxjava}"
+    const val rxkotlin = "io.reactivex.rxjava2:rxkotlin:${Versions.rxkotlin}"
+    const val rxjavaAdapter = "com.squareup.retrofit2:adapter-rxjava2:${Versions.retrofit}"
+    const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
 
-    val rxjava = "io.reactivex.rxjava2:rxjava:${Versions.rxjava}"
-    val rxkotlin = "io.reactivex.rxjava2:rxkotlin:${Versions.rxkotlin}"
+    const val rxpaper = "com.github.pakoito:RxPaper2:${Versions.rxpaper}"
+    const val paperdb = "io.paperdb:paperdb:${Versions.paperdb}"
+    const val moshi = "com.squareup.moshi:moshi:${Versions.moshi}"
+    const val moshiConverter = "com.squareup.retrofit2:converter-moshi:${Versions.retrofit}"
+    const val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.loggingInterceptor}"
+    const val okhttp = "com.squareup.okhttp3:okhttp:${Versions.loggingInterceptor}"
 
-    val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
-    val rxjavaAdapter = "com.squareup.retrofit2:adapter-rxjava2:${Versions.retrofit}"
-    val moshiConverter = "com.squareup.retrofit2:converter-moshi:${Versions.retrofit}"
-    val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.loggingInterceptor}"
+    const val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
+    const val glideCompiler = "com.github.bumptech.glide:compiler:${Versions.glide}"
 
-    val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
-    val glideCompiler = "com.github.bumptech.glide:compiler:${Versions.glide}"
+    const val lifecycleExtensions = "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}"
+    const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycle}"
+    const val workmanager = "androidx.work:work-runtime-ktx:${Versions.workmanager}"
+    const val workmanagerRxjava = "androidx.work:work-rxjava2:${Versions.workmanager}"
 
-    val paperdb = "io.paperdb:paperdb:${Versions.paperdb}"
-    val rxpaper = "com.github.pakoito:RxPaper2:${Versions.rxpaper}"
-    val moshi = "com.squareup.moshi:moshi:${Versions.moshi}"
-
-    val lifecycleExtensions = "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}"
-    val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycle}"
-    val workmanager = "androidx.work:work-runtime-ktx:${Versions.workmanager}"
-    val workmanagerRxjava = "androidx.work:work-rxjava2:${Versions.workmanager}"
-
-    val leakCanaryAndroid = "com.squareup.leakcanary:leakcanary-android:${Versions.leakCanary}"
-
-    val crashlytics = "com.crashlytics.sdk.android:crashlytics:${Versions.crashlytics}"
-
-    val koinAndroid = "org.koin:koin-android:${Versions.koin}"
-    val koinViewModel = "org.koin:koin-androidx-viewmodel:${Versions.koin}"
-
-    val cameraCore = "androidx.camera:camera-core:${Versions.camera}"
-    val camera2 = "androidx.camera:camera-camera2:${Versions.camera}"
-
+    const val koinAndroid = "org.koin:koin-android:${Versions.koin}"
+    const val koinViewModel = "org.koin:koin-androidx-viewmodel:${Versions.koin}"
 }
 
 object JetpackLibraries {
-    val appcompat = "androidx.appcompat:appcompat:${Versions.androidx}"
-    val design = "com.google.android.material:material:${Versions.androidx}"
-    val cardView = "androidx.cardview:cardview:${Versions.androidx}"
-    val recyclerView = "androidx.recyclerview:recyclerview:${Versions.androidx}"
-    val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintlayout}"
-    val fragment = "androidx.fragment:fragment-ktx:1.2.2"
-    val viewPager2 = "androidx.viewpager2:viewpager2:${Versions.viewpager2}"
-    val swiperefreshLayout = "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.swiperefreshlayout}"
+    const val ktx = "androidx.core:core-ktx:${Versions.ktx}"
+    const val appcompat = "androidx.appcompat:appcompat:${Versions.androidx}"
+    const val design = "com.google.android.material:material:${Versions.androidx}"
+    const val cardView = "androidx.cardview:cardview:${Versions.androidx}"
+    const val recyclerView = "androidx.recyclerview:recyclerview:${Versions.androidx}"
+    const val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintlayout}"
+    const val fragment = "androidx.fragment:fragment-ktx:1.2.2"
+    const val viewPager2 = "androidx.viewpager2:viewpager2:${Versions.viewpager2}"
+    const val cameraCore = "androidx.camera:camera-core:${Versions.camera}"
+    const val camera2 = "androidx.camera:camera-camera2:${Versions.camera}"
+    const val swiperefreshLayout = "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.swiperefreshlayout}"
+    const val navFragmentKtx = "androidx.navigation:navigation-fragment-ktx:${Versions.nav}"
+    const val navUiKtx = "androidx.navigation:navigation-ui-ktx:${Versions.nav}"
 }
 
 object GoogleLibraries {
-    val auth = "com.google.android.gms:play-services-auth:${Versions.googleAuth}"
-    val playCore = "com.google.android.play:core:${Versions.playCore}"
-    val material = "com.google.android.material:material:${Versions.material}"
-    val exoplayer = "com.google.android.exoplayer:exoplayer:${Versions.exoplayer}"
-
-}
-
-object MicrosoftLibraries {
-    val notificationshub = "com.microsoft.azure:notification-hubs-android-sdk:${Versions.notificationsHub}"
+    const val playCore = "com.google.android.play:core:${Versions.playCore}"
+    const val material = "com.google.android.material:material:${Versions.material}"
+    const val exoplayer = "com.google.android.exoplayer:exoplayer:${Versions.exoplayer}"
 }
 
 object FirebaseLibraries {
-    val auth = "com.google.firebase:firebase-auth:${Versions.firebaseAuth}"
-    val messaging = "com.google.firebase:firebase-messaging:${Versions.firebaseMessaging}"
-    val analytics = "com.google.firebase:firebase-analytics:${Versions.firebaseAnalytics}"
+    const val analytics = "com.google.firebase:firebase-analytics:${Versions.firebaseAnalytics}"
+    const val messaging = "com.google.firebase:firebase-messaging:${Versions.firebaseMessaging}"
+    const val iid = "com.google.firebase:firebase-iid:${Versions.firebaseIid}"
+    const val crashlytics = "com.crashlytics.sdk.android:crashlytics:${Versions.crashlytics}"
+    const val leakCanaryAndroid = "com.squareup.leakcanary:leakcanary-android:${Versions.leakCanary}"
 }
 
 object TestLibraries {
-    val junit = "junit:junit:${Versions.junit}"
-    val assertjCore = "org.assertj:assertj-core:${Versions.assertjCore}"
-    val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mockitoKotlin}"
-    val mockitoInline = "org.mockito:mockito-inline:${Versions.mockitoInline}"
-    val lifecycleTesting = "androidx.arch.core:core-testing:${Versions.lifecycletesting}"
-    val workmanagerTesting = "androidx.work:work-testing:${Versions.workmanager}"
+    const val junit = "junit:junit:${Versions.junit}"
+    const val assertjCore = "org.assertj:assertj-core:${Versions.assertjCore}"
+    const val mockitoKotlin = "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mockitoKotlin}"
+    const val mockitoInline = "org.mockito:mockito-inline:${Versions.mockitoInline}"
+    const val lifecycleTesting = "androidx.arch.core:core-testing:${Versions.lifecycletesting}"
+    const val workmanagerTesting = "androidx.work:work-testing:${Versions.workmanager}"
 }
