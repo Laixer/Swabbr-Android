@@ -2,11 +2,13 @@ package com.laixer.swabbr.datasource.model.remote
 
 import com.laixer.swabbr.datasource.model.AuthUserEntity
 import com.laixer.swabbr.datasource.model.FollowRequestEntity
+import com.laixer.swabbr.datasource.model.FollowStatusEntity
 import com.laixer.swabbr.datasource.model.LoginEntity
 import com.laixer.swabbr.datasource.model.ReactionEntity
 import com.laixer.swabbr.datasource.model.RegistrationEntity
 import com.laixer.swabbr.datasource.model.SettingsEntity
 import com.laixer.swabbr.datasource.model.UserEntity
+import com.laixer.swabbr.datasource.model.UserStatisticsEntity
 import com.laixer.swabbr.datasource.model.VlogEntity
 import com.laixer.swabbr.datasource.model.VlogListResponse
 import io.reactivex.Completable
@@ -30,7 +32,7 @@ interface VlogsApi {
     fun getVlog(@Path("vlogId") vlogId: UUID): Single<VlogEntity>
 
     @GET("vlogs/recommended")
-    fun getRecommendedVlogs(): Single<List<VlogEntity>>
+    fun getRecommendedVlogs(): Single<VlogListResponse>
 }
 
 interface UsersApi {
@@ -44,6 +46,24 @@ interface UsersApi {
         @Query("page") page: Int = 1,
         @Query("itemsPerPage") itemsPerPage: Int = 50
     ): Single<List<UserEntity>>
+
+    @POST("users/self")
+    fun self(): Single<UserEntity>
+
+    @POST("users/update")
+    fun update(@Body updatedUser: UserEntity): Single<UserEntity>
+
+    @GET("users/{userId}/following")
+    fun getFollowing(@Path("userId") id: UUID): Single<List<UserEntity>>
+
+    @GET("users/{userId}/followers")
+    fun getFollowers(@Path("userId") id: UUID): Single<List<UserEntity>>
+
+    @GET("users/{userId}}/statistics")
+    fun getStatistics(@Path("userId") id: UUID): Single<UserStatisticsEntity>
+
+    @GET("users/self/statistics")
+    fun getSelfStatistics(): Single<UserEntity>
 }
 
 interface ReactionsApi {
@@ -53,32 +73,29 @@ interface ReactionsApi {
 }
 
 interface FollowApi {
-    @GET("followrequests/outgoing/{receiverId}")
-    fun getFollowRequest(@Path("receiverId") id: UUID): Single<FollowRequestEntity>
-
-    @GET("users/{userId}/followers")
-    fun getFollowers(@Path("userId") id: UUID): Single<List<UserEntity>>
-
-    @GET("users/{userId}/following")
-    fun getFollowing(@Path("userId") id: UUID): Single<List<UserEntity>>
+    @GET("followrequests/outgoing/status")
+    fun getFollowStatus(@Query("receiverId") id: UUID): Single<FollowStatusEntity>
 
     @GET("followrequests/incoming")
-    fun getIncomingRequests(): Single<List<UserEntity>>
+    fun getIncomingRequests(): Single<List<FollowRequestEntity>>
+
+    @GET("followrequests/outgoing")
+    fun getOutgoingRequests(): Single<List<FollowRequestEntity>>
 
     @POST("followrequests/send")
     fun sendFollowRequest(@Query("receiverId") userId: UUID): Single<FollowRequestEntity>
 
-    @DELETE("followrequests/{followRequestId}/cancel")
-    fun cancelFollowRequest(@Path("followRequestId") id: UUID): Single<FollowRequestEntity>
+    @POST("followrequests/cancel")
+    fun cancelFollowRequest(@Query("receiverId") id: UUID): Completable
 
-    @DELETE("users/{userId}/unfollow")
-    fun unfollow(@Path("userId") id: UUID): Single<FollowRequestEntity>
+    @POST("followrequests/unfollow")
+    fun unfollow(@Query("receiverId") id: UUID): Completable
 
-    @PUT("followrequests/{followRequestId}/accept")
-    fun acceptRequest(@Path("followRequestId") id: UUID): Single<FollowRequestEntity>
+    @PUT("followrequests/accept")
+    fun acceptRequest(@Query("requesterId") id: UUID): Single<FollowRequestEntity>
 
-    @PUT("followrequests/{followRequestId}/decline")
-    fun declineRequest(@Path("followRequestId") id: UUID): Single<FollowRequestEntity>
+    @PUT("followrequests/decline")
+    fun declineRequest(@Query("requesterId") id: UUID): Single<FollowRequestEntity>
 }
 
 interface SettingsApi {

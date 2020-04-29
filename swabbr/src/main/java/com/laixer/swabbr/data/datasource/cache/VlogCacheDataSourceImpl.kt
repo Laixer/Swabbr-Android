@@ -15,9 +15,9 @@ class VlogCacheDataSourceImpl constructor(
 
     override fun get(vlogId: UUID): Single<Vlog> = cache.load(key).map { list -> list.first { it.id == vlogId } }
 
-    override fun getFeaturedVlogs(): Single<List<Vlog>> = cache.load(featuredKey)
+    override fun getRecommendedVlogs(): Single<List<Vlog>> = cache.load(featuredKey)
 
-    override fun setFeaturedVlogs(list: List<Vlog>): Single<List<Vlog>> = cache.save(featuredKey, list)
+    override fun setRecommendedVlogs(list: List<Vlog>): Single<List<Vlog>> = cache.save(featuredKey, list)
 
     override fun set(item: Vlog): Single<Vlog> =
         cache.load(key).map { list -> list.filter { it.id != item.id }.plus(item) }.flatMap { set(it) }.map { item }

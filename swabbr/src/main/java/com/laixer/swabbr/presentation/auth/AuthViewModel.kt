@@ -17,7 +17,7 @@ import io.reactivex.schedulers.Schedulers
 
 class AuthViewModel constructor(private val authUseCase: AuthUseCase) : ViewModel() {
 
-    val authenticatedUser = MutableLiveData<Resource<AuthUserItem>>()
+    val authenticatedUser = MutableLiveData<Resource<AuthUserItem?>>()
     private val compositeDisposable = CompositeDisposable()
 
     fun get() =
@@ -49,6 +49,17 @@ class AuthViewModel constructor(private val authUseCase: AuthUseCase) : ViewMode
             .subscribeOn(Schedulers.io())
             .subscribe(
                 { authenticatedUser.setSuccess(it.mapToPresentation()) },
+                { authenticatedUser.setError(it.message) }
+            )
+        )
+
+    fun logout() =
+        compositeDisposable.add(authUseCase
+            .logout()
+            .doOnSubscribe { authenticatedUser.setLoading() }
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                { authenticatedUser.setSuccess(null) },
                 { authenticatedUser.setError(it.message) }
             )
         )

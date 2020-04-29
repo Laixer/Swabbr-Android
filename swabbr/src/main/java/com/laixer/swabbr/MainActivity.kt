@@ -75,10 +75,15 @@ class MainActivity : AppCompatActivity() {
     /**
      *  Check if authenticated to proceed, if not, redirect
      */
-    private fun checkAuthentication(res: Resource<AuthUserItem>) = with(res) {
+    private fun checkAuthentication(res: Resource<AuthUserItem?>) = with(res) {
         when (state) {
-            ResourceState.LOADING -> {}
-            ResourceState.SUCCESS -> proceed()
+            ResourceState.LOADING -> {
+            }
+            ResourceState.SUCCESS -> {
+                data?.accessToken?.let {
+                    proceed()
+                } ?: authenticate()
+            }
             ResourceState.ERROR -> authenticate()
         }
     }
@@ -94,10 +99,11 @@ class MainActivity : AppCompatActivity() {
     private fun authenticate() = redirect(AuthActivity::class.java)
 
     /**
-     * Redirect to to [AuthActivity]
+     * Redirect to a specific activity class
      */
     private fun redirect(activity: Class<*>) = Intent(this, activity).apply {
-        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }.also {
         startActivity(it)
         finish()

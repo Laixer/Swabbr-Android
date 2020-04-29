@@ -13,7 +13,8 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/userUsername"
+            android:id="@+id/reversed_userUsername"
+            android:transitionName="reversed_userUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -23,7 +24,8 @@
             tools:text="Username" />
 
         <TextView
-            android:id="@+id/userName"
+            android:id="@+id/reversed_userName"
+            android:transitionName="reversed_userName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -35,7 +37,8 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/userAvatar"
+        android:id="@+id/reversed_userAvatar"
+        android:transitionName="reversed_userAvatar"
         android:layout_width="@dimen/medium_icon_size"
         android:layout_height="@dimen/medium_icon_size"
         android:contentDescription="@string/user_avatar" />

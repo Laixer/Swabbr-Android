@@ -2,6 +2,7 @@ package com.laixer.swabbr.presentation.vlogdetails
 
 import android.net.Uri
 import android.os.Bundle
+import android.transition.ChangeBounds
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,33 +10,27 @@ import androidx.fragment.app.Fragment
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.laixer.swabbr.R
+import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.UserVlogItem
+import kotlinx.android.synthetic.main.include_user_info_reversed.view.*
+import kotlinx.android.synthetic.main.item_vlog.view.*
 
 class VlogFragment : Fragment() {
 
-    private var videoView: VideoView? = null
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var userVlogItem: UserVlogItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userVlogItem = requireArguments().getSerializable(PROFILEVLOGITEM_KEY) as UserVlogItem
-        val dataSourceFactory: DataSource.Factory = when (userVlogItem.isLive) {
-            true -> DefaultHttpDataSourceFactory(Util.getUserAgent(this.context, "Swabbr"))
-            false -> DefaultDataSourceFactory(
-                this.context, Util.getUserAgent(this.context, "Swabbr")
-            )
-        }
-        // Check if we need to create a progressive or HLS datasource
-        val mediaSourceFactory = when (userVlogItem.isLive) {
-            true -> HlsMediaSource.Factory(dataSourceFactory).setAllowChunklessPreparation(true)
-            false -> ProgressiveMediaSource.Factory(dataSourceFactory)
-        }
+        val dataSourceFactory: DataSource.Factory =
+            DefaultHttpDataSourceFactory(Util.getUserAgent(this.context, "Swabbr"))
+
+        val mediaSourceFactory = ProgressiveMediaSource.Factory(dataSourceFactory)
         val uri = Uri.parse(userVlogItem.url.toURI().toString())
         val mediaSource = mediaSourceFactory.createMediaSource(uri)
 
@@ -44,31 +39,42 @@ class VlogFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        videoView = VideoView(inflater, container)
-        return videoView?.view
+        sharedElementEnterTransition = ChangeBounds().apply {
+            duration = 750
+        }
+        sharedElementReturnTransition = ChangeBounds().apply {
+            duration = 750
+        }
+        val view = layoutInflater.inflate(R.layout.item_vlog, container, false)
+        val overlayView = layoutInflater.inflate(R.layout.video_view_overlay, container, false)
+        overlayView.reversed_userAvatar.loadAvatar(userVlogItem.profileImageUrl)
+        overlayView.reversed_userUsername.text = requireContext().getString(R.string.nickname, userVlogItem.nickname)
+        overlayView.reversed_userName.text = requireContext().getString(
+            R.string.full_name, userVlogItem.firstName, userVlogItem
+                .lastName
+        )
+
+        val exo = view.player
+        exo.overlayFrameLayout?.addView(overlayView)
+        exoPlayer.setForegroundMode(false)
+        exo.player = exoPlayer
+
+        exo.showController()
+
+        return view
     }
 
     override fun onResume() {
         super.onResume()
-        videoView?.bind(exoPlayer, userVlogItem, requireContext())
         exoPlayer.playWhenReady = true
-        if (!userVlogItem.isLive) {
-            exoPlayer.seekTo(0)
-        }
+        exoPlayer.seekTo(0)
     }
 
     override fun onPause() {
         super.onPause()
-        videoView?.unbind()
-        if (!userVlogItem.isLive) {
-            exoPlayer.seekTo(0)
-        }
+        view?.player?.overlayFrameLayout?.removeAllViews()
+        exoPlayer.seekTo(0)
         exoPlayer.playWhenReady = false
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        videoView = null
     }
 
     override fun onDestroy() {

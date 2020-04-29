@@ -7,6 +7,7 @@
 
     <ImageView
         android:id="@+id/userAvatar"
+        android:transitionName="userAvatar"
         android:layout_width="@dimen/medium_icon_size"
         android:layout_height="match_parent"
         android:background="?selectableItemBackgroundBorderless"
@@ -22,6 +23,7 @@
 
         <TextView
             android:id="@+id/userUsername"
+            android:transitionName="userUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -31,6 +33,7 @@
 
         <TextView
             android:id="@+id/userName"
+            android:transitionName="userName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"

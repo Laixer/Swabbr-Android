@@ -7,7 +7,6 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 data class FollowRequestEntity(
-    @field:Json(name = "followRequestId") val id: String,
     @field:Json(name = "requesterId") val requesterId: String,
     @field:Json(name = "receiverId") val receiverId: String,
     @field:Json(name = "status") val followStatus: String,
@@ -15,7 +14,6 @@ data class FollowRequestEntity(
 )
 
 fun FollowRequestEntity.mapToDomain(): FollowRequest = FollowRequest(
-    UUID.fromString(id),
     UUID.fromString(requesterId),
     UUID.fromString(receiverId),
     FollowStatus.values().first { it.value == followStatus },
@@ -23,7 +21,6 @@ fun FollowRequestEntity.mapToDomain(): FollowRequest = FollowRequest(
 )
 
 fun FollowRequest.mapToData(): FollowRequestEntity = FollowRequestEntity(
-    id.toString(),
     requesterId.toString(),
     receiverId.toString(),
     status.value,

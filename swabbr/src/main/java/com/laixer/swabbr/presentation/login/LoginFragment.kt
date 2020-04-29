@@ -60,14 +60,21 @@ class LoginFragment : Fragment() {
         vm.authenticatedUser.observe(viewLifecycleOwner, Observer { login(it) })
     }
 
-    private fun login(res: Resource<AuthUserItem>) {
+    private fun login(res: Resource<AuthUserItem?>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 progressBar.visible()
             }
             ResourceState.SUCCESS -> {
-                progressBar.gone()
-                proceed()
+                res.data?.let {
+                    progressBar.gone()
+                    proceed()
+                } ?: run {
+                    progressBar.gone()
+                    Log.e(TAG, res.message!!)
+                    Toast.makeText(requireActivity().applicationContext, res.message, Toast.LENGTH_SHORT).show()
+                }
+
             }
             ResourceState.ERROR -> {
                 passwordInput.text.clear()

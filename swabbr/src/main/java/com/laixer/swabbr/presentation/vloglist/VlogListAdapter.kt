@@ -31,10 +31,8 @@ class VlogListAdapter constructor(
 
             Glide.with(context)
                 .load(url)
-                .thumbnail(THUMBNAIL_SIZE)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .dontAnimate()
-                .dontTransform()
+                .thumbnail(0.1f)
                 .into(itemView.thumbnail)
 
             itemView.userAvatar.loadAvatar(item.profileImageUrl)
@@ -42,27 +40,23 @@ class VlogListAdapter constructor(
             itemView.userName.text = context.getString(R.string.full_name, item.firstName, item.lastName)
             itemView.vlogPostDate.text =
                 context.getString(
-                    R.string.date, item.dateStarted
-                        .dayOfMonth, item.dateStarted.monthValue, item.dateStarted.year
+                    R.string.date, item.dateStarted.dayOfMonth, item.dateStarted.monthValue, item.dateStarted.year
                 )
 
             itemView.vlogDuration.text = context.getString(R.string.duration, 0, 0, 0)
             itemView.reaction_count.text =
                 context.getString(
-                    R.string.reaction_count, item
-                        .totalReactions
+                    R.string.reaction_count, 0
                 )
 
             itemView.view_count.text =
                 context.getString(
-                    R.string.view_count, item
-                        .totalViews
+                    R.string.view_count, 0
                 )
 
             itemView.like_count.text =
                 context.getString(
-                    R.string.like_count, item
-                        .totalLikes
+                    R.string.like_count, 0
                 )
 
             itemView.userAvatar.setOnClickListener { profileClick.invoke(item) }
@@ -74,7 +68,7 @@ class VlogListAdapter constructor(
     }
 
     companion object {
-        private const val THUMBNAIL_SIZE = 0.1f
+        private const val THUMBNAIL_SIZE = 1f
     }
 }
 

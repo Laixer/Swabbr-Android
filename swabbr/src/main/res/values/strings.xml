@@ -31,13 +31,13 @@
     <string name="settings">Settings</string>
 
     <string name="my_profile_no_vlogs">You have not published any vlogs yet.</string>
-    <string name="user_no_vlogs">This user has not published any vlogs yet.</string>
+    <string name="user_no_vlogs_refresh">This user has not published any vlogs yet.\nPull down to refresh.</string>
     <string name="search_no_results">Unable to find users matching "%1$s".</string>
 
+    <string name="followStatusError">…</string>
     <string name="requested">Requested</string>
     <string name="following">Following</string>
     <string name="follow">Follow</string>
-    <string name="followStatusError">…</string>
 
     <string name="button_dismiss">Dismiss</string>
     <string name="switch_camera">Switch Camera</string>
@@ -97,5 +97,6 @@
     <string name="reaction_count">%1$d</string>
     <string name="duration">%1$02d:%2$02d:%3$02d</string>
     <string name="date">%1$02d/%2$02d/%3$d</string>
+    <string name="vlogTransition">vlogtransition</string>
 
 </resources>

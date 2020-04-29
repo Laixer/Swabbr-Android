@@ -21,7 +21,6 @@ import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.fragment_auth_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.no_vlogs_text
-import kotlinx.android.synthetic.main.fragment_profile.profilevlogsRecyclerView
 import kotlinx.android.synthetic.main.fragment_profile.swipeRefreshLayout
 import kotlinx.android.synthetic.main.include_user_info.*
 import org.koin.androidx.viewmodel.ext.android.viewModel

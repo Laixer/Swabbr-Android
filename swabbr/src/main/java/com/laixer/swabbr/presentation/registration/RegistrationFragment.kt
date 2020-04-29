@@ -73,7 +73,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                     PushNotificationPlatform.FCM,
                     FirebaseInstanceId.getInstance().id
                 ),
-                rememberMeSwitch.isChecked
+                true
             )
         }
 
@@ -82,7 +82,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         vm.authenticatedUser.observe(viewLifecycleOwner, Observer { register(it) })
     }
 
-    private fun register(res: Resource<AuthUserItem>) {
+    private fun register(res: Resource<AuthUserItem?>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 progressBar.visible()

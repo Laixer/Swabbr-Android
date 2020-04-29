@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
@@ -17,7 +18,7 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.model.FollowStatus
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.loadAvatar
-import com.laixer.swabbr.presentation.model.FollowRequestItem
+import com.laixer.swabbr.presentation.model.FollowStatusItem
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -36,7 +37,19 @@ class ProfileFragment : Fragment() {
             .setAction(getString(R.string.retry)) { profileVm.getProfileVlogs(userId, refresh = true) }
     }
     private var profileVlogsAdapter: ProfileVlogsAdapter? = null
-    private var followStatus: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) {
+            profileVm.run {
+                with(userId) {
+                    getProfile(this, refresh = true)
+                    getProfileVlogs(this, refresh = true)
+                    getFollowStatus(this)
+                }
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_profile, container, false)
@@ -50,10 +63,14 @@ class ProfileFragment : Fragment() {
 
         followButton.setOnClickListener {
             with(profileVm) {
-                when (this@ProfileFragment.followStatus) {
-                    "accepted" -> unfollow(userId)
-                    "pending" -> cancelFollowRequest(userId)
-                    else -> sendFollowRequest(userId)
+                when (profileVm.followStatus.value?.data?.status) {
+                    FollowStatus.FOLLOWING -> unfollow(userId)
+                    FollowStatus.PENDING -> cancelFollowRequest(userId)
+                    FollowStatus.NOT_FOLLOWING -> sendFollowRequest(userId)
+                    FollowStatus.DECLINED -> sendFollowRequest(userId)
+                    else -> {
+                        getFollowStatus(userId)
+                    }
                 }
             }
         }
@@ -61,14 +78,14 @@ class ProfileFragment : Fragment() {
         if (savedInstanceState == null) {
             profileVm.run {
                 with(userId) {
-                    getProfile(this)
-                    getProfileVlogs(this)
-                    getFollowRequest(this)
+                    getProfile(this, refresh = false)
+                    getProfileVlogs(this, refresh = false)
+                    getFollowStatus(this)
                 }
             }
         }
 
-        profilevlogsRecyclerView.run {
+        profileVlogsRecyclerView.run {
             isNestedScrollingEnabled = false
             adapter = profileVlogsAdapter
         }
@@ -76,24 +93,26 @@ class ProfileFragment : Fragment() {
         profileVm.run {
             profile.observe(viewLifecycleOwner, Observer { updateProfile(it) })
             profileVlogs.observe(viewLifecycleOwner, Observer { updateProfileVlogs(it) })
-            followRequest.observe(viewLifecycleOwner, Observer { updateFollowRequest(it) })
+            followStatus.observe(viewLifecycleOwner, Observer { updateFollowStatus(it) })
             swipeRefreshLayout.setOnRefreshListener {
                 getProfileVlogs(userId, refresh = true)
-                getFollowRequest(userId)
+                getFollowStatus(userId)
             }
         }
     }
 
     private val onClick: (VlogItem) -> Unit = {
-        findNavController().navigate(
-            ProfileFragmentDirections.actionViewVlog(
-                arrayOf(it.id.toString())
-            )
+        val extras = FragmentNavigatorExtras(
+            userUsername to "reversed_userUsername",
+            userAvatar to "reversed_userAvatar",
+            userName to "reversed_userName"
+
         )
+        findNavController().navigate(ProfileFragmentDirections.actionViewVlog(arrayOf(it.id.toString())), extras)
     }
 
-    private fun updateProfile(userItem: UserItem?) {
-        userItem?.let {
+    private fun updateProfile(res: Resource<UserItem>) = res.run {
+        data?.let {
             userAvatar.loadAvatar(it.profileImageUrl)
             userUsername.text = requireContext().getString(R.string.nickname, it.nickname)
             userName.text = requireContext().getString(R.string.full_name, it.firstName, it.lastName)
@@ -111,12 +130,13 @@ class ProfileFragment : Fragment() {
 
         data?.let {
             no_vlogs_text.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+            profileVlogsRecyclerView.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
             profileVlogsAdapter?.submitList(it)
         }
         message?.let { snackBar.show() }
     }
 
-    private fun updateFollowRequest(res: Resource<FollowRequestItem>) = res.run {
+    private fun updateFollowStatus(res: Resource<FollowStatusItem>) = res.run {
         swipeRefreshLayout.run {
             when (state) {
                 ResourceState.LOADING -> {
@@ -130,16 +150,17 @@ class ProfileFragment : Fragment() {
                             FollowStatus.PENDING -> getString(R.string.requested)
                             FollowStatus.FOLLOWING -> getString(R.string.following)
                             FollowStatus.NOT_FOLLOWING -> getString(R.string.follow)
+                            FollowStatus.DECLINED -> getString(R.string.follow)
                             else -> getString(R.string.followStatusError)
                         }
-                        isEnabled = true
+                        isEnabled = data?.status?.let { true } ?: false
                     }
                 }
                 ResourceState.ERROR -> {
                     stopRefreshing()
-                    followButton.text = getString(R.string.requested)
+                    followButton.text = getString(R.string.followStatusError)
                     // Toast.makeText(activity, res.message, Toast.LENGTH_SHORT).show()
-                    followButton.isEnabled = true
+                    followButton.isEnabled = false
                 }
             }
         }

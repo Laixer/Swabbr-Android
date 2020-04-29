@@ -30,10 +30,13 @@
                 android:padding="@dimen/content_margin">
 
                 <include
+                    android:id="@+id/userInfo"
+                    android:transitionName="userInfo"
                     layout="@layout/include_user_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true" />
+                    android:layout_alignParentStart="true"
+                    />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -122,18 +125,6 @@
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
-
-        <View
-            style="@style/Divider"
-            android:layout_width="match_parent"
-            android:layout_height="1px" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/content_margin"
-            android:orientation="horizontal">
-        </RelativeLayout>
 
     </LinearLayout>
 

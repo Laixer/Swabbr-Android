@@ -6,7 +6,6 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 data class FollowRequestItem(
-    val id: UUID,
     val requesterId: UUID,
     val receiverId: UUID,
     val status: FollowStatus,
@@ -14,4 +13,9 @@ data class FollowRequestItem(
 )
 
 fun FollowRequest.mapToPresentation(): FollowRequestItem =
-    FollowRequestItem(this.id, this.requesterId, this.receiverId, this.status, this.timeCreated)
+    FollowRequestItem(
+        this.requesterId,
+        this.receiverId,
+        this.status,
+        this.timeCreated
+    )

@@ -15,10 +15,6 @@ data class UserVlogItem(
     val profileImageUrl: URL,
     val vlogId: UUID,
     val dateStarted: ZonedDateTime,
-    val isLive: Boolean,
-    val totalViews: Int,
-    val totalReactions: Int,
-    val totalLikes: Int,
     val url: URL
 ) : Serializable
 
@@ -30,10 +26,6 @@ fun Pair<User, Vlog>.mapToPresentation(): UserVlogItem = UserVlogItem(
     this.first.profileImageUrl,
     this.second.id,
     this.second.dateStarted,
-    this.second.isLive,
-    this.second.totalViews,
-    this.second.totalReactions,
-    this.second.likes.size,
     this.second.url
 )
 

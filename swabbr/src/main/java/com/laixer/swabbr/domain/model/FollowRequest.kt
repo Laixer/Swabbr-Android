@@ -4,7 +4,6 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 data class FollowRequest(
-    val id: UUID,
     val requesterId: UUID,
     val receiverId: UUID,
     val status: FollowStatus,
@@ -14,5 +13,6 @@ data class FollowRequest(
 enum class FollowStatus(val value: String) {
     PENDING("pending"),
     FOLLOWING("accepted"),
-    NOT_FOLLOWING("declined")
+    NOT_FOLLOWING("does_not_exist"),
+    DECLINED("declined")
 }

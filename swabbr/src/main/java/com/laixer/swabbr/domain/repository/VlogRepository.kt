@@ -10,5 +10,5 @@ interface VlogRepository {
 
     fun get(vlogId: UUID, refresh: Boolean): Single<Vlog>
 
-    fun getFeaturedVlogs(refresh: Boolean): Single<List<Vlog>>
+    fun getRecommendedVlogs(refresh: Boolean): Single<List<Vlog>>
 }

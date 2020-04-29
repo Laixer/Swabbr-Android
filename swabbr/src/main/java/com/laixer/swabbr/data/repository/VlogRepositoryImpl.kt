@@ -22,8 +22,8 @@ class VlogRepositoryImpl constructor(
         false -> cacheDataSource.get(vlogId).onErrorResumeNext { get(vlogId, true) }
     }
 
-    override fun getFeaturedVlogs(refresh: Boolean): Single<List<Vlog>> = when (refresh) {
-        true -> remoteDataSource.getRecommendedVlogs().flatMap { cacheDataSource.setFeaturedVlogs(it) }
-        false -> cacheDataSource.getFeaturedVlogs().onErrorResumeNext { getFeaturedVlogs(true) }
+    override fun getRecommendedVlogs(refresh: Boolean): Single<List<Vlog>> = when (refresh) {
+        true -> remoteDataSource.getRecommendedVlogs().flatMap { cacheDataSource.setRecommendedVlogs(it) }
+        false -> cacheDataSource.getRecommendedVlogs().onErrorResumeNext { getRecommendedVlogs(true) }
     }
 }

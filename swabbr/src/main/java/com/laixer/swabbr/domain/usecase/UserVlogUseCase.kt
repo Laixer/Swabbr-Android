@@ -20,8 +20,8 @@ class UsersVlogsUseCase constructor(
     private val vlogRepository: VlogRepository
 ) {
 
-    fun getFeaturedVlogs(refresh: Boolean): Single<List<Pair<User, Vlog>>> =
-        vlogRepository.getFeaturedVlogs(refresh).flattenAsObservable { vlogs -> vlogs }.flatMapSingle { vlog ->
+    fun getRecommendedVlogs(refresh: Boolean): Single<List<Pair<User, Vlog>>> =
+        vlogRepository.getRecommendedVlogs(refresh).flattenAsObservable { vlogs -> vlogs }.flatMapSingle { vlog ->
             userRepository.get(vlog.userId, false).map { user -> Pair(user, vlog) }
         }.toList()
 

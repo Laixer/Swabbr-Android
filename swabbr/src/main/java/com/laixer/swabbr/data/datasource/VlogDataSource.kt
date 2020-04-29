@@ -20,9 +20,9 @@ interface VlogCacheDataSource {
 
     fun set(item: Vlog): Single<Vlog>
 
-    fun getFeaturedVlogs(): Single<List<Vlog>>
+    fun getRecommendedVlogs(): Single<List<Vlog>>
 
-    fun setFeaturedVlogs(list: List<Vlog>): Single<List<Vlog>>
+    fun setRecommendedVlogs(list: List<Vlog>): Single<List<Vlog>>
 }
 
 interface VlogRemoteDataSource {

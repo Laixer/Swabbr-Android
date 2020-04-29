@@ -19,10 +19,13 @@ class VlogListViewModel constructor(private val usersVlogsUseCase: UsersVlogsUse
 
     fun get(refresh: Boolean) =
         compositeDisposable.add(
-            usersVlogsUseCase.getFeaturedVlogs(refresh)
+            usersVlogsUseCase.getRecommendedVlogs(refresh)
                 .doOnSubscribe { vlogs.setLoading() }
                 .subscribeOn(Schedulers.io())
-                .map { it.map { pair -> Pair(pair.first, pair.second).mapToPresentation() } }
+                .map { list ->
+                    list.map { pair -> Pair(pair.first, pair.second).mapToPresentation() }
+                        .sortedByDescending { it.dateStarted }
+                }
                 .subscribe({ vlogs.setSuccess(it) }, { vlogs.setError(it.message) })
         )
 

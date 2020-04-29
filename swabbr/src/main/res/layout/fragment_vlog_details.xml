@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    >
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/container"
@@ -16,7 +17,7 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/vlog_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="400dp"
             android:layout_weight="1" />
 
         <ProgressBar
@@ -26,12 +27,11 @@
             android:layout_gravity="center_horizontal"
             tools:visibility="gone" />
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/reactionsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_list_reaction" />

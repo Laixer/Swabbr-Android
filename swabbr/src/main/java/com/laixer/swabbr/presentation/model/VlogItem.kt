@@ -9,16 +9,15 @@ import java.util.UUID
 data class VlogItem(
     val id: UUID,
     val userId: UUID,
-    val dateStarted: ZonedDateTime,
-    val isLive: Boolean,
-    val totalLikes: Int,
-    val url: URL
+    val url: URL,
+    val isPrivate: Boolean,
+    val dateStarted: ZonedDateTime
 )
 
 fun CombinedUserVlog.mapToPresentation(): VlogItem =
-    VlogItem(vlog.id, vlog.userId, vlog.dateStarted, vlog.isLive, vlog.likes.size, vlog.url)
+    VlogItem(vlog.id, vlog.userId, vlog.url, vlog.isPrivate, vlog.dateStarted)
 
 fun Vlog.mapToPresentation(): VlogItem =
-    VlogItem(this.id, this.userId, this.dateStarted, this.isLive, this.likes.size, this.url)
+    VlogItem(this.id, this.userId, this.url, this.isPrivate, this.dateStarted)
 
 fun List<Vlog>.mapToPresentation(): List<VlogItem> = map { it.mapToPresentation() }
