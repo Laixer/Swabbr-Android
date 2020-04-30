@@ -1,6 +1,8 @@
 package com.laixer.swabbr.domain.repository
 
+import com.laixer.swabbr.domain.model.Like
 import com.laixer.swabbr.domain.model.Vlog
+import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.UUID
 
@@ -11,4 +13,10 @@ interface VlogRepository {
     fun get(vlogId: UUID, refresh: Boolean): Single<Vlog>
 
     fun getRecommendedVlogs(refresh: Boolean): Single<List<Vlog>>
+
+    fun getLikes(vlogId: UUID, refresh: Boolean): Single<List<Like>>
+
+    fun like(vlogId: UUID): Completable
+
+    fun unlike(vlogId: UUID): Completable
 }

@@ -56,6 +56,7 @@ import com.laixer.swabbr.domain.usecase.UserVlogUseCase
 import com.laixer.swabbr.domain.usecase.UserVlogsUseCase
 import com.laixer.swabbr.domain.usecase.UsersUseCase
 import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
+import com.laixer.swabbr.domain.usecase.VlogsUseCase
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
@@ -92,7 +93,7 @@ private val loadFeature by lazy {
 val viewModelModule: Module = module {
     viewModel { AuthViewModel(authUseCase = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
-    viewModel { VlogListViewModel(usersVlogsUseCase = get()) }
+    viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogsUseCase = get()) }
     viewModel { VlogDetailsViewModel(usersVlogsUseCase = get(), reactionsUseCase = get()) }
     viewModel { SearchViewModel(usersUseCase = get()) }
     viewModel { SettingsViewModel(settingsUseCase = get(), authUseCase = get()) }
@@ -103,6 +104,7 @@ val useCaseModule: Module = module {
     factory { UsersVlogsUseCase(userRepository = get(), vlogRepository = get()) }
     factory { UserVlogUseCase(userRepository = get(), vlogRepository = get()) }
     factory { UserVlogsUseCase(vlogRepository = get()) }
+    factory { VlogsUseCase(vlogRepository = get()) }
     factory { UserReactionUseCase(userRepository = get(), reactionRepository = get()) }
     factory { ReactionsUseCase(reactionRepository = get()) }
     factory { FollowUseCase(followRepository = get()) }

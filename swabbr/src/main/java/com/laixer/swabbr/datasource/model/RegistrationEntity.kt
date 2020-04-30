@@ -10,49 +10,49 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 data class RegistrationEntity(
-    @field:Json(name = "firstName") val firstName: String,
-    @field:Json(name = "lastName") val lastName: String,
-    @field:Json(name = "gender") val gender: String,
-    @field:Json(name = "country") val country: String,
+//    @field:Json(name = "firstName") val firstName: String,
+//    @field:Json(name = "lastName") val lastName: String,
+//    @field:Json(name = "gender") val gender: String,
+//    @field:Json(name = "country") val country: String,
     @field:Json(name = "email") val email: String,
     @field:Json(name = "password") val password: String,
-    @field:Json(name = "birthdate") val birthdate: String,
-    @field:Json(name = "timezone") val timezone: String,
+//    @field:Json(name = "birthdate") val birthdate: String,
+//    @field:Json(name = "timezone") val timezone: String,
     @field:Json(name = "nickname") val nickname: String,
-    @field:Json(name = "profileImageUrl") val profileImageUrl: String,
-    @field:Json(name = "phoneNumber") val phoneNumber: String,
+    @field:Json(name = "profileImage") val profileImage: String?,
+//    @field:Json(name = "phoneNumber") val phoneNumber: String,
     @field:Json(name = "pushNotificationPlatform") val pushNotificationPlatform: String,
     @field:Json(name = "handle") val handle: String
 )
 
 fun Registration.mapToData(): RegistrationEntity = RegistrationEntity(
-    firstName,
-    lastName,
-    gender.value,
-    country,
+//    firstName,
+//    lastName,
+//    gender.value,
+//    country,
     email,
     password,
-    birthdate.toInstant().toString(),
-    "UTC${DateTimeFormatter.ofPattern("xxx").format(timezone)}",
+//    birthdate.toInstant().toString(),
+//    "UTC${DateTimeFormatter.ofPattern("xxx").format(timezone)}",
     nickname,
-    profileImageUrl.toString(),
-    phoneNumber,
+    profileImage,
+//    phoneNumber,
     pushNotificationPlatform.value,
     handle
 )
 
 fun RegistrationEntity.mapToDomain(): Registration = Registration(
-    firstName,
-    lastName,
-    Gender.values().first { it.value == gender },
-    country,
+//    firstName,
+//    lastName,
+//    Gender.values().first { it.value == gender },
+//    country,
     email,
     password,
-    ZonedDateTime.parse(birthdate),
-    ZoneOffset.of(timezone.replace("UTC", "")),
+//    ZonedDateTime.parse(birthdate),
+//    ZoneOffset.of(timezone.replace("UTC", "")),
     nickname,
-    URL(profileImageUrl),
-    phoneNumber,
+    profileImage,
+//    phoneNumber,
     PushNotificationPlatform.values().first { it.value == pushNotificationPlatform },
     handle
 )

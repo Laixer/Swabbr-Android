@@ -1,6 +1,9 @@
 package com.laixer.swabbr.presentation
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import android.util.SparseArray
 import android.widget.ImageView
 import androidx.core.util.forEach
@@ -13,6 +16,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.laixer.presentation.loadImageRound
 import com.laixer.swabbr.R
+import java.io.ByteArrayOutputStream
 import java.net.URL
 
 fun ImageView.loadAvatar(url: URL) = loadImageRound(url)
@@ -139,6 +143,15 @@ private fun BottomNavigationView.setupDeepLinks(
             this.selectedItemId = navHostFragment.navController.graph.id
         }
     }
+}
+
+fun encodeImageToBase64(data: ByteArray): String = Base64.encodeToString(data, Base64.DEFAULT)
+fun decodeStringFromBase64(data: String): ByteArray = Base64.decode(data, Base64.DEFAULT)
+
+fun convertByteArrayToBitmap(data: ByteArray): Bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
+fun convertBitmapToByteArray(data: Bitmap): ByteArray = with(ByteArrayOutputStream()) {
+    data.compress(Bitmap.CompressFormat.WEBP, 100, this)
+    return this.toByteArray()
 }
 
 private fun BottomNavigationView.setupItemReselected(

@@ -6,6 +6,8 @@
     <string name="error">Error</string>
     <string name="retry">Retry</string>
 
+    <string name="nickname_hint">Nickname</string>
+
     <string name="user_name">Name: %1$s</string>
     <string name="user_username">Username: @%1$s</string>
     <string name="user_email">Email: %1$s</string>
