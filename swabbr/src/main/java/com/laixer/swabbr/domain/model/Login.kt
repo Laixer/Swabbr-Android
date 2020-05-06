@@ -1,7 +1,7 @@
 package com.laixer.swabbr.domain.model
 
 data class Login(
-    val username: String,
+    val email: String,
     val password: String,
     val remember: Boolean,
     val pushNotificationPlatform: PushNotificationPlatform,

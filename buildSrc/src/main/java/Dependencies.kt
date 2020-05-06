@@ -22,7 +22,7 @@ object Releases {
 }
 
 object Versions {
-    const val gradle = "4.0.0-beta01"
+    const val gradle = "4.0.0-beta04"
 
     const val compileSdk = 29
     const val minSdk = 26
@@ -38,18 +38,21 @@ object Versions {
 
     const val fabric = "1.31.2"
 
-    const val androidx = "1.2.0-alpha02"
+    const val androidx = "1.1.0"
+    const val cardview = "1.0.0"
 
-    const val ktx = "1.2.0-beta01"
+    const val ktx = "1.2.0"
+    const val fragment_ktx = "1.2.4"
+
     const val material = "1.1.0"
 
-    const val nav = "2.2.1"
-    const val kotlin = "1.3.70"
+    const val nav = "2.3.0-alpha01"
+    const val kotlin = "1.3.72"
     const val timber = "4.7.1"
     const val rxjava = "2.2.17"
     const val rxkotlin = "2.4.0"
-    const val retrofit = "2.7.0"
-    const val loggingInterceptor = "4.2.2"
+    const val retrofit = "2.8.1"
+    const val okhttp = "3.14.7"
     const val glide = "4.11.0"
     const val rxpaper = "1.4.0"
     const val paperdb = "2.6"
@@ -69,10 +72,10 @@ object Versions {
     const val mockitoInline = "3.2.4"
 
     const val exoplayer = "2.10.5"
-    const val camera = "1.0.0-alpha10"
-    const val swiperefreshlayout = "1.1.0-alpha03"
+    const val camera = "1.0.0-beta03"
+    const val swiperefreshlayout = "1.0.0"
     const val viewpager2 = "1.0.0"
-    const val constraintlayout = "2.0.0-beta4"
+    const val constraintlayout = "1.1.3"
 }
 
 object Libraries {
@@ -89,8 +92,8 @@ object Libraries {
     const val paperdb = "io.paperdb:paperdb:${Versions.paperdb}"
     const val moshi = "com.squareup.moshi:moshi:${Versions.moshi}"
     const val moshiConverter = "com.squareup.retrofit2:converter-moshi:${Versions.retrofit}"
-    const val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.loggingInterceptor}"
-    const val okhttp = "com.squareup.okhttp3:okhttp:${Versions.loggingInterceptor}"
+    const val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.okhttp}"
+    const val okhttp = "com.squareup.okhttp3:okhttp:${Versions.okhttp}"
 
     const val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
     const val glideCompiler = "com.github.bumptech.glide:compiler:${Versions.glide}"
@@ -108,10 +111,10 @@ object JetpackLibraries {
     const val ktx = "androidx.core:core-ktx:${Versions.ktx}"
     const val appcompat = "androidx.appcompat:appcompat:${Versions.androidx}"
     const val design = "com.google.android.material:material:${Versions.androidx}"
-    const val cardView = "androidx.cardview:cardview:${Versions.androidx}"
+    const val cardView = "androidx.cardview:cardview:${Versions.cardview}"
     const val recyclerView = "androidx.recyclerview:recyclerview:${Versions.androidx}"
     const val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintlayout}"
-    const val fragment = "androidx.fragment:fragment-ktx:1.2.2"
+    const val fragment = "androidx.fragment:fragment-ktx:${Versions.fragment_ktx}"
     const val viewPager2 = "androidx.viewpager2:viewpager2:${Versions.viewpager2}"
     const val cameraCore = "androidx.camera:camera-core:${Versions.camera}"
     const val camera2 = "androidx.camera:camera-camera2:${Versions.camera}"

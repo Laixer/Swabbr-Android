@@ -64,6 +64,7 @@ import com.laixer.swabbr.presentation.vlogdetails.VlogDetailsViewModel
 import com.laixer.swabbr.presentation.vloglist.VlogListViewModel
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module

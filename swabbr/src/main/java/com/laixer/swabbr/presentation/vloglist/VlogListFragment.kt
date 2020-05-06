@@ -17,6 +17,7 @@ import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.model.UserVlogItem
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
 import kotlinx.android.synthetic.main.include_user_info.*
+import kotlinx.android.synthetic.main.include_user_info_reversed.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class VlogListFragment : Fragment() {
@@ -24,7 +25,7 @@ class VlogListFragment : Fragment() {
     private val vm: VlogListViewModel by viewModel()
     private val itemClick: (UserVlogItem) -> Unit = {
         val extras = FragmentNavigatorExtras(
-            userUsername to "reversed_userUsername",
+            userUsername to "reversed_userAvatar",
             userAvatar to "reversed_userAvatar",
             userName to "reversed_userName"
         )

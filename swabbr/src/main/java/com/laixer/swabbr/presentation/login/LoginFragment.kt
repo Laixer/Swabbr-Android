@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.iid.FirebaseInstanceId
 import com.laixer.presentation.Resource
@@ -24,6 +25,7 @@ import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.model.AuthUserItem
 import com.laixer.swabbr.presentation.model.LoginItem
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.include_user_info.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
@@ -41,7 +43,7 @@ class LoginFragment : Fragment() {
         loginButton.setOnClickListener {
             vm.login(
                 LoginItem(
-                    usernameInput.text.toString(),
+                    emailInput.text.toString(),
                     passwordInput.text.toString(),
                     rememberMeSwitch.isChecked,
                     PushNotificationPlatform.FCM,
@@ -52,7 +54,10 @@ class LoginFragment : Fragment() {
         }
 
         registerButton.setOnClickListener {
-            findNavController().navigate(LoginFragmentDirections.actionRegister())
+            val extras = FragmentNavigatorExtras(
+                emailInput to "emailInput"
+            )
+            findNavController().navigate(LoginFragmentDirections.actionRegister(), extras)
         }
 
         injectFeature()
@@ -102,12 +107,12 @@ class LoginFragment : Fragment() {
             }
         }
 
-        usernameInput.addTextChangedListener(watcher)
+        emailInput.addTextChangedListener(watcher)
         passwordInput.addTextChangedListener(watcher)
     }
 
     private fun checkChanges() {
-        loginButton.isEnabled = !(usernameInput.text.isNullOrEmpty() || passwordInput.text.isNullOrEmpty())
+        loginButton.isEnabled = !(emailInput.text.isNullOrEmpty() || passwordInput.text.isNullOrEmpty())
     }
 
     companion object {

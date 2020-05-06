@@ -98,7 +98,7 @@ class AuthProfileFragment : Fragment() {
 
     private fun updateProfile(userItem: UserItem?) {
         userItem?.let {
-            userAvatar.loadAvatar(it.profileImageUrl)
+            userAvatar.loadAvatar(it.profileImage, it.id)
             userUsername.text = requireContext().getString(R.string.nickname, it.nickname)
             userName.text = requireContext().getString(R.string.full_name, it.firstName, it.lastName)
             vlog_count.text = requireContext().getString(R.string.vlog_count, it.totalVlogs)

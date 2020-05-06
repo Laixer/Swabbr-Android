@@ -24,7 +24,7 @@ class UsersVlogsUseCase constructor(
 
     fun getRecommendedVlogs(refresh: Boolean): Single<List<Pair<User, Vlog>>> =
         vlogRepository.getRecommendedVlogs(refresh).flattenAsObservable { vlogs -> vlogs }.flatMapSingle { vlog ->
-            userRepository.get(vlog.userId, false).map { user -> Pair(user, vlog) }
+            userRepository.get(vlog.userId, refresh).map { user -> Pair(user, vlog) }
         }.toList()
 
     /**
@@ -33,7 +33,7 @@ class UsersVlogsUseCase constructor(
     fun get(idList: List<UUID>, refresh: Boolean): Single<List<Pair<User, Vlog>>> =
         Observable.just(idList).flatMapIterable { ids -> ids }.flatMapSingle { id -> vlogRepository.get(id, refresh) }
             .flatMapSingle { vlog ->
-                userRepository.get(vlog.userId, false).map { user -> Pair(user, vlog) }
+                userRepository.get(vlog.userId, refresh).map { user -> Pair(user, vlog) }
             }.toList()
 }
 
@@ -44,7 +44,7 @@ class UserVlogUseCase constructor(
 
     fun get(vlogId: UUID, refresh: Boolean): Single<Pair<User, Vlog>> =
         vlogRepository.get(vlogId, refresh).flatMap { vlog ->
-            userRepository.get(vlog.userId, false).map { user -> Pair(user, vlog) }
+            userRepository.get(vlog.userId, refresh).map { user -> Pair(user, vlog) }
         }
 }
 

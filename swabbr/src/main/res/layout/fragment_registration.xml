@@ -94,12 +94,11 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/avatarPicker"
+                android:transitionName="circleImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="3dp"
-                android:src="@drawable/ic_person_24dp"
-                app:civ_border_color="@color/color_body"
-                app:civ_border_width="2dp" />
+                android:src="@mipmap/ic_avatar_placeholder" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_add_photo"
@@ -123,6 +122,7 @@
 
         <EditText
             android:id="@+id/emailInput"
+            android:transitionName="emailInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_baseline_email_24"

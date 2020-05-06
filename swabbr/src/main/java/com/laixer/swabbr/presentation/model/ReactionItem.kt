@@ -11,7 +11,7 @@ data class ReactionItem(
     val userId: UUID,
     val vlogId: UUID,
     val nickname: String,
-    val profileImageUrl: URL,
+    val profileImage: String?,
     val datePosted: ZonedDateTime
 )
 
@@ -21,7 +21,7 @@ fun Pair<User, Reaction>.mapToPresentation(): ReactionItem =
         this.first.id,
         this.second.vlogId,
         this.first.nickname,
-        this.first.profileImageUrl,
+        this.first.profileImage,
         this.second.datePosted
     )
 

@@ -47,7 +47,7 @@ class VlogFragment : Fragment() {
         }
         val view = layoutInflater.inflate(R.layout.item_vlog, container, false)
         val overlayView = layoutInflater.inflate(R.layout.video_view_overlay, container, false)
-        overlayView.reversed_userAvatar.loadAvatar(userVlogItem.profileImageUrl)
+        overlayView.reversed_userAvatar.loadAvatar(userVlogItem.profileImage,  userVlogItem.userId)
         overlayView.reversed_userUsername.text = requireContext().getString(R.string.nickname, userVlogItem.nickname)
         overlayView.reversed_userName.text = requireContext().getString(
             R.string.full_name, userVlogItem.firstName, userVlogItem

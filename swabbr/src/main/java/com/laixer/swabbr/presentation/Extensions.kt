@@ -14,12 +14,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.laixer.presentation.loadImageRound
+import com.laixer.presentation.loadImageUrl
 import com.laixer.swabbr.R
 import java.io.ByteArrayOutputStream
 import java.net.URL
+import java.util.UUID
 
-fun ImageView.loadAvatar(url: URL) = loadImageRound(url)
+fun ImageView.loadAvatar(profileImage: String?, userId: UUID) = profileImage?.let {
+    this.setImageBitmap(convertBase64ToBitmap(it))
+} ?: loadImageUrl(URL("https://api.adorable.io/avatars/285/${userId}"))
 
 /**
  * Manages the various graphs needed for a [BottomNavigationView].
@@ -145,14 +148,17 @@ private fun BottomNavigationView.setupDeepLinks(
     }
 }
 
-fun encodeImageToBase64(data: ByteArray): String = Base64.encodeToString(data, Base64.DEFAULT)
-fun decodeStringFromBase64(data: String): ByteArray = Base64.decode(data, Base64.DEFAULT)
+fun encodeImageToBase64(byteArray: ByteArray): String = Base64.encodeToString(byteArray, Base64.DEFAULT)
+fun decodeStringFromBase64(base64: String): ByteArray = Base64.decode(base64, Base64.DEFAULT)
 
-fun convertByteArrayToBitmap(data: ByteArray): Bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
-fun convertBitmapToByteArray(data: Bitmap): ByteArray = with(ByteArrayOutputStream()) {
-    data.compress(Bitmap.CompressFormat.WEBP, 100, this)
+fun convertByteArrayToBitmap(byteArray: ByteArray): Bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+fun convertBitmapToByteArray(bitmap: Bitmap): ByteArray = with(ByteArrayOutputStream()) {
+    bitmap.compress(Bitmap.CompressFormat.WEBP, 100, this)
     return this.toByteArray()
 }
+
+fun convertBase64ToBitmap(base64: String): Bitmap = convertByteArrayToBitmap(decodeStringFromBase64(base64))
+fun convertBitmapToBase64(bitmap: Bitmap): String = encodeImageToBase64(convertBitmapToByteArray(bitmap))
 
 private fun BottomNavigationView.setupItemReselected(
     graphIdToTagMap: SparseArray<String>,

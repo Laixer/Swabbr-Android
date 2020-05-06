@@ -10,9 +10,9 @@ import java.util.UUID
 data class UserVlogItem(
     val userId: UUID,
     val nickname: String,
-    val firstName: String,
-    val lastName: String,
-    val profileImageUrl: URL,
+    val firstName: String?,
+    val lastName: String?,
+    val profileImage: String?,
     val vlogId: UUID,
     val dateStarted: ZonedDateTime,
     val url: URL
@@ -23,7 +23,7 @@ fun Pair<User, Vlog>.mapToPresentation(): UserVlogItem = UserVlogItem(
     this.first.nickname,
     this.first.firstName,
     this.first.lastName,
-    this.first.profileImageUrl,
+    this.first.profileImage,
     this.second.id,
     this.second.dateStarted,
     this.second.url

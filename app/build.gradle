@@ -76,6 +76,7 @@ dependencies {
   implementation Libraries.moshiConverter
   implementation Libraries.workmanager
   implementation Libraries.workmanagerRxjava
+  implementation 'com.github.dhaval2404:imagepicker:1.7.1'
 
   implementation GoogleLibraries.material
 

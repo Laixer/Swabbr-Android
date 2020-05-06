@@ -5,7 +5,7 @@ import com.laixer.swabbr.domain.model.PushNotificationPlatform
 import com.squareup.moshi.Json
 
 data class LoginEntity(
-    @field:Json(name = "email") val username: String,
+    @field:Json(name = "email") val email: String,
     @field:Json(name = "password") val password: String,
     @field:Json(name = "rememberMe") val rememberMe: Boolean,
     @field:Json(name = "pushNotificationPlatform") val pushNotificationPlatform: String,
@@ -13,7 +13,7 @@ data class LoginEntity(
 )
 
 fun Login.mapToData(): LoginEntity = LoginEntity(
-    username,
+    email,
     password,
     remember,
     pushNotificationPlatform.value,
@@ -21,7 +21,7 @@ fun Login.mapToData(): LoginEntity = LoginEntity(
 )
 
 fun LoginEntity.mapToDomain(): Login = Login(
-    username,
+    email,
     password,
     rememberMe,
     PushNotificationPlatform.values().first { it.value == pushNotificationPlatform },

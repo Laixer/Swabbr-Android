@@ -17,6 +17,8 @@ import android.widget.DatePicker
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.transition.ChangeBounds
+import androidx.transition.TransitionInflater
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.iid.FirebaseInstanceId
 import com.laixer.presentation.Resource
@@ -29,16 +31,30 @@ import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.convertBitmapToByteArray
 import com.laixer.swabbr.presentation.encodeImageToBase64
+import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.AuthUserItem
 import com.laixer.swabbr.presentation.model.RegistrationItem
 import kotlinx.android.synthetic.main.fragment_registration.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.time.Instant
+import java.time.ZoneId
 
 class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private val vm: AuthViewModel by viewModel()
     private var selectedBitmap: Bitmap? = null
     //    private val date = LocalDate.now()
 //    private var selectedDate: ZonedDateTime = ZonedDateTime.now()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val transition = TransitionInflater.from(context).inflateTransition(android.R.transition.move).apply {
+            duration = 2000
+        }
+        sharedElementEnterTransition = transition
+        sharedElementReturnTransition = transition
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_registration, container, false)
     }
@@ -58,7 +74,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                     emailInput.text.toString(),
                     passwordInput.text.toString(),
 //                    selectedDate,
-//                    ZoneId.systemDefault().rules.getOffset(Instant.now()),
+                    ZoneId.systemDefault().rules.getOffset(Instant.now()),
                     nicknameInput.text.toString(),
                     selectedBitmap?.let {
                         encodeImageToBase64(convertBitmapToByteArray(it))
@@ -100,32 +116,31 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 //        prepareSpinners()
 //        prepareDatepicker()
 //        prepareSwitch()
-        fab_add_photo.setOnClickListener {
-            ImagePicker.Companion.with(this)
-                .crop()
-                .compress(1024)
-                .maxResultSize(512, 512)
-                .start()
-        }
+        fab_add_photo.setOnClickListener { selectProfileImage() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == PROFILE_IMAGE_REQ_CODE) {
-            val returnValue = ImagePicker.getFilePath(data)
-            selectedBitmap = BitmapFactory.decodeFile(returnValue)
-            avatarPicker.setImageBitmap(selectedBitmap)
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                data?.let {
+                    selectedBitmap = BitmapFactory.decodeFile(ImagePicker.getFilePath(it))
+                    avatarPicker.setImageBitmap(selectedBitmap)
+                }
+            }
+            ImagePicker.RESULT_ERROR -> {
+                Toast.makeText(requireContext(), ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+            }
+            Activity.RESULT_CANCELED -> {
+                return
+            }
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            ImagePicker.Companion.with(this)
-                .crop()
-                .compress(1024)
-                .maxResultSize(512, 512)
-                .start()
+            selectProfileImage()
         } else {
             Toast.makeText(
                 requireActivity(),
@@ -134,6 +149,21 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             ).show()
         }
     }
+
+    fun selectProfileImage() = ImagePicker
+        .with(this)
+        .cropSquare()
+        .compress(1024)
+        .maxResultSize(512, 512)
+        .galleryMimeTypes(  //Exclude gif images
+            mimeTypes = arrayOf(
+                "image/png",
+                "image/jpg",
+                "image/jpeg",
+                "image/gif"
+            )
+        )
+        .start()
 
     private fun prepareTextInputs() {
         val textInputWatcher: TextWatcher = object : TextWatcher {
@@ -223,7 +253,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 //                lastNameInput.text.isNullOrEmpty() ||
 //                phoneNumberInput.text.isNullOrEmpty() ||
                 nicknameInput.text.isNullOrEmpty() ||
-//                emailAddressInput.text.isNullOrEmpty() ||
+                emailInput.text.isNullOrEmpty() ||
                     passwordInput.text.isNullOrEmpty() ||
                     confirmPasswordInput.text.isNullOrEmpty()) &&
                 (passwordInput.text.toString() == confirmPasswordInput.text.toString()

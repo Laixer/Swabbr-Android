@@ -4,7 +4,7 @@ import com.laixer.swabbr.domain.model.Login
 import com.laixer.swabbr.domain.model.PushNotificationPlatform
 
 data class LoginItem(
-    val username: String,
+    val email: String,
     val password: String,
     val remember: Boolean,
     val platform: PushNotificationPlatform,
@@ -12,7 +12,7 @@ data class LoginItem(
 )
 
 fun LoginItem.mapToDomain(): Login = Login(
-    this.username,
+    this.email,
     this.password,
     this.remember,
     this.platform,

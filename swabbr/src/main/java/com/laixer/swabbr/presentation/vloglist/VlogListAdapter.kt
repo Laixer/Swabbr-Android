@@ -35,7 +35,7 @@ class VlogListAdapter constructor(
                 .thumbnail(0.1f)
                 .into(itemView.thumbnail)
 
-            itemView.userAvatar.loadAvatar(item.profileImageUrl)
+            itemView.userAvatar.loadAvatar(item.profileImage, item.userId)
             itemView.userUsername.text = context.getString(R.string.nickname, item.nickname)
             itemView.userName.text = context.getString(R.string.full_name, item.firstName, item.lastName)
             itemView.vlogPostDate.text =

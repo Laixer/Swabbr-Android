@@ -12,10 +12,10 @@ import java.util.UUID
 data class UserEntity(
     @field:Json(name = "id") val id: String,
     // User info
-    @field:Json(name = "firstName") val firstName: String,
-    @field:Json(name = "lastName") val lastName: String,
+    @field:Json(name = "firstName") val firstName: String?,
+    @field:Json(name = "lastName") val lastName: String?,
     @field:Json(name = "email") val email: String,
-    @field:Json(name = "country") val country: String,
+    @field:Json(name = "country") val country: String?,
     @field:Json(name = "gender") val gender: String,
 
     @field:Json(name = "timezone") val timezone: String,
@@ -25,8 +25,8 @@ data class UserEntity(
     @field:Json(name = "totalFollowing") val totalFollowing: Int,
     // Profile
     @field:Json(name = "nickname") val nickname: String,
-    @field:Json(name = "profileImageUrl") val profileImageUrl: String?,
-    @field:Json(name = "birthDate") val birthdate: String
+    @field:Json(name = "profileImageBase64Encoded") val profileImage: String?,
+    @field:Json(name = "birthDate") val birthdate: String?
 )
 
 fun UserEntity.mapToDomain(): User = User(
@@ -41,8 +41,8 @@ fun UserEntity.mapToDomain(): User = User(
     totalFollowers,
     totalFollowing,
     nickname,
-    URL(profileImageUrl ?: "https://api.adorable.io:443/avatars/285/$id"),
-    LocalDate.parse(birthdate.split("T")[0])
+    profileImage,
+    birthdate?.let { LocalDate.parse(it.split("T")[0]) }
 )
 
 fun User.mapToData(): UserEntity = UserEntity(
@@ -57,8 +57,8 @@ fun User.mapToData(): UserEntity = UserEntity(
     totalFollowers,
     totalFollowing,
     nickname,
-    profileImageUrl.toString(),
-    birthdate.atStartOfDay().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+    profileImage,
+    birthdate?.atStartOfDay()?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 )
 
 fun List<User>.mapToData(): List<UserEntity> = map { it.mapToData() }

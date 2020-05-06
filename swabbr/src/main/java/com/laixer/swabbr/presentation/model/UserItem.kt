@@ -9,18 +9,18 @@ import java.util.UUID
 
 data class UserItem(
     val id: UUID,
-    val firstName: String,
-    val lastName: String,
+    val firstName: String?,
+    val lastName: String?,
     val gender: Gender,
-    val country: String,
+    val country: String?,
     val email: String,
     val timezone: TimeZone,
     val totalVlogs: Int,
     val totalFollowers: Int,
     val totalFollowing: Int,
     val nickname: String,
-    val profileImageUrl: URL,
-    val birthdate: LocalDate
+    val profileImage: String?,
+    val birthdate: LocalDate?
 )
 
 fun User.mapToPresentation(): UserItem = UserItem(
@@ -35,7 +35,7 @@ fun User.mapToPresentation(): UserItem = UserItem(
     this.totalFollowers,
     this.totalFollowing,
     this.nickname,
-    this.profileImageUrl,
+    this.profileImage,
     this.birthdate
 )
 
@@ -51,7 +51,7 @@ fun UserItem.mapToDomain(): User = User(
     this.totalFollowers,
     this.totalFollowing,
     this.nickname,
-    this.profileImageUrl,
+    this.profileImage,
     this.birthdate
 )
 

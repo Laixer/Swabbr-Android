@@ -12,7 +12,7 @@ data class Registration(
     val email: String,
     val password: String,
 //    val birthdate: ZonedDateTime,
-//    val timezone: ZoneOffset,
+    val timezone: ZoneOffset,
     val nickname: String,
     val profileImage: String?,
 //    val phoneNumber: String,

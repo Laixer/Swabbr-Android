@@ -1,5 +1,7 @@
 package com.laixer.presentation
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +35,7 @@ fun SwipeRefreshLayout.stopRefreshing() {
 fun ViewGroup.inflate(layoutId: Int, attachToRoot: Boolean = false): View =
     LayoutInflater.from(context).inflate(layoutId, this, attachToRoot)
 
-fun ImageView.loadImage(url: URL) = Glide.with(this).load(GlideUrl(url)).into(this)
+fun ImageView.loadImageUrl(url: URL) = Glide.with(this).load(GlideUrl(url)).into(this)
 
 fun ImageView.loadImageRound(url: URL) =
     Glide.with(this).load(GlideUrl(url)).apply(RequestOptions.circleCropTransform()).into(this)

@@ -113,7 +113,7 @@ class ProfileFragment : Fragment() {
 
     private fun updateProfile(res: Resource<UserItem>) = res.run {
         data?.let {
-            userAvatar.loadAvatar(it.profileImageUrl)
+            userAvatar.loadAvatar(it.profileImage, it.id)
             userUsername.text = requireContext().getString(R.string.nickname, it.nickname)
             userName.text = requireContext().getString(R.string.full_name, it.firstName, it.lastName)
         }

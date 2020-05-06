@@ -11,7 +11,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:4.0.0-beta02")
+        classpath("com.android.tools.build:gradle:4.0.0-beta05")
         classpath("com.google.gms:google-services:${Versions.googleServices}")
         classpath("io.fabric.tools:gradle:${Versions.fabric}")
         classpath(kotlin("gradle-plugin", version = Versions.kotlin))

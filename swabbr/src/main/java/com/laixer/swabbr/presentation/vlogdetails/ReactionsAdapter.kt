@@ -22,7 +22,7 @@ class ReactionsAdapter(private val context: Context) :
     inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_reaction)) {
 
         fun bind(item: ReactionItem) {
-            itemView.userAvatar.loadAvatar(item.profileImageUrl)
+            itemView.userAvatar.loadAvatar(item.profileImage, item.userId)
             itemView.userName.text = context.getString(R.string.nickname, item.nickname)
             itemView.reactionPostDate.text = item.datePosted.toString()
         }

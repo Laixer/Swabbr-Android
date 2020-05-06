@@ -1,6 +1,8 @@
 package com.laixer.swabbr.presentation.search
 
 import android.content.Context
+import android.opengl.Visibility
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -21,9 +23,15 @@ class SearchAdapter(val context: Context, val onClick: (UserItem) -> Unit) :
     inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_profile)) {
 
         fun bind(item: UserItem) {
-            itemView.userAvatar.loadAvatar(item.profileImageUrl)
+            itemView.userAvatar.loadAvatar(item.profileImage, item.id)
             itemView.userUsername.text = context.getString(R.string.nickname, item.nickname)
-            itemView.userName.text = context.getString(R.string.full_name, item.firstName, item.lastName)
+
+            item.firstName?.let {
+                itemView.userName.visibility = View.VISIBLE
+                itemView.userName.text = context.getString(R.string.full_name, item.firstName, item.lastName)
+            } ?: run {
+                itemView.userName.visibility = View.GONE
+            }
             itemView.setOnClickListener { onClick.invoke(item) }
         }
     }
