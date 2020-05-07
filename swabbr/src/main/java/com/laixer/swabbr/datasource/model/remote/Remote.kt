@@ -100,11 +100,11 @@ interface FollowApi {
 
 interface SettingsApi {
 
-    @GET("users/self/settings/get")
+    @GET("users/self/settings")
     fun get(): Single<SettingsEntity>
 
-    @PUT("users/self/settings/update")
-    fun set(@Body settings: SettingsEntity): Single<SettingsEntity>
+    @POST("users/self/settings")
+    fun set(@Body settings: SettingsEntity): Completable
 }
 
 interface AuthApi {
@@ -116,6 +116,6 @@ interface AuthApi {
     @Headers("No-Authentication: true")
     fun register(@Body registration: RegistrationEntity): Single<AuthUserEntity>
 
-    @DELETE("authentication/logout")
+    @POST("authentication/logout")
     fun logout(): Completable
 }

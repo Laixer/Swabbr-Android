@@ -109,7 +109,7 @@ val useCaseModule: Module = module {
     factory { UserReactionUseCase(userRepository = get(), reactionRepository = get()) }
     factory { ReactionsUseCase(reactionRepository = get()) }
     factory { FollowUseCase(followRepository = get()) }
-    factory { SettingsUseCase(settingsRepository = get()) }
+    factory { SettingsUseCase(authRepository = get()) }
 }
 val repositoryModule: Module = module {
     single<AuthRepository> {
@@ -131,7 +131,7 @@ val dataSourceModule: Module = module {
             memory = get(named(AUTH_MEMORY))
         )
     }
-    single<AuthRemoteDataSource> { AuthRemoteDataSourceImpl(api = get()) }
+    single<AuthRemoteDataSource> { AuthRemoteDataSourceImpl(authApi = get(), settingsApi = get()) }
     single<UserCacheDataSource> { UserCacheDataSourceImpl(cache = get(named(USER_CACHE))) }
     single<UserRemoteDataSource> { UserRemoteDataSourceImpl(api = get()) }
     single<VlogCacheDataSource> { VlogCacheDataSourceImpl(cache = get(named(VLOG_CACHE))) }

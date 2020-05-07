@@ -2,6 +2,9 @@ package com.laixer.swabbr.presentation.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -38,7 +41,13 @@ class AuthProfileFragment : Fragment() {
     private var profileVlogsAdapter: ProfileVlogsAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_auth_profile, container, false)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_settings, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,6 +71,13 @@ class AuthProfileFragment : Fragment() {
             })
             get()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.settings_dest -> findNavController().navigate(AuthProfileFragmentDirections.actionViewSettings())
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setup(user: UserItem, savedInstanceState: Bundle?) {

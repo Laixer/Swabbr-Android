@@ -5,6 +5,7 @@ import com.laixer.swabbr.datasource.model.mapToData
 import com.laixer.swabbr.datasource.model.mapToDomain
 import com.laixer.swabbr.datasource.model.remote.SettingsApi
 import com.laixer.swabbr.domain.model.Settings
+import io.reactivex.Completable
 import io.reactivex.Single
 
 class SettingsRemoteDataSourceImpl constructor(
@@ -13,5 +14,5 @@ class SettingsRemoteDataSourceImpl constructor(
 
     override fun get(): Single<Settings> = api.get().map { it.mapToDomain() }
 
-    override fun set(settings: Settings): Single<Settings> = api.set(settings.mapToData()).map { it.mapToDomain() }
+    override fun set(settings: Settings): Completable = api.set(settings.mapToData())
 }

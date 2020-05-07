@@ -1,12 +1,14 @@
 package com.laixer.swabbr.domain.usecase
 
 import com.laixer.swabbr.domain.model.Settings
-import com.laixer.swabbr.domain.repository.SettingsRepository
+import com.laixer.swabbr.domain.repository.AuthRepository
 import io.reactivex.Single
 
-class SettingsUseCase constructor(private val settingsRepository: SettingsRepository) {
+class SettingsUseCase constructor(
+    private val authRepository: AuthRepository
+) {
 
-    fun get(refresh: Boolean): Single<Settings> = settingsRepository.get(refresh)
+    fun get(): Single<Settings> = authRepository.getSettings()
 
-    fun set(settings: Settings): Single<Settings> = settingsRepository.set(settings)
+    fun set(settings: Settings): Single<Settings> = authRepository.saveSettings(settings)
 }

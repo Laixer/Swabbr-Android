@@ -17,7 +17,6 @@ import android.widget.DatePicker
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.transition.ChangeBounds
 import androidx.transition.TransitionInflater
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.iid.FirebaseInstanceId
@@ -31,8 +30,8 @@ import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.convertBitmapToByteArray
 import com.laixer.swabbr.presentation.encodeImageToBase64
-import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.AuthUserItem
+import com.laixer.swabbr.presentation.model.LoginItem
 import com.laixer.swabbr.presentation.model.RegistrationItem
 import kotlinx.android.synthetic.main.fragment_registration.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -42,9 +41,10 @@ import java.time.ZoneId
 class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private val vm: AuthViewModel by viewModel()
     private var selectedBitmap: Bitmap? = null
+    private val firebaseInstanceId by lazy { FirebaseInstanceId.getInstance().id }
+
     //    private val date = LocalDate.now()
 //    private var selectedDate: ZonedDateTime = ZonedDateTime.now()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val transition = TransitionInflater.from(context).inflateTransition(android.R.transition.move).apply {
@@ -52,7 +52,6 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         }
         sharedElementEnterTransition = transition
         sharedElementReturnTransition = transition
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -61,6 +60,12 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        savedInstanceState?.getParcelable<Bitmap?>("BitmapImage")?.let {
+            selectedBitmap = it
+            avatarPicker.setImageBitmap(it)
+        }
+
         prepareUI()
         registerButton.setOnClickListener {
             vm.register(
@@ -80,10 +85,10 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                         encodeImageToBase64(convertBitmapToByteArray(it))
                     },
 //                    phoneNumberInput.text.toString(),
-                    PushNotificationPlatform.FCM,
-                    FirebaseInstanceId.getInstance().id
+                    PUSH_NOTIFICATION_PLATFORM,
+                    firebaseInstanceId
                 ),
-                true
+                rememberMeSwitch.isChecked
             )
         }
 
@@ -92,14 +97,31 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         vm.authenticatedUser.observe(viewLifecycleOwner, Observer { register(it) })
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable("BitmapImage", selectedBitmap)
+    }
+
     private fun register(res: Resource<AuthUserItem?>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 progressBar.visible()
             }
             ResourceState.SUCCESS -> {
-                progressBar.gone()
-                requireActivity().onBackPressed()
+                res.data?.accessToken?.let {
+                    progressBar.gone()
+                    requireActivity().onBackPressed()
+                } ?: run {
+                    vm.login(
+                        LoginItem(
+                            emailInput.text.toString(),
+                            passwordInput.text.toString(),
+                            rememberMeSwitch.isChecked,
+                            PUSH_NOTIFICATION_PLATFORM,
+                            firebaseInstanceId
+                        )
+                    )
+                }
             }
             ResourceState.ERROR -> {
                 passwordInput.text.clear()
@@ -253,7 +275,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 //                lastNameInput.text.isNullOrEmpty() ||
 //                phoneNumberInput.text.isNullOrEmpty() ||
                 nicknameInput.text.isNullOrEmpty() ||
-                emailInput.text.isNullOrEmpty() ||
+                    emailInput.text.isNullOrEmpty() ||
                     passwordInput.text.isNullOrEmpty() ||
                     confirmPasswordInput.text.isNullOrEmpty()) &&
                 (passwordInput.text.toString() == confirmPasswordInput.text.toString()
@@ -275,9 +297,6 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     companion object {
         private const val TAG = "RegistrationFragment"
-        private const val ADD_ZERO_BELOW = 10
-        private const val PROFILE_IMAGE_REQ_CODE = 101
-        private const val GALLERY_IMAGE_REQ_CODE = 102
-        private const val CAMERA_IMAGE_REQ_CODE = 103
+        private val PUSH_NOTIFICATION_PLATFORM = PushNotificationPlatform.FCM
     }
 }

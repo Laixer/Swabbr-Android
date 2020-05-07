@@ -25,8 +25,7 @@ class SettingsViewModel constructor(
     private val compositeDisposable = CompositeDisposable()
 
     fun getSettings(refresh: Boolean) = compositeDisposable.add(
-        settingsUseCase
-            .get(refresh)
+        settingsUseCase.get()
             .subscribeOn(Schedulers.io())
             .subscribe(
                 { settings.setSuccess(it.mapToPresentation()) },
@@ -35,8 +34,7 @@ class SettingsViewModel constructor(
     )
 
     fun setSettings(settingsItem: SettingsItem) = compositeDisposable.add(
-        settingsUseCase
-            .set(settingsItem.mapToDomain())
+        settingsUseCase.set(settingsItem.mapToDomain())
             .subscribeOn(Schedulers.io())
             .subscribe(
                 { settings.setSuccess(it.mapToPresentation()) },
