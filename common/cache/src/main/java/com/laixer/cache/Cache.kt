@@ -4,6 +4,7 @@ import android.content.Context
 import com.pacoworks.rxpaper2.RxPaperBook
 import io.paperdb.Book
 import io.paperdb.Paper
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers.io
 
@@ -28,18 +29,22 @@ class Cache<T> {
 class ReactiveCache<T> {
     private val book: RxPaperBook = RxPaperBook.with(io())
 
+    fun loadAll(): Single<List<T>> = book.keys()
+        .flattenAsObservable { keys -> keys }
+        .flatMapSingle { key -> book.read<T>(key) }
+        .toList()
+
     fun load(key: String): Single<T> = book.read(key)
 
-    fun loadOrNull(key: String): Single<T?> = book.read(key, null)
+    fun save(key: String, anyObject: T): Single<T> = book.write(key, anyObject).toSingleDefault(anyObject)
 
-    fun save(key: String, anyObject: T): Single<T> =
-        book.write(key, anyObject).toSingleDefault(anyObject)
-
-    fun delete(key: String) = book.delete(key)
+    fun delete(key: String): Completable = book.delete(key)
 }
 
 class MemoryCache<T> {
     private val map: MutableMap<String, T> = mutableMapOf()
+
+    fun delete(key: String): T? = map.remove(key)
 
     fun load(key: String): T = map.getValue(key)
 

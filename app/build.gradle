@@ -2,6 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+
+
+def localPropertiesFile = rootProject.file("local.properties")
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(localPropertiesFile))
 
 android {
   compileSdkVersion Versions.compileSdk
@@ -14,6 +20,7 @@ android {
     versionName Releases.versionName
     multiDexEnabled true
     signingConfig signingConfigs.debug
+//    buildConfigField("String", "GOCODER_SDK_KEY", localProperties['GOCODER_SDK_KEY'])
   }
 
   lintOptions {
@@ -54,7 +61,6 @@ android {
   testOptions {
     unitTests.returnDefaultValues = true
   }
-  dynamicFeatures = [Modules.swabbr]
 }
 
 dependencies {
@@ -64,23 +70,49 @@ dependencies {
   implementation project(Modules.presentation)
 
   implementation Libraries.kotlin
+  implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
 
+  // Koin
   implementation Libraries.koinAndroid
   implementation Libraries.koinViewModel
 
-  implementation Libraries.lifecycleExtensions
+  // Retrofit
+  implementation Libraries.retrofit
 
+  // Moshi
+  implementation Libraries.moshi
+  implementation Libraries.moshiConverter
+  implementation Libraries.moshiAdapters
+
+  // Rxjava
   implementation Libraries.rxjava
   implementation Libraries.rxkotlin
-
-  implementation Libraries.moshiConverter
-  implementation Libraries.workmanager
+  implementation Libraries.okhttp
+  implementation Libraries.loggingInterceptor
+  implementation Libraries.rxjavaAdapter
   implementation Libraries.workmanagerRxjava
-  implementation 'com.github.dhaval2404:imagepicker:1.7.1'
 
+  // UI
+  implementation JetpackLibraries.swiperefreshLayout
+  implementation JetpackLibraries.constraintLayout
+  implementation JetpackLibraries.camera2
+  implementation JetpackLibraries.viewPager2
   implementation GoogleLibraries.material
+  implementation GoogleLibraries.exoplayer
+  implementation 'com.github.dhaval2404:imagepicker:1.7.1'
+  implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+  // AndroidX
+  implementation Libraries.workmanager
+  implementation Libraries.lifecycleExtensions
+  implementation JetpackLibraries.ktx
   implementation JetpackLibraries.appcompat
+  implementation JetpackLibraries.fragment
+
+  // Navigation component
+  implementation JetpackLibraries.navFragmentKtx
+  implementation JetpackLibraries.navUiKtx
+
   // Firebase
   implementation FirebaseLibraries.analytics
   implementation FirebaseLibraries.messaging
@@ -89,7 +121,12 @@ dependencies {
 
   debugImplementation FirebaseLibraries.leakCanaryAndroid
 
+  // Testing dependencies
   testImplementation TestLibraries.junit
+  testImplementation TestLibraries.assertjCore
+  testImplementation TestLibraries.mockitoKotlin
+  testImplementation TestLibraries.mockitoInline
+  testImplementation TestLibraries.lifecycleTesting
 
 }
 

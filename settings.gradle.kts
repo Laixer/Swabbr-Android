@@ -3,6 +3,5 @@ include(
 	":navigation",
     ":common:presentation",
     ":common:network",
-    ":common:cache",
-    ":swabbr"
+    ":common:cache"
 )

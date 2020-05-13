@@ -90,7 +90,8 @@ object Libraries {
 
     const val rxpaper = "com.github.pakoito:RxPaper2:${Versions.rxpaper}"
     const val paperdb = "io.paperdb:paperdb:${Versions.paperdb}"
-    const val moshi = "com.squareup.moshi:moshi:${Versions.moshi}"
+    const val moshi = "com.squareup.moshi:moshi-kotlin:${Versions.moshi}"
+    const val moshiAdapters = "com.squareup.moshi:moshi-adapters:${Versions.moshi}"
     const val moshiConverter = "com.squareup.retrofit2:converter-moshi:${Versions.retrofit}"
     const val loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.okhttp}"
     const val okhttp = "com.squareup.okhttp3:okhttp:${Versions.okhttp}"
