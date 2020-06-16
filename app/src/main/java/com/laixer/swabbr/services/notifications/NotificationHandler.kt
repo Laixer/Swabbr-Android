@@ -3,7 +3,7 @@ package com.laixer.swabbr.services.notifications
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.laixer.swabbr.MainActivity
+import com.laixer.swabbr.presentation.AppActivity
 import com.laixer.swabbr.services.notifications.protocols.BaseNotification
 import com.laixer.swabbr.services.notifications.protocols.V1
 
@@ -11,7 +11,6 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import java.util.Locale
 
 enum class ActionType {
     FOLLOWED_PROFILE_LIVE,
@@ -45,7 +44,7 @@ class NotificationHandler {
     }
 
     fun getIntent(context: Context, notification: BaseNotification?): Intent? {
-        var intent: Intent? = Intent(context, MainActivity::class.java)
+        var intent: Intent? = Intent(context, AppActivity::class.java)
         // Retrieve action from notification payload or null if none exists
         val action = notification?.clickAction
 

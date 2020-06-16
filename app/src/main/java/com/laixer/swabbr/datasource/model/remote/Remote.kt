@@ -1,16 +1,6 @@
 package com.laixer.swabbr.datasource.model.remote
 
-import com.laixer.swabbr.datasource.model.AuthUserEntity
-import com.laixer.swabbr.datasource.model.FollowRequestEntity
-import com.laixer.swabbr.datasource.model.FollowStatusEntity
-import com.laixer.swabbr.datasource.model.LoginEntity
-import com.laixer.swabbr.datasource.model.ReactionEntity
-import com.laixer.swabbr.datasource.model.RegistrationEntity
-import com.laixer.swabbr.datasource.model.SettingsEntity
-import com.laixer.swabbr.datasource.model.UserEntity
-import com.laixer.swabbr.datasource.model.UserStatisticsEntity
-import com.laixer.swabbr.datasource.model.VlogEntity
-import com.laixer.swabbr.datasource.model.VlogListResponse
+import com.laixer.swabbr.datasource.model.*
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.Body
@@ -53,7 +43,7 @@ interface UsersApi {
     @POST("users/update")
     fun update(@Body updatedUser: UserEntity): Single<UserEntity>
 
-    @GET("users/{userId}}/statistics")
+    @GET("users/{userId}/statistics")
     fun getStatistics(@Path("userId") id: UUID): Single<UserStatisticsEntity>
 
     @GET("users/self/statistics")
@@ -62,8 +52,8 @@ interface UsersApi {
 
 interface ReactionsApi {
 
-    @GET("reactions/")
-    fun getReactions(@Query("vlogId") vlogId: UUID): Single<List<ReactionEntity>>
+    @GET("reactions/for_vlog/{vlogId}")
+    fun getReactions(@Path("vlogId") vlogId: UUID): Single<ReactionListResponse>
 }
 
 interface FollowApi {

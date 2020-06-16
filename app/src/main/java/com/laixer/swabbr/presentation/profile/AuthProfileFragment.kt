@@ -7,7 +7,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -18,6 +17,7 @@ import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.UnauthenticatedException
 import com.laixer.swabbr.injectFeature
+import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.UserItem
@@ -26,13 +26,13 @@ import kotlinx.android.synthetic.main.fragment_auth_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.no_vlogs_text
 import kotlinx.android.synthetic.main.fragment_profile.swipeRefreshLayout
 import kotlinx.android.synthetic.main.include_user_info.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.UUID
 
-class AuthProfileFragment : Fragment() {
+class AuthProfileFragment : AuthFragment() {
 
-    private val profileVm: ProfileViewModel by viewModel()
-    private val authVm: AuthViewModel by viewModel()
+    private val profileVm: ProfileViewModel by sharedViewModel()
+    private val authVm: AuthViewModel by sharedViewModel()
     private var userId: UUID? = null
     private val snackBar by lazy {
         Snackbar.make(swipeRefreshLayout, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)

@@ -1,70 +1,58 @@
 package com.laixer.swabbr.presentation
 
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.navigation.NavController
-import androidx.navigation.ui.setupActionBarWithNavController
-import com.laixer.presentation.Resource
-import com.laixer.swabbr.MainActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.auth.AuthViewModel
-import com.laixer.swabbr.presentation.model.AuthUserItem
 import kotlinx.android.synthetic.main.activity_app.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AppActivity : AppCompatActivity() {
 
-    private val vm: AuthViewModel by viewModel()
-    private var currentNavController: LiveData<NavController>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         injectFeature()
 
+        checkPlayServices()
+
         setContentView(R.layout.activity_app)
         setSupportActionBar(toolbar)
 
-        vm.authenticatedUser.observe(this, Observer { checkAuthentication(it) })
-
-        val navGraphIds = listOf(
-            R.navigation.nav_graph_dashboard,
-            R.navigation.nav_graph_search,
-            R.navigation.nav_graph_vlogs,
-            R.navigation.nav_graph_profile
-        )
         // Setup the bottom navigation view with a list of navigation graphs
-        val controller = bottom_nav.setupWithNavController(
-            navGraphIds = navGraphIds,
-            fragmentManager = supportFragmentManager,
-            containerId = R.id.nav_host_container,
-            intent = intent
-        )
-        // Whenever the selected controller changes, setup the action bar.
-        controller.observe(this, Observer { navController ->
-            setupActionBarWithNavController(navController)
-        })
-        currentNavController = controller
-    }
-
-    fun checkAuthentication(res: Resource<AuthUserItem?>) {
-        if (res.data == null) {
-            Intent(this, MainActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }.also {
-                startActivity(it)
-                finish()
-            }
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_container) as NavHostFragment
+        nav_host_container.post {
+            NavigationUI.setupWithNavController(bottom_nav, navHostFragment.navController)
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean = currentNavController?.value?.navigateUp() ?: false
+    /**
+     * Check the device to make sure it has the Google Play Services APK. If
+     * it doesn't, display a dialog box that enables  users to download the APK from
+     * the Google Play Store or enable it in the device's system settings.
+     */
+    private fun checkPlayServices(): Boolean {
+        val apiAvailability = GoogleApiAvailability.getInstance()
+        val resultCode = apiAvailability.isGooglePlayServicesAvailable(this)
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST).show()
+            } else {
+                Log.i(TAG, getString(R.string.google_play_unsupported_device))
+                Toast.makeText(this, getString(R.string.google_play_unsupported_device), Toast.LENGTH_SHORT).show()
+            }
+            return false
+        }
+        return true
+    }
 
     companion object {
         private const val TAG = "AppActivity"
+        private const val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
     }
 }

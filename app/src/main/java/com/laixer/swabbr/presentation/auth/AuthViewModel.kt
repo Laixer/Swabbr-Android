@@ -7,18 +7,17 @@ import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.usecase.AuthUseCase
-import com.laixer.swabbr.presentation.model.AuthUserItem
-import com.laixer.swabbr.presentation.model.LoginItem
-import com.laixer.swabbr.presentation.model.RegistrationItem
-import com.laixer.swabbr.presentation.model.mapToDomain
-import com.laixer.swabbr.presentation.model.mapToPresentation
+import com.laixer.swabbr.presentation.model.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import retrofit2.Response
 
 class AuthViewModel constructor(private val authUseCase: AuthUseCase) : ViewModel() {
 
     val authenticatedUser = MutableLiveData<Resource<AuthUserItem?>>()
     private val compositeDisposable = CompositeDisposable()
+
+    fun isLoggedIn(): Boolean = authenticatedUser.value?.data?.isLoggedIn() ?: false
 
     fun get() =
         compositeDisposable.add(authUseCase

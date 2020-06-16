@@ -11,5 +11,5 @@ class ReactionRemoteDataSourceImpl constructor(
     val api: ReactionsApi
 ) : ReactionRemoteDataSource {
 
-    override fun get(vlogId: UUID): Single<List<Reaction>> = api.getReactions(vlogId).map { it.mapToDomain() }
+    override fun get(vlogId: UUID): Single<List<Reaction>> = api.getReactions(vlogId).map { it.reactions.mapToDomain() }
 }

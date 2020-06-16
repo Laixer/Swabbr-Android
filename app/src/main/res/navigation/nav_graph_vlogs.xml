@@ -10,6 +10,10 @@
         android:name="com.laixer.swabbr.presentation.vloglist.VlogListFragment"
         android:label="@string/vlogs"
         tools:layout="@layout/fragment_vlog_list">
+        <deepLink
+            android:id="@+id/deepLink"
+            android:autoVerify="true"
+            app:uri="profile/{vlogId}" />
         <action
             android:id="@+id/action_view_profile"
             app:destination="@id/vlogs_profile_dest" />

@@ -3,6 +3,7 @@ package com.laixer.swabbr.data.datasource.cache
 import com.laixer.cache.ReactiveCache
 import com.laixer.swabbr.data.datasource.UserCacheDataSource
 import com.laixer.swabbr.domain.model.User
+import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.*
 
@@ -10,10 +11,8 @@ class UserCacheDataSourceImpl constructor(
     private val cache: ReactiveCache<User>
 ) : UserCacheDataSource {
 
-    override fun set(list: List<User>): Single<List<User>> {
-        list.map { set(it) }
-        return getAll()
-    }
+    override fun set(list: List<User>): Single<List<User>> =
+        Observable.fromIterable(list.map { set(it) }).flatMapSingle { it }.toList()
 
     override fun getAll(): Single<List<User>> = cache.loadAll()
 

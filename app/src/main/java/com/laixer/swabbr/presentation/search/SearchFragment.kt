@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -15,13 +14,14 @@ import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
+import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.UserItem
 import kotlinx.android.synthetic.main.fragment_search.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
+class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
 
-    private val vm: SearchViewModel by viewModel()
+    private val vm: SearchViewModel by sharedViewModel()
     private var lastQuery = ""
     private var searchAdapter: SearchAdapter? = null
     private var currentPage = 1
@@ -83,7 +83,10 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
                 when (state) {
                     ResourceState.LOADING -> startRefreshing()
                     ResourceState.SUCCESS -> stopRefreshing()
-                    ResourceState.ERROR -> stopRefreshing()
+                    ResourceState.ERROR -> {
+                        stopRefreshing()
+                        super.onError(resource)
+                    }
                 }
             }
             data?.let {

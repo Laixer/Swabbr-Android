@@ -2,7 +2,11 @@ package com.laixer.swabbr
 
 import android.app.Application
 import android.content.res.Configuration
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.laixer.cache.CacheLibrary
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin

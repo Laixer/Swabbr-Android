@@ -8,8 +8,14 @@ import java.util.UUID
 data class ReactionEntity(
     @field:Json(name = "id") val id: String,
     @field:Json(name = "userId") val userId: String,
-    @field:Json(name = "vlogId") val vlogId: String,
-    @field:Json(name = "datePosted") val datePosted: String
+    @field:Json(name = "targetVlogId") val vlogId: String,
+    @field:Json(name = "createDate") val datePosted: String,
+    @field:Json(name = "isPrivate") val boolean: Boolean
+)
+
+data class ReactionListResponse(
+    @field:Json(name = "reactionCount") val count: Int,
+    @field:Json(name = "reactions") val reactions: List<ReactionEntity>
 )
 
 fun ReactionEntity.mapToDomain(): Reaction = Reaction(
@@ -23,7 +29,8 @@ fun Reaction.mapToData(): ReactionEntity = ReactionEntity(
     id.toString(),
     userId.toString(),
     vlogId.toString(),
-    datePosted.toInstant().toString()
+    datePosted.toInstant().toString(),
+    false
 )
 
 fun List<ReactionEntity>.mapToDomain(): List<Reaction> = map { it.mapToDomain() }

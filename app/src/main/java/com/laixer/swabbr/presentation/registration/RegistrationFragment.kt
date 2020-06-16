@@ -34,12 +34,13 @@ import com.laixer.swabbr.presentation.model.AuthUserItem
 import com.laixer.swabbr.presentation.model.LoginItem
 import com.laixer.swabbr.presentation.model.RegistrationItem
 import kotlinx.android.synthetic.main.fragment_registration.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.Instant
 import java.time.ZoneId
 
 class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
-    private val vm: AuthViewModel by viewModel()
+    private val vm: AuthViewModel by sharedViewModel()
     private var selectedBitmap: Bitmap? = null
     private val firebaseInstanceId by lazy { FirebaseInstanceId.getInstance().id }
 

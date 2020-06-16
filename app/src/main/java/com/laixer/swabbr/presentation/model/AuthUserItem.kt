@@ -14,3 +14,5 @@ fun AuthUser.mapToPresentation(): AuthUserItem =
         this.userSettings.mapToPresentation(),
         this.user.mapToPresentation()
     )
+
+fun AuthUserItem.isLoggedIn(): Boolean = this.accessToken != null

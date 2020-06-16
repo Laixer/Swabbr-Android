@@ -32,7 +32,6 @@ class FirebaseService : FirebaseMessagingService() {
         // Check if message contains a notification payload.
         remoteMessage.data.let {
             val notification = notificationHandler.parse(remoteMessage.data)
-
             sendNotification(notification)
         }
     }

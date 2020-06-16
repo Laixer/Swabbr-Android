@@ -5,14 +5,11 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.iid.FirebaseInstanceId
@@ -27,7 +24,6 @@ import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.model.AuthUserItem
 import com.laixer.swabbr.presentation.model.LoginItem
 import kotlinx.android.synthetic.main.fragment_login.*
-import kotlinx.android.synthetic.main.include_user_info.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
@@ -63,7 +59,6 @@ class LoginFragment : Fragment() {
             findNavController().navigate(LoginFragmentDirections.actionRegister(), extras)
         }
 
-
         vm.authenticatedUser.observe(viewLifecycleOwner, Observer { login(it) })
     }
 
@@ -75,7 +70,7 @@ class LoginFragment : Fragment() {
             ResourceState.SUCCESS -> {
                 res.data?.let {
                     progressBar.gone()
-                    proceed()
+                    activity?.finish()
                 } ?: run {
                     progressBar.gone()
                     Log.e(TAG, res.message!!)
@@ -91,8 +86,6 @@ class LoginFragment : Fragment() {
             }
         }
     }
-
-    private fun proceed() = Navigation.findNavController(requireView()).navigate(R.id.mainActivity)
 
     private fun addListeners() {
         val watcher: TextWatcher = object : TextWatcher {

@@ -10,6 +10,10 @@
         android:name="com.laixer.swabbr.presentation.search.SearchFragment"
         android:label="@string/search"
         tools:layout="@layout/fragment_search">
+        <deepLink
+            android:id="@+id/deepLink"
+            android:autoVerify="true"
+            app:uri="search" />
         <action
             android:id="@+id/action_view_profile"
             app:destination="@id/search_profile_dest" />

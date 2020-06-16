@@ -17,19 +17,22 @@ import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.model.FollowStatus
 import com.laixer.swabbr.injectFeature
+import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.FollowStatusItem
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.include_user_info.*
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.UUID
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : AuthFragment() {
 
     private val args by navArgs<ProfileFragmentArgs>()
-    private val profileVm: ProfileViewModel by viewModel()
+    private val profileVm: ProfileViewModel by sharedViewModel()
 
     private val userId by lazy { UUID.fromString(args.userId) }
     private val snackBar by lazy {

@@ -17,15 +17,18 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.model.FollowMode
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AppActivity
+import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.model.AuthUserItem
 import com.laixer.swabbr.presentation.model.SettingsItem
 import kotlinx.android.synthetic.main.fragment_settings.*
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsFragment : Fragment() {
-    private val vm: SettingsViewModel by viewModel()
-    private val authVm: AuthViewModel by viewModel()
+class SettingsFragment : AuthFragment() {
+    private val vm: SettingsViewModel by sharedViewModel()
+    private val authVm: AuthViewModel by sharedViewModel()
 
     private var settings: SettingsItem? = null
     private var savedSettings: SettingsItem? = null
@@ -90,7 +93,6 @@ class SettingsFragment : Fragment() {
             }
             ResourceState.SUCCESS -> {
                 progressBar.gone()
-                (activity as AppActivity).checkAuthentication(res)
             }
             ResourceState.ERROR -> {
                 Toast.makeText(requireContext(), res.message, Toast.LENGTH_SHORT).show()

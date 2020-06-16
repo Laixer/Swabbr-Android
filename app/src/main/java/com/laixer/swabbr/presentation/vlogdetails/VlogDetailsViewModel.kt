@@ -25,13 +25,17 @@ class VlogDetailsViewModel constructor(
     private val compositeDisposable = CompositeDisposable()
 
     fun getVlogs(ids: List<UUID>, refresh: Boolean = false) =
-        compositeDisposable.add(usersVlogsUseCase.get(ids, refresh).doOnSubscribe { vlogs.setLoading() }
+        compositeDisposable.add(
+            usersVlogsUseCase.get(ids, refresh)
+            .doOnSubscribe { vlogs.setLoading() }
             .subscribeOn(Schedulers.io()).map { it.mapToPresentation() }
             .subscribe({ vlogs.setSuccess(it) }, { vlogs.setError(it.message) })
         )
 
     fun getReactions(vlogId: UUID, refresh: Boolean = false) =
-        compositeDisposable.add(reactionsUseCase.get(vlogId, refresh).doOnSubscribe { reactions.setLoading() }
+        compositeDisposable.add(
+            reactionsUseCase.get(vlogId, refresh)
+            .doOnSubscribe { reactions.setLoading() }
             .subscribeOn(Schedulers.io()).map { it.mapToPresentation() }
             .subscribe({ reactions.setSuccess(it) }, { reactions.setError(it.message) })
         )

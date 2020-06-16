@@ -273,8 +273,15 @@ object Notifications {
         userAgent = "agent",
         data = null
     )
-    val followed_profile_live = baseNotification.apply {
-        clickAction = ActionType.FOLLOWED_PROFILE_LIVE
+    val followed_profile_live = BaseNotification(
+        protocol = "swabbr",
+        protocolVersion = "1.0",
+        dataType = "test",
+        dataTypeVersion = "1.0",
+        clickAction = ActionType.FOLLOWED_PROFILE_LIVE,
+        contentType = "json",
+        timestamp = "2020-05-11T12:01:36.440Z",
+        userAgent = "agent",
         data = V1.FollowedProfileLivePayload(
             liveUserId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             liveLivestreamId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -282,43 +289,73 @@ object Notifications {
             title = "A followed profile has gone live!",
             message = "Click here to view the livestream"
         )
-    }
-    val followed_profile_vlog_posted = baseNotification.apply {
-        clickAction = ActionType.FOLLOWED_PROFILE_VLOG_POSTED
+    )
+    val followed_profile_vlog_posted = BaseNotification(
+        protocol = "swabbr",
+        protocolVersion = "1.0",
+        dataType = "test",
+        dataTypeVersion = "1.0",
+        clickAction = ActionType.FOLLOWED_PROFILE_VLOG_POSTED,
+        contentType = "json",
+        timestamp = "2020-05-11T12:01:36.440Z",
+        userAgent = "agent",
         data = V1.FollowedProfileVlogPostedPayload(
             vlogId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             vlogOwnerUserId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            title = "A followed profile has gone live!",
-            message = "Click here to view the livestream"
+            title = "Someone posted a new vlog!",
+            message = "Click here to view the vlog"
         )
-    }
-    val vlog_record_request = baseNotification.apply {
-        clickAction = ActionType.VLOG_RECORD_REQUEST
+    )
+
+    val vlog_record_request = BaseNotification(
+        protocol = "swabbr",
+        protocolVersion = "1.0",
+        dataType = "test",
+        dataTypeVersion = "1.0",
+        clickAction = ActionType.VLOG_RECORD_REQUEST,
+        contentType = "json",
+        timestamp = "2020-05-11T12:01:36.440Z",
+        userAgent = "agent",
         data = V1.VlogRecordRequestPayload(
             requestMoment = "2020-05-11T12:05:53.451Z",
             requestTimeout = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             livestreamId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             vlogId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            title = "A followed profile has gone live!",
-            message = "Click here to view the livestream"
+            title = "You should reecord a new vlog",
+            message = "Click here to start recording"
         )
-    }
-    val vlog_gained_likes = baseNotification.apply {
-        clickAction = ActionType.VLOG_GAINED_LIKES
+    )
+
+    val vlog_gained_likes = BaseNotification(
+        protocol = "swabbr",
+        protocolVersion = "1.0",
+        dataType = "test",
+        dataTypeVersion = "1.0",
+        clickAction = ActionType.VLOG_GAINED_LIKES,
+        contentType = "json",
+        timestamp = "2020-05-11T12:01:36.440Z",
+        userAgent = "agent",
         data = V1.VlogGainedLikesPayload(
             vlogId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             userThatLikedId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            title = "A followed profile has gone live!",
-            message = "Click here to view the livestream"
+            title = "Your vlog gained new likes!",
+            message = "Click to seee who liked your vlog"
         )
-    }
-    val vlog_new_reaction = baseNotification.apply {
-        clickAction = ActionType.VLOG_NEW_REACTION
+    )
+    val vlog_new_reaction = BaseNotification(
+        protocol = "swabbr",
+        protocolVersion = "1.0",
+        dataType = "test",
+        dataTypeVersion = "1.0",
+        clickAction = ActionType.VLOG_NEW_REACTION,
+        contentType = "json",
+        timestamp = "2020-05-11T12:01:36.440Z",
+        userAgent = "agent",
         data = V1.VlogNewReactionPayload(
             vlogId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             reactionId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-            title = "A followed profile has gone live!",
-            message = "Click here to view the livestream"
+            title = "Your vlog has a new reaction",
+            message = "Click to see it!"
         )
-    }
+    )
 }

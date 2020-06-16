@@ -16,15 +16,17 @@ import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
+import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.UserVlogItem
 import kotlinx.android.synthetic.main.fragment_vlog_details.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.UUID
 
-class VlogDetailsFragment : Fragment() {
+class VlogDetailsFragment : AuthFragment() {
 
-    private val vm: VlogDetailsViewModel by viewModel()
+    private val vm: VlogDetailsViewModel by sharedViewModel()
     private var reactionsAdapter: ReactionsAdapter? = null
     private val args by navArgs<VlogDetailsFragmentArgs>()
     private val vlogIds by lazy { args.vlogIds }

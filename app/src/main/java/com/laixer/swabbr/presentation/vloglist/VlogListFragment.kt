@@ -14,15 +14,17 @@ import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
+import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.UserVlogItem
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
 import kotlinx.android.synthetic.main.include_user_info.*
 import kotlinx.android.synthetic.main.include_user_info_reversed.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class VlogListFragment : Fragment() {
+class VlogListFragment : AuthFragment() {
 
-    private val vm: VlogListViewModel by viewModel()
+    private val vm: VlogListViewModel by sharedViewModel()
     private val itemClick: (UserVlogItem) -> Unit = {
         val extras = FragmentNavigatorExtras(
             userUsername to "reversed_userAvatar",

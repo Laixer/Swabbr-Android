@@ -21,8 +21,4 @@
         android:label="@string/register"
         tools:layout="@layout/fragment_registration" />
 
-    <activity
-        android:id="@+id/mainActivity"
-        android:name="com.laixer.swabbr.MainActivity" />
-
 </navigation>
