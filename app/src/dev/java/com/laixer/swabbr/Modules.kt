@@ -56,7 +56,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-private const val BASE_URL = "https://swabbr-backend-development-android.azurewebsites.net/"
+private const val BASE_URL = "https://swabbr-api-development.azurewebsites.net/api/1/"
 
 fun injectFeature() = loadFeature
 

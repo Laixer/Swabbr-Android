@@ -26,12 +26,7 @@ class VlogListFragment : AuthFragment() {
 
     private val vm: VlogListViewModel by sharedViewModel()
     private val itemClick: (UserVlogItem) -> Unit = {
-        val extras = FragmentNavigatorExtras(
-            userUsername to "reversed_userAvatar",
-            userAvatar to "reversed_userAvatar",
-            userName to "reversed_userName"
-        )
-        findNavController().navigate(VlogListFragmentDirections.actionViewVlog(arrayOf(it.vlogId.toString())), extras)
+        findNavController().navigate(VlogListFragmentDirections.actionViewVlog(arrayOf(it.vlogId.toString()), it.vlogId.toString()))
     }
     private val profileClick: (UserVlogItem) -> Unit = {
         findNavController().navigate(VlogListFragmentDirections.actionViewProfile(it.userId.toString()))

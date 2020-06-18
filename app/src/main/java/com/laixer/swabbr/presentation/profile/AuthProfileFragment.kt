@@ -15,10 +15,8 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
-import com.laixer.swabbr.UnauthenticatedException
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
-import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.VlogItem
@@ -27,16 +25,18 @@ import kotlinx.android.synthetic.main.fragment_profile.no_vlogs_text
 import kotlinx.android.synthetic.main.fragment_profile.swipeRefreshLayout
 import kotlinx.android.synthetic.main.include_user_info.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.util.UUID
 
 class AuthProfileFragment : AuthFragment() {
 
     private val profileVm: ProfileViewModel by sharedViewModel()
-    private val authVm: AuthViewModel by sharedViewModel()
-    private var userId: UUID? = null
     private val snackBar by lazy {
         Snackbar.make(swipeRefreshLayout, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)
-            .setAction(getString(R.string.retry)) { userId?.let { profileVm.getProfileVlogs(it, refresh = true) } }
+            .setAction(getString(R.string.retry)) {
+                profileVm.getProfileVlogs(
+                    authenticatedUser.user.id,
+                    refresh = true
+                )
+            }
     }
     private var profileVlogsAdapter: ProfileVlogsAdapter? = null
 
@@ -53,23 +53,29 @@ class AuthProfileFragment : AuthFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
+        updateProfile(authenticatedUser.user)
 
-        authVm.run {
-            authenticatedUser.observe(viewLifecycleOwner, Observer { res ->
-                with(res) {
-                    when (state) {
-                        ResourceState.LOADING -> {
-                            return@Observer
-                        }
-                        ResourceState.SUCCESS -> res.data?.let {
-                            userId = it.user.id
-                            setup(it.user, savedInstanceState)
-                        }
-                        ResourceState.ERROR -> throw UnauthenticatedException("User is not authenticated")
-                    }
-                }
-            })
-            get()
+        profileVlogsAdapter = ProfileVlogsAdapter(requireContext(), onClick)
+
+        profilevlogsRecyclerView.apply {
+            isNestedScrollingEnabled = false
+            adapter = profileVlogsAdapter
+        }
+
+        profileVm.run {
+            profileVlogs.observe(viewLifecycleOwner, Observer { updateProfileVlogs(it) })
+            profile.observe(viewLifecycleOwner, Observer { updateProfile(it.data) })
+            swipeRefreshLayout.setOnRefreshListener {
+                getProfile(authenticatedUser.user.id, refresh = true)
+                getProfileVlogs(authenticatedUser.user.id, refresh = true)
+            }
+        }
+
+        if (savedInstanceState == null) {
+            profileVm.run {
+                getProfileVlogs(authenticatedUser.user.id, refresh = true)
+                getProfile(authenticatedUser.user.id, refresh = true)
+            }
         }
     }
 
@@ -80,40 +86,19 @@ class AuthProfileFragment : AuthFragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun setup(user: UserItem, savedInstanceState: Bundle?) {
-        profileVlogsAdapter = ProfileVlogsAdapter(requireContext(), onClick)
-        if (savedInstanceState == null) {
-            profileVm.run {
-                with(user.id) {
-                    getProfileVlogs(this)
-                }
-            }
-        }
-
-        profilevlogsRecyclerView.run {
-            isNestedScrollingEnabled = false
-            adapter = profileVlogsAdapter
-        }
-
-        profileVm.run {
-            profileVlogs.observe(viewLifecycleOwner, Observer { updateProfileVlogs(it) })
-            swipeRefreshLayout.setOnRefreshListener {
-                getProfileVlogs(user.id, refresh = true)
-            }
-        }
-        updateProfile(user)
-    }
-
-    private val onClick: (VlogItem) -> Unit = {
-        findNavController().navigate(
-            AuthProfileFragmentDirections.actionViewVlog(
-                arrayOf(it.id.toString())
+    private val onClick: (VlogItem) -> Unit = { vlogItem ->
+        profileVm.profileVlogs.value?.data?.let { list ->
+            findNavController().navigate(
+                AuthProfileFragmentDirections.actionViewVlog(
+                    list.map { it.id.toString() }.toTypedArray(),
+                    vlogItem.id.toString()
+                )
             )
-        )
+        }
     }
 
-    private fun updateProfile(userItem: UserItem?) {
-        userItem?.let {
+    private fun updateProfile(item: UserItem?) {
+        item?.let {
             userAvatar.loadAvatar(it.profileImage, it.id)
             userUsername.text = requireContext().getString(R.string.nickname, it.nickname)
             userName.text = requireContext().getString(R.string.full_name, it.firstName, it.lastName)
@@ -125,16 +110,19 @@ class AuthProfileFragment : AuthFragment() {
         with(swipeRefreshLayout) {
             when (state) {
                 ResourceState.LOADING -> startRefreshing()
-                ResourceState.SUCCESS -> stopRefreshing()
-                ResourceState.ERROR -> stopRefreshing()
+                ResourceState.SUCCESS -> {
+                    stopRefreshing()
+                    data?.let {
+                        no_vlogs_text.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+                        profileVlogsAdapter?.submitList(it)
+                    }
+                }
+                ResourceState.ERROR -> {
+                    stopRefreshing()
+                    message?.let { snackBar.show() }
+                }
             }
         }
-
-        data?.let {
-            no_vlogs_text.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
-            profileVlogsAdapter?.submitList(it)
-        }
-        message?.let { snackBar.show() }
     }
 
     override fun onDestroyView() {

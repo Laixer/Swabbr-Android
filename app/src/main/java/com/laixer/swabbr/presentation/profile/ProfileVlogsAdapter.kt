@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.item_list_profilevlog.view.view_count
 import kotlinx.android.synthetic.main.item_list_profilevlog.view.vlogDuration
 import kotlinx.android.synthetic.main.item_list_profilevlog.view.vlogPostDate
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
+import java.net.URL
 
 class ProfileVlogsAdapter(
     private val context: Context, private val onClick: (VlogItem)
@@ -34,8 +35,7 @@ class ProfileVlogsAdapter(
         RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_profilevlog)) {
 
         fun bind(item: VlogItem) {
-            val url = item.url.toString().replace("http:", "https:")
-
+            val url = item.url
             Glide.with(context)
                 .load(url)
                 .into(itemView.thumbnail)

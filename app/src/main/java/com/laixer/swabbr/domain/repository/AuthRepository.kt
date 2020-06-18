@@ -9,7 +9,7 @@ import io.reactivex.Single
 
 interface AuthRepository {
 
-    fun getAuthenticatedUser(): Single<AuthUser>
+    fun getAuthenticatedUser(refresh: Boolean): Single<AuthUser>
 
     fun login(login: Login, remember: Boolean = true): Single<AuthUser>
 

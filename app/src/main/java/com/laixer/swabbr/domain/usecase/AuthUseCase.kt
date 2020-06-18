@@ -11,7 +11,7 @@ class AuthUseCase constructor(
     private val authRepository: AuthRepository
 ) {
 
-    fun getAuthenticatedUser(): Single<AuthUser> = authRepository.getAuthenticatedUser()
+    fun getAuthenticatedUser(refresh: Boolean): Single<AuthUser> = authRepository.getAuthenticatedUser(refresh)
 
     fun login(login: Login, remember: Boolean = true): Single<AuthUser> = authRepository.login(login, remember)
 

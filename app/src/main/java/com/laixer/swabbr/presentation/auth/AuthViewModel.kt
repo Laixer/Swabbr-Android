@@ -19,9 +19,9 @@ class AuthViewModel constructor(private val authUseCase: AuthUseCase) : ViewMode
 
     fun isLoggedIn(): Boolean = authenticatedUser.value?.data?.isLoggedIn() ?: false
 
-    fun get() =
+    fun get(refresh: Boolean = false) =
         compositeDisposable.add(authUseCase
-            .getAuthenticatedUser()
+            .getAuthenticatedUser(refresh)
             .doOnSubscribe { authenticatedUser.setLoading() }
             .subscribeOn(Schedulers.io())
             .subscribe(

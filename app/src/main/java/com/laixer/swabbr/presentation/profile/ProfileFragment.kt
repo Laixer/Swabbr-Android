@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
@@ -24,16 +22,13 @@ import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.include_user_info.*
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.UUID
 
 class ProfileFragment : AuthFragment() {
 
     private val args by navArgs<ProfileFragmentArgs>()
     private val profileVm: ProfileViewModel by sharedViewModel()
-
     private val userId by lazy { UUID.fromString(args.userId) }
     private val snackBar by lazy {
         Snackbar.make(swipeRefreshLayout, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)
@@ -104,14 +99,10 @@ class ProfileFragment : AuthFragment() {
         }
     }
 
-    private val onClick: (VlogItem) -> Unit = {
-        val extras = FragmentNavigatorExtras(
-            userUsername to "reversed_userUsername",
-            userAvatar to "reversed_userAvatar",
-            userName to "reversed_userName"
-
-        )
-        findNavController().navigate(ProfileFragmentDirections.actionViewVlog(arrayOf(it.id.toString())), extras)
+    private val onClick: (VlogItem) -> Unit = {vlogItem ->
+        profileVm.profileVlogs.value?.data?.let {
+            findNavController().navigate(ProfileFragmentDirections.actionViewVlog(it.map { item -> item.id.toString() }.toTypedArray(), vlogItem.id.toString()))
+        }
     }
 
     private fun updateProfile(res: Resource<UserItem>) = res.run {

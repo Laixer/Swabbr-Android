@@ -15,7 +15,7 @@ class VlogRemoteDataSourceImpl constructor(
             .map { it.vlogs.mapToDomain() }
 
     override fun get(vlogId: UUID): Single<Vlog> = api.getVlog(vlogId)
-        .map { it.mapToDomain() }
+        .map { it.vlog.mapToDomain() }
 
     override fun getRecommendedVlogs(): Single<List<Vlog>> = api.getRecommendedVlogs()
         .map { it.vlogs.mapToDomain () }

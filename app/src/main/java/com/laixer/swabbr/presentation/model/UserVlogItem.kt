@@ -15,8 +15,12 @@ data class UserVlogItem(
     val profileImage: String?,
     val vlogId: UUID,
     val dateStarted: ZonedDateTime,
-    val url: URL
-) : Serializable
+    val views: Int
+) : Serializable {
+    val url = with(idList.random()) {
+        URL("https://assets.mixkit.co/videos/$this/$this-720.mp4")
+    }
+}
 
 fun Pair<User, Vlog>.mapToPresentation(): UserVlogItem = UserVlogItem(
     this.first.id,
@@ -26,7 +30,7 @@ fun Pair<User, Vlog>.mapToPresentation(): UserVlogItem = UserVlogItem(
     this.first.profileImage,
     this.second.id,
     this.second.dateStarted,
-    this.second.url
+    this.second.views
 )
 
 fun List<Pair<User, Vlog>>.mapToPresentation(): List<UserVlogItem> = map { it.mapToPresentation() }

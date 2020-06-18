@@ -9,6 +9,7 @@ import com.laixer.swabbr.domain.model.AuthUser
 import com.laixer.swabbr.domain.model.Login
 import com.laixer.swabbr.domain.model.Registration
 import com.laixer.swabbr.domain.model.Settings
+import com.laixer.swabbr.domain.model.User
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -35,6 +36,8 @@ class AuthRemoteDataSourceImpl constructor(
         }
 
     override fun logout(): Completable = authApi.logout()
+
+    override fun getAuthenticatedUser(): Single<User> = authApi.self().map { it.mapToDomain() }
 
     override fun getSettings(): Single<Settings> = settingsApi.get()
         .map { it.mapToDomain() }

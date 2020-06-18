@@ -15,7 +15,12 @@ class AuthRepositoryImpl constructor(
     private val authRemoteDataSource: AuthRemoteDataSource
 ) : AuthRepository {
 
-    override fun getAuthenticatedUser(): Single<AuthUser> = authCacheDataSource.get()
+    override fun getAuthenticatedUser(refresh: Boolean): Single<AuthUser> = when (refresh) {
+        true -> authRemoteDataSource.getAuthenticatedUser()
+            .flatMap { user -> authCacheDataSource.get().map { it.apply { it.user = user } } }
+            .flatMap { authCacheDataSource.set(it) }
+        false -> authCacheDataSource.get().onErrorResumeNext(getAuthenticatedUser(true))
+    }
 
     override fun login(login: Login, remember: Boolean): Single<AuthUser> =
         authRemoteDataSource.login(login)
@@ -40,4 +45,3 @@ class AuthRepositoryImpl constructor(
             .flatMap { authCacheDataSource.set(it) }
             .map { it.userSettings }
 }
-

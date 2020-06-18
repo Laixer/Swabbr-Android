@@ -34,6 +34,9 @@
         <argument
             android:name="vlogIds"
             app:argType="string[]" />
+        <argument
+            android:name="selectedId"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -67,6 +70,9 @@
         <argument
             android:name="vlogIds"
             app:argType="string[]" />
+        <argument
+            android:name="selectedId"
+            app:argType="string" />
     </fragment>
 
 </navigation>

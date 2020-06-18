@@ -13,8 +13,6 @@ class UserRemoteDataSourceImpl constructor(
 ) : UserRemoteDataSource {
     override fun get(userId: UUID): Single<User> = api.getUser(userId).map { it.mapToDomain() }
 
-    override fun getSelf(): Single<User> = api.self().map { it.mapToDomain() }
-
     override fun search(query: String?, page: Int, itemsPerPage: Int): Single<List<User>> = api
         .search(query, page, itemsPerPage)
         .map { it.mapToDomain() }

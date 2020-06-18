@@ -19,7 +19,7 @@ interface VlogsApi {
     fun getUserVlogs(@Path("userId") userId: UUID): Single<VlogListResponse>
 
     @GET("vlogs/{vlogId}")
-    fun getVlog(@Path("vlogId") vlogId: UUID): Single<VlogEntity>
+    fun getVlog(@Path("vlogId") vlogId: UUID): Single<VlogResponse>
 
     @GET("vlogs/recommended")
     fun getRecommendedVlogs(): Single<VlogListResponse>
@@ -36,9 +36,6 @@ interface UsersApi {
         @Query("page") page: Int = 1,
         @Query("itemsPerPage") itemsPerPage: Int = 50
     ): Single<List<UserEntity>>
-
-    @POST("users/self")
-    fun self(): Single<UserEntity>
 
     @POST("users/update")
     fun update(@Body updatedUser: UserEntity): Single<UserEntity>
@@ -98,6 +95,10 @@ interface SettingsApi {
 }
 
 interface AuthApi {
+
+    @GET("users/self")
+    fun self(): Single<UserEntity>
+
     @POST("authentication/login")
     @Headers("No-Authentication: true")
     fun login(@Body login: LoginEntity): Single<AuthUserEntity>
