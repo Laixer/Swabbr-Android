@@ -7,7 +7,7 @@ import kotlinx.coroutines.Job
  */
 interface ILiveVideoBroadcaster {
 
-    fun initializeCamera(): Job
+    fun initializeCamera()
 
     fun release();
 
@@ -17,6 +17,12 @@ interface ILiveVideoBroadcaster {
      * open the front camera, it behaves same with the front camera
      */
     fun changeCamera();
+
+    fun canChangeCamera(): Boolean
+
+    fun toggleTorch()
+
+    fun canToggleTorch(): Boolean
 
     /**
      *

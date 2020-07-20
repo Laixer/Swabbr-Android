@@ -12,11 +12,7 @@ import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.Surface
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.FileProvider
@@ -38,9 +34,7 @@ import java.io.File
 import java.io.Serializable
 import java.net.ConnectException
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 
 open class StreamingFragment : Fragment() {
     private val args: StreamingFragmentArgs by navArgs()
@@ -71,7 +65,20 @@ open class StreamingFragment : Fragment() {
      * Setup a persistent [Surface] for the recorder so we can use it as an output target for the
      * camera session without preparing the recorder
      */
-    private val recorderSurface: Surface by lazy { MediaCodec.createPersistentInputSurface() }
+    private val recorderSurface: Surface by lazy {
+        // Get a persistent Surface from MediaCodec, don't forget to release when done
+        val surface: Surface = MediaCodec.createPersistentInputSurface()
+
+        // Prepare and release a dummy MediaRecorder with our new surface
+        // Required to allocate an appropriately sized buffer before passing the Surface as the
+        //  output target to the capture session
+        createRecorder(surface).apply {
+            prepare()
+            release()
+        }
+
+        surface
+    }
 
     /** File where the recording will be saved */
     private val outputFile: File by lazy { createFile(requireContext(), "mp4") }
@@ -96,14 +103,19 @@ open class StreamingFragment : Fragment() {
             capture_button.isEnabled = false
             capture_button.setOnClickListener { stop() }
 
-            timer_view.addEventAt(DEFAULT_MINIMUM_RECORD_TIME_MINUTES, DEFAULT_MINIMUM_RECORD_TIME_SECONDS) {
+            enableStopProgressBar.max =
+                ((DEFAULT_MINIMUM_RECORD_TIME_MINUTES * 60) + DEFAULT_MINIMUM_RECORD_TIME_SECONDS) * 10
+
+            progress_bar.max =
+                ((DEFAULT_MAXIMUM_RECORD_TIME_MINUTES * 60) + DEFAULT_MAXIMUM_RECORD_TIME_SECONDS) * 10
+
+            timer_view.addProgressBar(enableStopProgressBar) {
                 // Allow broadcast to be stopped
                 capture_button.isEnabled = true
+                enableStopProgressBar.visibility = View.GONE
             }
 
-            timer_view.addEventAt(
-                DEFAULT_MAXIMUM_RECORD_TIME_MINUTES, DEFAULT_MAXIMUM_RECORD_TIME_SECONDS
-            ) {
+            timer_view.addProgressBar(progress_bar) {
                 Toast.makeText(requireContext(), "Time limit reached, stopping broadcast.", Toast.LENGTH_LONG).show()
                 stop()
             }
@@ -123,61 +135,23 @@ open class StreamingFragment : Fragment() {
             recorder.apply {
                 // Sets output orientation based on current sensor value at start time
                 relativeOrientation.value?.let { setOrientationHint(it) }
-                prepare()
+                recorder.prepare()
             }
 
-            mLiveVideoBroadcaster = LiveVideoBroadcaster(requireActivity(), surface_view, true, recorderSurface,
-                object : CameraDevice.StateCallback() {
-                    override fun onOpened(camera: CameraDevice) {
-                        try {
-                            this@StreamingFragment.lifecycleScope.launch(Dispatchers.Main) {
-                                capture_button.isEnabled = false
-                                capture_button.visibility = View.VISIBLE
-                                timer_view.text = getString(R.string.connecting)
-                                // Used to rotate the output media to match device orientation
-                                relativeOrientation.apply {
-                                    observe(viewLifecycleOwner, Observer { orientation ->
-                                        Log.d(TAG, "Orientation changed: $orientation")
-                                    })
-                                }
+            mLiveVideoBroadcaster = LiveVideoBroadcaster(requireActivity(), surface_view, true, cameraCallback)
 
-                            }
+            if (mLiveVideoBroadcaster.canChangeCamera()) {
+                switch_camera.visibility = View.VISIBLE
+                switch_camera.setOnClickListener { mLiveVideoBroadcaster.changeCamera() }
+            }
 
-                            // mLiveVideoBroadcaster.connect(streamConfig.getUrl())
-                            mLiveVideoBroadcaster.connect(streamConfig.getUrl())
-                        } catch (e: ConnectException) {
-                            Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
-                            // TODO: Retry?
-                        } finally {
-                            if (mLiveVideoBroadcaster.isConnected()) {
-                                // We successfully connected, start countdown to broadcast
-                                start()
-                            } else {
-                                // TODO: Abort
-                                return
-                            }
-                        }
-                    }
+            if (mLiveVideoBroadcaster.canToggleTorch()) {
+                toggle_torch.visibility = View.VISIBLE
+                toggle_torch.setOnClickListener { mLiveVideoBroadcaster.toggleTorch() }
+            }
 
-                    override fun onDisconnected(camera: CameraDevice) {
-                        Log.w(TAG, "Camera ${camera.id} has been disconnected")
-                        Toast.makeText(requireContext(), "Camera ${camera.id} disconnected.", Toast.LENGTH_LONG).show()
-                    }
+            mLiveVideoBroadcaster.initializeCamera()
 
-                    override fun onError(camera: CameraDevice, error: Int) {
-                        val msg = "Camera error: " + when (error) {
-                            ERROR_CAMERA_DEVICE -> "Fatal (device)"
-                            ERROR_CAMERA_DISABLED -> "Device policy"
-                            ERROR_CAMERA_IN_USE -> "Camera in use"
-                            ERROR_CAMERA_SERVICE -> "Fatal (service)"
-                            ERROR_MAX_CAMERAS_IN_USE -> "Maximum cameras in use"
-                            else -> "Unknown"
-                        }
-                        Log.e(TAG, msg)
-                        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
-                    }
-                }
-            )
         }.onDeclined { e ->
             //at least one permission have been declined by the user
             Toast.makeText(requireContext(), "Unable to stream without permissions", Toast.LENGTH_LONG).show()
@@ -185,9 +159,61 @@ open class StreamingFragment : Fragment() {
         }
     }
 
+    private val cameraCallback = object : CameraDevice.StateCallback() {
+        override fun onOpened(camera: CameraDevice) {
+            try {
+                this@StreamingFragment.lifecycleScope.launch(Dispatchers.Main) {
+                    capture_button.isEnabled = false
+                    capture_button.visibility = View.VISIBLE
+
+                    timer_view.text = getString(R.string.connecting)
+                    // Used to rotate the output media to match device orientation
+                    relativeOrientation.apply {
+                        observe(viewLifecycleOwner, Observer { orientation ->
+                            Log.d(TAG, "Orientation changed: $orientation")
+                        })
+                    }
+
+                }
+
+                // mLiveVideoBroadcaster.connect(streamConfig.getUrl())
+                mLiveVideoBroadcaster.connect(streamConfig.getUrl())
+            } catch (e: ConnectException) {
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
+                // TODO: Retry?
+            } finally {
+                if (mLiveVideoBroadcaster.isConnected()) {
+                    // We successfully connected, start countdown to broadcast
+                    start()
+                } else {
+                    // TODO: Abort
+                    return
+                }
+            }
+        }
+
+        override fun onDisconnected(camera: CameraDevice) {
+            Log.w(TAG, "Camera ${camera.id} has been disconnected")
+            Toast.makeText(requireContext(), "Camera ${camera.id} disconnected.", Toast.LENGTH_LONG).show()
+        }
+
+        override fun onError(camera: CameraDevice, error: Int) {
+            val msg = "Camera error: " + when (error) {
+                ERROR_CAMERA_DEVICE -> "Fatal (device)"
+                ERROR_CAMERA_DISABLED -> "Device policy"
+                ERROR_CAMERA_IN_USE -> "Camera in use"
+                ERROR_CAMERA_SERVICE -> "Fatal (service)"
+                ERROR_MAX_CAMERAS_IN_USE -> "Maximum cameras in use"
+                else -> "Unknown"
+            }
+            Log.e(TAG, msg)
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun stop() {
         timer_view.stopTimer()
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch(Dispatchers.Main) {
             // Clear the "keep screen on" flag
             if (mLiveVideoBroadcaster.isConnected()) {
                 mLiveVideoBroadcaster.stopBroadcasting()
@@ -227,7 +253,6 @@ open class StreamingFragment : Fragment() {
 
                 timer_view.text = getString(R.string.zero_time)
                 progress_bar.isIndeterminate = false
-                progress_bar.max = DEFAULT_MAXIMUM_RECORD_TIME_SECONDS
                 timer_view.startTimer(progress_bar)
             }
         }
@@ -298,7 +323,8 @@ open class StreamingFragment : Fragment() {
         setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
         setOutputFile(outputFile.absolutePath)
         setVideoEncodingBitRate(RECORDER_VIDEO_BITRATE)
-        setVideoFrameRate(60)
+        setCaptureRate(30.0)
+        setVideoFrameRate(30)
         setVideoSize(1080, 1920)
         setVideoEncoder(MediaRecorder.VideoEncoder.H264)
         setAudioEncoder(MediaRecorder.AudioEncoder.AAC)

@@ -10,6 +10,7 @@ import android.widget.ProgressBar
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatTextView
 import com.laixer.swabbr.R
+import kotlinx.android.synthetic.main.fragment_login.view.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -18,6 +19,7 @@ class TimerView(context: Context, attrs: AttributeSet?) : AppCompatTextView(cont
     var mTimerStart = 0L
     private var mTimerThread: ScheduledExecutorService? = null
     private var events = ArrayList<Pair<Pair<Int, Int>, () -> Unit>>()
+    private var progressBarList: ArrayList<Pair<ProgressBar, () -> Unit>> = ArrayList()
 
     interface TimerProvider {
         fun getTimecode(): Long
@@ -40,12 +42,17 @@ class TimerView(context: Context, attrs: AttributeSet?) : AppCompatTextView(cont
         }
     }
 
+    fun addProgressBar(progressBar: ProgressBar, onFinish: () -> Unit) {
+        progressBarList.add(Pair(progressBar, onFinish))
+    }
+
     @Synchronized
     fun startTimer(progressbar: ProgressBar, refreshInterval: Long = DEFAULT_REFRESH_INTERVAL) {
         if (mTimerThread != null) return
         if (!::mTimerProvider.isInitialized) mTimerProvider = mDefaultTimerProvider
 
-        progressbar.progress = 0
+        progressBarList.map { it.first.progress = 0 }
+
         text = context.resources.getString(R.string.zero_time)
 
         mTimerStart = System.currentTimeMillis()
@@ -61,7 +68,15 @@ class TimerView(context: Context, attrs: AttributeSet?) : AppCompatTextView(cont
                 text = genTimerDisplay(
                     durationMs, timecodeMs, timecodeSeconds, timecodeMinutes
                 )
-                progressbar.progress = timecodeTotalSeconds.toInt()
+
+                progressBarList.map {
+                    it.first.progress = timecodeMs.toInt() / 100
+                    if (it.first.progress >= it.first.max) {
+                        it.second()
+                    }
+                }
+
+                progressBarList = progressBarList.filter { it.first.progress < it.first.max } as ArrayList
 
                 events.filter { it.first.first == timecodeMinutes && it.first.second == timecodeSeconds }
                     .map { it.second() }
@@ -123,7 +138,7 @@ class TimerView(context: Context, attrs: AttributeSet?) : AppCompatTextView(cont
     }
 
     companion object {
-        const val DEFAULT_REFRESH_INTERVAL = 1000L
+        const val DEFAULT_REFRESH_INTERVAL = 100L
         const val MILLISECONDS_PER_SECOND = 1000L
         const val SECONDS_PER_MINUTE = 60
     }
