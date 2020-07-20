@@ -3,6 +3,7 @@ package com.laixer.swabbr.presentation.auth
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.laixer.presentation.Resource
+import com.laixer.presentation.ResourceState
 import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
@@ -11,13 +12,14 @@ import com.laixer.swabbr.presentation.model.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
+import java.lang.Exception
 
 class AuthViewModel constructor(private val authUseCase: AuthUseCase) : ViewModel() {
 
     val authenticatedUser = MutableLiveData<Resource<AuthUserItem?>>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun isLoggedIn(): Boolean = authenticatedUser.value?.data?.isLoggedIn() ?: false
+    fun isLoggedIn(): Boolean = authenticatedUser.value?.data?.hasValidSession() ?: false
 
     fun get(refresh: Boolean = false) =
         compositeDisposable.add(authUseCase
@@ -29,6 +31,8 @@ class AuthViewModel constructor(private val authUseCase: AuthUseCase) : ViewMode
                 { authenticatedUser.setError(it.message) }
             )
         )
+
+    fun blockingGet(refresh: Boolean = false) = authUseCase.getAuthenticatedUser(refresh).blockingGet()
 
     fun login(login: LoginItem, remember: Boolean = true) =
         compositeDisposable.add(authUseCase

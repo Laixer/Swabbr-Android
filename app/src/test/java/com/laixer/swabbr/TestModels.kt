@@ -47,13 +47,14 @@ object Models {
         userId = userId,
         isPrivate = false,
         dateStarted = ZonedDateTime.parse("2020-03-09T12:33:55.640Z"),
-        url = URL("https://sample-vlog-url.com/")
+        views = 0
     )
     val reaction = Reaction(
         id = reactionId,
         userId = userId,
         vlogId = vlogId,
-        datePosted = ZonedDateTime.parse("2020-03-09T12:34:47.236Z")
+        datePosted = ZonedDateTime.parse("2020-03-09T12:34:47.236Z"),
+        isPrivate = false
     )
     val settings = Settings(
         private = false,
@@ -75,7 +76,7 @@ object Models {
     )
     val registration = Registration(
 //        firstName = "firstname",
-//        lastName = "lastname",
+//        register_lastName = "lastname",
 //        gender = Gender.MALE,
 //        country = "country",
         email = "email@email.com",
@@ -108,7 +109,7 @@ object Items {
     )
     val registration = RegistrationItem(
 //        Models.registration.firstName,
-//        Models.registration.lastName,
+//        Models.registration.register_lastName,
 //        Models.registration.gender,
 //        Models.registration.country,
         Models.registration.email,
@@ -175,14 +176,14 @@ object Items {
         Models.user.profileImage,
         Models.vlog.id,
         Models.vlog.dateStarted,
-        Models.vlog.url
+        Models.vlog.views
     )
     val vlog = VlogItem(
         Models.vlog.id,
         Models.vlog.userId,
-        Models.vlog.url,
         Models.vlog.isPrivate,
-        Models.vlog.dateStarted
+        Models.vlog.dateStarted,
+        Models.vlog.views
     )
 }
 
@@ -211,15 +212,16 @@ object Entities {
     val vlog = VlogEntity(
         Models.vlog.id.toString(),
         Models.vlog.userId.toString(),
-        Models.vlog.url.toString(),
         Models.vlog.isPrivate,
-        Models.vlog.dateStarted.toString()
+        Models.vlog.dateStarted.toString(),
+        Models.vlog.views
     )
     val reaction = ReactionEntity(
         Models.reaction.id.toString(),
         Models.reaction.userId.toString(),
         Models.reaction.vlogId.toString(),
-        Models.reaction.datePosted.toString()
+        Models.reaction.datePosted.toString(),
+        Models.reaction.isPrivate
     )
     val settings = SettingsEntity(
         Models.settings.private,
@@ -246,7 +248,7 @@ object Entities {
     )
     val registration = RegistrationEntity(
 //        Models.registration.firstName,
-//        Models.registration.lastName,
+//        Models.registration.register_lastName,
 //        Models.registration.gender.value,
 //        Models.registration.country,
         Models.registration.email,

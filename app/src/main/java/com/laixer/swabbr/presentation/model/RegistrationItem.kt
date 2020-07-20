@@ -9,7 +9,7 @@ import java.time.ZonedDateTime
 
 data class RegistrationItem(
 //    val firstName: String,
-//    val lastName: String,
+//    val register_lastName: String,
 //    val gender: Gender,
 //    val country: String,
     val email: String,
@@ -25,7 +25,7 @@ data class RegistrationItem(
 
 fun RegistrationItem.mapToDomain(): Registration = Registration(
 //    this.firstName,
-//    this.lastName,
+//    this.register_lastName,
 //    this.gender,
 //    this.country,
     this.email,

@@ -1,0 +1,10 @@
+<resources>
+    <!-- Fragment text -->
+    <string name="login_password">Password</string>
+    <string name="login_signin">Signin</string>
+    <string name="login_usernameEmail">Email</string>
+    <string name="login_register">Register</string>
+    <string name="login_forgot_password">Forgot password?</string>
+    <string name="login_rememberMe">Remember me</string>
+
+</resources>

@@ -1,7 +1,6 @@
 package com.laixer.swabbr.presentation.search
 
 import android.content.Context
-import android.opengl.Visibility
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -20,7 +19,7 @@ class SearchAdapter(val context: Context, val onClick: (UserItem) -> Unit) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
 
-    inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_profile)) {
+    inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_user)) {
 
         fun bind(item: UserItem) {
             itemView.userAvatar.loadAvatar(item.profileImage, item.id)

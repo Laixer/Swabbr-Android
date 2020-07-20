@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/register_dest"
         android:name="com.laixer.swabbr.presentation.registration.RegistrationFragment"
-        android:label="@string/register"
+        android:label="@string/register_registerText"
         tools:layout="@layout/fragment_registration" />
 
 </navigation>

@@ -26,5 +26,4 @@ class AuthCacheDataSourceImpl constructor(
     }
 
     override fun logout(): Completable = cache.delete(key).doOnComplete { memory.delete(key) }
-
 }

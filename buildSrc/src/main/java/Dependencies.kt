@@ -4,16 +4,12 @@ object ApplicationId {
 
 object Modules {
     const val app = ":app"
-    const val navigation = ":navigation"
 
     const val cache = ":common:cache"
     const val network = ":common:network"
-
     const val presentation = ":common:presentation"
 
-    const val swabbr = ":swabbr"
-
-    const val gocodersdk = "com.wowza.gocoder.sdk.android:com.wowza.gocoder.sdk:2.0.0@aar"
+    const val liveVideoBroadcasterSDK = ":liveVideoBroadcasterSDK"
 }
 
 object Releases {
@@ -25,7 +21,7 @@ object Versions {
     const val gradle = "4.0.0-beta04"
 
     const val compileSdk = 29
-    const val minSdk = 26
+    const val minSdk = 24
     const val buildTools = "29.0.3"
 
     const val targetSdk = 29
@@ -76,10 +72,15 @@ object Versions {
     const val swiperefreshlayout = "1.0.0"
     const val viewpager2 = "1.0.0"
     const val constraintlayout = "1.1.3"
+    const val annotation = "1.1.0"
+    const val circleImageView = "3.1.0"
+    const val imagePicker = "1.7.2"
+    const val rtmpClient = "3.1.0"
 }
 
 object Libraries {
     const val kotlin = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
+    const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}"
 
     const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
 
@@ -99,6 +100,7 @@ object Libraries {
     const val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
     const val glideCompiler = "com.github.bumptech.glide:compiler:${Versions.glide}"
 
+    const val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
     const val lifecycleExtensions = "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}"
     const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:${Versions.lifecycle}"
     const val workmanager = "androidx.work:work-runtime-ktx:${Versions.workmanager}"
@@ -106,12 +108,15 @@ object Libraries {
 
     const val koinAndroid = "org.koin:koin-android:${Versions.koin}"
     const val koinViewModel = "org.koin:koin-androidx-viewmodel:${Versions.koin}"
+
+    const val imagePicker = "com.github.dhaval2404:imagepicker:${Versions.imagePicker}"
+    const val circleImageView = "de.hdodenhof:circleimageview:${Versions.circleImageView}"
+    const val rtmpClient = "net.butterflytv.utils:rtmp-client:${Versions.rtmpClient}"
 }
 
 object JetpackLibraries {
     const val ktx = "androidx.core:core-ktx:${Versions.ktx}"
     const val appcompat = "androidx.appcompat:appcompat:${Versions.androidx}"
-    const val design = "com.google.android.material:material:${Versions.androidx}"
     const val cardView = "androidx.cardview:cardview:${Versions.cardview}"
     const val recyclerView = "androidx.recyclerview:recyclerview:${Versions.androidx}"
     const val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintlayout}"
@@ -128,6 +133,7 @@ object GoogleLibraries {
     const val playCore = "com.google.android.play:core:${Versions.playCore}"
     const val material = "com.google.android.material:material:${Versions.material}"
     const val exoplayer = "com.google.android.exoplayer:exoplayer:${Versions.exoplayer}"
+    const val annotation = "androidx.annotation:annotation:${Versions.annotation}"
 }
 
 object FirebaseLibraries {

@@ -18,22 +18,10 @@ class AuthRemoteDataSourceImpl constructor(
     private val settingsApi: SettingsApi
 ) : AuthRemoteDataSource {
 
-    override fun login(login: Login): Single<AuthUser> = authApi.login(login.mapToData()).map {
-        AuthUser(
-            it.accessToken,
-            it.user.mapToDomain(),
-            it.userSettings.mapToDomain()
-        )
-    }
+    override fun login(login: Login): Single<AuthUser> = authApi.login(login.mapToData()).map { it.mapToDomain() }
 
     override fun register(registration: Registration): Single<AuthUser> =
-        authApi.register(registration.mapToData()).map {
-            AuthUser(
-                it.accessToken,
-                it.user.mapToDomain(),
-                it.userSettings.mapToDomain()
-            )
-        }
+        authApi.register(registration.mapToData()).map { it.mapToDomain() }
 
     override fun logout(): Completable = authApi.logout()
 

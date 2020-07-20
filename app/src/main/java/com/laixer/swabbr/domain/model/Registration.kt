@@ -6,7 +6,7 @@ import java.time.ZonedDateTime
 
 data class Registration(
 //    val firstName: String,
-//    val lastName: String,
+//    val register_lastName: String,
 //    val gender: Gender,
 //    val country: String,
     val email: String,

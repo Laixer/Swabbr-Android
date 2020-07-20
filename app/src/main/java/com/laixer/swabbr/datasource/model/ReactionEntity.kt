@@ -10,7 +10,7 @@ data class ReactionEntity(
     @field:Json(name = "userId") val userId: String,
     @field:Json(name = "targetVlogId") val vlogId: String,
     @field:Json(name = "createDate") val datePosted: String,
-    @field:Json(name = "isPrivate") val boolean: Boolean
+    @field:Json(name = "isPrivate") val isPrivate: Boolean
 )
 
 data class ReactionListResponse(
@@ -22,7 +22,8 @@ fun ReactionEntity.mapToDomain(): Reaction = Reaction(
     UUID.fromString(id),
     UUID.fromString(userId),
     UUID.fromString(vlogId),
-    ZonedDateTime.parse(datePosted)
+    ZonedDateTime.parse(datePosted),
+    isPrivate
 )
 
 fun Reaction.mapToData(): ReactionEntity = ReactionEntity(
@@ -30,7 +31,7 @@ fun Reaction.mapToData(): ReactionEntity = ReactionEntity(
     userId.toString(),
     vlogId.toString(),
     datePosted.toInstant().toString(),
-    false
+    isPrivate
 )
 
 fun List<ReactionEntity>.mapToDomain(): List<Reaction> = map { it.mapToDomain() }

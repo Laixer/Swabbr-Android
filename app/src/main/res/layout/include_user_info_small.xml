@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="horizontal">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/userAvatar"
+        android:transitionName="userAvatar"
         android:layout_width="@dimen/small_icon_size"
         android:layout_height="@dimen/small_icon_size"
-        android:background="?selectableItemBackgroundBorderless"
-        android:scaleType="fitCenter"
-        tools:src="@mipmap/ic_avatar_placeholder_round" />
+        android:padding="1dp"
+        android:src="@mipmap/ic_avatar_placeholder" />
 
     <TextView
         android:id="@+id/userName"

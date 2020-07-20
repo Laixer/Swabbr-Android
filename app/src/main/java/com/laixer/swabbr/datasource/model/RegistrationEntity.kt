@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter
 
 data class RegistrationEntity(
 //    @field:Json(name = "firstName") val firstName: String,
-//    @field:Json(name = "lastName") val lastName: String,
+//    @field:Json(name = "register_lastName") val register_lastName: String,
 //    @field:Json(name = "gender") val gender: String,
 //    @field:Json(name = "country") val country: String,
     @field:Json(name = "email") val email: String,
@@ -27,7 +27,7 @@ data class RegistrationEntity(
 
 fun Registration.mapToData(): RegistrationEntity = RegistrationEntity(
 //    firstName,
-//    lastName,
+//    register_lastName,
 //    gender.value,
 //    country,
     email,
@@ -43,7 +43,7 @@ fun Registration.mapToData(): RegistrationEntity = RegistrationEntity(
 
 fun RegistrationEntity.mapToDomain(): Registration = Registration(
 //    firstName,
-//    lastName,
+//    register_lastName,
 //    Gender.values().first { it.value == gender },
 //    country,
     email,

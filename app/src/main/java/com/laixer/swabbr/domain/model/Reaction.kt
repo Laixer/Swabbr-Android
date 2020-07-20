@@ -7,5 +7,6 @@ data class Reaction(
     val id: UUID,
     val userId: UUID,
     val vlogId: UUID,
-    val datePosted: ZonedDateTime
+    val datePosted: ZonedDateTime,
+    val isPrivate: Boolean
 )

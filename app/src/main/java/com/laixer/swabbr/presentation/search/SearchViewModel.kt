@@ -15,15 +15,17 @@ import io.reactivex.schedulers.Schedulers
 class SearchViewModel constructor(private val usersUseCase: UsersUseCase) : ViewModel() {
 
     val profiles = MutableLiveData<Resource<List<UserItem>>>()
+    var lastQueryResultCount = 0
     private val compositeDisposable = CompositeDisposable()
 
-    fun search(query: String?, page: Int = 1, itemsPerPage: Int = 50, refreshList: Boolean = false) =
+    fun search(query: String, page: Int = 1, itemsPerPage: Int = 50, refreshList: Boolean = false) =
         compositeDisposable
             .add(usersUseCase.search(query, page, itemsPerPage)
                 .doOnSubscribe { profiles.setLoading() }
                 .subscribeOn(Schedulers.io()).map { it.mapToPresentation() }
                 .subscribe(
                     {
+                        lastQueryResultCount = it.size
                         profiles.setSuccess(
                             if (refreshList) {
                                 it

@@ -19,7 +19,7 @@ class AuthRepositoryImpl constructor(
         true -> authRemoteDataSource.getAuthenticatedUser()
             .flatMap { user -> authCacheDataSource.get().map { it.apply { it.user = user } } }
             .flatMap { authCacheDataSource.set(it) }
-        false -> authCacheDataSource.get().onErrorResumeNext(getAuthenticatedUser(true))
+        false -> authCacheDataSource.get()
     }
 
     override fun login(login: Login, remember: Boolean): Single<AuthUser> =

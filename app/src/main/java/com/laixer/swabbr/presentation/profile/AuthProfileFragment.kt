@@ -46,7 +46,7 @@ class AuthProfileFragment : AuthFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_settings, menu)
+        inflater.inflate(R.menu.menu_userprofile, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 

@@ -9,13 +9,12 @@ import com.bumptech.glide.Glide
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.VlogItem
-import kotlinx.android.synthetic.main.item_list_profilevlog.view.like_count
-import kotlinx.android.synthetic.main.item_list_profilevlog.view.thumbnail
-import kotlinx.android.synthetic.main.item_list_profilevlog.view.view_count
-import kotlinx.android.synthetic.main.item_list_profilevlog.view.vlogDuration
-import kotlinx.android.synthetic.main.item_list_profilevlog.view.vlogPostDate
+import kotlinx.android.synthetic.main.item_list_uservlog.view.like_count
+import kotlinx.android.synthetic.main.item_list_uservlog.view.thumbnail
+import kotlinx.android.synthetic.main.item_list_uservlog.view.view_count
+import kotlinx.android.synthetic.main.item_list_uservlog.view.vlogDuration
+import kotlinx.android.synthetic.main.item_list_uservlog.view.vlogPostDate
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
-import java.net.URL
 
 class ProfileVlogsAdapter(
     private val context: Context, private val onClick: (VlogItem)
@@ -32,7 +31,7 @@ class ProfileVlogsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
 
     inner class ViewHolder(parent: ViewGroup) :
-        RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_profilevlog)) {
+        RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_uservlog)) {
 
         fun bind(item: VlogItem) {
             val url = item.url

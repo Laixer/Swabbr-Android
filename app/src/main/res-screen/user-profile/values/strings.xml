@@ -1,0 +1,6 @@
+<resources>
+    <!-- Fragment text -->
+    <string name="my_profile_no_vlogs">You have not published any vlogs yet.</string>
+    <string name="user_no_vlogs_refresh">This user has not published any vlogs yet.\nPull down to refresh.</string>
+
+</resources>

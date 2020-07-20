@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
@@ -16,15 +15,12 @@ import com.laixer.presentation.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.model.FollowMode
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.AppActivity
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.model.AuthUserItem
 import com.laixer.swabbr.presentation.model.SettingsItem
 import kotlinx.android.synthetic.main.fragment_settings.*
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : AuthFragment() {
     private val vm: SettingsViewModel by sharedViewModel()
@@ -80,6 +76,7 @@ class SettingsFragment : AuthFragment() {
             ResourceState.ERROR -> {
                 Toast.makeText(requireContext(), res.message, Toast.LENGTH_SHORT).show()
                 enableSettings(true)
+                onError(res)
                 checkChanges()
             }
         }
