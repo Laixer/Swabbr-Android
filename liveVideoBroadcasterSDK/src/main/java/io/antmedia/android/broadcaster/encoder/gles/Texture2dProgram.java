@@ -17,7 +17,7 @@
 package io.antmedia.android.broadcaster.encoder.gles;
 
 import android.opengl.GLES11Ext;
-import android.opengl.GLES20;
+import android.opengl.GLES32;
 import android.util.Log;
 
 import java.nio.FloatBuffer;
@@ -216,7 +216,7 @@ public class Texture2dProgram {
 
         switch (programType) {
             case TEXTURE_2D:
-                mTextureTarget = GLES20.GL_TEXTURE_2D;
+                mTextureTarget = GLES32.GL_TEXTURE_2D;
                 mProgramHandle = GlUtil.createProgram(VERTEX_SHADER, FRAGMENT_SHADER_2D);
                 break;
             case TEXTURE_EXT:
@@ -257,15 +257,15 @@ public class Texture2dProgram {
 
         // get locations of attributes and uniforms
 
-        maPositionLoc = GLES20.glGetAttribLocation(mProgramHandle, "aPosition");
+        maPositionLoc = GLES32.glGetAttribLocation(mProgramHandle, "aPosition");
         GlUtil.checkLocation(maPositionLoc, "aPosition");
-        maTextureCoordLoc = GLES20.glGetAttribLocation(mProgramHandle, "aTextureCoord");
+        maTextureCoordLoc = GLES32.glGetAttribLocation(mProgramHandle, "aTextureCoord");
         GlUtil.checkLocation(maTextureCoordLoc, "aTextureCoord");
-        muMVPMatrixLoc = GLES20.glGetUniformLocation(mProgramHandle, "uMVPMatrix");
+        muMVPMatrixLoc = GLES32.glGetUniformLocation(mProgramHandle, "uMVPMatrix");
         GlUtil.checkLocation(muMVPMatrixLoc, "uMVPMatrix");
-        muTexMatrixLoc = GLES20.glGetUniformLocation(mProgramHandle, "uTexMatrix");
+        muTexMatrixLoc = GLES32.glGetUniformLocation(mProgramHandle, "uTexMatrix");
         GlUtil.checkLocation(muTexMatrixLoc, "uTexMatrix");
-        muKernelLoc = GLES20.glGetUniformLocation(mProgramHandle, "uKernel");
+        muKernelLoc = GLES32.glGetUniformLocation(mProgramHandle, "uKernel");
         if (muKernelLoc < 0) {
             // no kernel in this one
             muKernelLoc = -1;
@@ -273,9 +273,9 @@ public class Texture2dProgram {
             muColorAdjustLoc = -1;
         } else {
             // has kernel, must also have tex offset and color adj
-            muTexOffsetLoc = GLES20.glGetUniformLocation(mProgramHandle, "uTexOffset");
+            muTexOffsetLoc = GLES32.glGetUniformLocation(mProgramHandle, "uTexOffset");
             GlUtil.checkLocation(muTexOffsetLoc, "uTexOffset");
-            muColorAdjustLoc = GLES20.glGetUniformLocation(mProgramHandle, "uColorAdjust");
+            muColorAdjustLoc = GLES32.glGetUniformLocation(mProgramHandle, "uColorAdjust");
             GlUtil.checkLocation(muColorAdjustLoc, "uColorAdjust");
 
             // initialize default values
@@ -292,7 +292,7 @@ public class Texture2dProgram {
      */
     public void release() {
         Log.d(TAG, "deleting program " + mProgramHandle);
-        GLES20.glDeleteProgram(mProgramHandle);
+        GLES32.glDeleteProgram(mProgramHandle);
         mProgramHandle = -1;
     }
 
@@ -310,21 +310,21 @@ public class Texture2dProgram {
      */
     public int createTextureObject() {
         int[] textures = new int[1];
-        GLES20.glGenTextures(1, textures, 0);
+        GLES32.glGenTextures(1, textures, 0);
         GlUtil.checkGlError("glGenTextures");
 
         int texId = textures[0];
-        GLES20.glBindTexture(mTextureTarget, texId);
+        GLES32.glBindTexture(mTextureTarget, texId);
         GlUtil.checkGlError("glBindTexture " + texId);
 
-        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER,
-                GLES20.GL_NEAREST);
-        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER,
-                GLES20.GL_LINEAR);
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_S,
-                GLES20.GL_CLAMP_TO_EDGE);
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T,
-                GLES20.GL_CLAMP_TO_EDGE);
+        GLES32.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES32.GL_TEXTURE_MIN_FILTER,
+            GLES32.GL_NEAREST);
+        GLES32.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES32.GL_TEXTURE_MAG_FILTER,
+            GLES32.GL_LINEAR);
+        GLES32.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES32.GL_TEXTURE_WRAP_S,
+            GLES32.GL_CLAMP_TO_EDGE);
+        GLES32.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES32.GL_TEXTURE_WRAP_T,
+            GLES32.GL_CLAMP_TO_EDGE);
         GlUtil.checkGlError("glTexParameter");
 
         return texId;
@@ -382,54 +382,54 @@ public class Texture2dProgram {
         GlUtil.checkGlError("draw start");
 
         // Select the program.
-        GLES20.glUseProgram(mProgramHandle);
+        GLES32.glUseProgram(mProgramHandle);
         GlUtil.checkGlError("glUseProgram");
 
         // Set the texture.
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(mTextureTarget, textureId);
+        GLES32.glActiveTexture(GLES32.GL_TEXTURE0);
+        GLES32.glBindTexture(mTextureTarget, textureId);
 
         // Copy the model / view / projection matrix over.
-        GLES20.glUniformMatrix4fv(muMVPMatrixLoc, 1, false, mvpMatrix, 0);
+        GLES32.glUniformMatrix4fv(muMVPMatrixLoc, 1, false, mvpMatrix, 0);
         GlUtil.checkGlError("glUniformMatrix4fv");
 
         // Copy the texture transformation matrix over.
-        GLES20.glUniformMatrix4fv(muTexMatrixLoc, 1, false, texMatrix, 0);
+        GLES32.glUniformMatrix4fv(muTexMatrixLoc, 1, false, texMatrix, 0);
         GlUtil.checkGlError("glUniformMatrix4fv");
 
         // Enable the "aPosition" vertex attribute.
-        GLES20.glEnableVertexAttribArray(maPositionLoc);
+        GLES32.glEnableVertexAttribArray(maPositionLoc);
         GlUtil.checkGlError("glEnableVertexAttribArray");
 
         // Connect vertexBuffer to "aPosition".
-        GLES20.glVertexAttribPointer(maPositionLoc, coordsPerVertex,
-                GLES20.GL_FLOAT, false, vertexStride, vertexBuffer);
+        GLES32.glVertexAttribPointer(maPositionLoc, coordsPerVertex,
+            GLES32.GL_FLOAT, false, vertexStride, vertexBuffer);
         GlUtil.checkGlError("glVertexAttribPointer");
 
         // Enable the "aTextureCoord" vertex attribute.
-        GLES20.glEnableVertexAttribArray(maTextureCoordLoc);
+        GLES32.glEnableVertexAttribArray(maTextureCoordLoc);
         GlUtil.checkGlError("glEnableVertexAttribArray");
 
         // Connect texBuffer to "aTextureCoord".
-        GLES20.glVertexAttribPointer(maTextureCoordLoc, 2,
-                GLES20.GL_FLOAT, false, texStride, texBuffer);
+        GLES32.glVertexAttribPointer(maTextureCoordLoc, 2,
+            GLES32.GL_FLOAT, false, texStride, texBuffer);
             GlUtil.checkGlError("glVertexAttribPointer");
 
         // Populate the convolution kernel, if present.
         if (muKernelLoc >= 0) {
-            GLES20.glUniform1fv(muKernelLoc, KERNEL_SIZE, mKernel, 0);
-            GLES20.glUniform2fv(muTexOffsetLoc, KERNEL_SIZE, mTexOffset, 0);
-            GLES20.glUniform1f(muColorAdjustLoc, mColorAdjust);
+            GLES32.glUniform1fv(muKernelLoc, KERNEL_SIZE, mKernel, 0);
+            GLES32.glUniform2fv(muTexOffsetLoc, KERNEL_SIZE, mTexOffset, 0);
+            GLES32.glUniform1f(muColorAdjustLoc, mColorAdjust);
         }
 
         // Draw the rect.
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, firstVertex, vertexCount);
+        GLES32.glDrawArrays(GLES32.GL_TRIANGLE_STRIP, firstVertex, vertexCount);
         GlUtil.checkGlError("glDrawArrays");
 
         // Done -- disable vertex array, texture, and program.
-        GLES20.glDisableVertexAttribArray(maPositionLoc);
-        GLES20.glDisableVertexAttribArray(maTextureCoordLoc);
-        GLES20.glBindTexture(mTextureTarget, 0);
-        GLES20.glUseProgram(0);
+        GLES32.glDisableVertexAttribArray(maPositionLoc);
+        GLES32.glDisableVertexAttribArray(maTextureCoordLoc);
+        GLES32.glBindTexture(mTextureTarget, 0);
+        GLES32.glUseProgram(0);
     }
 }

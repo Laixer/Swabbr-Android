@@ -24,7 +24,7 @@ class VlogListViewModel constructor(
     val likes = MutableLiveData<Resource<List<Like>>>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun get(refresh: Boolean) =
+    fun getRecommendedVlogs(refresh: Boolean) =
         compositeDisposable.add(
             usersVlogsUseCase.getRecommendedVlogs(refresh)
                 .doOnSubscribe { vlogs.setLoading() }

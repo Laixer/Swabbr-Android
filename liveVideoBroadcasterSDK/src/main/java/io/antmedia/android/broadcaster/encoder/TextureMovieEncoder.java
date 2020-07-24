@@ -18,7 +18,7 @@ package io.antmedia.android.broadcaster.encoder;
 
 import android.graphics.SurfaceTexture;
 import android.opengl.EGLContext;
-import android.opengl.GLES20;
+import android.opengl.GLES32;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -55,13 +55,12 @@ import io.antmedia.android.broadcaster.network.IMediaMuxer;
  * <li>for each frame, after latching it with SurfaceTexture#updateTexImage(),
  *     call TextureMovieEncoder#frameAvailable().
  * </ul>
- *
+ * <p>
  * TODO: tweak the API (esp. textureId) so it's less awkward for simple use cases.
  */
 public class TextureMovieEncoder implements Runnable {
     private static final String TAG = TextureMovieEncoder.class.getSimpleName();
     private static final boolean VERBOSE = false;
-
     private static final int MSG_START_RECORDING = 0;
     private static final int MSG_STOP_RECORDING = 1;
     private static final int MSG_FRAME_AVAILABLE = 2;
@@ -70,7 +69,6 @@ public class TextureMovieEncoder implements Runnable {
     private static final int MSG_QUIT = 5;
     private static final int MSG_RELEASE_RECORDING = 6;
     private static final int MSG_CHANGE_EFFECT = 7;
-
     // ----- accessed exclusively by encoder thread -----
     private WindowSurface mInputWindowSurface;
     private EglCore mEglCore;
@@ -78,10 +76,8 @@ public class TextureMovieEncoder implements Runnable {
     private int mTextureId;
     private int mFrameNum;
     private VideoEncoderCore mVideoEncoder;
-
     // ----- accessed by multiple threads -----
     private volatile EncoderHandler mHandler;
-
     private Object mReadyFence = new Object();      // guards ready/running
     private boolean mReady;
     private boolean mRunning;
@@ -98,7 +94,7 @@ public class TextureMovieEncoder implements Runnable {
      * under us).
      * <p>
      * TODO: make frame rate and iframe interval configurable?  Maybe use builder pattern
-     *       with reasonable defaults for those and bit rate.
+     * with reasonable defaults for those and bit rate.
      */
     public static class EncoderConfig {
         final int mWidth;
@@ -119,7 +115,6 @@ public class TextureMovieEncoder implements Runnable {
             mProgramType = programType;
             mFrameRate = frameRate;
         }
-
     }
 
     /**
@@ -148,11 +143,9 @@ public class TextureMovieEncoder implements Runnable {
                 }
             }
         }
-
         mHandler.sendMessage(mHandler.obtainMessage(MSG_START_RECORDING, config));
         return true;
     }
-
 
     public void releaseRecording() {
         if (mHandler != null) {
@@ -214,11 +207,9 @@ public class TextureMovieEncoder implements Runnable {
                 return;
             }
         }
-
         if (mHandler == null) {
             return;
         }
-
         float[] transform = new float[16];      // TODO - avoid alloc every frame
         st.getTransformMatrix(transform);
         /*
@@ -233,17 +224,15 @@ public class TextureMovieEncoder implements Runnable {
             return;
         }
         */
-
         long frameTime = System.currentTimeMillis();
-        if (mVideoEncoder != null && (frameTime - mLastFrameTime) >= getFrameInterval())
-        {
-           Log.d(TAG, " get frame interval :" + getFrameInterval());
+        if (mVideoEncoder != null && (frameTime - mLastFrameTime) >= getFrameInterval()) {
+            Log.d(TAG, " get frame interval :" + getFrameInterval());
             // encode data at least in every 50 milliseconds, it measn 20fps or less
             long timestamp = (frameTime - mRecordingStartTime)
-                    * 1000000; // convert it to nano seconds
+                * 1000000; // convert it to nano seconds
             mLastFrameTime = frameTime;
             mHandler.sendMessage(mHandler.obtainMessage(MSG_FRAME_AVAILABLE,
-                    (int) (timestamp >> 32), (int) timestamp, transform));
+                (int) (timestamp >> 32), (int) timestamp, transform));
         }
     }
 
@@ -288,6 +277,7 @@ public class TextureMovieEncoder implements Runnable {
     /**
      * Encoder thread entry point.  Establishes Looper/Handler and waits for messages.
      * <p>
+     *
      * @see Thread#run()
      */
     @Override
@@ -300,7 +290,6 @@ public class TextureMovieEncoder implements Runnable {
             mReadyFence.notify();
         }
         Looper.loop();
-
         Log.d(TAG, "Encoder thread exiting");
         synchronized (mReadyFence) {
             mReady = mRunning = false;
@@ -308,13 +297,10 @@ public class TextureMovieEncoder implements Runnable {
         }
     }
 
-
     /**
      * Handles encoder state change requests.  The handler is created on the encoder thread.
      */
     private static class EncoderHandler extends Handler {
-
-
         private WeakReference<TextureMovieEncoder> mWeakEncoder;
 
         public EncoderHandler(TextureMovieEncoder encoder) {
@@ -325,13 +311,11 @@ public class TextureMovieEncoder implements Runnable {
         public void handleMessage(Message inputMessage) {
             int what = inputMessage.what;
             Object obj = inputMessage.obj;
-
             TextureMovieEncoder encoder = mWeakEncoder.get();
             if (encoder == null) {
                 Log.w(TAG, "EncoderHandler.handleMessage: encoder is null");
                 return;
             }
-
             switch (what) {
                 case MSG_START_RECORDING:
                     encoder.handleStartRecording((EncoderConfig) obj);
@@ -344,7 +328,7 @@ public class TextureMovieEncoder implements Runnable {
                     break;
                 case MSG_FRAME_AVAILABLE:
                     long timestamp = (((long) inputMessage.arg1) << 32) |
-                            (((long) inputMessage.arg2) & 0xffffffffL);
+                        (((long) inputMessage.arg2) & 0xffffffffL);
                     encoder.handleFrameAvailable((float[]) obj, timestamp);
                     break;
                 case MSG_SET_TEXTURE_ID:
@@ -372,9 +356,8 @@ public class TextureMovieEncoder implements Runnable {
             mFullScreen.release(false);
         }
         mFullScreen = new FullFrameRect(
-                new Texture2dProgram(type));
+            new Texture2dProgram(type));
         mProgramType = type;
-
     }
 
     /**
@@ -385,7 +368,7 @@ public class TextureMovieEncoder implements Runnable {
         this.mEncoderConfig = config;
         mFrameNum = 0;
         prepareEncoder(config.mEglContext, config.mWidth, config.mHeight, config.mBitRate, config.mFrameRate,
-                config.writerHandler, config.mProgramType);
+            config.writerHandler, config.mProgramType);
     }
 
     /**
@@ -394,7 +377,8 @@ public class TextureMovieEncoder implements Runnable {
      * The texture is rendered onto the encoder's input surface, along with a moving
      * box (just because we can).
      * <p>
-     * @param transform The texture transform, from SurfaceTexture.
+     *
+     * @param transform      The texture transform, from SurfaceTexture.
      * @param timestampNanos The frame's timestamp, from SurfaceTexture.
      */
     private void handleFrameAvailable(float[] transform, long timestampNanos) {
@@ -402,9 +386,7 @@ public class TextureMovieEncoder implements Runnable {
         if (mFullScreen != null) {
             mVideoEncoder.drainEncoder(false);
             mFullScreen.drawFrame(mTextureId, transform);
-
             //   drawBox(mFrameNum++);
-
             mInputWindowSurface.setPresentationTime(timestampNanos);
             mInputWindowSurface.swapBuffers();
         }
@@ -439,40 +421,33 @@ public class TextureMovieEncoder implements Runnable {
      */
     private void handleUpdateSharedContext(EGLContext newSharedContext) {
         Log.d(TAG, "handleUpdatedSharedContext " + newSharedContext);
-
         // Release the EGLSurface and EGLContext.
         mInputWindowSurface.releaseEglSurface();
         mFullScreen.release(false);
         mEglCore.release();
-
         // Create a new EGLContext and recreate the window surface.
         mEglCore = new EglCore(newSharedContext, EglCore.FLAG_RECORDABLE);
         mInputWindowSurface.recreate(mEglCore);
         mInputWindowSurface.makeCurrent();
-
         // Create new programs and such for the new activity.
         mFullScreen = new FullFrameRect(
-                new Texture2dProgram(mProgramType));
+            new Texture2dProgram(mProgramType));
     }
 
     private void prepareEncoder(EGLContext sharedContext, int width, int height, int bitRate, int frameRate,
                                 IMediaMuxer writerHandle, Texture2dProgram.ProgramType programType)
-            throws IllegalStateException
-    {
+        throws IllegalStateException {
         try {
             mVideoEncoder = new VideoEncoderCore(width, height, bitRate, frameRate, writerHandle);
-
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }
         mEglCore = new EglCore(sharedContext, EglCore.FLAG_RECORDABLE);
         mInputWindowSurface = new WindowSurface(mEglCore, mVideoEncoder.getInputSurface(), true);
         mInputWindowSurface.makeCurrent();
-
         mProgramType = programType;
         mFullScreen = new FullFrameRect(
-                new Texture2dProgram(programType));
-
+            new Texture2dProgram(programType));
     }
 
     private void releaseEncoder() {
@@ -497,10 +472,10 @@ public class TextureMovieEncoder implements Runnable {
     private void drawBox(int posn) {
         final int width = mInputWindowSurface.getWidth();
         int xpos = (posn * 4) % (width - 50);
-        GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
-        GLES20.glScissor(xpos, 0, 100, 100);
-        GLES20.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-        GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+        GLES32.glEnable(GLES32.GL_SCISSOR_TEST);
+        GLES32.glScissor(xpos, 0, 100, 100);
+        GLES32.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+        GLES32.glClear(GLES32.GL_COLOR_BUFFER_BIT);
+        GLES32.glDisable(GLES32.GL_SCISSOR_TEST);
     }
 }

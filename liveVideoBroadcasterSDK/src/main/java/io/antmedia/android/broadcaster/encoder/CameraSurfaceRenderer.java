@@ -5,7 +5,7 @@ package io.antmedia.android.broadcaster.encoder;
 
 import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
-import android.opengl.GLES20;
+import android.opengl.GLES32;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
@@ -190,7 +190,7 @@ public class CameraSurfaceRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         Log.d(TAG, "onSurfaceChanged " + width + "x" + height);
-        GLES20.glViewport(0, 0, width, height);
+        GLES32.glViewport(0, 0, width, height);
     }
 
     @Override
@@ -285,11 +285,11 @@ public class CameraSurfaceRenderer implements GLSurfaceView.Renderer {
      * Draws a red box in the corner.
      */
     private void drawBox() {
-        GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
-        GLES20.glScissor(0, 0, 100, 100);
-        GLES20.glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-        GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+        GLES32.glEnable(GLES32.GL_SCISSOR_TEST);
+        GLES32.glScissor(0, 0, 100, 100);
+        GLES32.glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+        GLES32.glClear(GLES32.GL_COLOR_BUFFER_BIT);
+        GLES32.glDisable(GLES32.GL_SCISSOR_TEST);
     }
 
     public void setOptions(IMediaMuxer writerHandler) {

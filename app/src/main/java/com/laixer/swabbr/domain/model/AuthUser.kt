@@ -1,9 +1,7 @@
 package com.laixer.swabbr.domain.model
 
-import com.auth0.android.jwt.JWT
-
 data class AuthUser(
-    val accessToken: JWT,
+    val jwtToken: String,
     var user: User,
     var userSettings: Settings
 )

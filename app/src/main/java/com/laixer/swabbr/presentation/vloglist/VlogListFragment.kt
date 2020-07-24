@@ -21,7 +21,12 @@ class VlogListFragment : AuthFragment() {
 
     private val vm: VlogListViewModel by sharedViewModel()
     private val itemClick: (UserVlogItem) -> Unit = {
-        findNavController().navigate(VlogListFragmentDirections.actionViewVlog(arrayOf(it.vlogId.toString()), it.vlogId.toString()))
+        findNavController().navigate(
+            VlogListFragmentDirections.actionViewVlog(
+                arrayOf(it.vlogId.toString()),
+                it.vlogId.toString()
+            )
+        )
     }
     private val profileClick: (UserVlogItem) -> Unit = {
         findNavController().navigate(VlogListFragmentDirections.actionViewProfile(it.userId.toString()))
@@ -31,7 +36,7 @@ class VlogListFragment : AuthFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            vm.get(refresh = true)
+            vm.getRecommendedVlogs(refresh = true)
         }
     }
 
@@ -45,14 +50,14 @@ class VlogListFragment : AuthFragment() {
         injectFeature()
 
         if (savedInstanceState == null) {
-            vm.get(refresh = false)
+            vm.getRecommendedVlogs(refresh = false)
         }
 
         vlogsRecyclerView.adapter = vlogListAdapter
 
         vm.run {
             vlogs.observe(viewLifecycleOwner, Observer { updateVlogs(it) })
-            swipeRefreshLayout.setOnRefreshListener { get(refresh = true) }
+            swipeRefreshLayout.setOnRefreshListener { getRecommendedVlogs(refresh = true) }
         }
     }
 
@@ -60,11 +65,16 @@ class VlogListFragment : AuthFragment() {
         with(swipeRefreshLayout) {
             when (state) {
                 ResourceState.LOADING -> startRefreshing()
-                ResourceState.SUCCESS -> stopRefreshing()
-                ResourceState.ERROR -> stopRefreshing()
+                ResourceState.SUCCESS -> {
+                    stopRefreshing()
+                    data?.let { vlogListAdapter?.submitList(it) }
+                }
+                ResourceState.ERROR -> {
+                    stopRefreshing()
+                    onError(resource)
+                }
             }
         }
-        data?.let { vlogListAdapter?.submitList(it) }
     }
 
     override fun onDestroyView() {

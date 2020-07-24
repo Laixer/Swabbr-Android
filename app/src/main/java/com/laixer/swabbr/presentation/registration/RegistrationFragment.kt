@@ -35,7 +35,6 @@ import com.laixer.swabbr.presentation.model.LoginItem
 import com.laixer.swabbr.presentation.model.RegistrationItem
 import kotlinx.android.synthetic.main.fragment_registration.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.Instant
 import java.time.ZoneId
 
@@ -89,7 +88,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                     PUSH_NOTIFICATION_PLATFORM,
                     firebaseInstanceId
                 ),
-                rememberMeSwitch.isChecked
+                true
             )
         }
 
@@ -109,7 +108,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                 progressBar.visible()
             }
             ResourceState.SUCCESS -> {
-                res.data?.accessToken?.let {
+                res.data?.jwtToken?.let {
                     progressBar.gone()
                     requireActivity().onBackPressed()
                 } ?: run {
@@ -117,7 +116,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                         LoginItem(
                             emailInput.text.toString(),
                             passwordInput.text.toString(),
-                            rememberMeSwitch.isChecked,
+                            true,
                             PUSH_NOTIFICATION_PLATFORM,
                             firebaseInstanceId
                         )

@@ -78,13 +78,14 @@
             android:inputType="textPassword"
             android:paddingStart="@dimen/small_icon_size" />
 
-        <Switch
-            android:id="@+id/rememberMeSwitch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/register_rememberMe" />
+<!--        <Switch-->
+<!--            android:id="@+id/rememberMeSwitch"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/register_rememberMe" />-->
 
         <Button
+            android:layout_margin="@dimen/content_margin"
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

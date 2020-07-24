@@ -2,27 +2,27 @@ package com.laixer.swabbr.presentation.recording
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
-import android.media.MediaCodec
-import android.media.MediaRecorder
-import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
-import android.view.*
-import android.webkit.MimeTypeMap
+import android.view.LayoutInflater
+import android.view.Surface
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
-import androidx.core.content.FileProvider
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.github.florent37.runtimepermission.kotlin.askPermission
-import com.laixer.swabbr.BuildConfig
 import com.laixer.swabbr.R
+import com.laixer.swabbr.datasource.model.StreamResponse
+import com.laixer.swabbr.datasource.model.getUrl
+import com.laixer.swabbr.injectFeature
+import com.laixer.swabbr.presentation.AuthFragment
 import io.antmedia.android.broadcaster.ILiveVideoBroadcaster
 import io.antmedia.android.broadcaster.LiveVideoBroadcaster
 import io.antmedia.android.broadcaster.utils.OrientationLiveData
@@ -30,18 +30,22 @@ import kotlinx.android.synthetic.main.activity_app.*
 import kotlinx.android.synthetic.main.fragment_record.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.io.File
 import java.io.Serializable
 import java.net.ConnectException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
-open class StreamingFragment : Fragment() {
+open class StreamingFragment : AuthFragment() {
     private val args: StreamingFragmentArgs by navArgs()
-    private val streamConfig: StreamConfig by lazy { /*args.streamConfig*/
-        StreamConfig(
-            UUID.randomUUID(),
-            UUID.randomUUID(),
+    private val vm: LivestreamViewModel by sharedViewModel()
+    private val streamResponse: StreamResponse by lazy {
+//        vm.startStreaming(args.streamRequest.livestreamId).blockingGet()
+        StreamResponse(
+            "",
+            "",
             "livetest-debugams-euwe.channel.media.azure.net",
             1935,
             "live",
@@ -52,40 +56,6 @@ open class StreamingFragment : Fragment() {
     }
     private lateinit var mLiveVideoBroadcaster: ILiveVideoBroadcaster
 
-    /** Detects, characterizes, and connects to a CameraDevice (used for all camera operations) */
-    private val cameraManager: CameraManager by lazy {
-        val context = requireContext().applicationContext
-        context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
-    }
-
-    /** Saves the video recording */
-    private val recorder: MediaRecorder by lazy { createRecorder(recorderSurface) }
-
-    /**
-     * Setup a persistent [Surface] for the recorder so we can use it as an output target for the
-     * camera session without preparing the recorder
-     */
-    private val recorderSurface: Surface by lazy {
-        // Get a persistent Surface from MediaCodec, don't forget to release when done
-        val surface: Surface = MediaCodec.createPersistentInputSurface()
-
-        // Prepare and release a dummy MediaRecorder with our new surface
-        // Required to allocate an appropriately sized buffer before passing the Surface as the
-        //  output target to the capture session
-        createRecorder(surface).apply {
-            prepare()
-            release()
-        }
-
-        surface
-    }
-
-    /** File where the recording will be saved */
-    private val outputFile: File by lazy { createFile(requireContext(), "mp4") }
-
-    /** Live data listener for changes in the device orientation relative to the camera */
-    private lateinit var relativeOrientation: OrientationLiveData
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_record, container, false)
     }
@@ -93,10 +63,14 @@ open class StreamingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        injectFeature()
+
         askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
             //all of your permissions have been accepted by the user
             // Hide parent UI and make the fragment fullscreen
             hideUI()
+
+            surface_view.holder
             // OpenGL ES 3.0 is supported from API >=18. Our minSdk is >=21, so this is safe to force.
             surface_view?.setEGLContextClientVersion(3)
 
@@ -125,19 +99,6 @@ open class StreamingFragment : Fragment() {
                 timer_view.setTextColor(Color.RED)
             }
 
-            // Used to rotate the output media to match device orientation
-            relativeOrientation = OrientationLiveData(
-                requireContext(),
-                cameraManager.getCameraCharacteristics("0")
-            )
-
-            // Finalizes recorder setup
-            recorder.apply {
-                // Sets output orientation based on current sensor value at start time
-                relativeOrientation.value?.let { setOrientationHint(it) }
-                recorder.prepare()
-            }
-
             mLiveVideoBroadcaster = LiveVideoBroadcaster(requireActivity(), surface_view, true, cameraCallback)
 
             if (mLiveVideoBroadcaster.canChangeCamera()) {
@@ -151,11 +112,10 @@ open class StreamingFragment : Fragment() {
             }
 
             mLiveVideoBroadcaster.initializeCamera()
-
         }.onDeclined { e ->
             //at least one permission have been declined by the user
             Toast.makeText(requireContext(), "Unable to stream without permissions", Toast.LENGTH_LONG).show()
-            requireActivity().onBackPressed()
+            stop()
         }
     }
 
@@ -167,26 +127,19 @@ open class StreamingFragment : Fragment() {
                     capture_button.visibility = View.VISIBLE
 
                     timer_view.text = getString(R.string.connecting)
-                    // Used to rotate the output media to match device orientation
-                    relativeOrientation.apply {
-                        observe(viewLifecycleOwner, Observer { orientation ->
-                            Log.d(TAG, "Orientation changed: $orientation")
-                        })
-                    }
 
                 }
-
-                // mLiveVideoBroadcaster.connect(streamConfig.getUrl())
-                mLiveVideoBroadcaster.connect(streamConfig.getUrl())
+                // mLiveVideoBroadcaster.connect(streamResponse.getUrl())
+                mLiveVideoBroadcaster.connect(streamResponse.getUrl())
             } catch (e: ConnectException) {
                 Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
-                // TODO: Retry?
+                stop()
             } finally {
                 if (mLiveVideoBroadcaster.isConnected()) {
                     // We successfully connected, start countdown to broadcast
                     start()
                 } else {
-                    // TODO: Abort
+                    stop()
                     return
                 }
             }
@@ -195,6 +148,7 @@ open class StreamingFragment : Fragment() {
         override fun onDisconnected(camera: CameraDevice) {
             Log.w(TAG, "Camera ${camera.id} has been disconnected")
             Toast.makeText(requireContext(), "Camera ${camera.id} disconnected.", Toast.LENGTH_LONG).show()
+            stop()
         }
 
         override fun onError(camera: CameraDevice, error: Int) {
@@ -218,23 +172,7 @@ open class StreamingFragment : Fragment() {
             if (mLiveVideoBroadcaster.isConnected()) {
                 mLiveVideoBroadcaster.stopBroadcasting()
             }
-
-            recorder.apply {
-                stop()
-                release()
-            }
-            // Broadcasts the media file to the rest of the system
-            MediaScannerConnection.scanFile(
-                requireContext(), arrayOf(outputFile.absolutePath), null, null
-            )
-            // Launch external activity via intent to play video recorded using our provider
-            startActivity(Intent().apply {
-                action = Intent.ACTION_VIEW
-                type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(outputFile.extension)
-                val authority = "${BuildConfig.APPLICATION_ID}.provider"
-                data = FileProvider.getUriForFile(requireContext(), authority, outputFile)
-                flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            })
+            activity?.onBackPressed()
         }
     }
 
@@ -244,11 +182,7 @@ open class StreamingFragment : Fragment() {
             countDownFrom(COUNTDOWN_MILLISECONDS) {
                 // Start broadcasting
                 lifecycleScope.launch(Dispatchers.IO) {
-                    // Finalizes recorder setup and starts recording
-                    recorder.start()
-
                     mLiveVideoBroadcaster.startBroadcasting()
-
                 }
 
                 timer_view.text = getString(R.string.zero_time)
@@ -280,9 +214,6 @@ open class StreamingFragment : Fragment() {
         requireActivity().bottom_nav.visibility = View.VISIBLE
         activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
 
-        recorder.release()
-        recorderSurface.release()
-
         super.onDestroy()
     }
 
@@ -303,39 +234,21 @@ open class StreamingFragment : Fragment() {
                 or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
     }
 
-    fun StreamConfig.getUrl(): String = "rtmp://$hostServer:$hostPort/$applicationName/$streamKey/default"
-
-    data class StreamConfig(
-        val vlogId: UUID,
-        val livestreamId: UUID,
-        val hostServer: String,
-        val hostPort: Int,
-        val applicationName: String,
-        val streamKey: String,
-        val username: String,
-        val password: String
+    data class StreamRequest(
+        val requestMoment: String,
+        val requestTimeout: String,
+        val livestreamId: String,
+        val vlogId: String,
+        val title: String,
+        val message: String
     ) : Serializable
 
-    /** Creates a [MediaRecorder] instance using the provided [Surface] as input */
-    private fun createRecorder(surface: Surface) = MediaRecorder().apply {
-        setAudioSource(MediaRecorder.AudioSource.MIC)
-        setVideoSource(MediaRecorder.VideoSource.SURFACE)
-        setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-        setOutputFile(outputFile.absolutePath)
-        setVideoEncodingBitRate(RECORDER_VIDEO_BITRATE)
-        setCaptureRate(30.0)
-        setVideoFrameRate(30)
-        setVideoSize(1080, 1920)
-        setVideoEncoder(MediaRecorder.VideoEncoder.H264)
-        setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-        setInputSurface(surface)
-    }
-
     companion object {
+
         private const val TAG = "CameraFragment"
         private const val COUNTDOWN_MILLISECONDS = 3_000L
         private const val COUNTDOWN_INTERVAL_MILLISECONDS = 1_000L
-        private const val DEFAULT_MINIMUM_RECORD_TIME_SECONDS = 8
+        private const val DEFAULT_MINIMUM_RECORD_TIME_SECONDS = 10
         private const val DEFAULT_MINIMUM_RECORD_TIME_MINUTES = 0
         private const val DEFAULT_MAXIMUM_RECORD_TIME_SECONDS = 0
         private const val DEFAULT_MAXIMUM_RECORD_TIME_MINUTES = 10

@@ -32,8 +32,6 @@ class AuthViewModel constructor(private val authUseCase: AuthUseCase) : ViewMode
             )
         )
 
-    fun blockingGet(refresh: Boolean = false) = authUseCase.getAuthenticatedUser(refresh).blockingGet()
-
     fun login(login: LoginItem, remember: Boolean = true) =
         compositeDisposable.add(authUseCase
             .login(login.mapToDomain(), remember)

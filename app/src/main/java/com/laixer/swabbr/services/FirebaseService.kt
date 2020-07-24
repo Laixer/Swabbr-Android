@@ -67,16 +67,8 @@ class FirebaseService : FirebaseMessagingService() {
      */
     private fun sendNotification(notification: BaseNotification?) {
         // Set default intent
-        var intent = notificationHandler.getIntent(baseContext, notification)
+        var pendingIntent = notificationHandler.getPendingIntent(baseContext, notification)
 
-        // Clear activity stack
-        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
-        // Create a pending intent
-        val pendingIntent = PendingIntent.getActivity(
-            this, 0 /* Request code */, intent,
-            PendingIntent.FLAG_ONE_SHOT
-        )
         val channelId = getString(R.string.default_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)

@@ -6,7 +6,6 @@ import com.laixer.swabbr.presentation.model.*
 import com.laixer.swabbr.services.notifications.ActionType
 import com.laixer.swabbr.services.notifications.protocols.BaseNotification
 import com.laixer.swabbr.services.notifications.protocols.V1
-import java.net.URL
 import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -90,7 +89,7 @@ object Models {
         pushNotificationPlatform = PushNotificationPlatform.FCM
     )
     val authUser = AuthUser(
-        accessToken = "token",
+        jwtToken = "token",
         user = user,
         userSettings = settings
     )
@@ -143,7 +142,7 @@ object Items {
         Models.settings.followMode
     )
     val authUser = AuthUserItem(
-        Models.authUser.accessToken,
+        Models.authUser.jwtToken,
         settings,
         user
     )

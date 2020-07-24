@@ -1,12 +1,14 @@
 package com.laixer.swabbr.services.notifications
 
+import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.util.Log
-import com.laixer.swabbr.presentation.AppActivity
+import androidx.navigation.NavDeepLinkBuilder
+import com.laixer.swabbr.R
+import com.laixer.swabbr.presentation.recording.StreamingFragment
+import com.laixer.swabbr.presentation.recording.StreamingFragmentArgs
 import com.laixer.swabbr.services.notifications.protocols.BaseNotification
 import com.laixer.swabbr.services.notifications.protocols.V1
-
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
@@ -38,32 +40,51 @@ class NotificationHandler {
 
     fun parse(data: Map<String, *>): BaseNotification? {
         val adapter: JsonAdapter<BaseNotification> = moshi.adapter(BaseNotification::class.java)
-
         // Return the Notification object, created from notification payload
         return adapter.fromJson(data.toString())
     }
 
-    fun getIntent(context: Context, notification: BaseNotification?): Intent? {
-        var intent: Intent? = Intent(context, AppActivity::class.java)
+    fun getPendingIntent(context: Context, notification: BaseNotification?): PendingIntent? {
         // Retrieve action from notification payload or null if none exists
         val action = notification?.clickAction
-
         // Assign correct action if notification contains payload
         action?.let {
             try {
-                intent = when (action) {
-                    ActionType.VLOG_RECORD_REQUEST -> null
-                    ActionType.VLOG_NEW_REACTION -> null
-                    else -> null
-                }
-            } catch (e: IllegalArgumentException) {
+                return NavDeepLinkBuilder(context).setGraph(R.navigation.nav_graph_app).setDestination(
+                    when (action) {
+                        ActionType.VLOG_RECORD_REQUEST -> R.id.streaming_dest
+                        else -> R.id.streaming_dest
+                    }
+                ).setArguments(
+                    when (action) {
+                        ActionType.VLOG_RECORD_REQUEST -> {
+                            with(notification as V1.VlogRecordRequestPayload) {
+                                StreamingFragmentArgs(
+                                    StreamingFragment.StreamRequest(
+                                        requestMoment,
+                                        requestTimeout,
+                                        livestreamId,
+                                        vlogId,
+                                        title,
+                                        message
+                                    )
+                                ).toBundle()
+                            }
+                        }
+                        else -> null
+                    }
+                )
+                    .createPendingIntent()
+            } catch (
+                e: IllegalArgumentException
+            ) {
                 e.message?.let {
                     Log.e(TAG, it)
                 }
             }
         }
 
-        return intent
+        return null
     }
 
     companion object {

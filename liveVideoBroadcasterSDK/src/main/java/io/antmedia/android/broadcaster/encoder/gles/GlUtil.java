@@ -16,8 +16,7 @@
 
 package io.antmedia.android.broadcaster.encoder.gles;
 
-import android.opengl.GLES20;
-import android.opengl.GLES30;
+import android.opengl.GLES32;
 import android.opengl.Matrix;
 import android.util.Log;
 
@@ -49,31 +48,31 @@ public class GlUtil {
      * @return A handle to the program, or 0 on failure.
      */
     public static int createProgram(String vertexSource, String fragmentSource) {
-        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexSource);
+        int vertexShader = loadShader(GLES32.GL_VERTEX_SHADER, vertexSource);
         if (vertexShader == 0) {
             return 0;
         }
-        int pixelShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentSource);
+        int pixelShader = loadShader(GLES32.GL_FRAGMENT_SHADER, fragmentSource);
         if (pixelShader == 0) {
             return 0;
         }
 
-        int program = GLES20.glCreateProgram();
+        int program = GLES32.glCreateProgram();
         checkGlError("glCreateProgram");
         if (program == 0) {
             Log.e(TAG, "Could not create program");
         }
-        GLES20.glAttachShader(program, vertexShader);
+        GLES32.glAttachShader(program, vertexShader);
         checkGlError("glAttachShader");
-        GLES20.glAttachShader(program, pixelShader);
+        GLES32.glAttachShader(program, pixelShader);
         checkGlError("glAttachShader");
-        GLES20.glLinkProgram(program);
+        GLES32.glLinkProgram(program);
         int[] linkStatus = new int[1];
-        GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
-        if (linkStatus[0] != GLES20.GL_TRUE) {
+        GLES32.glGetProgramiv(program, GLES32.GL_LINK_STATUS, linkStatus, 0);
+        if (linkStatus[0] != GLES32.GL_TRUE) {
             Log.e(TAG, "Could not link program: ");
-            Log.e(TAG, GLES20.glGetProgramInfoLog(program));
-            GLES20.glDeleteProgram(program);
+            Log.e(TAG, GLES32.glGetProgramInfoLog(program));
+            GLES32.glDeleteProgram(program);
             program = 0;
         }
         return program;
@@ -85,16 +84,16 @@ public class GlUtil {
      * @return A handle to the shader, or 0 on failure.
      */
     public static int loadShader(int shaderType, String source) {
-        int shader = GLES20.glCreateShader(shaderType);
+        int shader = GLES32.glCreateShader(shaderType);
         checkGlError("glCreateShader type=" + shaderType);
-        GLES20.glShaderSource(shader, source);
-        GLES20.glCompileShader(shader);
+        GLES32.glShaderSource(shader, source);
+        GLES32.glCompileShader(shader);
         int[] compiled = new int[1];
-        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
+        GLES32.glGetShaderiv(shader, GLES32.GL_COMPILE_STATUS, compiled, 0);
         if (compiled[0] == 0) {
             Log.e(TAG, "Could not compile shader " + shaderType + ":");
-            Log.e(TAG, " " + GLES20.glGetShaderInfoLog(shader));
-            GLES20.glDeleteShader(shader);
+            Log.e(TAG, " " + GLES32.glGetShaderInfoLog(shader));
+            GLES32.glDeleteShader(shader);
             shader = 0;
         }
         return shader;
@@ -104,8 +103,8 @@ public class GlUtil {
      * Checks to see if a GLES error has been raised.
      */
     public static void checkGlError(String op) {
-        int error = GLES20.glGetError();
-        if (error != GLES20.GL_NO_ERROR) {
+        int error = GLES32.glGetError();
+        if (error != GLES32.GL_NO_ERROR) {
             String msg = op + ": glError 0x" + Integer.toHexString(error);
             Log.e(TAG, msg);
             throw new RuntimeException(msg);
@@ -137,24 +136,24 @@ public class GlUtil {
         int[] textureHandles = new int[1];
         int textureHandle;
 
-        GLES20.glGenTextures(1, textureHandles, 0);
+        GLES32.glGenTextures(1, textureHandles, 0);
         textureHandle = textureHandles[0];
         GlUtil.checkGlError("glGenTextures");
 
         // Bind the texture handle to the 2D texture target.
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle);
+        GLES32.glBindTexture(GLES32.GL_TEXTURE_2D, textureHandle);
 
         // Configure min/mag filtering, i.e. what scaling method do we use if what we're rendering
         // is smaller or larger than the source image.
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER,
-                GLES20.GL_LINEAR);
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER,
-                GLES20.GL_LINEAR);
+        GLES32.glTexParameteri(GLES32.GL_TEXTURE_2D, GLES32.GL_TEXTURE_MIN_FILTER,
+            GLES32.GL_LINEAR);
+        GLES32.glTexParameteri(GLES32.GL_TEXTURE_2D, GLES32.GL_TEXTURE_MAG_FILTER,
+            GLES32.GL_LINEAR);
         GlUtil.checkGlError("loadImageTexture");
 
         // Load the data from the buffer into the texture handle.
-        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, /*level*/ 0, format,
-                width, height, /*border*/ 0, format, GLES20.GL_UNSIGNED_BYTE, data);
+        GLES32.glTexImage2D(GLES32.GL_TEXTURE_2D, /*level*/ 0, format,
+                width, height, /*border*/ 0, format, GLES32.GL_UNSIGNED_BYTE, data);
         GlUtil.checkGlError("loadImageTexture");
 
         return textureHandle;
@@ -177,17 +176,17 @@ public class GlUtil {
      * Writes GL version info to the log.
      */
     public static void logVersionInfo() {
-        Log.i(TAG, "vendor  : " + GLES20.glGetString(GLES20.GL_VENDOR));
-        Log.i(TAG, "renderer: " + GLES20.glGetString(GLES20.GL_RENDERER));
-        Log.i(TAG, "version : " + GLES20.glGetString(GLES20.GL_VERSION));
+        Log.i(TAG, "vendor  : " + GLES32.glGetString(GLES32.GL_VENDOR));
+        Log.i(TAG, "renderer: " + GLES32.glGetString(GLES32.GL_RENDERER));
+        Log.i(TAG, "version : " + GLES32.glGetString(GLES32.GL_VERSION));
 
         if (false) {
             int[] values = new int[1];
-            GLES30.glGetIntegerv(GLES30.GL_MAJOR_VERSION, values, 0);
+            GLES32.glGetIntegerv(GLES32.GL_MAJOR_VERSION, values, 0);
             int majorVersion = values[0];
-            GLES30.glGetIntegerv(GLES30.GL_MINOR_VERSION, values, 0);
+            GLES32.glGetIntegerv(GLES32.GL_MINOR_VERSION, values, 0);
             int minorVersion = values[0];
-            if (GLES30.glGetError() == GLES30.GL_NO_ERROR) {
+            if (GLES32.glGetError() == GLES32.GL_NO_ERROR) {
                 Log.i(TAG, "iversion: " + majorVersion + "." + minorVersion);
             }
         }

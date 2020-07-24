@@ -12,6 +12,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.UUID
+import java.util.stream.Stream
 
 interface VlogsApi {
 
@@ -23,6 +24,14 @@ interface VlogsApi {
 
     @GET("vlogs/recommended")
     fun getRecommendedVlogs(): Single<VlogListResponse>
+}
+
+interface LivestreamApi {
+    @POST("livestreams/{livestreamId}/start_streaming")
+    fun startStreaming(@Path("livestreamId") livestreamId: String): Single<StreamResponse>
+
+    @GET("livestreams/{livestreamId}/watch")
+    fun watch(@Path("livestreamId") livestreamId: String): Single<WatchResponse>
 }
 
 interface UsersApi {

@@ -5,10 +5,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.graphics.Point
 import android.graphics.SurfaceTexture
-import android.hardware.camera2.*
+import android.hardware.camera2.CameraAccessException
+import android.hardware.camera2.CameraCaptureSession
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraDevice
+import android.hardware.camera2.CameraManager
+import android.hardware.camera2.CaptureRequest
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.net.ConnectivityManager
@@ -40,8 +44,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.net.ConnectException
-import java.util.*
-import kotlin.coroutines.*
+import java.util.ArrayList
+import java.util.Collections
+import java.util.Timer
+import java.util.TimerTask
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Created by mekya on 28/03/2017.
@@ -62,7 +73,6 @@ class LiveVideoBroadcaster(
     }
     private lateinit var _cameraId: String
     private var mCameraLensDirection: Int = CameraCharacteristics.LENS_FACING_FRONT
-
     private lateinit var mGLViewSurface: Surface
 
     /** [CameraCharacteristics] corresponding to the provided Camera ID */
@@ -84,7 +94,6 @@ class LiveVideoBroadcaster(
 
     /** [Handler] corresponding to [backgroundThread] */
     private val backgroundHandler = Handler(backgroundThread.looper)
-
     private var torchMode = CaptureRequest.FLASH_MODE_OFF
 
     /** Captures frames from a [CameraDevice] for our video recording */
@@ -107,7 +116,6 @@ class LiveVideoBroadcaster(
             set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, Range(frameRate, frameRate))
             set(CaptureRequest.FLASH_MODE, torchMode)
         }.build()
-
 
     /** Live data listener for changes in the device orientation relative to the camera */
     private lateinit var relativeOrientation: OrientationLiveData
@@ -176,8 +184,7 @@ class LiveVideoBroadcaster(
     override fun initializeCamera() {
         mGLView.setRenderer(mRenderer)
         mGLView.renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
-
-        // Await on handleSetSurfaceTexture()
+        // Await on handleSetSurfaceTexture() callback
     }
 
     /**
@@ -194,18 +201,15 @@ class LiveVideoBroadcaster(
             _cameraId = CAMERA_BACK
             CameraCharacteristics.LENS_FACING_BACK
         }
-
         val map = _characteristics.get(
             CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
         )!!
-
         // Find out if we need to swap dimension to get the preview size relative to sensor
         // coordinate.
         val displayRotation = activity.windowManager.defaultDisplay.rotation
 
         sensorOrientation = _characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION)!!
         val swappedDimensions = areDimensionsSwapped(displayRotation)
-
         val displaySize = Point()
         activity.windowManager.defaultDisplay.getSize(displaySize)
         val rotatedPreviewWidth = if (swappedDimensions) mGLView.height else mGLView.width
@@ -215,7 +219,6 @@ class LiveVideoBroadcaster(
 
         if (maxPreviewWidth > MAX_PREVIEW_WIDTH) maxPreviewWidth = MAX_PREVIEW_WIDTH
         if (maxPreviewHeight > MAX_PREVIEW_HEIGHT) maxPreviewHeight = MAX_PREVIEW_HEIGHT
-
         // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
         // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
         // garbage capture data.
@@ -224,33 +227,18 @@ class LiveVideoBroadcaster(
             rotatedPreviewWidth, rotatedPreviewHeight,
             maxPreviewWidth, maxPreviewHeight
         )
-
-
         // We fit the aspect ratio of TextureView to the size of preview we picked.
-        if (activity.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mGLView.setAspectRatio(outputSize.width, outputSize.height)
-            mGLView.queueEvent {
-                mRenderer.setCameraPreviewSize(outputSize.width, outputSize.height)
-            }
-        } else {
-            mGLView.setAspectRatio(outputSize.height, outputSize.width)
-            mGLView.queueEvent {
-                mRenderer.setCameraPreviewSize(outputSize.height, outputSize.width)
-            }
+        mGLView.setAspectRatio(outputSize.width, outputSize.height)
+        mGLView.queueEvent {
+            mRenderer.setCameraPreviewSize(outputSize.width, outputSize.height)
         }
-
-
-
         // Open the selected camera
         _camera = openCamera(_manager, _cameraId, backgroundHandler, cameraCallback)
-
         // Start a preview capture session using our open camera and list of Surfaces where frames will go
         session = createCaptureSession(_camera, listOf(mGLViewSurface), cameraHandler)
-
         // Sends the capture request as frequently as possible until the session is torn down or
         //  session.stopRepeating() is called
         updateRecordRequest()
-
         // Used to rotate the output media to match device orientation
         relativeOrientation = OrientationLiveData(activity, _characteristics)
     }
@@ -328,7 +316,6 @@ class LiveVideoBroadcaster(
         }, handler)
     }
 
-
     @Throws(
         IllegalArgumentException::class,
         CameraAccessException::class,
@@ -338,7 +325,6 @@ class LiveVideoBroadcaster(
         require(!isRecording) { "can't start broadcasting when already live" }
         require(isConnected()) { "startBroadcasting cannot be called before connect" }
         require(Utils.doesEncoderWork(activity) == Utils.ENCODER_WORKS) { "This device does not support hardware encoders" }
-
         val recordStartTime = System.currentTimeMillis()
         // Prevents screen rotation during the video recording
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
@@ -447,8 +433,9 @@ class LiveVideoBroadcaster(
         _initializeCamera()
     }
 
-
-    override fun onFrameAvailable(surfaceTexture: SurfaceTexture?) = mGLView.requestRender()
+    override fun onFrameAvailable(surfaceTexture: SurfaceTexture?) {
+        mGLView.requestRender()
+    }
 
     private fun hasConnection(): Boolean =
         connectivityManager
@@ -523,7 +510,6 @@ class LiveVideoBroadcaster(
         maxWidth: Int,
         maxHeight: Int
     ): Size {
-
         // Collect the supported resolutions that are at least as big as the preview Surface
         val bigEnough = ArrayList<Size>()
         // Collect the supported resolutions that are smaller than the preview Surface
@@ -538,6 +524,7 @@ class LiveVideoBroadcaster(
             }
         }
 
+        return Size(1080, 1920)
         // Pick the smallest of those big enough. If there is no one big enough, pick the
         // largest of those not big enough.
         if (bigEnough.size > 0) {

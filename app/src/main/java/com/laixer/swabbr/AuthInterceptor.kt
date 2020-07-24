@@ -19,7 +19,7 @@ class AuthInterceptor(
             }
 
             if (token == null) {
-                token = authCacheDataSource.get().blockingGet().accessToken
+                token = JWT(authCacheDataSource.get().blockingGet().jwtToken)
             }
 
             return chain.proceed(

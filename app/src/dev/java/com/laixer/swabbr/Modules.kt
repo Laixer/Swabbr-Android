@@ -2,17 +2,42 @@ package com.laixer.swabbr
 
 import com.laixer.cache.MemoryCache
 import com.laixer.cache.ReactiveCache
-import com.laixer.swabbr.data.datasource.*
-import com.laixer.swabbr.data.datasource.cache.*
-import com.laixer.swabbr.data.datasource.remote.*
+import com.laixer.swabbr.data.datasource.AuthCacheDataSource
+import com.laixer.swabbr.data.datasource.AuthRemoteDataSource
+import com.laixer.swabbr.data.datasource.FollowCacheDataSource
+import com.laixer.swabbr.data.datasource.FollowRemoteDataSource
+import com.laixer.swabbr.data.datasource.LivestreamDataSource
+import com.laixer.swabbr.data.datasource.ReactionCacheDataSource
+import com.laixer.swabbr.data.datasource.ReactionRemoteDataSource
+import com.laixer.swabbr.data.datasource.SettingsCacheDataSource
+import com.laixer.swabbr.data.datasource.SettingsRemoteDataSource
+import com.laixer.swabbr.data.datasource.UserCacheDataSource
+import com.laixer.swabbr.data.datasource.UserRemoteDataSource
+import com.laixer.swabbr.data.datasource.VlogCacheDataSource
+import com.laixer.swabbr.data.datasource.VlogRemoteDataSource
+import com.laixer.swabbr.data.datasource.cache.AuthCacheDataSourceImpl
+import com.laixer.swabbr.data.datasource.cache.FollowCacheDataSourceImpl
+import com.laixer.swabbr.data.datasource.cache.ReactionCacheDataSourceImpl
+import com.laixer.swabbr.data.datasource.cache.SettingsCacheDataSourceImpl
+import com.laixer.swabbr.data.datasource.cache.UserCacheDataSourceImpl
+import com.laixer.swabbr.data.datasource.cache.VlogCacheDataSourceImpl
+import com.laixer.swabbr.data.datasource.remote.AuthRemoteDataSourceImpl
+import com.laixer.swabbr.data.datasource.remote.FollowRemoteDataSourceImpl
+import com.laixer.swabbr.data.datasource.remote.LivestreamDataSourceImpl
+import com.laixer.swabbr.data.datasource.remote.ReactionRemoteDataSourceImpl
+import com.laixer.swabbr.data.datasource.remote.SettingsRemoteDataSourceImpl
+import com.laixer.swabbr.data.datasource.remote.UserRemoteDataSourceImpl
+import com.laixer.swabbr.data.datasource.remote.VlogRemoteDataSourceImpl
 import com.laixer.swabbr.data.repository.AuthRepositoryImpl
 import com.laixer.swabbr.data.repository.FollowRepositoryImpl
+import com.laixer.swabbr.data.repository.LivestreamRepositoryImpl
 import com.laixer.swabbr.data.repository.ReactionRepositoryImpl
 import com.laixer.swabbr.data.repository.SettingsRepositoryImpl
 import com.laixer.swabbr.data.repository.UserRepositoryImpl
 import com.laixer.swabbr.data.repository.VlogRepositoryImpl
 import com.laixer.swabbr.datasource.model.remote.AuthApi
 import com.laixer.swabbr.datasource.model.remote.FollowApi
+import com.laixer.swabbr.datasource.model.remote.LivestreamApi
 import com.laixer.swabbr.datasource.model.remote.ReactionsApi
 import com.laixer.swabbr.datasource.model.remote.SettingsApi
 import com.laixer.swabbr.datasource.model.remote.UsersApi
@@ -24,12 +49,14 @@ import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.repository.AuthRepository
 import com.laixer.swabbr.domain.repository.FollowRepository
+import com.laixer.swabbr.domain.repository.LivestreamRepository
 import com.laixer.swabbr.domain.repository.ReactionRepository
 import com.laixer.swabbr.domain.repository.SettingsRepository
 import com.laixer.swabbr.domain.repository.UserRepository
 import com.laixer.swabbr.domain.repository.VlogRepository
 import com.laixer.swabbr.domain.usecase.AuthUseCase
 import com.laixer.swabbr.domain.usecase.FollowUseCase
+import com.laixer.swabbr.domain.usecase.LivestreamUseCase
 import com.laixer.swabbr.domain.usecase.ReactionsUseCase
 import com.laixer.swabbr.domain.usecase.SettingsUseCase
 import com.laixer.swabbr.domain.usecase.UserReactionUseCase
@@ -40,6 +67,7 @@ import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
 import com.laixer.swabbr.domain.usecase.VlogsUseCase
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
+import com.laixer.swabbr.presentation.recording.LivestreamViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
 import com.laixer.swabbr.presentation.settings.SettingsViewModel
 import com.laixer.swabbr.presentation.vlogdetails.VlogDetailsViewModel
@@ -73,6 +101,7 @@ private val loadFeature by lazy {
     )
 }
 val viewModelModule: Module = module {
+    viewModel { LivestreamViewModel(livestreamUseCase = get()) }
     viewModel { AuthViewModel(authUseCase = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogsUseCase = get()) }
@@ -81,6 +110,7 @@ val viewModelModule: Module = module {
     viewModel { SettingsViewModel(settingsUseCase = get()) }
 }
 val useCaseModule: Module = module {
+    factory { LivestreamUseCase(livestreamRepository = get()) }
     factory { AuthUseCase(authRepository = get()) }
     factory { UsersUseCase(userRepository = get()) }
     factory { UsersVlogsUseCase(userRepository = get(), vlogRepository = get()) }
@@ -99,6 +129,7 @@ val repositoryModule: Module = module {
             authRemoteDataSource = get()
         )
     }
+    single<LivestreamRepository> { LivestreamRepositoryImpl(livestreamDataSource = get()) }
     single<UserRepository> { UserRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
     single<VlogRepository> { VlogRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
     single<ReactionRepository> { ReactionRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
@@ -112,6 +143,7 @@ val dataSourceModule: Module = module {
             memory = get(named(AUTH_MEMORY))
         )
     }
+    single<LivestreamDataSource> { LivestreamDataSourceImpl(livestreamApi = get()) }
     single<AuthRemoteDataSource> { AuthRemoteDataSourceImpl(authApi = get(), settingsApi = get()) }
     single<UserCacheDataSource> { UserCacheDataSourceImpl(cache = get(named(USER_CACHE))) }
     single<UserRemoteDataSource> { UserRemoteDataSourceImpl(api = get()) }
@@ -145,6 +177,7 @@ val networkModule: Module = module {
 
     single { AuthInterceptor(authCacheDataSource = get()) }
 
+    single<LivestreamApi> { get<Retrofit>().create(LivestreamApi::class.java) }
     single<AuthApi> { get<Retrofit>().create(AuthApi::class.java) }
     single<UsersApi> { get<Retrofit>().create(UsersApi::class.java) }
     single<VlogsApi> { get<Retrofit>().create(VlogsApi::class.java) }

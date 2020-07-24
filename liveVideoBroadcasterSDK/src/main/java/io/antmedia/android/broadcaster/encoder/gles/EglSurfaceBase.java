@@ -19,7 +19,7 @@ package io.antmedia.android.broadcaster.encoder.gles;
 import android.graphics.Bitmap;
 import android.opengl.EGL14;
 import android.opengl.EGLSurface;
-import android.opengl.GLES20;
+import android.opengl.GLES32;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;
@@ -177,8 +177,8 @@ public class EglSurfaceBase {
         int height = getHeight();
         ByteBuffer buf = ByteBuffer.allocateDirect(width * height * 4);
         buf.order(ByteOrder.LITTLE_ENDIAN);
-        GLES20.glReadPixels(0, 0, width, height,
-                GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, buf);
+        GLES32.glReadPixels(0, 0, width, height,
+                GLES32.GL_RGBA, GLES32.GL_UNSIGNED_BYTE, buf);
         GlUtil.checkGlError("glReadPixels");
         buf.rewind();
 
