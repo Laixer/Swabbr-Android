@@ -3,6 +3,7 @@ package com.laixer.swabbr
 import com.auth0.android.jwt.JWT
 import com.laixer.swabbr.data.datasource.AuthCacheDataSource
 import okhttp3.Interceptor
+import okhttp3.MediaType
 import okhttp3.Response
 
 class AuthInterceptor(
@@ -18,8 +19,11 @@ class AuthInterceptor(
                 )
             }
 
-            if (token == null) {
+            try {
                 token = JWT(authCacheDataSource.get().blockingGet().jwtToken)
+            } catch (e: Exception) {
+                // If we land here the user is not authenticated but somehow tried to make a request that does require auth. Just return the chain with an error and handle it on fragment level
+//                val errorResponseBody = ResponseBody.create(MediaType.get())
             }
 
             return chain.proceed(
