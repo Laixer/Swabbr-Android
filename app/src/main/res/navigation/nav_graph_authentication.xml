@@ -5,6 +5,7 @@
     android:id="@+id/nav_authentication"
     app:startDestination="@id/login_dest">
 
+
     <fragment
         android:id="@+id/login_dest"
         android:name="com.laixer.swabbr.presentation.login.LoginFragment"

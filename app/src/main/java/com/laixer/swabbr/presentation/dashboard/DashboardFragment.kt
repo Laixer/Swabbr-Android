@@ -1,10 +1,13 @@
 package com.laixer.swabbr.presentation.dashboard
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.findNavController
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
@@ -15,7 +18,6 @@ import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.UserVlogItem
 import com.laixer.swabbr.presentation.vloglist.VlogListAdapter
-import com.laixer.swabbr.presentation.vloglist.VlogListFragmentDirections
 import com.laixer.swabbr.presentation.vloglist.VlogListViewModel
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -24,15 +26,17 @@ class DashboardFragment : AuthFragment() {
 
     private val vm: VlogListViewModel by sharedViewModel()
     private val itemClick: (UserVlogItem) -> Unit = {
-        findNavController().navigate(
-            VlogListFragmentDirections.actionViewVlog(
-                arrayOf(it.vlogId.toString()),
-                it.vlogId.toString()
-            )
-        )
+//        findNavController().navigate(R.id.action_view_vlog,
+//            Bundle().apply {
+//                putStringArray("vlogIds", arrayOf(it.vlogId.toString()))
+//                putString("selectedId", it.vlogId.toString())
+//            }
+//        )
+        findNavController().navigate(Uri.parse("https://swabbr.com/user/${it.userId}/vlog/${it.vlogId}"))
+
     }
     private val profileClick: (UserVlogItem) -> Unit = {
-        findNavController().navigate(VlogListFragmentDirections.actionViewProfile(it.userId.toString()))
+        findNavController().navigate(Uri.parse("https://swabbr.com/user/${it.userId}"))
     }
     private var vlogListAdapter: VlogListAdapter? = null
 

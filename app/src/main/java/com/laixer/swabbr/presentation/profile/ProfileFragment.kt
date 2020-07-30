@@ -1,5 +1,6 @@
 package com.laixer.swabbr.presentation.profile
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.FollowStatusItem
 import com.laixer.swabbr.presentation.model.UserItem
+import com.laixer.swabbr.presentation.model.UserVlogItem
 import com.laixer.swabbr.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.include_user_info.*
@@ -99,10 +101,8 @@ class ProfileFragment : AuthFragment() {
         }
     }
 
-    private val onClick: (VlogItem) -> Unit = {vlogItem ->
-        profileVm.profileVlogs.value?.data?.let {
-            findNavController().navigate(ProfileFragmentDirections.actionViewVlog(it.map { item -> item.id.toString() }.toTypedArray(), vlogItem.id.toString()))
-        }
+    private val onClick: (UserVlogItem) -> Unit = {
+            findNavController().navigate(Uri.parse("https://swabbr.com/user/${it.userId}/vlog/${it.vlogId}"))
     }
 
     private fun updateProfile(res: Resource<UserItem>) = res.run {
@@ -113,7 +113,7 @@ class ProfileFragment : AuthFragment() {
         }
     }
 
-    private fun updateProfileVlogs(res: Resource<List<VlogItem>?>) = res.run {
+    private fun updateProfileVlogs(res: Resource<List<UserVlogItem>?>) = res.run {
         with(swipeRefreshLayout) {
             when (state) {
                 ResourceState.LOADING -> startRefreshing()

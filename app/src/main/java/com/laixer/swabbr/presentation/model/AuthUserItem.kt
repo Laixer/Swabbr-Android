@@ -16,4 +16,4 @@ fun AuthUser.mapToPresentation(): AuthUserItem =
         this.user.mapToPresentation()
     )
 
-fun AuthUserItem.hasValidSession(): Boolean = !this.jwtToken.isExpired(0L)
+fun AuthUserItem.hasValidSession(): Boolean = !this.jwtToken.isExpired(3600L)

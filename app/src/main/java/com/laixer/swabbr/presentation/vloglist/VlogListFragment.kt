@@ -1,5 +1,6 @@
 package com.laixer.swabbr.presentation.vloglist
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,15 +22,11 @@ class VlogListFragment : AuthFragment() {
 
     private val vm: VlogListViewModel by sharedViewModel()
     private val itemClick: (UserVlogItem) -> Unit = {
-        findNavController().navigate(
-            VlogListFragmentDirections.actionViewVlog(
-                arrayOf(it.vlogId.toString()),
-                it.vlogId.toString()
-            )
-        )
+        findNavController().navigate(Uri.parse("https://swabbr.com/user/${it.userId}/vlog/${it.vlogId}"))
     }
     private val profileClick: (UserVlogItem) -> Unit = {
-        findNavController().navigate(VlogListFragmentDirections.actionViewProfile(it.userId.toString()))
+        findNavController().navigate(Uri.parse("https://swabbr.com/user/${it.userId}"))
+
     }
     private var vlogListAdapter: VlogListAdapter? = null
 

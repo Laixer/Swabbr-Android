@@ -1,5 +1,5 @@
 object ApplicationId {
-    const val id = "com.laixer.core"
+    const val id = "com.laixer.swabbr"
 }
 
 object Modules {
@@ -21,7 +21,7 @@ object Versions {
     const val gradle = "4.0.0-beta04"
 
     const val compileSdk = 29
-    const val minSdk = 24
+    const val minSdk = 26
     const val buildTools = "29.0.3"
 
     const val targetSdk = 29

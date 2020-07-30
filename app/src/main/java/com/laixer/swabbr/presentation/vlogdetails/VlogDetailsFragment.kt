@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
@@ -19,6 +21,7 @@ import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.UserVlogItem
+import kotlinx.android.synthetic.main.activity_app.*
 import kotlinx.android.synthetic.main.fragment_vlog_details.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.UUID
@@ -28,9 +31,8 @@ class VlogDetailsFragment : AuthFragment() {
     private val vm: VlogDetailsViewModel by viewModel()
     private var reactionsAdapter: ReactionsAdapter? = null
     private val args by navArgs<VlogDetailsFragmentArgs>()
-    private val vlogIds by lazy { args.vlogIds }
-    private val selectedId by lazy { args.selectedId }
-    private var vlogs = listOf<UserVlogItem>()
+    private val vlogId by lazy { args.vlogId }
+    private val userId by lazy { args.userId }
     private lateinit var currentVlog: UserVlogItem
     private val snackBar by lazy {
         Snackbar.make(container, getString(R.string.error), Snackbar.LENGTH_LONG)
@@ -46,6 +48,8 @@ class VlogDetailsFragment : AuthFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        hideUI()
+
         reactionsAdapter = ReactionsAdapter(requireContext())
 
         injectFeature()
@@ -62,28 +66,47 @@ class VlogDetailsFragment : AuthFragment() {
         }
 
         if (savedInstanceState == null) {
-            vm.getVlogs(vlogIds.map { UUID.fromString(it) }, refresh = true)
-            vm.getReactions(UUID.fromString(selectedId), refresh = true)
+            vm.getVlogs(UUID.fromString(userId), refresh = true)
+            vm.getReactions(UUID.fromString(vlogId), refresh = true)
         }
 
         vlog_viewpager.run {
             // Add a fragment adapter to the ViewPager to manage fragments
             adapter = object : FragmentStateAdapter(this@VlogDetailsFragment) {
-                override fun createFragment(position: Int): Fragment = VlogFragment.create(vlogs[position])
-                override fun getItemCount(): Int = vlogs.size
+                override fun createFragment(position: Int): Fragment =
+                    VlogFragment.create(vm.vlogs.value!!.data!![position])
+
+                override fun getItemCount(): Int = vm.vlogs.value?.data?.size ?: 0
             }
             // Add a listener to the ViewPager for when a new page (vlog) is selected through a swipe action
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    currentVlog = vlogs[position]
+                    currentVlog = vm.vlogs.value!!.data!![position]
                     vm.getReactions(currentVlog.vlogId)
                 }
             })
         }
 
-        vm.getVlogs(vlogIds.map { UUID.fromString(it) }, refresh = false)
-        vm.getReactions(UUID.fromString(selectedId), refresh = false)
+        vm.getVlogs(UUID.fromString(userId), refresh = false)
+        vm.getReactions(UUID.fromString(vlogId), refresh = false)
+    }
+
+    private fun hideUI() {
+        requireActivity().window.run {
+            addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        }
+
+        requireActivity().toolbar.visibility = View.GONE
+        requireActivity().bottom_nav.visibility = View.GONE
+        activity?.window?.decorView?.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_IMMERSIVE
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
     }
 
     private fun updateVlogs(resource: Resource<List<UserVlogItem>?>) = with(resource) {
@@ -92,9 +115,9 @@ class VlogDetailsFragment : AuthFragment() {
             }
             ResourceState.SUCCESS -> {
                 data?.let {
-                    vlogs = it
                     vlog_viewpager?.currentItem =
-                        vlogs.indexOf(vlogs.first { item -> item.vlogId.toString() == selectedId })
+                        vm.vlogs.value?.data?.indexOf(vm.vlogs.value?.data?.first { item -> item.vlogId.toString() == vlogId })
+                            ?: 0
                     vlog_viewpager?.adapter?.notifyDataSetChanged()
                 }
             }
@@ -125,6 +148,14 @@ class VlogDetailsFragment : AuthFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         reactionsAdapter = null
+
+        requireActivity().apply {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            toolbar.visibility = View.VISIBLE
+            bottom_nav.visibility = View.VISIBLE
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        }
     }
 }
+
 

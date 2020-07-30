@@ -10,13 +10,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.UUID
 
-/**
- * The standard library provides Pair and Triple.
- * In most cases, though, named data classes are a better design choice.
- * This is because they make the code more readable by providing meaningful names for properties.
- */
-data class CombinedUserVlog(val user: User, val vlog: Vlog)
-
 class UsersVlogsUseCase constructor(
     private val userRepository: UserRepository,
     private val vlogRepository: VlogRepository
@@ -48,9 +41,15 @@ class UserVlogUseCase constructor(
         }
 }
 
-class UserVlogsUseCase constructor(private val vlogRepository: VlogRepository) {
+class UserVlogsUseCase constructor(
+    private val vlogRepository: VlogRepository,
+    private val userRepository: UserRepository
+) {
 
-    fun get(userId: UUID, refresh: Boolean): Single<List<Vlog>> = vlogRepository.getUserVlogs(userId, refresh)
+    fun get(userId: UUID, refresh: Boolean): Single<List<Pair<User, Vlog>>> =
+        vlogRepository.getUserVlogs(userId, refresh).flatMap { vlogs ->
+            userRepository.get(userId, refresh).map { user -> vlogs.map { Pair(user, it) } }
+        }
 }
 
 class VlogsUseCase constructor(private val vlogRepository: VlogRepository) {

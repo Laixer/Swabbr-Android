@@ -105,7 +105,7 @@ val viewModelModule: Module = module {
     viewModel { AuthViewModel(authUseCase = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogsUseCase = get()) }
-    viewModel { VlogDetailsViewModel(usersVlogsUseCase = get(), reactionsUseCase = get()) }
+    viewModel { VlogDetailsViewModel(userVlogsUseCase = get(), reactionsUseCase = get()) }
     viewModel { SearchViewModel(usersUseCase = get()) }
     viewModel { SettingsViewModel(settingsUseCase = get()) }
 }
@@ -115,7 +115,7 @@ val useCaseModule: Module = module {
     factory { UsersUseCase(userRepository = get()) }
     factory { UsersVlogsUseCase(userRepository = get(), vlogRepository = get()) }
     factory { UserVlogUseCase(userRepository = get(), vlogRepository = get()) }
-    factory { UserVlogsUseCase(vlogRepository = get()) }
+    factory { UserVlogsUseCase(vlogRepository = get(), userRepository = get()) }
     factory { VlogsUseCase(vlogRepository = get()) }
     factory { UserReactionUseCase(userRepository = get(), reactionRepository = get()) }
     factory { ReactionsUseCase(reactionRepository = get()) }

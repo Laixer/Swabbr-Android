@@ -1,6 +1,5 @@
 package com.laixer.swabbr.datasource.model
 
-import com.auth0.android.jwt.JWT
 import com.laixer.swabbr.domain.model.AuthUser
 import com.squareup.moshi.Json
 

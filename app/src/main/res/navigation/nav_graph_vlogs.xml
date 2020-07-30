@@ -2,77 +2,34 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@id/nav_vlogs"
+    android:id="@+id/nav_vlogs"
     app:startDestination="@id/vlog_list_dest">
 
     <fragment
         android:id="@+id/vlog_list_dest"
         android:name="com.laixer.swabbr.presentation.vloglist.VlogListFragment"
         android:label="@string/vlogs"
-        tools:layout="@layout/fragment_vlog_list">
-        <deepLink
-            android:id="@+id/deepLink"
-            android:autoVerify="true"
-            app:uri="profile/{vlogId}" />
-        <action
-            android:id="@+id/action_view_profile"
-            app:destination="@id/vlogs_profile_dest" />
-        <action
-            android:id="@+id/action_view_vlog"
-            app:destination="@id/vlog_details_dest" />
-    </fragment>
+        tools:layout="@layout/fragment_vlog_list" />
 
     <fragment
         android:id="@+id/vlog_details_dest"
         android:name="com.laixer.swabbr.presentation.vlogdetails.VlogDetailsFragment"
         android:label="Vlog"
         tools:layout="@layout/fragment_vlog_details">
-        <deepLink
-            android:id="@+id/deepLink"
-            android:autoVerify="true"
-            app:uri="vlog/{vlogId}" />
         <argument
-            android:name="vlogIds"
-            app:argType="string[]" />
-        <argument
-            android:name="selectedId"
+            android:name="vlogId"
             app:argType="string" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/vlogs_profile_dest"
-        android:name="com.laixer.swabbr.presentation.profile.ProfileFragment"
-        android:label="Profile"
-        tools:layout="@layout/fragment_profile">
-        <deepLink
-            android:id="@+id/deepLink"
-            android:autoVerify="true"
-            app:uri="profile/{userId}" />
         <argument
             android:name="userId"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
-        <action
-            android:id="@+id/action_view_vlog"
-            app:destination="@id/profile_vlog_details_dest" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/profile_vlog_details_dest"
-        android:name="com.laixer.swabbr.presentation.vlogdetails.VlogDetailsFragment"
-        android:label="Vlog"
-        tools:layout="@layout/fragment_vlog_details">
+            app:argType="string" />
         <deepLink
             android:id="@+id/deepLink"
             android:autoVerify="true"
-            app:uri="vlogs/profile/{vlogId}" />
-        <argument
-            android:name="vlogIds"
-            app:argType="string[]" />
-        <argument
-            android:name="selectedId"
-            app:argType="string" />
+            app:uri="https://swabbr.com/user/{userId}/vlog/{vlogId}" />
     </fragment>
+
+    <action
+        android:id="@+id/action_view_vlog"
+        app:destination="@id/vlog_details_dest" />
 
 </navigation>

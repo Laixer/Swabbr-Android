@@ -11,44 +11,21 @@
         android:label="@string/search"
         tools:layout="@layout/fragment_search">
         <deepLink
-            android:id="@+id/deepLink"
-            android:autoVerify="true"
-            app:uri="search" />
-        <action
-            android:id="@+id/action_view_profile"
-            app:destination="@id/search_profile_dest" />
+            android:id="@+id/search_deeplink"
+            app:uri="https://swabbr.com/search" />
     </fragment>
 
     <fragment
-        android:id="@+id/search_profile_dest"
+        android:id="@+id/profile_dest"
         android:name="com.laixer.swabbr.presentation.profile.ProfileFragment"
         android:label="@string/userProfile"
         tools:layout="@layout/fragment_profile">
-        <deepLink
-            android:id="@+id/deepLink"
-            android:autoVerify="true"
-            app:uri="search/profile/{userId}" />
         <argument
             android:name="userId"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
-        <action
-            android:id="@+id/action_view_vlog"
-            app:destination="@id/search_vlog_details_dest" />
+            app:argType="string" />
+        <deepLink
+            android:id="@+id/profile_deeplink"
+            app:uri="https://swabbr.com/user/{userId}" />
     </fragment>
 
-    <fragment
-        android:id="@+id/search_vlog_details_dest"
-        android:name="com.laixer.swabbr.presentation.vlogdetails.VlogDetailsFragment"
-        android:label="Vlog"
-        tools:layout="@layout/fragment_vlog_details">
-        <deepLink
-            android:id="@+id/deepLink"
-            android:autoVerify="true"
-            app:uri="search/profile/{vlogId}" />
-        <argument
-            android:name="vlogIds"
-            app:argType="string[]" />
-    </fragment>
 </navigation>

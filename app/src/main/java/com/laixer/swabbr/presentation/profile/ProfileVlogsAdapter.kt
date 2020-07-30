@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
+import com.laixer.swabbr.presentation.model.UserVlogItem
 import com.laixer.swabbr.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.item_list_uservlog.view.like_count
 import kotlinx.android.synthetic.main.item_list_uservlog.view.thumbnail
@@ -17,14 +18,8 @@ import kotlinx.android.synthetic.main.item_list_uservlog.view.vlogPostDate
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
 
 class ProfileVlogsAdapter(
-    private val context: Context, private val onClick: (VlogItem)
-    -> Unit
-) :
-    ListAdapter<VlogItem, ProfileVlogsAdapter.ViewHolder>(ProfileDiffCallback()) {
-
-    override fun getItemViewType(position: Int): Int {
-        return super.getItemViewType(position)
-    }
+    private val context: Context, private val onClick: (UserVlogItem) -> Unit
+) : ListAdapter<UserVlogItem, ProfileVlogsAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
 
@@ -33,7 +28,7 @@ class ProfileVlogsAdapter(
     inner class ViewHolder(parent: ViewGroup) :
         RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_uservlog)) {
 
-        fun bind(item: VlogItem) {
+        fun bind(item: UserVlogItem) {
             val url = item.url
             Glide.with(context)
                 .load(url)
@@ -63,8 +58,8 @@ class ProfileVlogsAdapter(
     }
 }
 
-private class ProfileDiffCallback : DiffUtil.ItemCallback<VlogItem>() {
-    override fun areItemsTheSame(oldItem: VlogItem, newItem: VlogItem): Boolean = oldItem.id == newItem.id
+private class ProfileDiffCallback : DiffUtil.ItemCallback<UserVlogItem>() {
+    override fun areItemsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean = oldItem.vlogId == newItem.vlogId
 
-    override fun areContentsTheSame(oldItem: VlogItem, newItem: VlogItem): Boolean = oldItem == newItem
+    override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean = oldItem == newItem
 }

@@ -6,6 +6,7 @@ import android.transition.ChangeBounds
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.ContentLoadingProgressBar
 import androidx.fragment.app.Fragment
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
@@ -18,6 +19,7 @@ import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.UserVlogItem
 import kotlinx.android.synthetic.main.include_user_info_reversed.view.*
 import kotlinx.android.synthetic.main.item_vlog.view.*
+import kotlinx.coroutines.channels.ticker
 
 class VlogFragment : Fragment() {
 
@@ -29,13 +31,13 @@ class VlogFragment : Fragment() {
         userVlogItem = requireArguments().getSerializable(PROFILEVLOGITEM_KEY) as UserVlogItem
         val dataSourceFactory: DataSource.Factory =
             DefaultHttpDataSourceFactory(Util.getUserAgent(this.context, "Swabbr"))
-
         val mediaSourceFactory = ProgressiveMediaSource.Factory(dataSourceFactory)
         val uri = Uri.parse(userVlogItem.url.toURI().toString())
         val mediaSource = mediaSourceFactory.createMediaSource(uri)
 
-        exoPlayer = ExoPlayerFactory.newSimpleInstance(this.context)
-        exoPlayer.prepare(mediaSource, true, false)
+        exoPlayer = ExoPlayerFactory.newSimpleInstance(this.context).apply {
+            prepare(mediaSource, true, false)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,22 +48,31 @@ class VlogFragment : Fragment() {
             duration = 750
         }
         val view = layoutInflater.inflate(R.layout.item_vlog, container, false)
-        val overlayView = layoutInflater.inflate(R.layout.video_view_overlay, container, false)
-        overlayView.reversed_userAvatar.loadAvatar(userVlogItem.profileImage,  userVlogItem.userId)
-        overlayView.reversed_userUsername.text = requireContext().getString(R.string.nickname, userVlogItem.nickname)
-        overlayView.reversed_userName.text = requireContext().getString(
-            R.string.full_name, userVlogItem.firstName, userVlogItem
-                .lastName
-        )
+        val overlayView = layoutInflater.inflate(R.layout.video_view_overlay, container, false).apply {
+            reversed_userAvatar.loadAvatar(userVlogItem.profileImage, userVlogItem.userId)
+            reversed_userUsername.text = requireContext().getString(R.string.nickname, userVlogItem.nickname)
+            reversed_userName.text = requireContext().getString(
+                R.string.full_name, userVlogItem.firstName, userVlogItem
+                    .lastName
+            )
+        }
 
-        val exo = view.player
-        exo.overlayFrameLayout?.addView(overlayView)
-        exoPlayer.setForegroundMode(false)
-        exo.player = exoPlayer
 
-        exo.showController()
+        view.player.apply {
+            overlayFrameLayout?.addView(overlayView)
+            exoPlayer.setForegroundMode(false)
+            player = exoPlayer
+
+            showController()
+        }
 
         return view
+    }
+
+    fun bindProgressBar(bar: ContentLoadingProgressBar) {
+        bar.show()
+        bar.max = exoPlayer.contentDuration.toInt()
+        bar.progress = exoPlayer.currentPosition.toInt()
     }
 
     override fun onResume() {

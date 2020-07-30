@@ -1,5 +1,6 @@
 package com.laixer.swabbr.presentation.search
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -82,9 +83,7 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
     }
 
     private val onClick: (UserItem) -> Unit = {
-        findNavController().navigate(
-            SearchFragmentDirections.actionViewProfile(it.id.toString())
-        )
+        findNavController().navigate(Uri.parse("https://swabbr.com/profiles/${it.id}"))
     }
 
     private fun updateUsers(resource: Resource<List<UserItem>?>) {

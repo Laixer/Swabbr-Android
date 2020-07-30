@@ -39,6 +39,7 @@ class VlogListViewModel constructor(
                 )
         )
 
+
     fun getLikes(vlogId: UUID, refresh: Boolean) =
         compositeDisposable.add(
             vlogsUseCase.getLikes(vlogId, refresh)

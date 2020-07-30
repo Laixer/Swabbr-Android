@@ -3,40 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@id/nav_profile"
-    app:startDestination="@id/profile_dest">
+    app:startDestination="@id/auth_profile_dest">
 
     <fragment
-        android:id="@+id/profile_dest"
+        android:id="@+id/auth_profile_dest"
         android:name="com.laixer.swabbr.presentation.profile.AuthProfileFragment"
         android:label="@string/myProfile"
         tools:layout="@layout/fragment_auth_profile">
-        <deepLink
-            android:id="@+id/deepLink"
-            android:autoVerify="true"
-            app:uri="profile" />
-        <action
-            android:id="@+id/action_view_vlog"
-            app:destination="@id/profile_vlog_details_dest" />
         <action
             android:id="@+id/action_view_settings"
             app:destination="@id/settings_dest"/>
-    </fragment>
-
-    <fragment
-        android:id="@+id/profile_vlog_details_dest"
-        android:name="com.laixer.swabbr.presentation.vlogdetails.VlogDetailsFragment"
-        android:label="Vlog"
-        tools:layout="@layout/fragment_vlog_details">
-        <deepLink
-            android:id="@+id/deepLink"
-            android:autoVerify="true"
-            app:uri="profile/{vlogId}" />
-        <argument
-            android:name="vlogIds"
-            app:argType="string[]" />
-        <argument
-            android:name="selectedId"
-            app:argType="string" />
     </fragment>
 
     <fragment
@@ -44,10 +20,6 @@
         android:name="com.laixer.swabbr.presentation.settings.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings">
-        <deepLink
-            android:id="@+id/deepLink"
-            android:autoVerify="true"
-            app:uri="settings" />
     </fragment>
 
 </navigation>

@@ -1,7 +1,8 @@
 package com.laixer.swabbr.presentation.model
 
+import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.model.Vlog
-import com.laixer.swabbr.domain.usecase.CombinedUserVlog
+import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -19,14 +20,11 @@ data class VlogItem(
     val isPrivate: Boolean,
     val dateStarted: ZonedDateTime,
     val views: Int
-) {
+): Serializable {
     val url = with(idList.random()) {
         URL("https://assets.mixkit.co/videos/$this/$this-720.mp4")
     }
 }
-
-fun CombinedUserVlog.mapToPresentation(): VlogItem =
-    VlogItem(vlog.id, vlog.userId, vlog.isPrivate, vlog.dateStarted, vlog.views)
 
 fun Vlog.mapToPresentation(): VlogItem =
     VlogItem(this.id, this.userId, this.isPrivate, this.dateStarted, this.views)

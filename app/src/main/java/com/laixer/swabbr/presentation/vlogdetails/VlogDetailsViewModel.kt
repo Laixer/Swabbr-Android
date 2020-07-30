@@ -7,16 +7,18 @@ import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.usecase.UserReactionUseCase
+import com.laixer.swabbr.domain.usecase.UserVlogsUseCase
 import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
 import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.UserVlogItem
+import com.laixer.swabbr.presentation.model.VlogItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.UUID
 
 class VlogDetailsViewModel constructor(
-    private val usersVlogsUseCase: UsersVlogsUseCase,
+    private val userVlogsUseCase: UserVlogsUseCase,
     private val reactionsUseCase: UserReactionUseCase
 ) : ViewModel() {
 
@@ -24,9 +26,9 @@ class VlogDetailsViewModel constructor(
     val reactions = MutableLiveData<Resource<List<ReactionItem>>>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun getVlogs(ids: List<UUID>, refresh: Boolean = false) =
+    fun getVlogs(userId: UUID, refresh: Boolean = false) =
         compositeDisposable.add(
-            usersVlogsUseCase.get(ids, refresh)
+            userVlogsUseCase.get(userId, refresh)
             .doOnSubscribe { vlogs.setLoading() }
             .subscribeOn(Schedulers.io()).map { it.mapToPresentation() }
             .subscribe({ vlogs.setSuccess(it) }, { vlogs.setError(it.message) })

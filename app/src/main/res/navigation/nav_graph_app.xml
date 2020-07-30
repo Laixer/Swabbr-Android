@@ -20,13 +20,13 @@
         android:label="@string/dashboard"
         tools:layout="@layout/fragment_dashboard" />
 
-    <action
-        android:id="@+id/action_authenticate"
-        app:destination="@id/authActivity" />
-
     <activity
         android:id="@+id/authActivity"
         android:name="com.laixer.swabbr.presentation.auth.AuthActivity" />
+
+    <action
+        android:id="@+id/action_authenticate"
+        app:destination="@id/authActivity" />
 
     <include app:graph="@navigation/nav_graph_profile" />
     <include app:graph="@navigation/nav_graph_search" />

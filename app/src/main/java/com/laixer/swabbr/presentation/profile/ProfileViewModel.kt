@@ -12,6 +12,7 @@ import com.laixer.swabbr.domain.usecase.UserVlogsUseCase
 import com.laixer.swabbr.domain.usecase.UsersUseCase
 import com.laixer.swabbr.presentation.model.FollowStatusItem
 import com.laixer.swabbr.presentation.model.UserItem
+import com.laixer.swabbr.presentation.model.UserVlogItem
 import com.laixer.swabbr.presentation.model.VlogItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.disposables.CompositeDisposable
@@ -25,7 +26,7 @@ class ProfileViewModel constructor(
 ) : ViewModel() {
 
     val profile = MutableLiveData<Resource<UserItem>>()
-    val profileVlogs = MutableLiveData<Resource<List<VlogItem>>>()
+    val profileVlogs = MutableLiveData<Resource<List<UserVlogItem>>>()
     val followStatus = MutableLiveData<Resource<FollowStatusItem>>()
     private val compositeDisposable = CompositeDisposable()
 

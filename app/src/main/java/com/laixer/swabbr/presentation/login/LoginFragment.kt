@@ -25,8 +25,6 @@ import com.laixer.swabbr.presentation.model.AuthUserItem
 import com.laixer.swabbr.presentation.model.LoginItem
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.lang.IllegalStateException
 
 class LoginFragment : Fragment() {
     private val vm: AuthViewModel by sharedViewModel()
@@ -43,7 +41,7 @@ class LoginFragment : Fragment() {
 
         loginButton.setOnClickListener {
             FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
-                require(task.isSuccessful) {"Unable to identify this device on Firebase"}
+                require(task.isSuccessful) { "Unable to identify this device on Firebase" }
                 vm.login(
                     LoginItem(
                         emailInput.text.toString(),
@@ -55,7 +53,6 @@ class LoginFragment : Fragment() {
                     true
                 )
             }
-
         }
 
         registerButton.setOnClickListener {
@@ -82,7 +79,6 @@ class LoginFragment : Fragment() {
                     Log.e(TAG, res.message!!)
                     Toast.makeText(requireActivity().applicationContext, res.message, Toast.LENGTH_SHORT).show()
                 }
-
             }
             ResourceState.ERROR -> {
                 passwordInput.text.clear()
