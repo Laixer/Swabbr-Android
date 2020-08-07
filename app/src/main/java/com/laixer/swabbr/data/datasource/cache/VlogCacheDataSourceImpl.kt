@@ -2,6 +2,7 @@ package com.laixer.swabbr.data.datasource.cache
 
 import com.laixer.cache.ReactiveCache
 import com.laixer.swabbr.data.datasource.VlogCacheDataSource
+import com.laixer.swabbr.domain.model.LikeList
 import com.laixer.swabbr.domain.model.Vlog
 import io.reactivex.Single
 import java.util.UUID

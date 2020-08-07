@@ -23,14 +23,13 @@ class SearchAdapter(val context: Context, val onClick: (UserItem) -> Unit) :
 
         fun bind(item: UserItem) {
             itemView.userAvatar.loadAvatar(item.profileImage, item.id)
-            itemView.userUsername.text = context.getString(R.string.nickname, item.nickname)
+            itemView.nickname.text = context.getString(R.string.nickname, item.nickname)
 
             item.firstName?.let {
-                itemView.userName.visibility = View.VISIBLE
-                itemView.userName.text = context.getString(R.string.full_name, item.firstName, item.lastName)
-            } ?: run {
-                itemView.userName.visibility = View.GONE
+                itemView.username.text = context.getString(R.string.full_name, it, item.lastName)
+                itemView.username.visibility = View.VISIBLE
             }
+
             itemView.setOnClickListener { onClick.invoke(item) }
         }
     }

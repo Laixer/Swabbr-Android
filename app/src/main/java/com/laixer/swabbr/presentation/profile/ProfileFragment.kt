@@ -19,11 +19,13 @@ import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.FollowStatusItem
+import com.laixer.swabbr.presentation.model.LikeItem
+import com.laixer.swabbr.presentation.model.LikeListItem
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.UserVlogItem
-import com.laixer.swabbr.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.include_user_info.*
+import kotlinx.android.synthetic.main.reactions_sheet.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.UUID
 
@@ -102,14 +104,17 @@ class ProfileFragment : AuthFragment() {
     }
 
     private val onClick: (UserVlogItem) -> Unit = {
-            findNavController().navigate(Uri.parse("https://swabbr.com/user/${it.userId}/vlog/${it.vlogId}"))
+        findNavController().navigate(Uri.parse("https://swabbr.com/user/${it.userId}/vlog/${it.vlogId}"))
     }
 
     private fun updateProfile(res: Resource<UserItem>) = res.run {
-        data?.let {
-            userAvatar.loadAvatar(it.profileImage, it.id)
-            userUsername.text = requireContext().getString(R.string.nickname, it.nickname)
-            userName.text = requireContext().getString(R.string.full_name, it.firstName, it.lastName)
+        data?.let { item ->
+            userAvatar.loadAvatar(item.profileImage, item.id)
+            nickname.text = requireContext().getString(R.string.nickname, item.nickname)
+            item.firstName?.let {
+                username.text = requireContext().getString(R.string.full_name, it, item.lastName)
+                username.visibility = View.VISIBLE
+            }
         }
     }
 

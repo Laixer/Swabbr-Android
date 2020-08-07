@@ -9,6 +9,7 @@ import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.model.Like
 import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
 import com.laixer.swabbr.domain.usecase.VlogsUseCase
+import com.laixer.swabbr.presentation.model.LikeListItem
 import com.laixer.swabbr.presentation.model.UserVlogItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.disposables.CompositeDisposable
@@ -21,7 +22,8 @@ class VlogListViewModel constructor(
 ) : ViewModel() {
 
     val vlogs = MutableLiveData<Resource<List<UserVlogItem>>>()
-    val likes = MutableLiveData<Resource<List<Like>>>()
+    val likes = MutableLiveData<Resource<LikeListItem>>()
+
     private val compositeDisposable = CompositeDisposable()
 
     fun getRecommendedVlogs(refresh: Boolean) =
@@ -39,13 +41,16 @@ class VlogListViewModel constructor(
                 )
         )
 
-
-    fun getLikes(vlogId: UUID, refresh: Boolean) =
+    fun getLikes(vlogId: UUID) =
         compositeDisposable.add(
-            vlogsUseCase.getLikes(vlogId, refresh)
+            vlogsUseCase.getLikes(vlogId)
                 .doOnSubscribe { likes.setLoading() }
                 .subscribeOn(Schedulers.io())
-                .subscribe()
+                .map { it.mapToPresentation() }
+                .subscribe(
+                    { likes.setSuccess(it) },
+                    { likes.setError(it.message)}
+                )
         )
 
     override fun onCleared() {

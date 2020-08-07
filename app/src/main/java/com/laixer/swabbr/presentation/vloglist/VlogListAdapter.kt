@@ -1,6 +1,7 @@
 package com.laixer.swabbr.presentation.vloglist
 
 import android.content.Context
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -36,8 +37,12 @@ class VlogListAdapter constructor(
                 .into(itemView.thumbnail)
 
             itemView.userAvatar.loadAvatar(item.profileImage, item.userId)
-            itemView.userUsername.text = context.getString(R.string.nickname, item.nickname)
-            itemView.userName.text = context.getString(R.string.full_name, item.firstName, item.lastName)
+            itemView.nickname.text = context.getString(R.string.nickname, item.nickname)
+            item.firstName?.let {
+                itemView.username.text = context.getString(R.string.full_name, it, item.lastName)
+                itemView.username.visibility = View.VISIBLE
+            }
+
             itemView.vlogPostDate.text =
                 context.getString(
                     R.string.date, item.dateStarted.dayOfMonth, item.dateStarted.monthValue, item.dateStarted.year
@@ -60,8 +65,12 @@ class VlogListAdapter constructor(
                 )
 
             itemView.userAvatar.setOnClickListener { profileClick.invoke(item) }
-            itemView.userUsername.text = context.getString(R.string.nickname, item.nickname)
-            itemView.userName.text = context.getString(R.string.full_name, item.firstName, item.lastName)
+            itemView.nickname.text = context.getString(R.string.nickname, item.nickname)
+
+            item.firstName?.let {
+                itemView.username.text = context.getString(R.string.full_name, it, item.lastName)
+                itemView.username.visibility = View.VISIBLE
+            }
 
             itemView.setOnClickListener { itemClick.invoke(item) }
         }

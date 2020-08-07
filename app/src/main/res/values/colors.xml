@@ -11,8 +11,9 @@
     <color name="color_body">@color/color_grey_700</color>
 
     <color name="color_window_background">@color/color_grey_50</color>
-    <color name="color_window_background_transparent">#40FAFAFA</color>
-    
+    <color name="color_window_background_transparent">#C3FAFAFA</color>
+    <color name="transparent">#00FAFAFA</color>
+
     <color name="multiStateButtonPressed">#80ff8400</color>
     <color name="multiStateButtonDisabled">#c1636363</color>
 </resources>

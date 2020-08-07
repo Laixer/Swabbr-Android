@@ -24,6 +24,9 @@ interface VlogsApi {
 
     @GET("vlogs/recommended")
     fun getRecommendedVlogs(): Single<VlogListResponse>
+
+    @GET("vlogs/{vlogId}/vlog_likes")
+    fun getLikes(@Path("vlogId") vlogId: UUID): Single<LikeListEntity>
 }
 
 interface LivestreamApi {

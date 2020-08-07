@@ -1,6 +1,7 @@
 package com.laixer.swabbr.domain.usecase
 
 import com.laixer.swabbr.domain.model.Like
+import com.laixer.swabbr.domain.model.LikeList
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.repository.UserRepository
@@ -53,7 +54,7 @@ class UserVlogsUseCase constructor(
 }
 
 class VlogsUseCase constructor(private val vlogRepository: VlogRepository) {
-    fun getLikes(vlogId: UUID, refresh: Boolean): Single<List<Like>> = vlogRepository.getLikes(vlogId, refresh)
+    fun getLikes(vlogId: UUID): Single<LikeList> = vlogRepository.getLikes(vlogId)
 
     fun like(vlogId: UUID): Completable = vlogRepository.like(vlogId)
 

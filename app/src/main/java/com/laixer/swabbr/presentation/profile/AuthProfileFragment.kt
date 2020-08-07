@@ -21,7 +21,6 @@ import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.UserVlogItem
-import com.laixer.swabbr.presentation.model.VlogItem
 import kotlinx.android.synthetic.main.fragment_auth_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.no_vlogs_text
 import kotlinx.android.synthetic.main.fragment_profile.swipeRefreshLayout
@@ -93,11 +92,14 @@ class AuthProfileFragment : AuthFragment() {
     }
 
     private fun updateProfile(item: UserItem?) {
-        item?.let {
-            userAvatar.loadAvatar(it.profileImage, it.id)
-            userUsername.text = requireContext().getString(R.string.nickname, it.nickname)
-            userName.text = requireContext().getString(R.string.full_name, it.firstName, it.lastName)
-            vlog_count.text = requireContext().getString(R.string.vlog_count, it.totalVlogs)
+        item?.let { item ->
+            userAvatar.loadAvatar(item.profileImage, item.id)
+            nickname.text = requireContext().getString(R.string.nickname, item.nickname)
+            item.firstName?.let {
+                username.text = requireContext().getString(R.string.full_name, it, item.lastName)
+                username.visibility = View.VISIBLE
+            }
+            vlog_count.text = requireContext().getString(R.string.vlog_count, item.totalVlogs)
         }
     }
 

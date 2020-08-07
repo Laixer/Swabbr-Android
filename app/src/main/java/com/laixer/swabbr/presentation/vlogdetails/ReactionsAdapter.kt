@@ -1,6 +1,7 @@
 package com.laixer.swabbr.presentation.vlogdetails
 
 import android.content.Context
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -9,7 +10,11 @@ import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.ReactionItem
+import kotlinx.android.synthetic.main.fragment_registration.view.*
+import kotlinx.android.synthetic.main.include_user_info.view.*
 import kotlinx.android.synthetic.main.include_user_info_small.view.*
+import kotlinx.android.synthetic.main.include_user_info_small.view.userAvatar
+import kotlinx.android.synthetic.main.include_user_info_small.view.userName
 import kotlinx.android.synthetic.main.item_list_reaction.view.*
 
 class ReactionsAdapter(private val context: Context) :
@@ -23,8 +28,13 @@ class ReactionsAdapter(private val context: Context) :
 
         fun bind(item: ReactionItem) {
             itemView.userAvatar.loadAvatar(item.profileImage, item.userId)
-            itemView.userName.text = context.getString(R.string.nickname, item.nickname)
-            itemView.reactionPostDate.text = item.datePosted.toString()
+
+            item.firstname?.let {
+                itemView.username.text = context.getString(R.string.full_name, it, item.lastname)
+                itemView.username.visibility = View.VISIBLE
+            }
+            itemView.nickname.text = context.getString(R.string.nickname, item.nickname)
+            itemView.reactionPostDate.text = context.getString(R.string.date, item.datePosted.dayOfMonth, item.datePosted.monthValue, item.datePosted.year)
         }
     }
 }

@@ -105,7 +105,7 @@ val viewModelModule: Module = module {
     viewModel { AuthViewModel(authUseCase = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogsUseCase = get()) }
-    viewModel { VlogDetailsViewModel(userVlogsUseCase = get(), reactionsUseCase = get()) }
+    viewModel { VlogDetailsViewModel(userVlogsUseCase = get(), reactionsUseCase = get(), vlogsUseCase = get()) }
     viewModel { SearchViewModel(usersUseCase = get()) }
     viewModel { SettingsViewModel(settingsUseCase = get()) }
 }

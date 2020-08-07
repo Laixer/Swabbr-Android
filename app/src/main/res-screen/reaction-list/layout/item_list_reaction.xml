@@ -1,25 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/content_margin"
-    android:orientation="vertical">
+    app:cardBackgroundColor="@color/color_window_background_transparent"
+    app:cardCornerRadius="40dp"
+    app:cardElevation="20dp">
 
-    <include layout="@layout/include_user_info_small" />
-
-    <View
-        style="@style/Divider"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginTop="@dimen/divider_margin"
-        android:layout_marginBottom="@dimen/divider_margin" />
-
-    <TextView
-        android:id="@+id/reactionPostDate"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/SmallTextAppearance"
-        tools:text="Reaction Post Date" />
+        android:layout_margin="@dimen/content_margin"
+        android:orientation="horizontal">
 
-</LinearLayout>
+        <include
+            layout="@layout/include_user_info"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+
+        <View
+            style="@style/Divider"
+            android:layout_width="4px"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="@dimen/divider_margin" />
+
+        <TextView
+            android:id="@+id/reactionPostDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:layout_marginEnd="@dimen/content_margin"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            tools:text="Reaction Post Date" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
