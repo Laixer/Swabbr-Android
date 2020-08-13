@@ -2,9 +2,7 @@ package com.laixer.swabbr.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
@@ -14,11 +12,12 @@ import com.google.firebase.messaging.RemoteMessage
 import com.laixer.cache.MemoryCache
 import com.laixer.swabbr.R
 import com.laixer.swabbr.services.notifications.NotificationHandler
-import com.laixer.swabbr.services.notifications.protocols.BaseNotification
+import com.laixer.swabbr.services.notifications.protocols.V1
+import java.lang.Exception
 
 class FirebaseService : FirebaseMessagingService() {
 
-    private val notificationHandler = NotificationHandler()
+    private val notificationHandler by lazy { NotificationHandler() }
 
     /**
      * Called when message is received.
@@ -28,11 +27,12 @@ class FirebaseService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         Log.d(TAG, "From: ${remoteMessage.from}")
-
-        // Check if message contains a notification payload.
-        remoteMessage.data.let {
-            val notification = notificationHandler.parse(remoteMessage.data)
-            sendNotification(notification)
+        remoteMessage.data["Payload"]?.let {
+            try {
+                sendNotification(notificationHandler.parse(it))
+            } catch (e: Exception) {
+                Log.e(TAG, e.message!!)
+            }
         }
     }
 
@@ -42,9 +42,7 @@ class FirebaseService : FirebaseMessagingService() {
      * is initially generated so this is where you would retrieve the token.
      */
     override fun onNewToken(token: String) {
-
         Log.d(TAG, "Refreshed Firebase token: $token")
-
         // Manage the Firebase subscription on the server side
     }
 
@@ -65,10 +63,9 @@ class FirebaseService : FirebaseMessagingService() {
      *
      * @param notification FCM message body received.
      */
-    private fun sendNotification(notification: BaseNotification?) {
+    private fun sendNotification(notification: V1.BaseNotification?) {
         // Set default intent
         var pendingIntent = notificationHandler.getPendingIntent(baseContext, notification)
-
         val channelId = getString(R.string.default_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
@@ -78,10 +75,8 @@ class FirebaseService : FirebaseMessagingService() {
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
-
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
         // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -107,7 +102,6 @@ class FirebaseService : FirebaseMessagingService() {
         private var cache: MemoryCache<String?> = MemoryCache()
 
         fun createChannelAndHandleNotifications(context: Context) {
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val channel = NotificationChannel(
                     NOTIFICATION_CHANNEL_ID,

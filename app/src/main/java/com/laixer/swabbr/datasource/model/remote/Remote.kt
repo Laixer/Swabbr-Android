@@ -27,6 +27,12 @@ interface VlogsApi {
 
     @GET("vlogs/{vlogId}/vlog_likes")
     fun getLikes(@Path("vlogId") vlogId: UUID): Single<LikeListEntity>
+
+    @POST("vlogs/{vlogId}/like")
+    fun like(@Path("vlogId") vlogId: UUID): Completable
+
+    @POST("vlogs/{vlogId}/unlike")
+    fun unlike(@Path("vlogId") vlogId: UUID): Completable
 }
 
 interface LivestreamApi {

@@ -2,7 +2,6 @@ package com.laixer.swabbr.data.repository
 
 import com.laixer.swabbr.data.datasource.VlogCacheDataSource
 import com.laixer.swabbr.data.datasource.VlogRemoteDataSource
-import com.laixer.swabbr.domain.model.Like
 import com.laixer.swabbr.domain.model.LikeList
 import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.repository.VlogRepository
@@ -32,11 +31,9 @@ class VlogRepositoryImpl constructor(
 
     override fun getLikes(vlogId: UUID): Single<LikeList> = remoteDataSource.getLikes(vlogId)
 
-    override fun like(vlogId: UUID): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun like(vlogId: UUID): Completable =
+        remoteDataSource.like(vlogId)
 
-    override fun unlike(vlogId: UUID): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun unlike(vlogId: UUID): Completable =
+        remoteDataSource.unlike(vlogId)
 }

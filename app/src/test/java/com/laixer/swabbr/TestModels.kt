@@ -283,7 +283,7 @@ object Notifications {
         contentType = "json",
         timestamp = "2020-05-11T12:01:36.440Z",
         userAgent = "agent",
-        data = V1.FollowedProfileLivePayload(
+        data = V1.FollowedProfileLiveData(
             liveUserId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             liveLivestreamId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             liveVlogId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -300,7 +300,7 @@ object Notifications {
         contentType = "json",
         timestamp = "2020-05-11T12:01:36.440Z",
         userAgent = "agent",
-        data = V1.FollowedProfileVlogPostedPayload(
+        data = V1.FollowedProfileVlogPostedData(
             vlogId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             vlogOwnerUserId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             title = "Someone posted a new vlog!",
@@ -317,7 +317,7 @@ object Notifications {
         contentType = "json",
         timestamp = "2020-05-11T12:01:36.440Z",
         userAgent = "agent",
-        data = V1.VlogRecordRequestPayload(
+        data = V1.VlogRecordRequestData(
             requestMoment = "2020-05-11T12:05:53.451Z",
             requestTimeout = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             livestreamId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -336,7 +336,7 @@ object Notifications {
         contentType = "json",
         timestamp = "2020-05-11T12:01:36.440Z",
         userAgent = "agent",
-        data = V1.VlogGainedLikesPayload(
+        data = V1.VlogGainedLikesData(
             vlogId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             userThatLikedId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             title = "Your vlog gained new likes!",
@@ -352,7 +352,7 @@ object Notifications {
         contentType = "json",
         timestamp = "2020-05-11T12:01:36.440Z",
         userAgent = "agent",
-        data = V1.VlogNewReactionPayload(
+        data = V1.VlogNewReactionData(
             vlogId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             reactionId = "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             title = "Your vlog has a new reaction",

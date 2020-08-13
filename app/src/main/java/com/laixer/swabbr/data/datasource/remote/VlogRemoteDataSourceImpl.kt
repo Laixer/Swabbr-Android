@@ -25,11 +25,7 @@ class VlogRemoteDataSourceImpl constructor(
     override fun getLikes(vlogId: UUID): Single<LikeList> = api.getLikes(vlogId)
         .map { it.mapToDomain() }
 
-    override fun like(vlogId: UUID): Completable {
-        TODO("Not yet implemented")
-    }
+    override fun like(vlogId: UUID): Completable = api.like(vlogId)
 
-    override fun unlike(vlogId: UUID): Completable {
-        TODO("Not yet implemented")
-    }
+    override fun unlike(vlogId: UUID): Completable = api.unlike(vlogId)
 }
