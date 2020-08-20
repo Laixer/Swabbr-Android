@@ -35,13 +35,13 @@ import com.laixer.swabbr.data.repository.ReactionRepositoryImpl
 import com.laixer.swabbr.data.repository.SettingsRepositoryImpl
 import com.laixer.swabbr.data.repository.UserRepositoryImpl
 import com.laixer.swabbr.data.repository.VlogRepositoryImpl
-import com.laixer.swabbr.datasource.model.remote.AuthApi
-import com.laixer.swabbr.datasource.model.remote.FollowApi
-import com.laixer.swabbr.datasource.model.remote.LivestreamApi
-import com.laixer.swabbr.datasource.model.remote.ReactionsApi
-import com.laixer.swabbr.datasource.model.remote.SettingsApi
-import com.laixer.swabbr.datasource.model.remote.UsersApi
-import com.laixer.swabbr.datasource.model.remote.VlogsApi
+import com.laixer.swabbr.data.datasource.model.remote.AuthApi
+import com.laixer.swabbr.data.datasource.model.remote.FollowApi
+import com.laixer.swabbr.data.datasource.model.remote.LivestreamApi
+import com.laixer.swabbr.data.datasource.model.remote.ReactionsApi
+import com.laixer.swabbr.data.datasource.model.remote.SettingsApi
+import com.laixer.swabbr.data.datasource.model.remote.UsersApi
+import com.laixer.swabbr.data.datasource.model.remote.VlogsApi
 import com.laixer.swabbr.domain.model.AuthUser
 import com.laixer.swabbr.domain.model.Reaction
 import com.laixer.swabbr.domain.model.Settings
@@ -67,11 +67,11 @@ import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
 import com.laixer.swabbr.domain.usecase.VlogsUseCase
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
-import com.laixer.swabbr.presentation.recording.LivestreamViewModel
+import com.laixer.swabbr.presentation.livestream.LivestreamViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
-import com.laixer.swabbr.presentation.settings.SettingsViewModel
-import com.laixer.swabbr.presentation.vlogdetails.VlogDetailsViewModel
-import com.laixer.swabbr.presentation.vloglist.VlogListViewModel
+import com.laixer.swabbr.presentation.profile.settings.SettingsViewModel
+import com.laixer.swabbr.presentation.vlogs.details.VlogDetailsViewModel
+import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -105,7 +105,14 @@ val viewModelModule: Module = module {
     viewModel { AuthViewModel(authUseCase = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogsUseCase = get()) }
-    viewModel { VlogDetailsViewModel(userVlogsUseCase = get(), reactionsUseCase = get(), vlogsUseCase = get()) }
+    viewModel {
+        VlogDetailsViewModel(
+            userVlogsUseCase = get(),
+            userVlogUseCase = get(),
+            reactionsUseCase = get(),
+            vlogsUseCase = get()
+        )
+    }
     viewModel { SearchViewModel(usersUseCase = get()) }
     viewModel { SettingsViewModel(settingsUseCase = get()) }
 }

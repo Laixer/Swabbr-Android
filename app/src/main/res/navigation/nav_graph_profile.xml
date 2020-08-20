@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/settings_dest"
-        android:name="com.laixer.swabbr.presentation.settings.SettingsFragment"
+        android:name="com.laixer.swabbr.presentation.profile.settings.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings">
     </fragment>

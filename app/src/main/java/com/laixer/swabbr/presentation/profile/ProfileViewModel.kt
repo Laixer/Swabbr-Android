@@ -13,7 +13,6 @@ import com.laixer.swabbr.domain.usecase.UsersUseCase
 import com.laixer.swabbr.presentation.model.FollowStatusItem
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.UserVlogItem
-import com.laixer.swabbr.presentation.model.VlogItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -46,7 +45,10 @@ class ProfileViewModel constructor(
             .get(userId, refresh)
             .doOnSubscribe { profileVlogs.setLoading() }
             .subscribeOn(Schedulers.io())
-            .map { it.mapToPresentation() }
+            .map { list ->
+                list.sortedByDescending { it.second.dateStarted }
+                    .mapToPresentation()
+            }
             .subscribe(
                 { profileVlogs.setSuccess(it) },
                 { profileVlogs.setError(it.message) }

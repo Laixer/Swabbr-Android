@@ -76,7 +76,6 @@
                     android:layout_width="@dimen/small_icon_size"
                     android:layout_height="@dimen/small_icon_size"
                     android:layout_gravity="center"
-
                     android:background="@drawable/tb_love_it"
                     android:backgroundTint="@color/color_white"
                     android:text=""

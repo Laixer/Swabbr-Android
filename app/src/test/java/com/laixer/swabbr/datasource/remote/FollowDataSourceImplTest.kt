@@ -7,7 +7,7 @@ import com.laixer.swabbr.data.datasource.FollowCacheDataSource
 import com.laixer.swabbr.data.datasource.FollowRemoteDataSource
 import com.laixer.swabbr.data.datasource.cache.FollowCacheDataSourceImpl
 import com.laixer.swabbr.data.datasource.remote.FollowRemoteDataSourceImpl
-import com.laixer.swabbr.datasource.model.remote.FollowApi
+import com.laixer.swabbr.data.datasource.model.remote.FollowApi
 import com.laixer.swabbr.domain.model.User
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify

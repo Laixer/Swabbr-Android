@@ -1,8 +1,9 @@
 package com.laixer.swabbr.data.datasource.remote
 
 import com.laixer.swabbr.data.datasource.VlogRemoteDataSource
-import com.laixer.swabbr.datasource.model.mapToDomain
-import com.laixer.swabbr.datasource.model.remote.VlogsApi
+import com.laixer.swabbr.data.datasource.model.WatchVlogResponse
+import com.laixer.swabbr.data.datasource.model.mapToDomain
+import com.laixer.swabbr.data.datasource.model.remote.VlogsApi
 import com.laixer.swabbr.domain.model.LikeList
 import com.laixer.swabbr.domain.model.Vlog
 import io.reactivex.Completable
@@ -28,4 +29,6 @@ class VlogRemoteDataSourceImpl constructor(
     override fun like(vlogId: UUID): Completable = api.like(vlogId)
 
     override fun unlike(vlogId: UUID): Completable = api.unlike(vlogId)
+
+    override fun watch(vlogId: UUID): Single<WatchVlogResponse> = api.watch(vlogId)
 }

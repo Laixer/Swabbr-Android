@@ -1,11 +1,11 @@
 package com.laixer.swabbr
 
-import com.laixer.swabbr.datasource.model.*
+import com.laixer.swabbr.data.datasource.model.*
 import com.laixer.swabbr.domain.model.*
 import com.laixer.swabbr.presentation.model.*
 import com.laixer.swabbr.services.notifications.ActionType
 import com.laixer.swabbr.services.notifications.protocols.BaseNotification
-import com.laixer.swabbr.services.notifications.protocols.V1
+import com.laixer.swabbr.services.notifications.V1
 import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.ZonedDateTime

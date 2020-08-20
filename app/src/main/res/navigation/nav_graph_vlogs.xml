@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/vlog_list_dest"
-        android:name="com.laixer.swabbr.presentation.vloglist.VlogListFragment"
+        android:name="com.laixer.swabbr.presentation.vlogs.list.VlogListFragment"
         android:label="@string/vlogs"
         tools:layout="@layout/fragment_vlog_list" />
 
     <fragment
         android:id="@+id/vlog_details_dest"
-        android:name="com.laixer.swabbr.presentation.vlogdetails.VlogDetailsFragment"
+        android:name="com.laixer.swabbr.presentation.vlogs.details.VlogDetailsFragment"
         android:label="Vlog"
         tools:layout="@layout/fragment_vlog_details">
         <argument
@@ -21,7 +21,13 @@
             app:argType="string" />
         <argument
             android:name="userId"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="livestreamId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
         <deepLink
             android:id="@+id/deepLink"
             android:autoVerify="true"

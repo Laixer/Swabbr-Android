@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.navigation.NavController
-import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.findNavController
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
@@ -17,8 +15,8 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.UserVlogItem
-import com.laixer.swabbr.presentation.vloglist.VlogListAdapter
-import com.laixer.swabbr.presentation.vloglist.VlogListViewModel
+import com.laixer.swabbr.presentation.vlogs.list.VlogListAdapter
+import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 

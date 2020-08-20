@@ -16,5 +16,6 @@
 <resources>
     <string name="capture">Capture</string>
     <string name="connecting">Connecting…</string>
+    <string name="retrieving_credentials">Retrieving connection info…</string>
     <string name="get_ready">Get ready!</string>
 </resources>

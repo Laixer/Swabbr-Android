@@ -6,12 +6,12 @@
     app:startDestination="@id/dashboard_dest">
     <fragment
         android:id="@+id/streaming_dest"
-        android:name="com.laixer.swabbr.presentation.recording.StreamingFragment"
+        android:name="com.laixer.swabbr.presentation.livestream.LivestreamFragment"
         android:label="@string/connecting"
         tools:layout="@layout/fragment_record">
         <argument
-            android:name="streamRequest"
-            app:argType="com.laixer.swabbr.presentation.recording.StreamingFragment$StreamRequest" />
+            android:name="livestreamId"
+            app:argType="string" />
     </fragment>
 
     <fragment

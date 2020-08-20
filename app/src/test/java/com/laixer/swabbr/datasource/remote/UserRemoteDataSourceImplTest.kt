@@ -3,7 +3,7 @@ package com.laixer.swabbr.datasource.remote
 import com.laixer.swabbr.Entities
 import com.laixer.swabbr.Models
 import com.laixer.swabbr.data.datasource.remote.UserRemoteDataSourceImpl
-import com.laixer.swabbr.datasource.model.remote.UsersApi
+import com.laixer.swabbr.data.datasource.model.remote.UsersApi
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever

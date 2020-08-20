@@ -102,6 +102,8 @@ dependencies {
   implementation Libraries.rxjavaAdapter
   implementation Libraries.workmanagerRxjava
 
+  implementation 'com.plattysoft.leonids:LeonidsLib:1.3.2'
+
   // UI
   implementation JetpackLibraries.swiperefreshLayout
   implementation JetpackLibraries.constraintLayout

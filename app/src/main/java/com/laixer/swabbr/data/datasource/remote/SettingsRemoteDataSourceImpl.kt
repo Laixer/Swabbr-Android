@@ -1,9 +1,9 @@
 package com.laixer.swabbr.data.datasource.remote
 
 import com.laixer.swabbr.data.datasource.SettingsRemoteDataSource
-import com.laixer.swabbr.datasource.model.mapToData
-import com.laixer.swabbr.datasource.model.mapToDomain
-import com.laixer.swabbr.datasource.model.remote.SettingsApi
+import com.laixer.swabbr.data.datasource.model.mapToData
+import com.laixer.swabbr.data.datasource.model.mapToDomain
+import com.laixer.swabbr.data.datasource.model.remote.SettingsApi
 import com.laixer.swabbr.domain.model.Settings
 import io.reactivex.Single
 

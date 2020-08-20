@@ -404,6 +404,7 @@ class LiveVideoBroadcaster(
     override fun stopBroadcasting() = launch(Dispatchers.IO) {
         require(isRecording) { "can't stop broadcast, broadcast was never started" }
         // Stop the renderer
+        session.stopRepeating()
         mRenderer.stopRecording()
         // Stop the adaptive stream timer
         adaptiveStreamingTimer?.cancel()

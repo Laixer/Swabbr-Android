@@ -2,7 +2,6 @@ package com.laixer.swabbr.services.notifications
 
 import com.laixer.swabbr.Notifications
 import com.laixer.swabbr.services.notifications.protocols.BaseNotification
-import com.laixer.swabbr.services.notifications.protocols.V1
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
@@ -18,7 +17,7 @@ class NotificationHandlerTest {
     fun setUp() {
         moshi = Moshi.Builder()
             .add(
-                PolymorphicJsonAdapterFactory.of(V1.BaseNotificationData::class.java, "clickAction")
+                PolymorphicJsonAdapterFactory.of(V1.NotificationData::class.java, "clickAction")
                     .withSubtype(V1.FollowedProfileLiveData::class.java, ActionType.FOLLOWED_PROFILE_LIVE.name)
                     .withSubtype(V1.FollowedProfileVlogPostedData::class.java, ActionType.FOLLOWED_PROFILE_VLOG_POSTED.name)
                     .withSubtype(V1.VlogGainedLikesData::class.java, ActionType.VLOG_GAINED_LIKES.name)

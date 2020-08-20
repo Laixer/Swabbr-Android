@@ -1,8 +1,8 @@
 package com.laixer.swabbr.data.datasource.remote
 
 import com.laixer.swabbr.data.datasource.FollowRemoteDataSource
-import com.laixer.swabbr.datasource.model.mapToDomain
-import com.laixer.swabbr.datasource.model.remote.FollowApi
+import com.laixer.swabbr.data.datasource.model.mapToDomain
+import com.laixer.swabbr.data.datasource.model.remote.FollowApi
 import com.laixer.swabbr.domain.model.FollowRequest
 import com.laixer.swabbr.domain.model.FollowStatus
 import com.laixer.swabbr.domain.model.User

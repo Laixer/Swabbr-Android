@@ -1,6 +1,6 @@
 package com.laixer.swabbr.domain.repository
 
-import com.laixer.swabbr.domain.model.Like
+import com.laixer.swabbr.data.datasource.model.WatchVlogResponse
 import com.laixer.swabbr.domain.model.LikeList
 import com.laixer.swabbr.domain.model.Vlog
 import io.reactivex.Completable
@@ -20,4 +20,6 @@ interface VlogRepository {
     fun like(vlogId: UUID): Completable
 
     fun unlike(vlogId: UUID): Completable
+
+    fun watch(vlogId: UUID): Single<WatchVlogResponse>
 }

@@ -1,6 +1,5 @@
 package com.laixer.swabbr.presentation
 
-import android.accounts.AccountManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -19,7 +18,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 /** Fragment that forces authentication on create, view creation and resume **/
 open class AuthFragment : Fragment() {
 
-//    private val am: AccountManager = AccountManager.get(requireContext())
+    //    private val am: AccountManager = AccountManager.get(requireContext())
     private val options = Bundle()
     private val authVm: AuthViewModel by sharedViewModel()
     protected val authenticatedUser: AuthUserItem by lazy { authVm.authenticatedUser.value!!.data!! }
@@ -41,7 +40,7 @@ open class AuthFragment : Fragment() {
     }
 
     private fun checkAuthentication(res: Resource<AuthUserItem?>) {
-//        val accounts = am.getAccountsByType(ACCOUNT_TYPE)
+        // val accounts = am.getAccountsByType(ACCOUNT_TYPE)
         try {
             when (res.state) {
                 ResourceState.LOADING -> {

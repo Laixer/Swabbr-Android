@@ -12,7 +12,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.laixer.cache.MemoryCache
 import com.laixer.swabbr.R
 import com.laixer.swabbr.services.notifications.NotificationHandler
-import com.laixer.swabbr.services.notifications.protocols.V1
+import com.laixer.swabbr.services.notifications.V1
 import java.lang.Exception
 
 class FirebaseService : FirebaseMessagingService() {
@@ -63,7 +63,7 @@ class FirebaseService : FirebaseMessagingService() {
      *
      * @param notification FCM message body received.
      */
-    private fun sendNotification(notification: V1.BaseNotification?) {
+    private fun sendNotification(notification: V1.Notification?) {
         // Set default intent
         var pendingIntent = notificationHandler.getPendingIntent(baseContext, notification)
         val channelId = getString(R.string.default_notification_channel_id)

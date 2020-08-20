@@ -2,6 +2,7 @@ package com.laixer.swabbr.data.repository
 
 import com.laixer.swabbr.data.datasource.VlogCacheDataSource
 import com.laixer.swabbr.data.datasource.VlogRemoteDataSource
+import com.laixer.swabbr.data.datasource.model.WatchVlogResponse
 import com.laixer.swabbr.domain.model.LikeList
 import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.repository.VlogRepository
@@ -36,4 +37,6 @@ class VlogRepositoryImpl constructor(
 
     override fun unlike(vlogId: UUID): Completable =
         remoteDataSource.unlike(vlogId)
+
+    override fun watch(vlogId: UUID): Single<WatchVlogResponse> = remoteDataSource.watch(vlogId)
 }
