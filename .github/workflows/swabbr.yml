@@ -41,7 +41,7 @@ jobs:
           java-version: 1.8
 
       - name: Copy google-services.json
-        run: 'echo "$GOOGLE_SERVICES" > google-services.json'
+        run: 'echo "$GOOGLE_SERVICES" > app/google-services.json'
         env:
           GOOGLE_SERVICES: ${{secrets.GOOGLE_SERVICES_JSON}}
 
