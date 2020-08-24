@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [master]
 
-env:
-  GOOGLE_SERVICES: 
-
 jobs:
   build: 
     name: Build
@@ -23,7 +20,7 @@ jobs:
           java-version: 1.8
 
       - name: Copy google-services.json
-        run: 'echo "$GOOGLE_SERVICES" > google-services.json'
+        run: 'echo "$GOOGLE_SERVICES" > app/google-services.json'
         env:
           GOOGLE_SERVICES: ${{secrets.GOOGLE_SERVICES_JSON}}
 
@@ -44,7 +41,7 @@ jobs:
           java-version: 1.8
 
       - name: Copy google-services.json
-        run: 'echo "$GOOGLE_SERVICES" > google-services.json'
+        run: 'echo "$GOOGLE_SERVICES" > app/google-services.json'
         env:
           GOOGLE_SERVICES: ${{secrets.GOOGLE_SERVICES_JSON}}
 
