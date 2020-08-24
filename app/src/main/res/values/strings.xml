@@ -39,9 +39,30 @@
     <string name="date">%1$02d/%2$02d/%3$d</string>
     <string name="vlogTransition">vlogtransition</string>
     <string name="default_notification_channel_id">channelid</string>
-    <string name="default_notification_title">Notification Title</string>
+    <string name="default_notification_title">New Swabbr Notification</string>
+    <string name="default_notification_message">Click here!</string>
+
 
     <string name="status_error">An error occurred.</string>
     <string name="timer_value">%1$02d:%2$02d</string>
+
+    <string name="notification_title_vlogrecordrequest">It\'s time to vlog!</string>
+    <string name="notification_message_vlogrecordrequest">"Don't let your followers wait, click here to start streaming.</string>
+
+    <string name="notification_title_followedprofilelive">One of your friends just started streaming!</string>
+    <string name="notification_message_followedprofilelive">Click here to catch them live.</string>
+
+    <string name="notification_title_followedprofilevlogposted">Your friend just posted a new vlog!</string>
+    <string name="notification_message_followedprofilevlogposted">Click here and be the first to see it.</string>
+
+    <string name="notification_title_vloggainedlikes">Your vlog is getting popular!</string>
+    <string name="notification_message_vloggainedlikes">You just received some new likes, check it out.</string>
+
+    <string name="notification_title_vlognewreaction">People are talking about you!</string>
+    <string name="notification_message_vlognewreaction">Click here to see their reactions.</string>
+
+
+
+
 
 </resources>

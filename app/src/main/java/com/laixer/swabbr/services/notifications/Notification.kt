@@ -41,20 +41,18 @@ class V1 {
     )
 
     sealed class NotificationData(
-        @Json(name = "Title") open val title: String,
-        @Json(name = "Message") open val message: String
+        @Json(name = "Title") open val title: Int,
+        @Json(name = "Message") open val message: Int
     ) {
 
         abstract fun createPendingIntent(context: Context): PendingIntent
 
         data class VlogRecordRequest(
-            @Json(name = "Title") override val title: String = "It's time to vlog!",
-            @Json(name = "Message") override val message: String = "Don't let your followers wait, click here to start streaming.",
             @Json(name = "RequestMoment") val requestMoment: String,
             @Json(name = "RequestTimeout") val requestTimeout: String,
             @Json(name = "LivestreamId") val livestreamId: String,
             @Json(name = "VlogId") val vlogId: String
-        ) : NotificationData(title, message) {
+        ) : NotificationData(R.string.notification_title_vlogrecordrequest, R.string.notification_message_vlogrecordrequest) {
 
             override fun createPendingIntent(context: Context): PendingIntent = NavDeepLinkBuilder(context)
                 .setGraph(R.navigation.nav_graph_app)
@@ -63,12 +61,10 @@ class V1 {
         }
 
         data class FollowedProfileLive(
-            @Json(name = "Title") override val title: String = "One of your friends just started streaming!",
-            @Json(name = "Message") override val message: String = "Click here to catch them live.",
             @Json(name = "LiveUserId") val liveUserId: String,
             @Json(name = "LiveVlogId") val liveVlogId: String,
             @Json(name = "LiveLivestreamId") val liveLivestreamId: String
-        ) : NotificationData(title, message) {
+        ) : NotificationData(R.string.notification_title_followedprofilelive, R.string.notification_message_followedprofilelive) {
 
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
@@ -79,11 +75,9 @@ class V1 {
         }
 
         data class FollowedProfileVlogPosted(
-            @Json(name = "Title") override val title: String = "Your friend just posted a new vlog!",
-            @Json(name = "Message") override val message: String = "Click here and be the first to see it.",
             @Json(name = "VlogId") val vlogId: String,
             @Json(name = "VlogOwnerUserId") val vlogOwnerUserId: String
-        ) : NotificationData(title, message) {
+        ) : NotificationData(R.string.notification_title_followedprofilevlogposted, R.string.notification_message_followedprofilevlogposted) {
 
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
@@ -94,11 +88,9 @@ class V1 {
         }
 
         data class VlogGainedLikes(
-            @Json(name = "Title") override val title: String = "Your vlog is getting popular!",
-            @Json(name = "Message") override val message: String = "You just received some new likes, check it out.",
             @Json(name = "VlogId") val vlogId: String,
             @Json(name = "UserThatLikedId") val userThatLikedId: String
-        ) : NotificationData(title, message) {
+        ) : NotificationData(R.string.notification_title_vloggainedlikes, R.string.notification_message_vloggainedlikes) {
 
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
@@ -109,11 +101,9 @@ class V1 {
         }
 
         data class VlogNewReaction(
-            @Json(name = "Title") override val title: String = "People are talking about you!",
-            @Json(name = "Message") override val message: String = "Click here to see their reactions.",
             @Json(name = "VlogId") val vlogId: String,
             @Json(name = "ReactionId") val reactionId: String
-        ) : NotificationData(title, message) {
+        ) : NotificationData(R.string.notification_title_vlognewreaction, R.string.notification_message_vlognewreaction) {
 
             // TODO: Actually direct to the specified reaction
             override fun createPendingIntent(context: Context): PendingIntent =

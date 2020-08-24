@@ -68,10 +68,19 @@ class FirebaseService : FirebaseMessagingService() {
         var pendingIntent = notificationHandler.getPendingIntent(baseContext, notification)
         val channelId = getString(R.string.default_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+        val title = notification?.data?.title?.let {
+            getString(it)
+        } ?: getString(R.string.default_notification_title)
+
+        val message = notification?.data?.message?.let {
+            getString(it)
+        } ?: getString(R.string.default_notification_message)
+
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_stat_ic_notification)
-            .setContentTitle(notification?.data?.title ?: getString(R.string.default_notification_title))
-            .setContentText(notification?.data?.message)
+            .setSmallIcon(R.drawable.ic_notification_icon)
+            .setContentTitle(title)
+            .setContentText(message)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
