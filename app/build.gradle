@@ -4,14 +4,10 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 
-
-def localPropertiesFile = rootProject.file("local.properties")
-def localProperties = new Properties()
-localProperties.load(new FileInputStream(localPropertiesFile))
-
 android {
   compileSdkVersion Versions.compileSdk
   buildToolsVersion Versions.buildTools
+
   defaultConfig {
     applicationId ApplicationId.id
     minSdkVersion Versions.minSdk
@@ -34,26 +30,17 @@ android {
     jvmTarget = JavaVersion.VERSION_1_8.toString()
   }
 
-  flavorDimensions "default"
-
-  productFlavors {
-    dev {
-      dimension "default"
-
-    }
-    prod {
-      dimension "default"
-
-    }
-  }
-
   buildTypes {
     release {
       minifyEnabled true
+
+      buildConfigField "String", "API_ENDPOINT", "\"https://swabbr.azurewebsites.net/api/v1/\""
     }
     debug {
       debuggable true
       signingConfig signingConfigs.debug
+
+      buildConfigField "String", "API_ENDPOINT", "\"https://swabbr-api-development.azurewebsites.net/api/1/\""
     }
   }
 

@@ -22,12 +22,12 @@ class SearchAdapter(val context: Context, val onClick: (UserItem) -> Unit) :
     inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_user)) {
 
         fun bind(item: UserItem) {
-            itemView.userAvatar.loadAvatar(item.profileImage, item.id)
-            itemView.nickname.text = context.getString(R.string.nickname, item.nickname)
+            itemView.user_avatar.loadAvatar(item.profileImage, item.id)
+            itemView.user_nickname.text = context.getString(R.string.nickname, item.nickname)
 
             item.firstName?.let {
-                itemView.username.text = context.getString(R.string.full_name, it, item.lastName)
-                itemView.username.visibility = View.VISIBLE
+                itemView.user_username.text = context.getString(R.string.full_name, it, item.lastName)
+                itemView.user_username.visibility = View.VISIBLE
             }
 
             itemView.setOnClickListener { onClick.invoke(item) }

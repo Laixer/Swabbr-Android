@@ -67,7 +67,7 @@ class VlogFragment : AuthFragment() {
 
         exoPlayer = ExoPlayerFactory.newSimpleInstance(requireContext())
 
-        reactionsAdapter = ReactionsAdapter(requireContext())
+        reactionsAdapter = ReactionsAdapter()
 
         with(requireArguments()) {
             userVlogItem = getSerializable(PROFILEVLOGITEM_KEY) as UserVlogItem
@@ -126,9 +126,9 @@ class VlogFragment : AuthFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         layoutInflater.inflate(R.layout.item_vlog, container, false).apply {
-            reversed_userAvatar.loadAvatar(userVlogItem.profileImage, userVlogItem.userId)
-            reversed_userUsername.text = requireContext().getString(R.string.nickname, userVlogItem.nickname)
-            reversed_userName.text =
+            user_avatar.loadAvatar(userVlogItem.profileImage, userVlogItem.userId)
+            user_nickname.text = requireContext().getString(R.string.nickname, userVlogItem.nickname)
+            user_username.text =
                 requireContext().getString(R.string.full_name, userVlogItem.firstName, userVlogItem.lastName)
         }
 

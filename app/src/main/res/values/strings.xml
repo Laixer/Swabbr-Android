@@ -42,5 +42,6 @@
     <string name="default_notification_title">Notification Title</string>
 
     <string name="status_error">An error occurred.</string>
+    <string name="timer_value">%1$02d:0%2$02d</string>
 
 </resources>

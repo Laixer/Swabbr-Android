@@ -56,7 +56,7 @@ class AuthProfileFragment : AuthFragment() {
         injectFeature()
         updateProfile(authenticatedUser.user)
 
-        profileVlogsAdapter = ProfileVlogsAdapter(requireContext(), onClick)
+        profileVlogsAdapter = ProfileVlogsAdapter(onClick)
 
         profilevlogsRecyclerView.apply {
             isNestedScrollingEnabled = false
@@ -93,11 +93,11 @@ class AuthProfileFragment : AuthFragment() {
 
     private fun updateProfile(item: UserItem?) {
         item?.let { item ->
-            userAvatar.loadAvatar(item.profileImage, item.id)
-            nickname.text = requireContext().getString(R.string.nickname, item.nickname)
+            user_avatar.loadAvatar(item.profileImage, item.id)
+            user_nickname.text = requireContext().getString(R.string.nickname, item.nickname)
             item.firstName?.let {
-                username.text = requireContext().getString(R.string.full_name, it, item.lastName)
-                username.visibility = View.VISIBLE
+                user_username.text = requireContext().getString(R.string.full_name, it, item.lastName)
+                user_username.visibility = View.VISIBLE
             }
             vlog_count.text = requireContext().getString(R.string.vlog_count, item.totalVlogs)
         }

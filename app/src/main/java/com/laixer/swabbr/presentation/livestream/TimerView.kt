@@ -13,12 +13,14 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
 class TimerView(context: Context, attrs: AttributeSet?) : AppCompatTextView(context, attrs) {
+
     var mTimerStart = 0L
     private var mTimerThread: ScheduledExecutorService? = null
     private var events = ArrayList<Pair<Pair<Int, Int>, () -> Unit>>()
     private var progressBarList: ArrayList<Pair<ProgressBar, () -> Unit>> = ArrayList()
 
     interface TimerProvider {
+
         fun getTimecode(): Long
         fun getDuration(): Long
     }
@@ -59,12 +61,10 @@ class TimerView(context: Context, attrs: AttributeSet?) : AppCompatTextView(cont
                 val durationMs = mTimerProvider.getDuration()
                 val timecodeMs = mTimerProvider.getTimecode()
                 val timecodeTotalSeconds = timecodeMs / MILLISECONDS_PER_SECOND
-                val timecodeMinutes = ((timecodeTotalSeconds / SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE).toInt()
-                val timecodeSeconds = (timecodeTotalSeconds % SECONDS_PER_MINUTE).toInt()
+                val minutes = ((timecodeTotalSeconds / SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE).toInt()
+                val seconds = (timecodeTotalSeconds % SECONDS_PER_MINUTE).toInt()
 
-                text = genTimerDisplay(
-                    durationMs, timecodeMs, timecodeSeconds, timecodeMinutes
-                )
+                text = context.getString(R.string.timer_value, minutes, seconds)
 
                 progressBarList.map {
                     it.first.progress = timecodeMs.toInt() / 100
@@ -75,7 +75,7 @@ class TimerView(context: Context, attrs: AttributeSet?) : AppCompatTextView(cont
 
                 progressBarList = progressBarList.filter { it.first.progress < it.first.max } as ArrayList
 
-                events.filter { it.first.first == timecodeMinutes && it.first.second == timecodeSeconds }
+                events.filter { it.first.first == minutes && it.first.second == seconds }
                     .map { it.second() }
             }
         }, refreshInterval, refreshInterval, TimeUnit.MILLISECONDS)
@@ -114,27 +114,9 @@ class TimerView(context: Context, attrs: AttributeSet?) : AppCompatTextView(cont
     @Synchronized
     fun isRunning(): Boolean = mTimerThread != null
 
-    private fun genTimerDisplay(
-        durationMs: Long,
-        timecodeMs: Long,
-        timecodeSeconds: Int,
-        timecodeMinutes: Int
-    ): String {
-        if (durationMs > 0L && durationMs >= timecodeMs) {
-            val durationTotalSeconds = durationMs / MILLISECONDS_PER_SECOND
-
-            return String.format(
-                "%02d:%02d / %02d:%02d",
-                timecodeMinutes,
-                timecodeSeconds,
-                (durationTotalSeconds / SECONDS_PER_MINUTE) % SECONDS_PER_MINUTE,
-                durationTotalSeconds % SECONDS_PER_MINUTE
-            )
-        }
-        return String.format("%02d:%02d", timecodeMinutes, timecodeSeconds)
-    }
 
     companion object {
+
         const val DEFAULT_REFRESH_INTERVAL = 100L
         const val MILLISECONDS_PER_SECOND = 1000L
         const val SECONDS_PER_MINUTE = 60

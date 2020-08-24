@@ -2,6 +2,7 @@ package com.laixer.swabbr
 
 import com.laixer.cache.MemoryCache
 import com.laixer.cache.ReactiveCache
+import com.laixer.swabbr.BuildConfig
 import com.laixer.swabbr.data.datasource.AuthCacheDataSource
 import com.laixer.swabbr.data.datasource.AuthRemoteDataSource
 import com.laixer.swabbr.data.datasource.FollowCacheDataSource
@@ -84,7 +85,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-private const val BASE_URL = "https://swabbr-api-development.azurewebsites.net/api/1/"
+private const val BASE_URL = BuildConfig.API_ENDPOINT
 
 fun injectFeature() = loadFeature
 

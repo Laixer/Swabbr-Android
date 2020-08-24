@@ -61,7 +61,7 @@ class ProfileFragment : AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
-        profileVlogsAdapter = ProfileVlogsAdapter(requireContext(), onClick)
+        profileVlogsAdapter = ProfileVlogsAdapter(onClick)
 
         followButton.setOnClickListener {
             with(profileVm) {
@@ -109,11 +109,11 @@ class ProfileFragment : AuthFragment() {
 
     private fun updateProfile(res: Resource<UserItem>) = res.run {
         data?.let { item ->
-            userAvatar.loadAvatar(item.profileImage, item.id)
-            nickname.text = requireContext().getString(R.string.nickname, item.nickname)
+            user_avatar.loadAvatar(item.profileImage, item.id)
+            user_nickname.text = requireContext().getString(R.string.nickname, item.nickname)
             item.firstName?.let {
-                username.text = requireContext().getString(R.string.full_name, it, item.lastName)
-                username.visibility = View.VISIBLE
+                user_username.text = requireContext().getString(R.string.full_name, it, item.lastName)
+                user_username.visibility = View.VISIBLE
             }
         }
     }
