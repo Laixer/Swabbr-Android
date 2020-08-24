@@ -68,7 +68,8 @@ open class LivestreamFragment : AuthFragment() {
         stream_progress.max =
             ((DEFAULT_MAXIMUM_RECORD_TIME_MINUTES * 60) + DEFAULT_MAXIMUM_RECORD_TIME_SECONDS) * 10
 
-        stream_max_duration.text = getString(R.string.timer_value, DEFAULT_MAXIMUM_RECORD_TIME_MINUTES, DEFAULT_MAXIMUM_RECORD_TIME_SECONDS)
+        stream_max_duration.text =
+            getString(R.string.timer_value, DEFAULT_MAXIMUM_RECORD_TIME_MINUTES, DEFAULT_MAXIMUM_RECORD_TIME_SECONDS)
 
         stream_position_timer.apply {
             addProgressBar(enableStopProgressBar) {
@@ -95,13 +96,17 @@ open class LivestreamFragment : AuthFragment() {
         mLiveVideoBroadcaster = LiveVideoBroadcaster(requireActivity(), surface_view, true, cameraCallback)
 
         if (mLiveVideoBroadcaster.canChangeCamera()) {
-            switch_camera.visibility = View.VISIBLE
-            switch_camera.setOnClickListener { mLiveVideoBroadcaster.changeCamera() }
+            switch_camera.apply {
+                visibility = View.VISIBLE
+                setOnClickListener { mLiveVideoBroadcaster.changeCamera() }
+            }
         }
 
         if (mLiveVideoBroadcaster.canToggleTorch()) {
-            toggle_torch.visibility = View.VISIBLE
-            toggle_torch.setOnClickListener { mLiveVideoBroadcaster.toggleTorch() }
+            toggle_torch.apply {
+                visibility = View.VISIBLE
+                setOnClickListener { mLiveVideoBroadcaster.toggleTorch() }
+            }
         }
 
         mLiveVideoBroadcaster.initializeCamera()
@@ -114,7 +119,7 @@ open class LivestreamFragment : AuthFragment() {
     private val cameraCallback = object : CameraDevice.StateCallback() {
         override fun onOpened(camera: CameraDevice) {
             this@LivestreamFragment.lifecycleScope.launch(Dispatchers.Main) {
-                stream_position_timer.text = getString(R.string.retrieving_credentials)
+                status_text.text = getString(R.string.retrieving_credentials)
             }
             vm.startStreaming(args.livestreamId)
         }
@@ -144,8 +149,10 @@ open class LivestreamFragment : AuthFragment() {
         when (state) {
             ResourceState.LOADING -> {
                 this@LivestreamFragment.lifecycleScope.launch(Dispatchers.Main) {
-                    capture_button.isEnabled = false
-                    capture_button.visibility = View.VISIBLE
+                    capture_button.apply {
+                        isEnabled = false
+                        visibility = View.VISIBLE
+                    }
 
                     status_text.text = getString(R.string.connecting)
                 }
@@ -158,8 +165,6 @@ open class LivestreamFragment : AuthFragment() {
                     stop()
                 } finally {
                     if (mLiveVideoBroadcaster.isConnected()) {
-                        status_text.visibility = View.GONE
-                        status_text.text = ""
                         // We successfully connected, start countdown to broadcast
                         start()
                     } else {
@@ -175,30 +180,28 @@ open class LivestreamFragment : AuthFragment() {
         }
     }
 
-    private fun stop() {
+    private fun stop() = lifecycleScope.launch(Dispatchers.Main) {
         stream_position_timer.stopTimer()
-        lifecycleScope.launch(Dispatchers.Main) {
-            // Clear the "keep screen on" flag
-            if (mLiveVideoBroadcaster.isConnected()) {
-                mLiveVideoBroadcaster.stopBroadcasting()
-            }
-            activity?.onBackPressed()
+        // Clear the "keep screen on" flag
+        if (mLiveVideoBroadcaster.isConnected()) {
+            mLiveVideoBroadcaster.stopBroadcasting()
         }
+        requireActivity().onBackPressed()
     }
 
-    private fun start() {
-        lifecycleScope.launch(Dispatchers.Main) {
-            status_text.text = getString(R.string.get_ready)
-            countDownFrom(COUNTDOWN_MILLISECONDS) {
-                // Start broadcasting
-                lifecycleScope.launch(Dispatchers.IO) {
-                    mLiveVideoBroadcaster.startBroadcasting()
-                }
-
-                stream_position_timer.text = getString(R.string.zero_time)
-                stream_progress.isIndeterminate = false
-                stream_position_timer.startTimer(stream_progress)
+    private fun start() = lifecycleScope.launch(Dispatchers.Main) {
+        status_text.text = getString(R.string.get_ready)
+        countDownFrom(COUNTDOWN_MILLISECONDS) {
+            // Start broadcasting
+            lifecycleScope.launch(Dispatchers.IO) {
+                mLiveVideoBroadcaster.startBroadcasting()
             }
+
+            stream_position_timer.apply {
+                startTimer(stream_progress)
+                text = getString(R.string.zero_time)
+            }
+            stream_progress.isIndeterminate = false
         }
     }
 
