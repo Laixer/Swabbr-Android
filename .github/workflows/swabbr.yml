@@ -1,4 +1,4 @@
-name: Swabbr Release CI
+name: Swabbr CI
 
 on:
   push:
@@ -11,7 +11,7 @@ env:
 
 jobs:
   build: 
-    name: build
+    name: Build
     runs-on: ubuntu-latest
   
     steps:
@@ -32,7 +32,7 @@ jobs:
 
   publish:
     if: contains(github.event.head_commit.message, '[APK]') || github.ref == 'refs/heads/master'
-    name: Build & publish APK
+    name: Publish
     runs-on: ubuntu-latest
 
     steps:
