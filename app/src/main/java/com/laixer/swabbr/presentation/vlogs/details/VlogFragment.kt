@@ -9,11 +9,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.hls.DefaultHlsDataSourceFactory
+import com.google.android.exoplayer2.source.hls.HlsDataSourceFactory
+import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DataSpec
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
+import com.google.android.exoplayer2.upstream.crypto.AesCipherDataSource
 import com.google.android.exoplayer2.util.Util
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.laixer.presentation.Resource
@@ -49,9 +57,8 @@ class VlogFragment : AuthFragment() {
     private var reactionsAdapter: ReactionsAdapter? = null
     private lateinit var gestureDetector: GestureDetector
 
-    fun isVlogLiked(): Boolean {
-        return vm.likes.value?.data?.usersMinified?.any { it.id == authenticatedUser.user.id } ?: false
-    }
+    fun isVlogLiked(): Boolean =
+        vm.likes.value?.data?.usersMinified?.any { it.id == authenticatedUser.user.id } ?: false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +89,7 @@ class VlogFragment : AuthFragment() {
                 // TODO: Add loading anim
             }
             ResourceState.SUCCESS -> {
-                stream(data?.endpointUrl!!)
+                stream(data?.endpointUrl!!, data?.token!!)
             }
             ResourceState.ERROR -> {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
@@ -97,7 +104,7 @@ class VlogFragment : AuthFragment() {
                 // TODO: Add loading anim
             }
             ResourceState.SUCCESS -> {
-                stream(data?.endpointUrl!!)
+                stream(data?.endpointUrl!!, data?.token!!)
             }
             ResourceState.ERROR -> {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
@@ -105,12 +112,12 @@ class VlogFragment : AuthFragment() {
         }
     }
 
-    private fun stream(endpoint: String) {
-        val dataSourceFactory: DataSource.Factory =
-            DefaultHttpDataSourceFactory(Util.getUserAgent(requireContext(), "Swabbr"))
-        val mediaSourceFactory = ProgressiveMediaSource.Factory(dataSourceFactory)
-        val uri = Uri.parse(endpoint)
-        val mediaSource = mediaSourceFactory.createMediaSource(uri)
+    private fun stream(endpoint: String, decrypt_token: String) {
+        val dataSourceFactory = DefaultHttpDataSourceFactory(requireContext().getString(R.string.app_name)).apply {
+            defaultRequestProperties.set("Authorization", "Bearer=$decrypt_token")
+        }
+        val mediaSourceFactory = HlsMediaSource.Factory(dataSourceFactory)
+        val mediaSource = mediaSourceFactory.createMediaSource(Uri.parse(endpoint))
 
         exoPlayer.apply {
             prepare(mediaSource, true, false)
