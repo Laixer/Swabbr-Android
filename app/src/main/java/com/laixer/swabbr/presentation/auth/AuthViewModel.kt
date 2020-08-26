@@ -3,18 +3,20 @@ package com.laixer.swabbr.presentation.auth
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
 import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.usecase.AuthUseCase
-import com.laixer.swabbr.presentation.model.*
+import com.laixer.swabbr.presentation.model.AuthUserItem
+import com.laixer.swabbr.presentation.model.LoginItem
+import com.laixer.swabbr.presentation.model.RegistrationItem
+import com.laixer.swabbr.presentation.model.hasValidSession
+import com.laixer.swabbr.presentation.model.mapToDomain
+import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Response
-import java.lang.Exception
 
-class AuthViewModel constructor(private val authUseCase: AuthUseCase) : ViewModel() {
+open class AuthViewModel constructor(private val authUseCase: AuthUseCase) : ViewModel() {
 
     val authenticatedUser = MutableLiveData<Resource<AuthUserItem?>>()
     private val compositeDisposable = CompositeDisposable()
@@ -25,7 +27,7 @@ class AuthViewModel constructor(private val authUseCase: AuthUseCase) : ViewMode
         compositeDisposable.add(authUseCase
             .getAuthenticatedUser(refresh)
             .doOnSubscribe { authenticatedUser.setLoading() }
-            .subscribeOn(Schedulers.io())
+            .subscribeOn(Schedulers.single())
             .subscribe(
                 { authenticatedUser.setSuccess(it.mapToPresentation()) },
                 { authenticatedUser.setError(it.message) }

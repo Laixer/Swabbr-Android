@@ -12,14 +12,12 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.model.AuthUserItem
-import com.laixer.swabbr.presentation.model.hasValidSession
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /** Fragment that forces authentication on create, view creation and resume **/
 open class AuthFragment : Fragment() {
 
-    //    private val am: AccountManager = AccountManager.get(requireContext())
-    private val options = Bundle()
+    // private val am: AccountManager = AccountManager.get(requireContext())
     private val authVm: AuthViewModel by sharedViewModel()
     protected val authenticatedUser: AuthUserItem by lazy { authVm.authenticatedUser.value!!.data!! }
 
@@ -27,9 +25,11 @@ open class AuthFragment : Fragment() {
         injectFeature()
         authVm.run {
             authenticatedUser.observe(this@AuthFragment, Observer { checkAuthentication(it) })
-            get()
-        }
 
+            if (!isLoggedIn()) {
+                get()
+            }
+        }
         super.onCreate(savedInstanceState)
     }
 
@@ -39,22 +39,18 @@ open class AuthFragment : Fragment() {
         }
     }
 
-    private fun checkAuthentication(res: Resource<AuthUserItem?>) {
-        // val accounts = am.getAccountsByType(ACCOUNT_TYPE)
-        try {
-            when (res.state) {
-                ResourceState.LOADING -> {
-                }
-                ResourceState.SUCCESS -> {
-                    require(res.data?.hasValidSession() ?: false) { "HAS TO LOGIN " }
-                }
-                ResourceState.ERROR -> {
-                    Toast.makeText(requireContext(), "Please sign in.", Toast.LENGTH_LONG).show()
+    private fun checkAuthentication(res: Resource<AuthUserItem?>) = with(res) {
+        when (state) {
+            ResourceState.LOADING -> {
+            }
+            ResourceState.SUCCESS -> {
+                if (!authVm.isLoggedIn()) {
                     reauthorize()
                 }
             }
-        } catch (e: IllegalArgumentException) {
-            reauthorize()
+            ResourceState.ERROR -> {
+                reauthorize()
+            }
         }
     }
 
@@ -68,6 +64,7 @@ open class AuthFragment : Fragment() {
         }
 
     companion object {
+
         private val ACCOUNT_TYPE = "com.laixer.swabbr"
     }
 }

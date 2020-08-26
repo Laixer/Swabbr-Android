@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.UserVlogItem
@@ -33,17 +34,19 @@ class ProfileVlogsAdapter(private val onClick: (UserVlogItem) -> Unit
 
             Glide.with(context)
                 .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .thumbnail(0.1f)
                 .into(thumbnail)
 
             vlogPostDate.text =
                 context.getString(
                     R.string.date, item.dateStarted.dayOfMonth, item.dateStarted.monthValue, item.dateStarted.year
                 )
-            vlogDuration.text = context.getString(R.string.duration, 0, 0, 0)
-            reaction_count.text = context.getString(R.string.reaction_count, 0)
+            vlogDuration.text = context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
+            reaction_count.text = context.getString(R.string.reaction_count, (Math.random() * 100).toInt())
 
-            view_count.text = context.getString(R.string.view_count, 0)
-            like_count.text = context.getString(R.string.like_count, 0)
+            view_count.text = context.getString(R.string.view_count, item.views * (Math.random() * 1000).toInt())
+            like_count.text = context.getString(R.string.like_count, (Math.random() * 1000).toInt())
             setOnClickListener { onClick.invoke(item) }
         }
     }

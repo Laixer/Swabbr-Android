@@ -86,7 +86,7 @@ class VlogFragment : AuthFragment() {
     private fun start(res: Resource<WatchVlogResponse>) = with(res) {
         when (state) {
             ResourceState.LOADING -> {
-                // TODO: Add loading anim
+                content_loading_progressbar.visibility = View.VISIBLE
             }
             ResourceState.SUCCESS -> {
                 stream(data?.endpointUrl!!, data?.token!!)
@@ -101,7 +101,7 @@ class VlogFragment : AuthFragment() {
     private fun start(res: Resource<WatchLivestreamResponse>) = with(res) {
         when (state) {
             ResourceState.LOADING -> {
-                // TODO: Add loading anim
+                content_loading_progressbar.visibility = View.VISIBLE
             }
             ResourceState.SUCCESS -> {
                 stream(data?.endpointUrl!!, data?.token!!)
@@ -116,9 +116,10 @@ class VlogFragment : AuthFragment() {
         val dataSourceFactory = DefaultHttpDataSourceFactory(requireContext().getString(R.string.app_name)).apply {
             defaultRequestProperties.set("Authorization", "Bearer=$decrypt_token")
         }
-        val mediaSourceFactory = HlsMediaSource.Factory(dataSourceFactory)
+        val mediaSourceFactory = HlsMediaSource.Factory(dataSourceFactory).setAllowChunklessPreparation(true)
         val mediaSource = mediaSourceFactory.createMediaSource(Uri.parse(endpoint))
 
+        content_loading_progressbar.visibility = View.GONE
         exoPlayer.apply {
             prepare(mediaSource, true, false)
             setForegroundMode(false)
@@ -140,6 +141,10 @@ class VlogFragment : AuthFragment() {
         }
 
     private fun toggleLike(like: Boolean) {
+        if (userVlogItem.userId == authenticatedUser.user.id) {
+            like_button.isChecked = !like_button.isChecked
+            return
+        }
         like_button.isEnabled = false
 
         if (like) {
@@ -240,7 +245,6 @@ class VlogFragment : AuthFragment() {
             ResourceState.ERROR -> {
                 like_button.isEnabled = true
                 like_button.isChecked = !like_button.isChecked
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -288,8 +292,8 @@ class VlogFragment : AuthFragment() {
         reactionsAdapter = null
     }
 
-    companion object {
 
+    companion object {
         private const val PROFILEVLOGITEM_KEY = "PROFILEVLOGITEM"
         private const val LIVESTREAM_ID_KEY = "LIVESTREAMIDKEY"
 

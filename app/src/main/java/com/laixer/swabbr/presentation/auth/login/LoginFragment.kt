@@ -37,6 +37,8 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
+        vm.authenticatedUser.observe(viewLifecycleOwner, Observer { login(it) })
+
         addListeners()
 
         loginButton.setOnClickListener {
@@ -62,7 +64,6 @@ class LoginFragment : Fragment() {
             findNavController().navigate(LoginFragmentDirections.actionRegister(), extras)
         }
 
-        vm.authenticatedUser.observe(viewLifecycleOwner, Observer { login(it) })
     }
 
     private fun login(res: Resource<AuthUserItem?>) {
@@ -71,18 +72,17 @@ class LoginFragment : Fragment() {
                 progressBar.visible()
             }
             ResourceState.SUCCESS -> {
+                progressBar.gone()
                 res.data?.let {
-                    progressBar.gone()
-                    activity?.finish()
+                    requireActivity().finish()
                 } ?: run {
-                    progressBar.gone()
                     Log.e(TAG, res.message!!)
                     Toast.makeText(requireActivity().applicationContext, res.message, Toast.LENGTH_SHORT).show()
                 }
             }
             ResourceState.ERROR -> {
-                passwordInput.text.clear()
                 progressBar.gone()
+                passwordInput.text.clear()
                 Log.e(TAG, res.message!!)
                 Toast.makeText(requireActivity().applicationContext, res.message, Toast.LENGTH_SHORT).show()
             }

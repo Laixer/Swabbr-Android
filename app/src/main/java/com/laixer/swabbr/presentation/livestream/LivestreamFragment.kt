@@ -190,7 +190,7 @@ open class LivestreamFragment : AuthFragment() {
     }
 
     private fun start() = lifecycleScope.launch(Dispatchers.Main) {
-        status_text.text = getString(R.string.get_ready)
+        status_text.visibility = View.GONE
         countDownFrom(COUNTDOWN_MILLISECONDS) {
             // Start broadcasting
             lifecycleScope.launch(Dispatchers.IO) {

@@ -167,9 +167,9 @@ class LiveVideoBroadcaster(
             .get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT
     }
 
-    override fun canChangeCamera(): Boolean = hasFrontCamera()
+    override fun canChangeCamera(): Boolean = false ?: hasFrontCamera()
 
-    override fun canToggleTorch(): Boolean =
+    override fun canToggleTorch(): Boolean = false ?:
         activity.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
 
     override fun toggleTorch() {

@@ -35,7 +35,7 @@
     <string name="view_count">%1$d</string>
     <string name="like_count">%1$d</string>
     <string name="reaction_count">%1$d</string>
-    <string name="duration">%1$02d:%2$02d:%3$02d</string>
+    <string name="duration">%1$02d:%2$02d</string>
     <string name="date">%1$02d/%2$02d/%3$d</string>
     <string name="vlogTransition">vlogtransition</string>
     <string name="default_notification_channel_id">channelid</string>

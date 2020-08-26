@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
@@ -29,6 +29,13 @@ class VlogDetailsFragment : AuthFragment() {
     private val vlogId by lazy { args.vlogId }
     private val userId by lazy { args.userId }
     private val livestreamId by lazy { args.livestreamId }
+    private var mCurrentItemIndex: Int? = null
+        set(value) {
+            value?.let {
+                field = it
+                vlog_viewpager.currentItem = it
+            }
+        }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_vlog_details, container, false)
@@ -37,7 +44,6 @@ class VlogDetailsFragment : AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         injectFeature()
-
         // Update vlogs and reactions when the dataset changes
         vm.vlogs.observe(viewLifecycleOwner, Observer { updateVlogs(it) })
 
@@ -51,10 +57,19 @@ class VlogDetailsFragment : AuthFragment() {
             }
         }
 
-        if (userId != null) {
-            vm.getVlogs(UUID.fromString(userId), refresh = true)
-        } else {
-            vm.getVlog(UUID.fromString(vlogId), refresh = true)
+        vlog_viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                mCurrentItemIndex = position
+                super.onPageSelected(position)
+            }
+        })
+
+        if (savedInstanceState == null) {
+            if (userId != null) {
+                vm.getVlogs(UUID.fromString(userId), refresh = true)
+            } else {
+                vm.getVlog(UUID.fromString(vlogId), refresh = true)
+            }
         }
     }
 
@@ -64,12 +79,13 @@ class VlogDetailsFragment : AuthFragment() {
             }
             ResourceState.SUCCESS -> {
                 data?.let {
-                    val index =
-                        vm.vlogs.value?.data?.indexOf(vm.vlogs.value?.data?.first { item -> item.vlogId.toString() == vlogId })
-                            ?: 0
+                    if (mCurrentItemIndex == null) {
+                        mCurrentItemIndex =
+                            vm.vlogs.value?.data?.indexOf(vm.vlogs.value?.data?.first { item -> item.vlogId.toString() == vlogId })
+                                ?: 0
+                    }
 
-                    vlog_viewpager?.currentItem = index
-                    vlog_viewpager?.adapter?.notifyDataSetChanged()
+                    vlog_viewpager.currentItem = mCurrentItemIndex!!
                 }
             }
             ResourceState.ERROR -> {
@@ -93,7 +109,23 @@ class VlogDetailsFragment : AuthFragment() {
         exitFullscreen(requireActivity())
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        with(savedInstanceState?.getInt(CURRENT_ITEM_INDEX) ?: 0) {
+            mCurrentItemIndex = this
+            vlog_viewpager.currentItem = this
+        }
+
+        super.onViewStateRestored(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(CURRENT_ITEM_INDEX, vlog_viewpager.currentItem)
+        super.onSaveInstanceState(outState)
+    }
+
     companion object {
+
+        private const val CURRENT_ITEM_INDEX = "CURRENTITEMINDEX"
         private const val TAG = "VlogDetailsFragment"
     }
 }

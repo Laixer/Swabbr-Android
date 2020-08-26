@@ -120,6 +120,9 @@ dependencies {
   implementation FirebaseLibraries.messaging
   implementation FirebaseLibraries.iid
   implementation FirebaseLibraries.crashlytics
+//  implementation 'com.google.firebase:firebase-auth:19.3.2'
+//  implementation 'com.google.firebase:firebase-auth-ktx:19.3.2'
+
 
   debugImplementation FirebaseLibraries.leakCanaryAndroid
 

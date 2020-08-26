@@ -1,6 +1,5 @@
 package com.laixer.swabbr.presentation.vlogs.list
 
-import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -35,7 +34,6 @@ class VlogListAdapter constructor(
                 .thumbnail(0.1f)
                 .into(thumbnail)
 
-
             user_avatar.loadAvatar(item.profileImage, item.userId)
             user_nickname.text = context.getString(R.string.nickname, item.nickname)
             item.firstName?.let {
@@ -50,18 +48,12 @@ class VlogListAdapter constructor(
                     R.string.date, item.dateStarted.dayOfMonth, item.dateStarted.monthValue, item.dateStarted.year
                 )
 
-            vlogDuration.text = context.getString(R.string.duration, 0, 0, 0)
-            reaction_count.text =
-                context.getString(
-                    R.string.reaction_count, 0
-                )
+            vlogDuration.text = context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
+            reaction_count.text = context.getString(R.string.reaction_count, (Math.random() * 100).toInt())
 
-            view_count.text =
-                context.getString(
-                    R.string.view_count, 0
-                )
+            view_count.text = context.getString(R.string.view_count, item.views * (Math.random() * 1000).toInt())
 
-            like_count.text = context.getString(R.string.like_count, 0)
+            like_count.text = context.getString(R.string.like_count, (Math.random() * 1000).toInt())
 
             user_avatar.setOnClickListener { profileClick.invoke(item) }
             user_nickname.text = context.getString(R.string.nickname, item.nickname)
@@ -78,6 +70,7 @@ class VlogListAdapter constructor(
     }
 
     companion object {
+
         private const val THUMBNAIL_SIZE = 1f
     }
 }
