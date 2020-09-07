@@ -46,7 +46,7 @@ jobs:
           GOOGLE_SERVICES: ${{secrets.GOOGLE_SERVICES_JSON}}
 
       - name: Build production APK
-        run: bash ./gradlew buildRelease --stacktrace
+        run: bash ./gradlew assembleRelease --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v2.1.4
