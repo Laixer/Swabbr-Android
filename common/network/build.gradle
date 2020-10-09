@@ -1,11 +1,10 @@
 apply from: "$rootDir/common-kotlin-library.gradle"
 
 dependencies {
-    implementation Libraries.rxjava
-    implementation Libraries.rxkotlin
+  implementation Libs.rxjava
 
-    implementation Libraries.retrofit
-    implementation Libraries.moshiConverter
-
+  api Libs.retrofit
+  implementation Libs.converter_moshi
+  implementation Libs.logging_interceptor
+  implementation Libs.adapter_rxjava2
 }
-

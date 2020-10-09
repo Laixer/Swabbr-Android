@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -31,12 +32,11 @@
 
                 <include
                     android:id="@+id/userInfo"
-                    android:transitionName="userInfo"
                     layout="@layout/include_user_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    />
+                    android:transitionName="userInfo" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -48,6 +48,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+
                         <TextView
                             android:id="@+id/view_count"
                             android:layout_width="match_parent"
@@ -74,8 +75,9 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="@dimen/content_margin">
+                        android:layout_marginStart="@dimen/content_margin"
+                        android:orientation="vertical">
+
                         <TextView
                             android:id="@+id/vlogPostDate"
                             android:layout_width="match_parent"
@@ -109,12 +111,12 @@
                 android:layout_gravity="end">
 
                 <TextView
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="3dp"
                     android:id="@+id/reaction_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="3dp"
                     android:drawableEnd="@drawable/ic_message"
                     android:drawableTint="@color/colorPrimary"
                     android:ellipsize="end"
@@ -127,5 +129,38 @@
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/processing_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_window_background_transparent"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <androidx.core.widget.ContentLoadingProgressBar
+                android:id="@+id/processing_indicator"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="@dimen/large_icon_size"
+                android:layout_height="@dimen/large_icon_size"
+                android:layout_gravity="center"
+                android:indeterminate="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/processing"
+                android:textSize="20dp"
+                app:layout_anchor="@id/processing_indicator"
+                app:layout_anchorGravity="bottom|center" />
+        </LinearLayout>
+    </FrameLayout>
+
 
 </com.google.android.material.card.MaterialCardView>

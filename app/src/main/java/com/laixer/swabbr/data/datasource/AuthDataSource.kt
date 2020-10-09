@@ -13,7 +13,7 @@ interface AuthCacheDataSource {
     val key: String
         get() = "AUTH"
 
-    fun set(authUser: AuthUser, remember: Boolean = true): Single<AuthUser>
+    fun set(authUser: AuthUser): Single<AuthUser>
 
     fun get(): Single<AuthUser>
 

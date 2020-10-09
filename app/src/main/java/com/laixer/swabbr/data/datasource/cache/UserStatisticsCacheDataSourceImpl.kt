@@ -1,13 +1,13 @@
 package com.laixer.swabbr.data.datasource.cache
 
-import com.laixer.cache.ReactiveCache
+import com.laixer.cache.Cache
 import com.laixer.swabbr.data.datasource.UserStatisticsCacheDataSource
 import com.laixer.swabbr.domain.model.UserStatistics
 import io.reactivex.Single
 import java.util.*
 
 class UserStatisticsCacheDataSourceImpl constructor(
-    private val cache: ReactiveCache<UserStatistics>
+    private val cache: Cache
 ) : UserStatisticsCacheDataSource {
 
     override fun getSelfStatistics(): Single<UserStatistics> = cache.load(self_key)

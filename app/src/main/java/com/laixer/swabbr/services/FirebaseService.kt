@@ -9,7 +9,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.laixer.cache.MemoryCache
+import com.laixer.cache.Cache
 import com.laixer.swabbr.R
 import com.laixer.swabbr.services.notifications.NotificationHandler
 import com.laixer.swabbr.services.notifications.V1
@@ -109,7 +109,6 @@ class FirebaseService : FirebaseMessagingService() {
         private const val NOTIFICATION_CHANNEL_NAME = "Notification Hubs Demo Channel"
         private const val NOTIFICATION_CHANNEL_DESCRIPTION = "Notification Hubs Demo Channel"
         private const val NOTIFICATION_ID = 1
-        private var cache: MemoryCache<String?> = MemoryCache()
 
         fun createChannelAndHandleNotifications(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

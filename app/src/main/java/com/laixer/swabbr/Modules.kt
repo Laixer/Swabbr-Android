@@ -1,7 +1,6 @@
 package com.laixer.swabbr
 
-import com.laixer.cache.MemoryCache
-import com.laixer.cache.ReactiveCache
+import com.laixer.cache.Cache
 import com.laixer.swabbr.BuildConfig
 import com.laixer.swabbr.data.datasource.AuthCacheDataSource
 import com.laixer.swabbr.data.datasource.AuthRemoteDataSource
@@ -145,23 +144,18 @@ val repositoryModule: Module = module {
     single<SettingsRepository> { SettingsRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
 }
 val dataSourceModule: Module = module {
-    single<AuthCacheDataSource> {
-        AuthCacheDataSourceImpl(
-            cache = get(named(AUTH_CACHE)),
-            memory = get(named(AUTH_MEMORY))
-        )
-    }
+    single<AuthCacheDataSource> { AuthCacheDataSourceImpl(get()) }
     single<LivestreamDataSource> { LivestreamDataSourceImpl(livestreamApi = get()) }
     single<AuthRemoteDataSource> { AuthRemoteDataSourceImpl(authApi = get(), settingsApi = get()) }
-    single<UserCacheDataSource> { UserCacheDataSourceImpl(cache = get(named(USER_CACHE))) }
+    single<UserCacheDataSource> { UserCacheDataSourceImpl(cache = get()) }
     single<UserRemoteDataSource> { UserRemoteDataSourceImpl(api = get()) }
-    single<VlogCacheDataSource> { VlogCacheDataSourceImpl(cache = get(named(VLOG_CACHE))) }
+    single<VlogCacheDataSource> { VlogCacheDataSourceImpl(cache = get()) }
     single<VlogRemoteDataSource> { VlogRemoteDataSourceImpl(api = get()) }
-    single<ReactionCacheDataSource> { ReactionCacheDataSourceImpl(cache = get(named(REACTION_CACHE))) }
+    single<ReactionCacheDataSource> { ReactionCacheDataSourceImpl(cache = get()) }
     single<ReactionRemoteDataSource> { ReactionRemoteDataSourceImpl(api = get()) }
     single<FollowRemoteDataSource> { FollowRemoteDataSourceImpl(api = get()) }
-    single<FollowCacheDataSource> { FollowCacheDataSourceImpl(cache = get(named(FOLLOW_CACHE))) }
-    single<SettingsCacheDataSource> { SettingsCacheDataSourceImpl(cache = get(named(SETTINGS_CACHE))) }
+    single<FollowCacheDataSource> { FollowCacheDataSourceImpl(cache = get()) }
+    single<SettingsCacheDataSource> { SettingsCacheDataSourceImpl(cache = get()) }
     single<SettingsRemoteDataSource> { SettingsRemoteDataSourceImpl(api = get()) }
 }
 val networkModule: Module = module {
@@ -194,18 +188,6 @@ val networkModule: Module = module {
     single<SettingsApi> { get<Retrofit>().create(SettingsApi::class.java) }
 }
 val cacheModule: Module = module {
-    single(named(AUTH_MEMORY)) { MemoryCache<AuthUser>() }
-    single(named(AUTH_CACHE)) { ReactiveCache<AuthUser>() }
-    single(named(USER_CACHE)) { ReactiveCache<User>() }
-    single(named(VLOG_CACHE)) { ReactiveCache<List<Vlog>>() }
-    single(named(REACTION_CACHE)) { ReactiveCache<List<Reaction>>() }
-    single(named(SETTINGS_CACHE)) { ReactiveCache<Settings>() }
-    single(named(FOLLOW_CACHE)) { ReactiveCache<List<User>>() }
+    single { Cache() }
+
 }
-const val AUTH_MEMORY = "AUTH_MEMORY"
-const val AUTH_CACHE = "AUTH_CACHE"
-const val FOLLOW_CACHE = "FOLLOW_CACHE"
-const val USER_CACHE = "USER_CACHE"
-const val VLOG_CACHE = "VLOG_CACHE"
-const val REACTION_CACHE = "REACTION_CACHE"
-const val SETTINGS_CACHE = "SETTINGS_CACHE"

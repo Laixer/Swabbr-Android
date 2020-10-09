@@ -13,6 +13,7 @@ import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.UserVlogItem
 import kotlinx.android.synthetic.main.include_user_info.view.*
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
+import java.time.ZonedDateTime
 
 class VlogListAdapter constructor(
     private val itemClick: (UserVlogItem) -> Unit,
@@ -26,46 +27,50 @@ class VlogListAdapter constructor(
     inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_vlog)) {
 
         fun bind(item: UserVlogItem) = with(itemView) {
-            val url = item.url.toString().replace("http:", "https:")
+            if (item.dateStarted.isBefore(ZonedDateTime.now().minusMinutes(3))) {
+                processing_cover.visibility = View.GONE
+                val url = item.url.toString().replace("http:", "https:")
 
-            Glide.with(context)
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .thumbnail(0.1f)
-                .into(thumbnail)
+                Glide.with(context)
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .thumbnail(0.1f)
+                    .into(thumbnail)
 
-            user_avatar.loadAvatar(item.profileImage, item.userId)
-            user_nickname.text = context.getString(R.string.nickname, item.nickname)
-            item.firstName?.let {
-                user_username.apply {
-                    text = context.getString(R.string.full_name, it, item.lastName)
-                    visibility = View.VISIBLE
+                user_avatar.loadAvatar(item.profileImage, item.userId)
+                user_nickname.text = context.getString(R.string.nickname, item.nickname)
+                item.firstName?.let {
+                    user_username.apply {
+                        text = context.getString(R.string.full_name, it, item.lastName)
+                        visibility = View.VISIBLE
+                    }
                 }
-            }
 
-            vlogPostDate.text =
-                context.getString(
-                    R.string.date, item.dateStarted.dayOfMonth, item.dateStarted.monthValue, item.dateStarted.year
-                )
+                vlogPostDate.text =
+                    context.getString(
+                        R.string.date, item.dateStarted.dayOfMonth, item.dateStarted.monthValue, item.dateStarted.year
+                    )
 
-            vlogDuration.text = context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
-            reaction_count.text = context.getString(R.string.reaction_count, (Math.random() * 100).toInt())
+                vlogDuration.text =
+                    context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
+                reaction_count.text = context.getString(R.string.reaction_count, (Math.random() * 100).toInt())
 
-            view_count.text = context.getString(R.string.view_count, item.views * (Math.random() * 1000).toInt())
+                view_count.text = context.getString(R.string.view_count, item.views * (Math.random() * 1000).toInt())
 
-            like_count.text = context.getString(R.string.like_count, (Math.random() * 1000).toInt())
+                like_count.text = context.getString(R.string.like_count, (Math.random() * 1000).toInt())
 
-            user_avatar.setOnClickListener { profileClick.invoke(item) }
-            user_nickname.text = context.getString(R.string.nickname, item.nickname)
+                user_avatar.setOnClickListener { profileClick.invoke(item) }
+                user_nickname.text = context.getString(R.string.nickname, item.nickname)
 
-            item.firstName?.let {
-                itemView.user_username.apply {
-                    text = context.getString(R.string.full_name, it, item.lastName)
-                    visibility = View.VISIBLE
+                item.firstName?.let {
+                    itemView.user_username.apply {
+                        text = context.getString(R.string.full_name, it, item.lastName)
+                        visibility = View.VISIBLE
+                    }
                 }
-            }
 
-            setOnClickListener { itemClick.invoke(item) }
+                setOnClickListener { itemClick.invoke(item) }
+            }
         }
     }
 

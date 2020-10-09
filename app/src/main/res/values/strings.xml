@@ -60,9 +60,7 @@
 
     <string name="notification_title_vlognewreaction">People are talking about you!</string>
     <string name="notification_message_vlognewreaction">Click here to see their reactions.</string>
-
-
-
+    <string name="processing">Processing…</string>
 
 
 </resources>

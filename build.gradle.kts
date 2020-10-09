@@ -1,30 +1,29 @@
-plugins {
-    id("io.gitlab.arturbosch.detekt") version "1.7.0-beta2"
-    id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
-    id("com.github.ben-manes.versions") version "0.28.0"
-}
-
 buildscript {
     repositories {
         maven("https://maven.fabric.io/public")
+        jcenter()
         google()
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:4.0.1")
-        classpath("com.google.gms:google-services:${Versions.googleServices}")
-        classpath("io.fabric.tools:gradle:${Versions.fabric}")
-        classpath(kotlin("gradle-plugin", version = Versions.kotlin))
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.nav}")
+        classpath("com.android.tools.build:gradle:${Versions.com_android_tools_build_gradle}")
+        classpath("com.google.gms:google-services:${Versions.google_services}")
+        classpath("io.fabric.tools:gradle:${Versions.io_fabric_tools_gradle}")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.org_jetbrains_kotlin}")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.androidx_navigation}")
     }
 }
 
-subprojects {
-    apply {
-        plugin("io.gitlab.arturbosch.detekt")
-        plugin("org.jlleitschuh.gradle.ktlint")
-    }
+plugins {
+    id("io.gitlab.arturbosch.detekt") version Versions.io_gitlab_arturbosch_detekt
+    id("de.fayard.buildSrcVersions") version Versions.de_fayard_buildsrcversions_gradle_plugin
+}
 
+dependencies {
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:${Versions.io_gitlab_arturbosch_detekt}")
+}
+
+allprojects {
     repositories {
         maven("https://plugins.gradle.org/m2/")
         maven("https://dl.bintray.com/microsoftazuremobile/SDK")
@@ -33,20 +32,27 @@ subprojects {
         google()
         jcenter()
     }
-
-    detekt {
-        config = files("$rootDir/default-detekt-config.yml")
-    }
-
-    tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
-        include("**/*.kt")
-        include("**/*.kts")
-        exclude("**build**")
-        exclude("**/resources/**")
-        exclude("**/tmp/**")
-    }
 }
 
 task("clean") {
     delete(rootProject.buildDir)
+}
+
+val detektAll by tasks.registering(io.gitlab.arturbosch.detekt.Detekt::class) {
+    description = "Runs over whole code base without the starting overhead for each module."
+    buildUponDefaultConfig = true
+    autoCorrect = true
+    parallel = true
+    setSource(files(projectDir))
+    config.setFrom(files("$rootDir/detekt.yml"))
+    include("**/*.kt")
+    include("**/*.kts")
+    exclude("**/build/**")
+    exclude("**/buildSrc/**")
+    exclude("**/test/**/*.kt")
+    reports {
+        xml.enabled = false
+        html.enabled = false
+        txt.enabled = false
+    }
 }

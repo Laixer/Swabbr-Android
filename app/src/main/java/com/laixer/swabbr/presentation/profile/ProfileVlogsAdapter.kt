@@ -1,6 +1,6 @@
 package com.laixer.swabbr.presentation.profile
 
-import android.content.Context
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -16,38 +16,44 @@ import kotlinx.android.synthetic.main.item_list_uservlog.view.view_count
 import kotlinx.android.synthetic.main.item_list_uservlog.view.vlogDuration
 import kotlinx.android.synthetic.main.item_list_uservlog.view.vlogPostDate
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
+import java.time.ZonedDateTime
 
-class ProfileVlogsAdapter(private val onClick: (UserVlogItem) -> Unit
+class ProfileVlogsAdapter(
+    private val onClick: (UserVlogItem) -> Unit
 ) : ListAdapter<UserVlogItem, ProfileVlogsAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
 
-    inner class ViewHolder(parent: ViewGroup) :
-        RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_uservlog)) {
+    inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_uservlog)) {
 
         fun bind(item: UserVlogItem) = with(itemView) {
-            /* We convert back to String because Glide's load(URL) function is deprecated because
-             of possible performance issues. */
-            val url = item.url.toString()
+            if (item.dateStarted.isBefore(ZonedDateTime.now().minusMinutes(3))) {
+                processing_cover.visibility = View.GONE
 
-            Glide.with(context)
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .thumbnail(0.1f)
-                .into(thumbnail)
+                /* We convert back to String because Glide's load(URL) function is deprecated because
+                 of possible performance issues. */
+                val url = item.url.toString()
 
-            vlogPostDate.text =
-                context.getString(
-                    R.string.date, item.dateStarted.dayOfMonth, item.dateStarted.monthValue, item.dateStarted.year
-                )
-            vlogDuration.text = context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
-            reaction_count.text = context.getString(R.string.reaction_count, (Math.random() * 100).toInt())
+                Glide.with(context)
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .thumbnail(0.1f)
+                    .into(thumbnail)
 
-            view_count.text = context.getString(R.string.view_count, item.views * (Math.random() * 1000).toInt())
-            like_count.text = context.getString(R.string.like_count, (Math.random() * 1000).toInt())
-            setOnClickListener { onClick.invoke(item) }
+                vlogPostDate.text =
+                    context.getString(
+                        R.string.date, item.dateStarted.dayOfMonth, item.dateStarted.monthValue, item.dateStarted.year
+                    )
+                vlogDuration.text =
+                    context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
+                reaction_count.text = context.getString(R.string.reaction_count, (Math.random() * 100).toInt())
+
+                view_count.text = context.getString(R.string.view_count, item.views * (Math.random() * 1000).toInt())
+                like_count.text = context.getString(R.string.like_count, (Math.random() * 1000).toInt())
+                setOnClickListener { onClick.invoke(item) }
+            }
         }
     }
 }

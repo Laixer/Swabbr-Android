@@ -3,17 +3,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-  compileSdkVersion Versions.compileSdk
-  buildToolsVersion Versions.buildTools
+  compileSdkVersion DefaultConfig.compileSdk
 
   defaultConfig {
-    minSdkVersion Versions.minSdk
-    targetSdkVersion Versions.targetSdk
-    versionCode 1
-    versionName "1.0"
-
-    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-
+    minSdkVersion DefaultConfig.minSdk
+    targetSdkVersion DefaultConfig.targetSdk
+    versionCode Releases.versionCode
+    versionName Releases.versionName
   }
   buildTypes {
     release {
@@ -26,19 +22,21 @@ android {
 dependencies {
   implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-  implementation Libraries.lifecycleRuntime
-  implementation Libraries.kotlin
+  implementation Libs.core_ktx
+  implementation Libs.kotlin_stdlib_jdk8
 
-  implementation Libraries.rtmpClient
+  implementation Libs.lifecycle_runtime_ktx
 
-  implementation JetpackLibraries.ktx
+  implementation Libs.rtmp_client
 
-  implementation GoogleLibraries.annotation
-  implementation GoogleLibraries.material
+  implementation Libs.annotation
+  implementation Libs.material
 
-  testImplementation TestLibraries.junit
+  testImplementation Libs.junit
 
-  androidTestCompile('androidx.test.espresso:espresso-core:3.1.0', {
+  androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
+
+
 }

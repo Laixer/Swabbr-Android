@@ -7,23 +7,21 @@ import java.util.UUID
 
 interface UserCacheDataSource {
 
-    val self_key: String
-        get() = "self"
+    val key: String
+        get() = "users"
 
-    fun set(item: User): Single<User>
+    fun add(item: User): Single<User>
 
     fun get(userId: UUID): Single<User>
 
-    fun getAll(): Single<List<User>>
+    fun get(): Single<Set<User>>
 
-    fun set(list: List<User>): Single<List<User>>
-
-    fun getSelf(): Single<User>
+    fun set(list: Set<User>): Single<Set<User>>
 }
 
 interface UserRemoteDataSource {
 
     fun get(userId: UUID): Single<User>
 
-    fun search(query: String?, page: Int = 1, itemsPerPage: Int = 50): Single<List<User>>
+    fun search(query: String?, page: Int = 1, itemsPerPage: Int = 50): Single<Set<User>>
 }
