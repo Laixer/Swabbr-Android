@@ -15,13 +15,13 @@ import java.util.UUID
 interface VlogsApi {
 
     @GET("vlogs/foruser/{userId}")
-    fun getUserVlogs(@Path("userId") userId: UUID): Single<VlogListResponse>
+    fun getUserVlogs(@Path("userId") userId: UUID): Single<VlogListResponseEntity>
 
     @GET("vlogs/{vlogId}")
-    fun getVlog(@Path("vlogId") vlogId: UUID): Single<VlogResponse>
+    fun getVlog(@Path("vlogId") vlogId: UUID): Single<VlogResponseEntity>
 
     @GET("vlogs/recommended")
-    fun getRecommendedVlogs(): Single<VlogListResponse>
+    fun getRecommendedVlogs(): Single<VlogListResponseEntity>
 
     @GET("vlogs/{vlogId}/vlog_likes")
     fun getLikes(@Path("vlogId") vlogId: UUID): Single<LikeListEntity>

@@ -20,6 +20,11 @@ data class User(
     val birthdate: LocalDate?
 )
 
+data class SimplifiedUser(
+    val id: UUID,
+    val nickname: String
+)
+
 enum class Gender(val value: String) {
     FEMALE("female"),
     MALE("male"),

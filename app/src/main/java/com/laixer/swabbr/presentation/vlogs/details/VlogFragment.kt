@@ -134,23 +134,23 @@ class VlogFragment : AuthFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         layoutInflater.inflate(R.layout.item_vlog, container, false).apply {
-            user_avatar.loadAvatar(userVlogItem.profileImage, userVlogItem.userId)
-            user_nickname.text = requireContext().getString(R.string.nickname, userVlogItem.nickname)
+            user_avatar.loadAvatar(userVlogItem.user.profileImage, userVlogItem.user.id)
+            user_nickname.text = requireContext().getString(R.string.nickname, userVlogItem.user.nickname)
             user_username.text =
-                requireContext().getString(R.string.full_name, userVlogItem.firstName, userVlogItem.lastName)
+                requireContext().getString(R.string.full_name, userVlogItem.user.firstName, userVlogItem.user.lastName)
         }
 
     private fun toggleLike(like: Boolean) {
-        if (userVlogItem.userId == authenticatedUser.user.id) {
+        if (userVlogItem.user.id == authenticatedUser.user.id) {
             like_button.isChecked = !like_button.isChecked
             return
         }
         like_button.isEnabled = false
 
         if (like) {
-            vm.unlike(userVlogItem.vlogId)
+            vm.unlike(userVlogItem.vlog.data.id)
         } else {
-            vm.like(userVlogItem.vlogId)
+            vm.like(userVlogItem.vlog.data.id)
 
             ParticleSystem(requireActivity(), 20, R.drawable.love_it_red, 1000)
                 .setSpeedModuleAndAngleRange(0.1F, 0.2F, 240, 300)
@@ -217,15 +217,15 @@ class VlogFragment : AuthFragment() {
         livestreamId?.let {
             liveVm.watch(it)
         } ?: run {
-            vm.watch(userVlogItem.vlogId)
+            vm.watch(userVlogItem.vlog.data.id)
         }
 
         vm.run {
             reactions.observe(viewLifecycleOwner, Observer { updateReactions(it) })
             likes.observe(viewLifecycleOwner, Observer { updateLikes(it) })
 
-            getReactions(userVlogItem.vlogId, refresh = true)
-            getLikes(userVlogItem.vlogId)
+            getReactions(userVlogItem.vlog.data.id, refresh = true)
+            getLikes(userVlogItem.vlog.data.id)
         }
     }
 

@@ -46,7 +46,7 @@ class ProfileViewModel constructor(
             .doOnSubscribe { profileVlogs.setLoading() }
             .subscribeOn(Schedulers.io())
             .map { list ->
-                list.sortedByDescending { it.second.dateStarted }
+                list.sortedByDescending { it.second.data.dateStarted }
                     .mapToPresentation()
             }
             .subscribe(

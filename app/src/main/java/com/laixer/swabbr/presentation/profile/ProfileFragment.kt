@@ -104,7 +104,7 @@ class ProfileFragment : AuthFragment() {
     }
 
     private val onClick: (UserVlogItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/user/${it.userId}/vlog/${it.vlogId}"))
+        findNavController().navigate(Uri.parse("https://swabbr.com/user/${it.user.id}/vlog/${it.vlog.data.id}"))
     }
 
     private fun updateProfile(res: Resource<UserItem>) = res.run {

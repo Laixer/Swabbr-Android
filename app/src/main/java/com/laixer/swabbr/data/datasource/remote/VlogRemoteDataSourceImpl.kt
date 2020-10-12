@@ -15,13 +15,13 @@ class VlogRemoteDataSourceImpl constructor(
 ) : VlogRemoteDataSource {
 
     override fun getUserVlogs(userId: UUID): Single<List<Vlog>> = api.getUserVlogs(userId)
-            .map { it.vlogs.mapToDomain() }
+            .map { response -> response.vlogs.map { it.mapToDomain() } }
 
     override fun get(vlogId: UUID): Single<Vlog> = api.getVlog(vlogId)
-        .map { it.vlog.mapToDomain() }
+        .map { it.mapToDomain() }
 
     override fun getRecommendedVlogs(): Single<List<Vlog>> = api.getRecommendedVlogs()
-        .map { it.vlogs.mapToDomain () }
+        .map { response -> response.vlogs.map { it.mapToDomain() } }
 
     override fun getLikes(vlogId: UUID): Single<LikeList> = api.getLikes(vlogId)
         .map { it.mapToDomain() }

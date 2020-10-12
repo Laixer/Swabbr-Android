@@ -13,11 +13,11 @@ class UserRepositoryImpl constructor(
 ) : UserRepository {
 
     override fun get(userId: UUID, refresh: Boolean): Single<User> = when (refresh) {
-        true -> remoteDataSource.get(userId).flatMap { cacheDataSource.set(it) }
+        true -> remoteDataSource.get(userId).flatMap { cacheDataSource.add(it) }
         false -> cacheDataSource.get(userId).onErrorResumeNext { get(userId, true) }
     }
 
-    override fun set(user: User): Single<User> = cacheDataSource.set(user)
+    override fun set(user: User): Single<User> = cacheDataSource.add(user)
 
     override fun search(name: String?, page: Int, itemsPerPage: Int): Single<List<User>> =
         remoteDataSource.search(name, page, itemsPerPage).flatMap { cacheDataSource.set(it) }

@@ -1,6 +1,7 @@
 package com.laixer.swabbr.data.datasource.model
 
 import com.laixer.swabbr.domain.model.Gender
+import com.laixer.swabbr.domain.model.SimplifiedUser
 import com.laixer.swabbr.domain.model.User
 import com.squareup.moshi.Json
 import java.time.LocalDate
@@ -26,6 +27,21 @@ data class UserEntity(
     @field:Json(name = "nickname") val nickname: String,
     @field:Json(name = "profileImageBase64Encoded") val profileImage: String?,
     @field:Json(name = "birthDate") val birthdate: String?
+)
+
+data class SimplifiedUserEntity(
+    @field:Json(name = "id") val id: String,
+    @field:Json(name = "nickName") val nickname: String
+)
+
+fun SimplifiedUserEntity.mapToDomain(): SimplifiedUser = SimplifiedUser(
+    UUID.fromString(id),
+    nickname
+)
+
+fun SimplifiedUser.mapToData(): SimplifiedUserEntity = SimplifiedUserEntity(
+    id.toString(),
+    nickname
 )
 
 fun UserEntity.mapToDomain(): User = User(

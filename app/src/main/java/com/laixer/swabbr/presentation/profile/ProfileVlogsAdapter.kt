@@ -29,7 +29,7 @@ class ProfileVlogsAdapter(
     inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_uservlog)) {
 
         fun bind(item: UserVlogItem) = with(itemView) {
-            if (item.dateStarted.isBefore(ZonedDateTime.now().minusMinutes(3))) {
+            if (item.vlog.data.dateStarted.isBefore(ZonedDateTime.now().minusMinutes(3))) {
                 processing_cover.visibility = View.GONE
 
                 /* We convert back to String because Glide's load(URL) function is deprecated because
@@ -44,13 +44,13 @@ class ProfileVlogsAdapter(
 
                 vlogPostDate.text =
                     context.getString(
-                        R.string.date, item.dateStarted.dayOfMonth, item.dateStarted.monthValue, item.dateStarted.year
+                        R.string.date, item.vlog.data.dateStarted.dayOfMonth, item.vlog.data.dateStarted.monthValue, item.vlog.data.dateStarted.year
                     )
                 vlogDuration.text =
                     context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
                 reaction_count.text = context.getString(R.string.reaction_count, (Math.random() * 100).toInt())
 
-                view_count.text = context.getString(R.string.view_count, item.views * (Math.random() * 1000).toInt())
+                view_count.text = context.getString(R.string.view_count, item.vlog.data.views * (Math.random() * 1000).toInt())
                 like_count.text = context.getString(R.string.like_count, (Math.random() * 1000).toInt())
                 setOnClickListener { onClick.invoke(item) }
             }
@@ -61,7 +61,7 @@ class ProfileVlogsAdapter(
 private class ProfileDiffCallback : DiffUtil.ItemCallback<UserVlogItem>() {
 
     override fun areItemsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean =
-        oldItem.vlogId == newItem.vlogId
+        oldItem.vlog.data.id == newItem.vlog.data.id
 
     override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean = oldItem == newItem
 }

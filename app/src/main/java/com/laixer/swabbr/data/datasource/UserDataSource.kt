@@ -10,18 +10,18 @@ interface UserCacheDataSource {
     val key: String
         get() = "users"
 
-    fun add(item: User): Single<User>
+    fun add(user: User): Single<User>
 
     fun get(userId: UUID): Single<User>
 
-    fun get(): Single<Set<User>>
+    fun get(): Single<List<User>>
 
-    fun set(list: Set<User>): Single<Set<User>>
+    fun set(list: List<User>): Single<List<User>>
 }
 
 interface UserRemoteDataSource {
 
     fun get(userId: UUID): Single<User>
 
-    fun search(query: String?, page: Int = 1, itemsPerPage: Int = 50): Single<Set<User>>
+    fun search(query: String?, page: Int = 1, itemsPerPage: Int = 50): Single<List<User>>
 }

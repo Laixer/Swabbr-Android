@@ -18,7 +18,7 @@ class UsersVlogsUseCase constructor(
 
     fun getRecommendedVlogs(refresh: Boolean): Single<List<Pair<User, Vlog>>> =
         vlogRepository.getRecommendedVlogs(refresh).flattenAsObservable { vlogs -> vlogs }.flatMapSingle { vlog ->
-            userRepository.get(vlog.userId, refresh).map { user -> Pair(user, vlog) }
+            userRepository.get(vlog.data.userId, refresh).map { user -> Pair(user, vlog) }
         }.toList()
 
     /**
@@ -27,7 +27,7 @@ class UsersVlogsUseCase constructor(
     fun get(idList: List<UUID>, refresh: Boolean): Single<List<Pair<User, Vlog>>> =
         Observable.just(idList).flatMapIterable { ids -> ids }.flatMapSingle { id -> vlogRepository.get(id, refresh) }
             .flatMapSingle { vlog ->
-                userRepository.get(vlog.userId, refresh).map { user -> Pair(user, vlog) }
+                userRepository.get(vlog.data.userId, refresh).map { user -> Pair(user, vlog) }
             }.toList()
 }
 
@@ -38,7 +38,7 @@ class UserVlogUseCase constructor(
 
     fun get(vlogId: UUID, refresh: Boolean): Single<Pair<User, Vlog>> =
         vlogRepository.get(vlogId, refresh).flatMap { vlog ->
-            userRepository.get(vlog.userId, refresh).map { user -> Pair(user, vlog) }
+            userRepository.get(vlog.data.userId, refresh).map { user -> Pair(user, vlog) }
         }
 }
 
@@ -67,7 +67,7 @@ class VlogsUseCase constructor(private val vlogRepository: VlogRepository) {
  * To obtain the user from a vlog we need to use the userId from the vlog to find it in the user list.
  * This is a limitation that comes from the network API and this specific use case requires both reactions and users.
  */
-fun map(userList: List<User>, vlog: Vlog): Pair<User, Vlog> = Pair(userList.first { vlog.userId == it.id }, vlog)
+fun map(userList: List<User>, vlog: Vlog): Pair<User, Vlog> = Pair(userList.first { vlog.data.userId == it.id }, vlog)
 
 fun map(userList: List<User>, vlogList: List<Vlog>): List<Pair<User, Vlog>> =
-    vlogList.map { vlog -> Pair(userList.first { vlog.userId == it.id }, vlog) }
+    vlogList.map { vlog -> Pair(userList.first { vlog.data.userId == it.id }, vlog) }

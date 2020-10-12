@@ -31,7 +31,7 @@ class VlogListViewModel constructor(
                 .subscribeOn(Schedulers.io())
                 .map { list ->
                     list.map { pair -> Pair(pair.first, pair.second) }
-                        .sortedByDescending { it.second.dateStarted }
+                        .sortedByDescending { it.second.data.dateStarted }
                         .mapToPresentation()
                 }
                 .subscribe(

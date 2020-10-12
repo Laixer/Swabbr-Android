@@ -81,7 +81,7 @@ class VlogDetailsFragment : AuthFragment() {
                 data?.let {
                     if (mCurrentItemIndex == null) {
                         mCurrentItemIndex =
-                            vm.vlogs.value?.data?.indexOf(vm.vlogs.value?.data?.first { item -> item.vlogId.toString() == vlogId })
+                            vm.vlogs.value?.data?.indexOf(vm.vlogs.value?.data?.first { item -> item.vlog.data.id.toString() == vlogId })
                                 ?: 0
                     }
 

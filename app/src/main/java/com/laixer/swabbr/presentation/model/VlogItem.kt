@@ -1,7 +1,10 @@
 package com.laixer.swabbr.presentation.model
 
+import android.net.Uri
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.model.Vlog
+import com.laixer.swabbr.domain.model.VlogData
+import com.laixer.swabbr.domain.model.VlogLikeSummary
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
@@ -15,18 +18,17 @@ val idList = listOf(
 )
 
 data class VlogItem(
-    val id: UUID,
-    val userId: UUID,
-    val isPrivate: Boolean,
-    val dateStarted: ZonedDateTime,
-    val views: Int
+    val data: VlogData,
+    val vlogLikeSummary: VlogLikeSummary,
+    val thumbnailUri: Uri
 ): Serializable {
     val url = with(idList.random()) {
         URL("https://assets.mixkit.co/videos/$this/$this-720.mp4")
     }
 }
 
+
 fun Vlog.mapToPresentation(): VlogItem =
-    VlogItem(this.id, this.userId, this.isPrivate, this.dateStarted, this.views)
+    VlogItem(this.data, this.vlogLikeSummary,  this.thumbnailUri)
 
 fun List<Vlog>.mapToPresentation(): List<VlogItem> = map { it.mapToPresentation() }

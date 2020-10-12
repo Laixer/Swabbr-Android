@@ -1,19 +1,24 @@
 package com.laixer.swabbr.data.datasource.model
 
+import android.net.Uri
 import com.laixer.swabbr.domain.model.Vlog
+import com.laixer.swabbr.domain.model.VlogData
+import com.laixer.swabbr.domain.model.VlogLikeSummary
 import com.squareup.moshi.Json
+import java.net.URL
 import java.time.ZonedDateTime
 import java.util.UUID
 
 
-data class VlogListResponse(
+data class VlogListResponseEntity(
     @field:Json(name = "vlogsCount") val count: Int,
-    @field:Json(name = "vlogs") val vlogs: List<VlogEntity>
+    @field:Json(name = "vlogs") val vlogs: List<VlogResponseEntity>
 )
 
-data class VlogResponse(
+data class VlogResponseEntity(
     @field:Json(name = "vlog") val vlog: VlogEntity,
-    @field:Json(name = "vlogLikes") val vlogLikes: List<String>
+    @field:Json(name = "vlogLikeSummary") val vlogLikeSummary: VlogLikeSummaryEntity,
+    @field:Json(name = "thumbnailUri") val thumbnailUri: String
 )
 
 data class VlogEntity(
@@ -24,7 +29,13 @@ data class VlogEntity(
     @field:Json(name = "views") val views: Int
 )
 
-fun VlogEntity.mapToDomain(): Vlog = Vlog(
+data class VlogLikeSummaryEntity(
+    @field:Json(name = "vlogId") val vlogId: String,
+    @field:Json(name = "totalLikes") val totalLikes: Int,
+    @field:Json(name = "simplifiedUsers") val simplifiedUsers: List<SimplifiedUserEntity>
+)
+
+fun VlogEntity.mapToDomain(): VlogData = VlogData(
     UUID.fromString(id),
     UUID.fromString(userId),
     isPrivate,
@@ -32,7 +43,13 @@ fun VlogEntity.mapToDomain(): Vlog = Vlog(
     views
 )
 
-fun Vlog.mapToData(): VlogEntity = VlogEntity(
+fun VlogResponseEntity.mapToDomain(): Vlog = Vlog(
+    vlog.mapToDomain(),
+    vlogLikeSummary.mapToDomain(),
+    Uri.parse(thumbnailUri)
+)
+
+fun VlogData.mapToData(): VlogEntity = VlogEntity(
     id.toString(),
     userId.toString(),
     isPrivate,
@@ -40,5 +57,23 @@ fun Vlog.mapToData(): VlogEntity = VlogEntity(
     views
 )
 
-fun List<VlogEntity>.mapToDomain(): List<Vlog> = map { it.mapToDomain() }
-fun List<Vlog>.mapToData(): List<VlogEntity> = map { it.mapToData() }
+fun VlogLikeSummaryEntity.mapToDomain(): VlogLikeSummary = VlogLikeSummary(
+    UUID.fromString(vlogId),
+    totalLikes,
+    simplifiedUsers.map { it.mapToDomain() }
+)
+
+fun Vlog.mapToData(): VlogResponseEntity = VlogResponseEntity(
+    data.mapToData(),
+    vlogLikeSummary.mapToData(),
+    thumbnailUri.toString()
+)
+
+fun VlogLikeSummary.mapToData(): VlogLikeSummaryEntity = VlogLikeSummaryEntity(
+    vlogId.toString(),
+    totalLikes,
+    simplifiedUsers.map { it.mapToData() }
+)
+
+fun List<VlogEntity>.mapToDomain(): List<VlogData> = map { it.mapToDomain() }
+fun List<Vlog>.mapToData(): List<VlogResponseEntity> = map { it.mapToData() }

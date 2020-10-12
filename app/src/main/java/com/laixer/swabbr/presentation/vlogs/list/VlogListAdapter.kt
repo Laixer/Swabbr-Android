@@ -27,7 +27,7 @@ class VlogListAdapter constructor(
     inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_vlog)) {
 
         fun bind(item: UserVlogItem) = with(itemView) {
-            if (item.dateStarted.isBefore(ZonedDateTime.now().minusMinutes(3))) {
+            if (item.vlog.data.dateStarted.isBefore(ZonedDateTime.now().minusMinutes(3))) {
                 processing_cover.visibility = View.GONE
                 val url = item.url.toString().replace("http:", "https:")
 
@@ -37,34 +37,34 @@ class VlogListAdapter constructor(
                     .thumbnail(0.1f)
                     .into(thumbnail)
 
-                user_avatar.loadAvatar(item.profileImage, item.userId)
-                user_nickname.text = context.getString(R.string.nickname, item.nickname)
-                item.firstName?.let {
+                user_avatar.loadAvatar(item.user.profileImage, item.user.id)
+                user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
+                item.user.firstName?.let {
                     user_username.apply {
-                        text = context.getString(R.string.full_name, it, item.lastName)
+                        text = context.getString(R.string.full_name, it, item.user.lastName)
                         visibility = View.VISIBLE
                     }
                 }
 
                 vlogPostDate.text =
                     context.getString(
-                        R.string.date, item.dateStarted.dayOfMonth, item.dateStarted.monthValue, item.dateStarted.year
+                        R.string.date, item.vlog.data.dateStarted.dayOfMonth, item.vlog.data.dateStarted.monthValue, item.vlog.data.dateStarted.year
                     )
 
                 vlogDuration.text =
                     context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
                 reaction_count.text = context.getString(R.string.reaction_count, (Math.random() * 100).toInt())
 
-                view_count.text = context.getString(R.string.view_count, item.views * (Math.random() * 1000).toInt())
+                view_count.text = context.getString(R.string.view_count, item.vlog.data.views * (Math.random() * 1000).toInt())
 
                 like_count.text = context.getString(R.string.like_count, (Math.random() * 1000).toInt())
 
                 user_avatar.setOnClickListener { profileClick.invoke(item) }
-                user_nickname.text = context.getString(R.string.nickname, item.nickname)
+                user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
 
-                item.firstName?.let {
+                item.user.firstName?.let {
                     itemView.user_username.apply {
-                        text = context.getString(R.string.full_name, it, item.lastName)
+                        text = context.getString(R.string.full_name, it, item.user.lastName)
                         visibility = View.VISIBLE
                     }
                 }
@@ -83,7 +83,7 @@ class VlogListAdapter constructor(
 private class VlogDiffCallback : DiffUtil.ItemCallback<UserVlogItem>() {
 
     override fun areItemsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean =
-        oldItem.vlogId == newItem.vlogId
+        oldItem.vlog.data.id == newItem.vlog.data.id
 
     override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean = oldItem == newItem
 }

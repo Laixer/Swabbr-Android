@@ -2,6 +2,7 @@ package com.laixer.swabbr.presentation.profile
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -38,6 +39,7 @@ class AuthProfileFragment : AuthFragment() {
                     refresh = true
                 )
             }
+            .setDuration(Snackbar.LENGTH_LONG)
     }
     private var profileVlogsAdapter: ProfileVlogsAdapter? = null
 
@@ -88,7 +90,7 @@ class AuthProfileFragment : AuthFragment() {
     }
 
     private val onClick: (UserVlogItem) -> Unit = { item ->
-        findNavController().navigate(Uri.parse("https://swabbr.com/user/${item.userId}/vlog/${item.vlogId}"))
+        findNavController().navigate(Uri.parse("https://swabbr.com/user/${item.user.id}/vlog/${item.vlog.data.id}"))
     }
 
     private fun updateProfile(item: UserItem?) {
@@ -116,7 +118,11 @@ class AuthProfileFragment : AuthFragment() {
                 }
                 ResourceState.ERROR -> {
                     stopRefreshing()
-                    message?.let { snackBar.show() }
+                    message?.let {
+                        Log.e(TAG, it)
+                        snackBar.setText(it).show()
+                    }
+
                 }
             }
         }
@@ -125,5 +131,9 @@ class AuthProfileFragment : AuthFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         profileVlogsAdapter = null
+    }
+
+    internal companion object {
+        const val TAG = "AuthProfileFragment"
     }
 }
