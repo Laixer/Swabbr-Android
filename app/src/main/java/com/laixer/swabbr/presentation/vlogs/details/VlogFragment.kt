@@ -9,20 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.source.hls.DefaultHlsDataSourceFactory
-import com.google.android.exoplayer2.source.hls.HlsDataSourceFactory
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DataSpec
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
-import com.google.android.exoplayer2.upstream.crypto.AesCipherDataSource
-import com.google.android.exoplayer2.util.Util
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
@@ -58,7 +48,7 @@ class VlogFragment : AuthFragment() {
     private lateinit var gestureDetector: GestureDetector
 
     fun isVlogLiked(): Boolean =
-        vm.likes.value?.data?.usersMinified?.any { it.id == authenticatedUser.user.id } ?: false
+        vm.likes.value?.data?.usersMinified?.any { it.id == getAuthUserId() } ?: false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,7 +131,7 @@ class VlogFragment : AuthFragment() {
         }
 
     private fun toggleLike(like: Boolean) {
-        if (userVlogItem.user.id == authenticatedUser.user.id) {
+        if (userVlogItem.user.id == getAuthUserId()) {
             like_button.isChecked = !like_button.isChecked
             return
         }
@@ -229,13 +219,13 @@ class VlogFragment : AuthFragment() {
         }
     }
 
-    private fun updateLikes(resource: Resource<LikeListItem?>) = with(resource) {
+    private fun updateLikes(resource: Resource<LikeListItem>) = with(resource) {
         when (state) {
             ResourceState.LOADING -> {
                 like_button.isEnabled = false
             }
             ResourceState.SUCCESS -> {
-                val isLiked = data?.usersMinified?.any { it.id == authenticatedUser.user.id } ?: false
+                val isLiked = data?.usersMinified?.any { it.id == getAuthUserId() } ?: false
                 like_button.isChecked = isLiked
                 like_button.isEnabled = !isLiked
 
@@ -249,7 +239,7 @@ class VlogFragment : AuthFragment() {
         }
     }
 
-    private fun updateReactions(resource: Resource<List<ReactionItem>?>) =
+    private fun updateReactions(resource: Resource<List<ReactionItem>>) =
         with(resource) {
             when (state) {
                 ResourceState.LOADING -> {

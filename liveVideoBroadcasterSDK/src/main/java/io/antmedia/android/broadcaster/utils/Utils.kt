@@ -17,12 +17,12 @@ object Utils {
     private var sharedPreference: SharedPreferences? = null
 
     fun getDurationString(seconds: Int): String {
-        var seconds = seconds
-        if (seconds < 0 || seconds > 2000000) //there is an codec problem and duration is not set correctly,so display meaningfull string
-            seconds = 0
-        val hours = seconds / 3600
-        val minutes = seconds % 3600 / 60
-        seconds %= 60
+        var s = seconds
+        if (s < 0 || s > 2000000) //there is an codec problem and duration is not set correctly,so display meaningfull string
+            s = 0
+        val hours = s / 3600
+        val minutes = s % 3600 / 60
+        s %= 60
         return if (hours == 0) "${twoDigitString(minutes)}:${twoDigitString(seconds)}"
         else "${twoDigitString(hours)}:${twoDigitString(minutes)}:${twoDigitString(seconds)}"
     }

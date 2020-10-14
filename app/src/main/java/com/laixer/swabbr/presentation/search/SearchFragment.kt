@@ -44,12 +44,7 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     if (canScrollVertically(1) && vm.lastQueryResultCount > 0) {
-                        try {
-                            search(page = currentPage++)
-                        } catch (e: IllegalArgumentException) {
-                            Log.d(TAG, "Tried to scroll but invalid search arguments exist")
-                            return
-                        }
+                        search(page = currentPage++)
                     }
                 }
             })
@@ -71,22 +66,30 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         query: String = lastQuery,
         page: Int = currentPage,
         refreshList: Boolean = false
-    ) {
+    ): Boolean {
         // Can't search negative pages
-        require(currentPage >= 1) { "page index must be 1 or higher, received '$page'" }
+        if (currentPage < 1) {
+            Log.e(TAG, "page index must be 1 or higher, received '$page'")
+            return false
+        }
+
         // Only search if 3 or more characters are queried
-        require(query.length >= 3) { "query must consist of 3 characters or more, recieved '$query' (size: ${query.length})" }
+        if (query.length < 3) {
+            Log.e(TAG, "query must consist of 3 characters or more, recieved '$query' (size: ${query.length})")
+            return false
+        }
 
         lastQuery = query
         currentPage = page
         vm.search(query = query, page = page, refreshList = refreshList)
+        return true
     }
 
     private val onClick: (UserItem) -> Unit = {
         findNavController().navigate(Uri.parse("https://swabbr.com/profiles/${it.id}"))
     }
 
-    private fun updateUsers(resource: Resource<List<UserItem>?>) {
+    private fun updateUsers(resource: Resource<List<UserItem>>) {
         resource.run {
             swipeRefreshLayout.run {
                 when (state) {
@@ -107,22 +110,11 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
     }
 
     override fun onQueryTextChange(query: String): Boolean {
-        if (query.length % 3 != 0) return false
-        try {
-            search(query = query, page = 1, refreshList = true)
-        } catch (e: IllegalArgumentException) {
-            return false
-        }
-        return true
+        return search(query = query, page = 1, refreshList = true)
     }
 
     override fun onQueryTextSubmit(query: String): Boolean {
-        try {
-            search(query = query, page = 1, refreshList = true)
-        } catch (e: IllegalArgumentException) {
-            return false
-        }
-        return true
+        return search(query = query, page = 1, refreshList = true)
     }
 
     override fun onDestroyView() {

@@ -118,7 +118,7 @@ class ProfileFragment : AuthFragment() {
         }
     }
 
-    private fun updateProfileVlogs(res: Resource<List<UserVlogItem>?>) = res.run {
+    private fun updateProfileVlogs(res: Resource<List<UserVlogItem>>) = res.run {
         with(swipeRefreshLayout) {
             when (state) {
                 ResourceState.LOADING -> startRefreshing()

@@ -1,57 +1,47 @@
 package com.laixer.swabbr.presentation.auth
 
+import android.accounts.Account
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.laixer.presentation.Resource
 import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
-import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.usecase.AuthUseCase
 import com.laixer.swabbr.presentation.model.AuthUserItem
 import com.laixer.swabbr.presentation.model.LoginItem
 import com.laixer.swabbr.presentation.model.RegistrationItem
-import com.laixer.swabbr.presentation.model.hasValidSession
 import com.laixer.swabbr.presentation.model.mapToDomain
-import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-open class AuthViewModel constructor(private val authUseCase: AuthUseCase) : ViewModel() {
+open class AuthViewModel constructor(
+    private val userManager: UserManager,
+    private val authUseCase: AuthUseCase
+) : ViewModel() {
 
-    val authenticatedUser = MutableLiveData<Resource<AuthUserItem?>>()
+    val authenticatedUser = MutableLiveData<Resource<AuthUserItem>>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun isLoggedIn(): Boolean = authenticatedUser.value?.data?.hasValidSession() ?: false
+    fun get(): Account? = userManager.getCurrentAccount()
 
-    fun get(refresh: Boolean = false) =
+    fun login(login: LoginItem) =
         compositeDisposable.add(authUseCase
-            .getAuthenticatedUser(refresh)
+            .login(login.mapToDomain())
             .doOnSubscribe { authenticatedUser.setLoading() }
-            .subscribeOn(Schedulers.single())
+            .subscribeOn(Schedulers.io())
             .subscribe(
-                { authenticatedUser.setSuccess(it.mapToPresentation()) },
+                { userManager.connect(login.email, login.password, it.jwtToken) },
                 { authenticatedUser.setError(it.message) }
             )
         )
 
-    fun login(login: LoginItem, remember: Boolean = true) =
+    fun register(registration: RegistrationItem) =
         compositeDisposable.add(authUseCase
-            .login(login.mapToDomain(), remember)
+            .register(registration.mapToDomain())
             .doOnSubscribe { authenticatedUser.setLoading() }
             .subscribeOn(Schedulers.io())
             .subscribe(
-                { authenticatedUser.setSuccess(it.mapToPresentation()) },
-                { authenticatedUser.setError(it.message) }
-            )
-        )
-
-    fun register(registration: RegistrationItem, remember: Boolean = true) =
-        compositeDisposable.add(authUseCase
-            .register(registration.mapToDomain(), remember)
-            .doOnSubscribe { authenticatedUser.setLoading() }
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                { authenticatedUser.setSuccess(it.mapToPresentation()) },
+                { userManager.createAccount(registration.email, registration.password, it.jwtToken) },
                 { authenticatedUser.setError(it.message) }
             )
         )
@@ -62,7 +52,7 @@ open class AuthViewModel constructor(private val authUseCase: AuthUseCase) : Vie
             .doOnSubscribe { authenticatedUser.setLoading() }
             .subscribeOn(Schedulers.io())
             .subscribe(
-                { authenticatedUser.setSuccess(null) },
+                { userManager.disconnect() },
                 { authenticatedUser.setError(it.message) }
             )
         )

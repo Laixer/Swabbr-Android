@@ -11,7 +11,7 @@ class UserCacheDataSourceImpl constructor(
     private val cache: Cache
 ) : UserCacheDataSource {
 
-    override fun set(list: List<User>): Single<List<User>> = cache.load<HashMap<UUID, User>>(key)
+    override fun set(list: List<User>): Single<List<User>> = cache.load<HashMap<UUID, User>>(key).onErrorReturn { HashMap() }
         .flatMap { map ->
             map.putAll(list.map { it.id to it }.toMap())
             cache.save(key, map)
@@ -22,7 +22,7 @@ class UserCacheDataSourceImpl constructor(
     override fun get(userId: UUID): Single<User> = cache.load<HashMap<UUID, User>>(key)
         .map { map -> map[userId] }
 
-    override fun add(user: User): Single<User> =  cache.load<HashMap<UUID, User>>(key)
+    override fun add(user: User): Single<User> =  cache.load<HashMap<UUID, User>>(key).onErrorReturn { HashMap() }
         .map { it.put(user.id, user) }
 }
 

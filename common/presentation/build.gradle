@@ -6,6 +6,9 @@ dependencies {
     kapt Libs.lifecycle_compiler
     testImplementation Libs.core_testing
 
+    implementation Libs.navigation_ui_ktx
+    implementation Libs.swiperefreshlayout
+
     api Libs.glide
     kapt Libs.com_github_bumptech_glide_compiler
     implementation Libs.core_ktx

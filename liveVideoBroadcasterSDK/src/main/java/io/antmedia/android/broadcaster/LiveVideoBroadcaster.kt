@@ -167,10 +167,9 @@ class LiveVideoBroadcaster(
             .get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT
     }
 
-    override fun canChangeCamera(): Boolean = false ?: hasFrontCamera()
+    override fun canChangeCamera(): Boolean = hasFrontCamera()
 
-    override fun canToggleTorch(): Boolean = false ?:
-        activity.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
+    override fun canToggleTorch(): Boolean = activity.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)
 
     override fun toggleTorch() {
         if (torchMode == CaptureRequest.FLASH_MODE_OFF) {
@@ -528,20 +527,20 @@ class LiveVideoBroadcaster(
         return Size(1080, 1920)
         // Pick the smallest of those big enough. If there is no one big enough, pick the
         // largest of those not big enough.
-        if (bigEnough.size > 0) {
-            return Collections.min(
-                bigEnough,
-                CompareSizesByArea()
-            )
-        } else if (notBigEnough.size > 0) {
-            return Collections.max(
-                notBigEnough,
-                CompareSizesByArea()
-            )
-        } else {
-            Log.e(TAG, "Couldn't find any suitable preview size")
-            return choices[0]
-        }
+//        if (bigEnough.size > 0) {
+//            return Collections.min(
+//                bigEnough,
+//                CompareSizesByArea()
+//            )
+//        } else if (notBigEnough.size > 0) {
+//            return Collections.max(
+//                notBigEnough,
+//                CompareSizesByArea()
+//            )
+//        } else {
+//            Log.e(TAG, "Couldn't find any suitable preview size")
+//            return choices[0]
+//        }
     }
 
     /**

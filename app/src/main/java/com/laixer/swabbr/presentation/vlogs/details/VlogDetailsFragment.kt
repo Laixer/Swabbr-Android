@@ -73,7 +73,7 @@ class VlogDetailsFragment : AuthFragment() {
         }
     }
 
-    private fun updateVlogs(resource: Resource<List<UserVlogItem>?>) = with(resource) {
+    private fun updateVlogs(resource: Resource<List<UserVlogItem>>) = with(resource) {
         when (state) {
             ResourceState.LOADING -> {
             }

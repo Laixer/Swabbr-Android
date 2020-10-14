@@ -163,9 +163,6 @@ object Libs {
   const val com_android_tools_build_gradle: String = "com.android.tools.build:gradle:" +
       Versions.com_android_tools_build_gradle
 
-  const val io_fabric_tools_gradle: String = "io.fabric.tools:gradle:" +
-      Versions.io_fabric_tools_gradle
-
   const val de_fayard_buildsrcversions_gradle_plugin: String =
       "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:" +
       Versions.de_fayard_buildsrcversions_gradle_plugin
@@ -176,11 +173,11 @@ object Libs {
   const val runtime_permission_kotlin: String = "com.github.florent37:runtime-permission-kotlin:" +
       Versions.runtime_permission_kotlin
 
-  const val firebase_analytics: String = "com.google.firebase:firebase-analytics:" +
-      Versions.firebase_analytics
+  const val firebase_analytics: String = "com.google.firebase:firebase-analytics-ktx"
 
-  const val firebase_messaging: String = "com.google.firebase:firebase-messaging:" +
-      Versions.firebase_messaging
+  const val firebase_messaging: String = "com.google.firebase:firebase-messaging-ktx"
+
+  const val firebase_crashlytics: String = "com.google.firebase:firebase-crashlytics-ktx"
 
   /**
    * http://github.com/square/leakcanary/
@@ -235,14 +232,10 @@ object Libs {
    */
   const val core_testing: String = "androidx.arch.core:core-testing:" + Versions.core_testing
 
-  const val firebase_iid: String = "com.google.firebase:firebase-iid:" + Versions.firebase_iid
-
   /**
    * https://developer.android.com/jetpack/androidx
    */
   const val fragment_ktx: String = "androidx.fragment:fragment-ktx:" + Versions.fragment_ktx
-
-  const val crashlytics: String = "com.crashlytics.sdk.android:crashlytics:" + Versions.crashlytics
 
   /**
    * https://github.com/Dhaval2404/ImagePicker/

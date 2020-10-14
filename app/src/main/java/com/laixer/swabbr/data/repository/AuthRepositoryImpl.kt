@@ -22,17 +22,12 @@ class AuthRepositoryImpl constructor(
         false -> authCacheDataSource.get()
     }
 
-    override fun login(login: Login, remember: Boolean): Single<AuthUser> = when (remember) {
-        true ->  authRemoteDataSource.login(login)
+    override fun login(login: Login): Single<AuthUser> = authRemoteDataSource.login(login)
             .flatMap { authCacheDataSource.set(it) }
-        false -> authRemoteDataSource.login(login)
-    }
 
-    override fun register(registration: Registration, remember: Boolean): Single<AuthUser> = when (remember) {
-        true -> authRemoteDataSource.register(registration)
+    override fun register(registration: Registration): Single<AuthUser> = authRemoteDataSource.register(registration)
             .flatMap { authCacheDataSource.set(it) }
-        false -> authRemoteDataSource.register(registration)
-    }
+
 
     override fun logout(): Completable = authRemoteDataSource.logout().andThen(authCacheDataSource.logout())
 

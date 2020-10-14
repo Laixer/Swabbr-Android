@@ -1,14 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'io.fabric'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
   compileSdkVersion DefaultConfig.compileSdk
 
   ndkVersion "21.3.6528147"
-
 
   defaultConfig {
     applicationId App.swabbr
@@ -122,10 +121,12 @@ dependencies {
   implementation Libs.navigation_ui_ktx
 
   // Firebase
+  // Import the BoM for the Firebase platform
+  implementation platform('com.google.firebase:firebase-bom:25.12.0')
+
+  implementation Libs.firebase_crashlytics
   implementation Libs.firebase_analytics
   implementation Libs.firebase_messaging
-  implementation Libs.firebase_iid
-  implementation Libs.crashlytics
 
   debugImplementation Libs.leakcanary_android
 

@@ -60,7 +60,7 @@ class DashboardFragment : AuthFragment() {
         }
     }
 
-    private fun updateVlogs(resource: Resource<List<UserVlogItem>?>) = with(resource) {
+    private fun updateVlogs(resource: Resource<List<UserVlogItem>>) = with(resource) {
         with(swipeRefreshLayout) {
             when (state) {
                 ResourceState.LOADING -> startRefreshing()

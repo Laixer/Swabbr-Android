@@ -1,35 +1,30 @@
 package com.laixer.swabbr.presentation
 
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
+import com.laixer.swabbr.UnauthenticatedException
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.model.AuthUserItem
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.util.*
 
 /** Fragment that forces authentication on create, view creation and resume **/
 open class AuthFragment : Fragment() {
 
-    // private val am: AccountManager = AccountManager.get(requireContext())
+    private val am: AccountManager by inject()
     private val authVm: AuthViewModel by sharedViewModel()
-    protected val authenticatedUser: AuthUserItem by lazy { authVm.authenticatedUser.value!!.data!! }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectFeature()
-        authVm.run {
-            authenticatedUser.observe(this@AuthFragment, Observer { checkAuthentication(it) })
-
-            if (!isLoggedIn()) {
-                get()
-            }
-        }
         super.onCreate(savedInstanceState)
     }
 
@@ -39,32 +34,20 @@ open class AuthFragment : Fragment() {
         }
     }
 
-    private fun checkAuthentication(res: Resource<AuthUserItem?>) = with(res) {
-        when (state) {
-            ResourceState.LOADING -> {
-            }
-            ResourceState.SUCCESS -> {
-                if (!authVm.isLoggedIn()) {
-                    reauthorize()
-                }
-            }
-            ResourceState.ERROR -> {
-                reauthorize()
-            }
-        }
+    protected fun getAuthUserId(): UUID {
+        return UUID.fromString(am.getUserData(authVm.get(), "id"))
     }
 
-    private fun reauthorize() =
+    private fun reauthorize(message: String? = "Please sign in.") =
         findNavController().navigate(
-            R.id.action_authenticate,
+            R.id.action_global_authenticator,
             null,
-            NavOptions.Builder().setLaunchSingleTop(true).build()
+            NavOptions.Builder().build()
         ).also {
-            Toast.makeText(requireContext(), "Please sign in.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
         }
 
     companion object {
-
         private val ACCOUNT_TYPE = "com.laixer.swabbr"
     }
 }

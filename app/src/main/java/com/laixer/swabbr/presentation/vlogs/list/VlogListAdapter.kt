@@ -13,6 +13,7 @@ import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.UserVlogItem
 import kotlinx.android.synthetic.main.include_user_info.view.*
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
+import java.lang.IllegalStateException
 import java.time.ZonedDateTime
 
 class VlogListAdapter constructor(
@@ -29,10 +30,11 @@ class VlogListAdapter constructor(
         fun bind(item: UserVlogItem) = with(itemView) {
             if (item.vlog.data.dateStarted.isBefore(ZonedDateTime.now().minusMinutes(3))) {
                 processing_cover.visibility = View.GONE
-                val url = item.url.toString().replace("http:", "https:")
 
+                val url = item.vlog.thumbnailUri.toString() ?: ""
                 Glide.with(context)
                     .load(url)
+                    .placeholder(R.drawable.thumbnail_placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .thumbnail(0.1f)
                     .into(thumbnail)
@@ -55,9 +57,9 @@ class VlogListAdapter constructor(
                     context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
                 reaction_count.text = context.getString(R.string.reaction_count, (Math.random() * 100).toInt())
 
-                view_count.text = context.getString(R.string.view_count, item.vlog.data.views * (Math.random() * 1000).toInt())
+                view_count.text = context.getString(R.string.view_count, item.vlog.data.views)
 
-                like_count.text = context.getString(R.string.like_count, (Math.random() * 1000).toInt())
+                like_count.text = context.getString(R.string.like_count, item.vlog.vlogLikeSummary.totalLikes)
 
                 user_avatar.setOnClickListener { profileClick.invoke(item) }
                 user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
@@ -85,5 +87,5 @@ private class VlogDiffCallback : DiffUtil.ItemCallback<UserVlogItem>() {
     override fun areItemsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean =
         oldItem.vlog.data.id == newItem.vlog.data.id
 
-    override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean = oldItem == newItem
+    override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean = oldItem.vlog.data.id == newItem.vlog.data.id
 }

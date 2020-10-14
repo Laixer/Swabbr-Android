@@ -33,6 +33,7 @@ import com.laixer.swabbr.presentation.encodeImageToBase64
 import com.laixer.swabbr.presentation.model.AuthUserItem
 import com.laixer.swabbr.presentation.model.LoginItem
 import com.laixer.swabbr.presentation.model.RegistrationItem
+import kotlinx.android.synthetic.main.activity_app.*
 import kotlinx.android.synthetic.main.fragment_registration.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.Instant
@@ -60,6 +61,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().bottom_nav.visibility = View.GONE
 
         savedInstanceState?.getParcelable<Bitmap?>("BitmapImage")?.let {
             selectedBitmap = it
@@ -87,8 +89,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 //                    phoneNumberInput.text.toString(),
                     PUSH_NOTIFICATION_PLATFORM,
                     firebaseInstanceId
-                ),
-                true
+                )
             )
         }
 
@@ -102,7 +103,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         outState.putParcelable("BitmapImage", selectedBitmap)
     }
 
-    private fun register(res: Resource<AuthUserItem?>) {
+    private fun register(res: Resource<AuthUserItem>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 progressBar.visible()
@@ -292,6 +293,12 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     override fun onDateSet(view: DatePicker, year: Int, month: Int /* 0-11 */, dayOfMonth: Int) {
 //        selectedDate = selectedDate.withYear(year).withMonth(month + 1).withDayOfMonth(dayOfMonth)
 //        datePicker.text = selectedDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        requireActivity().bottom_nav.visibility = View.VISIBLE
+
     }
 
     companion object {

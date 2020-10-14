@@ -35,7 +35,7 @@ class AuthProfileFragment : AuthFragment() {
         Snackbar.make(swipeRefreshLayout, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)
             .setAction(getString(R.string.retry)) {
                 profileVm.getProfileVlogs(
-                    authenticatedUser.user.id,
+                    getAuthUserId(),
                     refresh = true
                 )
             }
@@ -56,7 +56,6 @@ class AuthProfileFragment : AuthFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
-        updateProfile(authenticatedUser.user)
 
         profileVlogsAdapter = ProfileVlogsAdapter(onClick)
 
@@ -69,15 +68,15 @@ class AuthProfileFragment : AuthFragment() {
             profileVlogs.observe(viewLifecycleOwner, Observer { updateProfileVlogs(it) })
             profile.observe(viewLifecycleOwner, Observer { updateProfile(it.data) })
             swipeRefreshLayout.setOnRefreshListener {
-                getProfile(authenticatedUser.user.id, refresh = true)
-                getProfileVlogs(authenticatedUser.user.id, refresh = true)
+                getProfile(getAuthUserId(), refresh = true)
+                getProfileVlogs(getAuthUserId(), refresh = true)
             }
         }
 
         if (savedInstanceState == null) {
             profileVm.run {
-                getProfileVlogs(authenticatedUser.user.id, refresh = true)
-                getProfile(authenticatedUser.user.id, refresh = true)
+                getProfileVlogs(getAuthUserId(), refresh = true)
+                getProfile(getAuthUserId(), refresh = true)
             }
         }
     }
@@ -105,7 +104,7 @@ class AuthProfileFragment : AuthFragment() {
         }
     }
 
-    private fun updateProfileVlogs(res: Resource<List<UserVlogItem>?>) = res.run {
+    private fun updateProfileVlogs(res: Resource<List<UserVlogItem>>) = res.run {
         with(swipeRefreshLayout) {
             when (state) {
                 ResourceState.LOADING -> startRefreshing()

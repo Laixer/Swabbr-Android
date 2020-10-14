@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        maven("https://maven.fabric.io/public")
         jcenter()
         google()
     }
@@ -8,9 +7,10 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:${Versions.com_android_tools_build_gradle}")
         classpath("com.google.gms:google-services:${Versions.google_services}")
-        classpath("io.fabric.tools:gradle:${Versions.io_fabric_tools_gradle}")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.org_jetbrains_kotlin}")
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.androidx_navigation}")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:${Versions.crashlytics}")
+
     }
 }
 
@@ -27,7 +27,6 @@ allprojects {
     repositories {
         maven("https://plugins.gradle.org/m2/")
         maven("https://dl.bintray.com/microsoftazuremobile/SDK")
-        maven("https://maven.fabric.io/public")
         maven("https://jitpack.io")
         google()
         jcenter()
@@ -36,6 +35,14 @@ allprojects {
 
 task("clean") {
     delete(rootProject.buildDir)
+}
+
+tasks.withType<Wrapper> {
+    distributionType = Wrapper.DistributionType.ALL
+    // with buildSrcVersions
+    gradleVersion = Versions.gradleLatestVersion
+    // with refreshVersions
+    gradleVersion = findProperty("gradleLatestVersion") as? String ?: gradle.gradleVersion
 }
 
 val detektAll by tasks.registering(io.gitlab.arturbosch.detekt.Detekt::class) {

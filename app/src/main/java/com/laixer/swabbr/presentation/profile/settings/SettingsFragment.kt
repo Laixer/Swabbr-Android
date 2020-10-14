@@ -56,7 +56,7 @@ class SettingsFragment : AuthFragment() {
         authVm.authenticatedUser.observe(viewLifecycleOwner, Observer { logout(it) })
     }
 
-    private fun loadSettings(res: Resource<SettingsItem?>) {
+    private fun loadSettings(res: Resource<SettingsItem>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 enableSettings(false)
@@ -82,7 +82,7 @@ class SettingsFragment : AuthFragment() {
         }
     }
 
-    private fun logout(res: Resource<AuthUserItem?>) {
+    private fun logout(res: Resource<AuthUserItem>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 enableSettings(false)

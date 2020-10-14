@@ -1,12 +1,9 @@
 package com.laixer.cache
 
-import android.content.Context
 import com.pacoworks.rxpaper2.RxPaperBook
-import io.paperdb.Book
 import io.paperdb.Paper
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers.io
 
 class Cache {
 

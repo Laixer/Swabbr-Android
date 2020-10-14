@@ -1,23 +1,31 @@
 package com.laixer.swabbr.presentation
 
+import android.accounts.AccountManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.Navigation
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
 import kotlinx.android.synthetic.main.activity_app.*
+import org.koin.android.ext.android.inject
 
-class AppActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
+
+    private val mAccountManager: AccountManager by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // We set launch screen theme from manifest, we need to get back to our Theme to remove
+        // launch screen.
+        setTheme(R.style.Theme_Swabbr)
+
         injectFeature()
 
         checkPlayServices()
@@ -30,6 +38,7 @@ class AppActivity : AppCompatActivity() {
         nav_host_container.post {
             NavigationUI.setupWithNavController(bottom_nav, navHostFragment.navController)
         }
+
     }
 
     /**
@@ -53,7 +62,7 @@ class AppActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val TAG = "AppActivity"
+        private const val TAG = "MainActivity"
         private const val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
     }
 }

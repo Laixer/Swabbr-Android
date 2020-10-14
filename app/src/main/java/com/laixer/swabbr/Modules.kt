@@ -1,5 +1,9 @@
 package com.laixer.swabbr
 
+import android.accounts.AbstractAccountAuthenticator
+import android.accounts.AccountManager
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.laixer.cache.Cache
 import com.laixer.swabbr.BuildConfig
 import com.laixer.swabbr.data.datasource.AuthCacheDataSource
@@ -66,6 +70,9 @@ import com.laixer.swabbr.domain.usecase.UsersUseCase
 import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
 import com.laixer.swabbr.domain.usecase.VlogsUseCase
 import com.laixer.swabbr.presentation.auth.AuthViewModel
+import com.laixer.swabbr.presentation.auth.AuthenticatorService
+import com.laixer.swabbr.presentation.auth.SimpleAuthenticator
+import com.laixer.swabbr.presentation.auth.UserManager
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.livestream.LivestreamViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
@@ -75,10 +82,10 @@ import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -91,6 +98,8 @@ fun injectFeature() = loadFeature
 private val loadFeature by lazy {
     loadKoinModules(
         listOf(
+            authModule,
+            firebaseModule,
             viewModelModule,
             useCaseModule,
             repositoryModule,
@@ -100,9 +109,21 @@ private val loadFeature by lazy {
         )
     )
 }
+
+val firebaseModule: Module = module {
+    single { FirebaseCrashlytics.getInstance() }
+    single { FirebaseAnalytics.getInstance(androidContext())}
+}
+
+val authModule: Module = module {
+    factory<AccountManager> { AccountManager.get(androidContext()) }
+    single<AbstractAccountAuthenticator> { SimpleAuthenticator(androidContext(), get(), get()) }
+    single { UserManager(get(), get()) }
+}
+
 val viewModelModule: Module = module {
     viewModel { LivestreamViewModel(livestreamUseCase = get()) }
-    viewModel { AuthViewModel(authUseCase = get()) }
+    viewModel { AuthViewModel(userManager = get(), authUseCase = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogsUseCase = get()) }
     viewModel {
@@ -189,5 +210,4 @@ val networkModule: Module = module {
 }
 val cacheModule: Module = module {
     single { Cache() }
-
 }
