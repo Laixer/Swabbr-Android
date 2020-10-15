@@ -1,17 +1,18 @@
 package com.laixer.swabbr.presentation.profile
 
-import android.opengl.Visibility
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.auth0.android.jwt.JWT
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.UserVlogItem
-import kotlinx.android.synthetic.main.fragment_record.view.*
 import kotlinx.android.synthetic.main.item_list_uservlog.view.*
 import kotlinx.android.synthetic.main.item_list_uservlog.view.like_count
 import kotlinx.android.synthetic.main.item_list_uservlog.view.thumbnail
@@ -25,6 +26,7 @@ import java.time.ZonedDateTime
 
 class ProfileVlogsAdapter(
     private val vm: ProfileViewModel,
+    private val token: String,
     private val onClick: (UserVlogItem) -> Unit,
     private val onDelete: ((UserVlogItem) -> Unit)? = null
 ) : ListAdapter<UserVlogItem, ProfileVlogsAdapter.ViewHolder>(ProfileDiffCallback()) {
@@ -40,20 +42,28 @@ class ProfileVlogsAdapter(
                 processing_cover.visibility = View.GONE
 
 
-
                 /* We convert back to String because Glide's load(URL) function is deprecated because
                  of possible performance issues. */
-                val url = item.url.toString()
+                val url = item.vlog.thumbnailUri.toString() ?: ""
+                val glideUrl = GlideUrl(
+                    url,
+                    LazyHeaders.Builder().addHeader("Authorization", "Bearer $token")
+                        .build()
+                )
+
 
                 Glide.with(context)
-                    .load(url)
+                    .load(glideUrl)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .thumbnail(0.1f)
                     .into(thumbnail)
 
                 vlogPostDate.text =
                     context.getString(
-                        R.string.date, item.vlog.data.dateStarted.dayOfMonth, item.vlog.data.dateStarted.monthValue, item.vlog.data.dateStarted.year
+                        R.string.date,
+                        item.vlog.data.dateStarted.dayOfMonth,
+                        item.vlog.data.dateStarted.monthValue,
+                        item.vlog.data.dateStarted.year
                     )
                 vlogDuration.text =
                     context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
@@ -86,5 +96,6 @@ private class ProfileDiffCallback : DiffUtil.ItemCallback<UserVlogItem>() {
     override fun areItemsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean =
         oldItem.vlog.data.id == newItem.vlog.data.id
 
-    override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean = oldItem.vlog.data.id == newItem.vlog.data.id
+    override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean =
+        oldItem.vlog.data.id == newItem.vlog.data.id
 }

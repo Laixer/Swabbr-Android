@@ -5,8 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.auth0.android.jwt.JWT
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.loadAvatar
@@ -18,6 +21,7 @@ import java.time.ZonedDateTime
 
 class VlogListAdapter constructor(
     private val vm: VlogListViewModel,
+    private val token: String,
     private val itemClick: (UserVlogItem) -> Unit,
     private val profileClick: (UserVlogItem) -> Unit
 ) : ListAdapter<UserVlogItem, VlogListAdapter.ViewHolder>(VlogDiffCallback()) {
@@ -32,9 +36,19 @@ class VlogListAdapter constructor(
             if (item.vlog.data.dateStarted.isBefore(ZonedDateTime.now().minusMinutes(3))) {
                 processing_cover.visibility = View.GONE
 
+                var glideUrl: GlideUrl? = null
+
                 val url = item.vlog.thumbnailUri.toString() ?: ""
+                if (!url.isBlank()) {
+                     glideUrl = GlideUrl(
+                        url,
+                        LazyHeaders.Builder().addHeader("Authorization", "Bearer $token")
+                            .build()
+                    )
+                }
+
                 Glide.with(context)
-                    .load(url)
+                    .load(glideUrl ?: url)
                     .placeholder(R.drawable.thumbnail_placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .thumbnail(0.1f)

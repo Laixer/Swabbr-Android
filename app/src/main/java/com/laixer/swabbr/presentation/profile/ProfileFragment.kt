@@ -61,7 +61,7 @@ class ProfileFragment : AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
-        profileVlogsAdapter = ProfileVlogsAdapter(profileVm, onClick)
+        profileVlogsAdapter = ProfileVlogsAdapter(profileVm, getAuthToken(), onClick)
 
         followButton.setOnClickListener {
             with(profileVm) {
