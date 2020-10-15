@@ -86,7 +86,7 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
     }
 
     private val onClick: (UserItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profiles/${it.id}"))
+        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.id}"))
     }
 
     private fun updateUsers(resource: Resource<List<UserItem>>) {

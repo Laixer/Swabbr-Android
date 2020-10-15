@@ -3,13 +3,7 @@ package com.laixer.swabbr.data.datasource.model.remote
 import com.laixer.swabbr.data.datasource.model.*
 import io.reactivex.Completable
 import io.reactivex.Single
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 import java.util.UUID
 
 interface VlogsApi {
@@ -34,6 +28,9 @@ interface VlogsApi {
 
     @GET("vlogs/{vlogId}/watch")
     fun watch(@Path("vlogId") vlogId: UUID): Single<WatchVlogResponse>
+
+    @DELETE("vlogs/{vlogId}")
+    fun delete(@Path("vlogId") vlogId: UUID): Completable
 }
 
 interface LivestreamApi {

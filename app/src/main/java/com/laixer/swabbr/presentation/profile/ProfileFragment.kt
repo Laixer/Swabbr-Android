@@ -61,7 +61,7 @@ class ProfileFragment : AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
-        profileVlogsAdapter = ProfileVlogsAdapter(onClick)
+        profileVlogsAdapter = ProfileVlogsAdapter(onClick, null)
 
         followButton.setOnClickListener {
             with(profileVm) {
@@ -104,7 +104,7 @@ class ProfileFragment : AuthFragment() {
     }
 
     private val onClick: (UserVlogItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/user/${it.user.id}/vlog/${it.vlog.data.id}"))
+        findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${it.user.id}&vlogId=${it.vlog.data.id}"))
     }
 
     private fun updateProfile(res: Resource<UserItem>) = res.run {

@@ -57,7 +57,7 @@ class AuthProfileFragment : AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
-        profileVlogsAdapter = ProfileVlogsAdapter(onClick)
+        profileVlogsAdapter = ProfileVlogsAdapter(onClick, onDelete)
 
         profilevlogsRecyclerView.apply {
             isNestedScrollingEnabled = false
@@ -89,7 +89,11 @@ class AuthProfileFragment : AuthFragment() {
     }
 
     private val onClick: (UserVlogItem) -> Unit = { item ->
-        findNavController().navigate(Uri.parse("https://swabbr.com/user/${item.user.id}/vlog/${item.vlog.data.id}"))
+        findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${item.user.id}&vlogId=${item.vlog.data.id}"))
+    }
+
+    private val onDelete: (UserVlogItem) -> Unit = { item ->
+        profileVm.deleteVlog(getAuthUserId(), item.vlog.data.id)
     }
 
     private fun updateProfile(item: UserItem?) {

@@ -48,7 +48,7 @@ class VlogFragment : AuthFragment() {
     private lateinit var gestureDetector: GestureDetector
 
     fun isVlogLiked(): Boolean =
-        vm.likes.value?.data?.usersMinified?.any { it.id == getAuthUserId() } ?: false
+        vm.likes.value?.data?.usersSimplified?.any { it.id == getAuthUserId() } ?: false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -225,7 +225,7 @@ class VlogFragment : AuthFragment() {
                 like_button.isEnabled = false
             }
             ResourceState.SUCCESS -> {
-                val isLiked = data?.usersMinified?.any { it.id == getAuthUserId() } ?: false
+                val isLiked = data?.usersSimplified?.any { it.id == getAuthUserId() } ?: false
                 like_button.isChecked = isLiked
                 like_button.isEnabled = !isLiked
 

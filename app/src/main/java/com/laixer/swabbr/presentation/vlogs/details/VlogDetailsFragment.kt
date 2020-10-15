@@ -79,17 +79,16 @@ class VlogDetailsFragment : AuthFragment() {
             }
             ResourceState.SUCCESS -> {
                 data?.let {
-                    if (mCurrentItemIndex == null) {
-                        mCurrentItemIndex =
-                            vm.vlogs.value?.data?.indexOf(vm.vlogs.value?.data?.first { item -> item.vlog.data.id.toString() == vlogId })
+                    mCurrentItemIndex = vm.vlogs.value?.data?.indexOf(vm.vlogs.value?.data?.first { item -> item.vlog.data.id.toString() == vlogId })
                                 ?: 0
-                    }
+
 
                     vlog_viewpager.currentItem = mCurrentItemIndex!!
                 }
             }
             ResourceState.ERROR -> {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                requireActivity().onBackPressed()
             }
         }
     }

@@ -25,7 +25,7 @@
             app:argType="string" />
         <deepLink
             android:id="@+id/profile_deeplink"
-            app:uri="https://swabbr.com/user/{userId}" />
+            app:uri="https://swabbr.com/profile?userId={userId}" />
     </fragment>
 
 </navigation>

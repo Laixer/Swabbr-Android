@@ -31,7 +31,6 @@ import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.convertBitmapToByteArray
 import com.laixer.swabbr.presentation.encodeImageToBase64
 import com.laixer.swabbr.presentation.model.AuthUserItem
-import com.laixer.swabbr.presentation.model.LoginItem
 import com.laixer.swabbr.presentation.model.RegistrationItem
 import kotlinx.android.synthetic.main.activity_app.*
 import kotlinx.android.synthetic.main.fragment_registration.*
@@ -103,7 +102,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         outState.putParcelable("BitmapImage", selectedBitmap)
     }
 
-    private fun register(res: Resource<AuthUserItem>) {
+    private fun register(res: Resource<AuthUserItem?>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 progressBar.visible()
@@ -114,13 +113,9 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                     requireActivity().onBackPressed()
                 } ?: run {
                     vm.login(
-                        LoginItem(
-                            emailInput.text.toString(),
-                            passwordInput.text.toString(),
-                            true,
-                            PUSH_NOTIFICATION_PLATFORM,
-                            firebaseInstanceId
-                        )
+                        emailInput.text.toString(),
+                        passwordInput.text.toString(),
+                        firebaseInstanceId
                     )
                 }
             }

@@ -22,4 +22,6 @@ interface VlogRepository {
     fun unlike(vlogId: UUID): Completable
 
     fun watch(vlogId: UUID): Single<WatchVlogResponse>
+
+    fun delete(vlogId: UUID): Completable
 }

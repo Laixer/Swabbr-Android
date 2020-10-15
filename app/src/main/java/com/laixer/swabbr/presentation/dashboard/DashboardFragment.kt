@@ -24,11 +24,11 @@ class DashboardFragment : AuthFragment() {
 
     private val vm: VlogListViewModel by sharedViewModel()
     private val itemClick: (UserVlogItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/user/${it.user.id}/vlog/${it.vlog.data.id}"))
+        findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${it.user.id}&vlogId=${it.vlog.data.id}"))
 
     }
     private val profileClick: (UserVlogItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/user/${it.user.id}"))
+        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
     }
     private var vlogListAdapter: VlogListAdapter? = null
 

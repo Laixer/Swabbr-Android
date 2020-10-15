@@ -3,6 +3,7 @@ package com.laixer.swabbr.presentation.auth
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.accounts.OnAccountsUpdateListener
+import android.os.Bundle
 import com.laixer.cache.Cache
 import com.laixer.swabbr.BuildConfig
 import io.reactivex.subjects.BehaviorSubject
@@ -54,14 +55,14 @@ class UserManager(
     /**
      * Only meant to be called when sign up api responds successfully.
      */
-    /*private*/internal fun createAccount(email: String, password: String, token: String? = null) {
+    /*private*/internal fun createAccount(email: String, password: String, token: String? = null, extras: Bundle? = null) {
         if (token != null) {
-            connect(email, password, token)
+            connect(email, password, token, extras)
         }
         else if (accountManager.addAccountExplicitly(
                 Account(email, ACCOUNT_TYPE),
                 password,
-                null
+                extras
             )
         ) {
             cache.set(KEY_ACCOUNT_NAME, email)
@@ -71,15 +72,22 @@ class UserManager(
     /**
      * Only meant to be called when sign in api responds successfully.
      */
-    /*private*/internal fun connect(email: String, password: String, token: String) {
+    /*private*/internal fun connect(email: String, password: String,  token: String, extras: Bundle? = null) {
         val account = getAccount(email)
 
         if (account == null)
             createAccount(email, password)
 
-        getAccount(email)?.let {
-            accountManager.setPassword(it, password)
-            accountManager.setAuthToken(it, DEFAULT_AUTH_TOKEN_TYPE, token)
+        getAccount(email)?.let { acc ->
+            accountManager.setPassword(acc, password)
+            accountManager.setAuthToken(acc, DEFAULT_AUTH_TOKEN_TYPE, token)
+
+            extras?.let {bundle ->
+                for (key in bundle.keySet()) {
+                    accountManager.setUserData(acc, key, bundle.getString(key))
+                }
+            }
+
             cache.set(KEY_ACCOUNT_NAME, email)
             cache.set(KEY_ACCOUNT_TOKEN, token)
 

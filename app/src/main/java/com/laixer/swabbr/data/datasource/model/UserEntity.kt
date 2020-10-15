@@ -76,5 +76,9 @@ fun User.mapToData(): UserEntity = UserEntity(
     birthdate?.atStartOfDay()?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 )
 
+// Have to use Collection instead of List because Java sucks and erases types which causes same type signatures for List<T> functions.
+fun Collection<SimplifiedUserEntity>.mapToDomain(): List<SimplifiedUser> = map { it.mapToDomain() }
+
+
 fun List<User>.mapToData(): List<UserEntity> = map { it.mapToData() }
 fun List<UserEntity>.mapToDomain(): List<User> = map { it.mapToDomain() }

@@ -5,7 +5,6 @@ import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.model.VlogData
 import com.laixer.swabbr.domain.model.VlogLikeSummary
 import com.squareup.moshi.Json
-import java.net.URL
 import java.time.ZonedDateTime
 import java.util.UUID
 

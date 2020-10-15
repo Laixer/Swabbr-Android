@@ -31,4 +31,6 @@ class VlogRemoteDataSourceImpl constructor(
     override fun unlike(vlogId: UUID): Completable = api.unlike(vlogId)
 
     override fun watch(vlogId: UUID): Single<WatchVlogResponse> = api.watch(vlogId)
+
+    override fun delete(vlogId: UUID): Completable = api.delete(vlogId)
 }

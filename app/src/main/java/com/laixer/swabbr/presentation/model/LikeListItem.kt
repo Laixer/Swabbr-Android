@@ -1,15 +1,14 @@
 package com.laixer.swabbr.presentation.model
 
 import com.laixer.swabbr.domain.model.LikeList
-import com.laixer.swabbr.domain.model.MinifiedUser
+import com.laixer.swabbr.domain.model.SimplifiedUser
 import java.util.UUID
 
-data class LikeListItem(val totalLikeCount: Int, val usersMinified: List<MinifiedUserItem>)
+data class LikeListItem(val totalLikeCount: Int, val usersSimplified: List<SimplifiedUserItem>)
 
-data class MinifiedUserItem(val id: UUID, val nickname: String)
+data class SimplifiedUserItem(val id: UUID, val nickname: String)
 
-fun LikeList.mapToPresentation(): LikeListItem = LikeListItem(this.totalLikeCount, this.usersMinified.mapToPresentation())
+fun LikeList.mapToPresentation(): LikeListItem = LikeListItem(this.totalLikeCount, this.usersSimplified.mapToPresentation())
 
-fun MinifiedUser.mapToPresentation(): MinifiedUserItem = MinifiedUserItem(this.id, this.nickname)
-
-fun List<MinifiedUser>.mapToPresentation(): List<MinifiedUserItem> = map { it.mapToPresentation() }
+fun List<SimplifiedUser>.mapToPresentation(): List<SimplifiedUserItem> = map { it.mapToPresentation() }
+fun SimplifiedUser.mapToPresentation(): SimplifiedUserItem = SimplifiedUserItem(this.id, this.nickname)

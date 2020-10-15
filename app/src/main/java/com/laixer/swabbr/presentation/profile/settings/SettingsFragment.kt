@@ -82,7 +82,7 @@ class SettingsFragment : AuthFragment() {
         }
     }
 
-    private fun logout(res: Resource<AuthUserItem>) {
+    private fun logout(res: Resource<AuthUserItem?>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 enableSettings(false)
@@ -90,6 +90,7 @@ class SettingsFragment : AuthFragment() {
             }
             ResourceState.SUCCESS -> {
                 progressBar.gone()
+                requireActivity().onBackPressed()
             }
             ResourceState.ERROR -> {
                 Toast.makeText(requireContext(), res.message, Toast.LENGTH_SHORT).show()

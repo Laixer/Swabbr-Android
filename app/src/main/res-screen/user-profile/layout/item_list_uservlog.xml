@@ -26,7 +26,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:background="@color/color_window_background_transparent"
                 android:orientation="horizontal"
                 android:padding="@dimen/content_margin">
@@ -93,8 +93,23 @@
                             android:textAppearance="@style/SmallTextAppearance"
                             tools:text="@string/duration" />
                     </LinearLayout>
-                </LinearLayout>
 
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:visibility="gone"
+                        android:id="@+id/delete_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_baseline_delete" />
+
+                </LinearLayout>
 
             </RelativeLayout>
 

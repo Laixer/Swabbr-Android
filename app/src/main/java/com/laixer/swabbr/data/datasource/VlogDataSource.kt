@@ -26,6 +26,8 @@ interface VlogCacheDataSource {
     fun getRecommendedVlogs(): Single<List<Vlog>>
 
     fun setRecommendedVlogs(list: List<Vlog>): Single<List<Vlog>>
+
+    fun delete(vlogId: UUID): Completable
 }
 
 interface VlogRemoteDataSource {
@@ -43,4 +45,6 @@ interface VlogRemoteDataSource {
     fun unlike(vlogId: UUID): Completable
 
     fun watch(vlogId: UUID): Single<WatchVlogResponse>
+
+    fun delete(vlogId: UUID): Completable
 }

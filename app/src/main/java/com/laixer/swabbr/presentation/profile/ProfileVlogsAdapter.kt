@@ -1,5 +1,6 @@
 package com.laixer.swabbr.presentation.profile
 
+import android.opengl.Visibility
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -10,16 +11,21 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.UserVlogItem
+import kotlinx.android.synthetic.main.fragment_record.view.*
+import kotlinx.android.synthetic.main.item_list_uservlog.view.*
 import kotlinx.android.synthetic.main.item_list_uservlog.view.like_count
 import kotlinx.android.synthetic.main.item_list_uservlog.view.thumbnail
 import kotlinx.android.synthetic.main.item_list_uservlog.view.view_count
 import kotlinx.android.synthetic.main.item_list_uservlog.view.vlogDuration
 import kotlinx.android.synthetic.main.item_list_uservlog.view.vlogPostDate
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
+import kotlinx.android.synthetic.main.item_list_vlog.view.processing_cover
+import kotlinx.android.synthetic.main.item_list_vlog.view.reaction_count
 import java.time.ZonedDateTime
 
 class ProfileVlogsAdapter(
-    private val onClick: (UserVlogItem) -> Unit
+    private val onClick: (UserVlogItem) -> Unit,
+    private val onDelete: ((UserVlogItem) -> Unit)?
 ) : ListAdapter<UserVlogItem, ProfileVlogsAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
@@ -52,7 +58,21 @@ class ProfileVlogsAdapter(
 
                 view_count.text = context.getString(R.string.view_count, item.vlog.data.views * (Math.random() * 1000).toInt())
                 like_count.text = context.getString(R.string.like_count, (Math.random() * 1000).toInt())
-                setOnClickListener { onClick.invoke(item) }
+
+                setOnClickListener {
+                    this.isEnabled = false
+                    delete_button.isEnabled = false
+                    onClick.invoke(item)
+                }
+                onDelete?.let {
+                    delete_button.visibility = View.VISIBLE
+                    delete_button.setOnClickListener {
+                        this.isEnabled = false
+                        delete_button.isEnabled = false
+                        it(item)
+                    }
+                }
+
             }
         }
     }
@@ -63,5 +83,5 @@ private class ProfileDiffCallback : DiffUtil.ItemCallback<UserVlogItem>() {
     override fun areItemsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean =
         oldItem.vlog.data.id == newItem.vlog.data.id
 
-    override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean = oldItem == newItem
+    override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean = oldItem.vlog.data.id == newItem.vlog.data.id
 }

@@ -31,7 +31,7 @@
         <deepLink
             android:id="@+id/deepLink"
             android:autoVerify="true"
-            app:uri="https://swabbr.com/user/{userId}/vlog/{vlogId}" />
+            app:uri="https://swabbr.com/profileWatchVlog?userId={userId}&amp;vlogId={vlogId}" />
     </fragment>
 
     <action

@@ -51,6 +51,9 @@ class UserVlogsUseCase constructor(
         vlogRepository.getUserVlogs(userId, refresh).flatMap { vlogs ->
             userRepository.get(userId, refresh).map { user -> vlogs.map { Pair(user, it) } }
         }
+
+    fun delete(vlogId: UUID): Completable = vlogRepository.delete(vlogId)
+
 }
 
 class VlogsUseCase constructor(private val vlogRepository: VlogRepository) {
@@ -61,6 +64,7 @@ class VlogsUseCase constructor(private val vlogRepository: VlogRepository) {
     fun like(vlogId: UUID): Completable = vlogRepository.like(vlogId)
 
     fun unlike(vlogId: UUID): Completable = vlogRepository.unlike(vlogId)
+
 }
 
 /**
