@@ -29,6 +29,8 @@ class ProfileViewModel constructor(
     val followStatus = MutableLiveData<Resource<FollowStatusItem>>()
     private val compositeDisposable = CompositeDisposable()
 
+    fun getReactionCount(vlogId: UUID) = userVlogsUseCase.getReactionCount(vlogId)
+
     fun deleteVlog(userId: UUID, vlogId: UUID) =
         compositeDisposable.add(userVlogsUseCase
             .delete(vlogId)

@@ -40,17 +40,7 @@ class VlogListViewModel constructor(
                 )
         )
 
-    fun getLikes(vlogId: UUID) =
-        compositeDisposable.add(
-            vlogsUseCase.getLikes(vlogId)
-                .doOnSubscribe { likes.setLoading() }
-                .subscribeOn(Schedulers.io())
-                .map { it.mapToPresentation() }
-                .subscribe(
-                    { likes.setSuccess(it) },
-                    { likes.setError(it.message) }
-                )
-        )
+    fun getReactionCount(vlogId: UUID) = vlogsUseCase.getReactionCount(vlogId)
 
     override fun onCleared() {
         compositeDisposable.dispose()

@@ -100,7 +100,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/reaction_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:drawableEnd="@drawable/ic_message"
+                        tools:text="0" />
 
                     <ImageButton
                         android:visibility="gone"
@@ -118,20 +126,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="end">
 
-                <TextView
-                    android:id="@+id/reaction_count"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="3dp"
-                    android:drawableEnd="@drawable/ic_message"
-                    android:drawableTint="@color/colorPrimary"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorPrimary"
-                    tools:text="Reaction Count" />
+
 
 
             </LinearLayout>

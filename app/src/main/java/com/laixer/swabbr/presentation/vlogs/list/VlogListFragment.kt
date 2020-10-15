@@ -42,7 +42,7 @@ class VlogListFragment : AuthFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vlogListAdapter = VlogListAdapter(itemClick, profileClick)
+        vlogListAdapter = VlogListAdapter(vm, itemClick, profileClick)
 
         injectFeature()
 

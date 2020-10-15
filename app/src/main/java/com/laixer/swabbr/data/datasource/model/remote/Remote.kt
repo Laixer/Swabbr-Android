@@ -31,6 +31,9 @@ interface VlogsApi {
 
     @DELETE("vlogs/{vlogId}")
     fun delete(@Path("vlogId") vlogId: UUID): Completable
+
+    @GET("reactions/for_vlog/{vlogId}/count")
+    fun getReactionCount(@Path("vlogId") vlogId: UUID): Single<ReactionCount>
 }
 
 interface LivestreamApi {

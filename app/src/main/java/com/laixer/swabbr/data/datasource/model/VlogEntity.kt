@@ -34,6 +34,8 @@ data class VlogLikeSummaryEntity(
     @field:Json(name = "simplifiedUsers") val simplifiedUsers: List<SimplifiedUserEntity>
 )
 
+
+
 fun VlogEntity.mapToDomain(): VlogData = VlogData(
     UUID.fromString(id),
     UUID.fromString(userId),

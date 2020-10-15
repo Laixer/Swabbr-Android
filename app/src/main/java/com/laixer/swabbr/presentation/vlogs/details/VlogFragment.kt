@@ -212,10 +212,8 @@ class VlogFragment : AuthFragment() {
 
         vm.run {
             reactions.observe(viewLifecycleOwner, Observer { updateReactions(it) })
-            likes.observe(viewLifecycleOwner, Observer { updateLikes(it) })
 
             getReactions(userVlogItem.vlog.data.id, refresh = true)
-            getLikes(userVlogItem.vlog.data.id)
         }
     }
 

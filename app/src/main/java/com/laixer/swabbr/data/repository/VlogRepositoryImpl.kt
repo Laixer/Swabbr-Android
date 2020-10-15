@@ -32,6 +32,9 @@ class VlogRepositoryImpl constructor(
 
     override fun delete(vlogId: UUID): Completable = remoteDataSource.delete(vlogId).andThen(cacheDataSource.delete(vlogId))
 
+    override fun getReactionCount(vlogId: UUID): Single<Int> = remoteDataSource.getReactionCount(vlogId)
+
+
     override fun getLikes(vlogId: UUID): Single<LikeList> = remoteDataSource.getLikes(vlogId)
 
     override fun like(vlogId: UUID): Completable =

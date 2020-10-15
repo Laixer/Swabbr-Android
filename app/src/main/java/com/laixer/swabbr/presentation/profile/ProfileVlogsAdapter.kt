@@ -24,8 +24,9 @@ import kotlinx.android.synthetic.main.item_list_vlog.view.reaction_count
 import java.time.ZonedDateTime
 
 class ProfileVlogsAdapter(
+    private val vm: ProfileViewModel,
     private val onClick: (UserVlogItem) -> Unit,
-    private val onDelete: ((UserVlogItem) -> Unit)?
+    private val onDelete: ((UserVlogItem) -> Unit)? = null
 ) : ListAdapter<UserVlogItem, ProfileVlogsAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
@@ -37,6 +38,8 @@ class ProfileVlogsAdapter(
         fun bind(item: UserVlogItem) = with(itemView) {
             if (item.vlog.data.dateStarted.isBefore(ZonedDateTime.now().minusMinutes(3))) {
                 processing_cover.visibility = View.GONE
+
+
 
                 /* We convert back to String because Glide's load(URL) function is deprecated because
                  of possible performance issues. */
@@ -54,10 +57,10 @@ class ProfileVlogsAdapter(
                     )
                 vlogDuration.text =
                     context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
-                reaction_count.text = context.getString(R.string.reaction_count, (Math.random() * 100).toInt())
+                reaction_count.text = context.getString(R.string.reaction_count, vm.getReactionCount(item.vlog.data.id))
 
-                view_count.text = context.getString(R.string.view_count, item.vlog.data.views * (Math.random() * 1000).toInt())
-                like_count.text = context.getString(R.string.like_count, (Math.random() * 1000).toInt())
+                view_count.text = context.getString(R.string.view_count, item.vlog.data.views)
+                like_count.text = context.getString(R.string.like_count, item.vlog.vlogLikeSummary.totalLikes)
 
                 setOnClickListener {
                     this.isEnabled = false

@@ -1,6 +1,7 @@
 package com.laixer.swabbr.data.datasource.remote
 
 import com.laixer.swabbr.data.datasource.VlogRemoteDataSource
+import com.laixer.swabbr.data.datasource.model.ReactionCount
 import com.laixer.swabbr.data.datasource.model.WatchVlogResponse
 import com.laixer.swabbr.data.datasource.model.mapToDomain
 import com.laixer.swabbr.data.datasource.model.remote.VlogsApi
@@ -33,4 +34,6 @@ class VlogRemoteDataSourceImpl constructor(
     override fun watch(vlogId: UUID): Single<WatchVlogResponse> = api.watch(vlogId)
 
     override fun delete(vlogId: UUID): Completable = api.delete(vlogId)
+
+    override fun getReactionCount(vlogId: UUID): Single<Int> = api.getReactionCount(vlogId).onErrorReturn { ReactionCount(0) }.map { it.count }
 }

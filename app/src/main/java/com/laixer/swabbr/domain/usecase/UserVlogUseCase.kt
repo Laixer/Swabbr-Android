@@ -54,10 +54,14 @@ class UserVlogsUseCase constructor(
 
     fun delete(vlogId: UUID): Completable = vlogRepository.delete(vlogId)
 
+    fun getReactionCount(vlogId: UUID): Int = vlogRepository.getReactionCount(vlogId).blockingGet()
+
 }
 
 class VlogsUseCase constructor(private val vlogRepository: VlogRepository) {
     fun getLikes(vlogId: UUID): Single<LikeList> = vlogRepository.getLikes(vlogId)
+
+    fun getReactionCount(vlogId: UUID): Int = vlogRepository.getReactionCount(vlogId).blockingGet()
 
     fun watch(vlogId: UUID): Single<WatchVlogResponse> = vlogRepository.watch(vlogId)
 

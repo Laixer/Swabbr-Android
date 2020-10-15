@@ -31,7 +31,6 @@ class VlogDetailsViewModel constructor(
     val likes = MutableLiveData<Resource<LikeListItem>>()
     val watchResponse = MutableLiveData<Resource<WatchVlogResponse>>()
 
-
     private val compositeDisposable = CompositeDisposable()
 
     fun getVlog(vlogId: UUID, refresh: Boolean = false) =

@@ -17,6 +17,7 @@ import java.lang.IllegalStateException
 import java.time.ZonedDateTime
 
 class VlogListAdapter constructor(
+    private val vm: VlogListViewModel,
     private val itemClick: (UserVlogItem) -> Unit,
     private val profileClick: (UserVlogItem) -> Unit
 ) : ListAdapter<UserVlogItem, VlogListAdapter.ViewHolder>(VlogDiffCallback()) {
@@ -55,7 +56,7 @@ class VlogListAdapter constructor(
 
                 vlogDuration.text =
                     context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
-                reaction_count.text = context.getString(R.string.reaction_count, (Math.random() * 100).toInt())
+                reaction_count.text = context.getString(R.string.reaction_count, vm.getReactionCount(item.vlog.data.id))
 
                 view_count.text = context.getString(R.string.view_count, item.vlog.data.views)
 

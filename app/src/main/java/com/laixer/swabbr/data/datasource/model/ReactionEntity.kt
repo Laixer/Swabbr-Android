@@ -18,6 +18,10 @@ data class ReactionListResponse(
     @field:Json(name = "reactions") val reactions: List<ReactionEntity>
 )
 
+data class ReactionCount(
+    @field:Json(name = "reactionCount") val count: Int
+)
+
 fun ReactionEntity.mapToDomain(): Reaction = Reaction(
     UUID.fromString(id),
     UUID.fromString(userId),

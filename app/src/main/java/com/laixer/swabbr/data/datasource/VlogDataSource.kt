@@ -47,4 +47,6 @@ interface VlogRemoteDataSource {
     fun watch(vlogId: UUID): Single<WatchVlogResponse>
 
     fun delete(vlogId: UUID): Completable
+
+    fun getReactionCount(vlogId: UUID): Single<Int>
 }

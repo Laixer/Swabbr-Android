@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.fragment_profile.no_vlogs_text
 import kotlinx.android.synthetic.main.fragment_profile.swipeRefreshLayout
 import kotlinx.android.synthetic.main.include_user_info.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AuthProfileFragment : AuthFragment() {
 
@@ -57,7 +58,7 @@ class AuthProfileFragment : AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
-        profileVlogsAdapter = ProfileVlogsAdapter(onClick, onDelete)
+        profileVlogsAdapter = ProfileVlogsAdapter(profileVm, onClick, onDelete)
 
         profilevlogsRecyclerView.apply {
             isNestedScrollingEnabled = false
