@@ -23,7 +23,7 @@ class VlogCacheDataSourceImpl constructor(
 
     override fun set(item: Vlog): Single<Vlog> =
         cache.load<List<Vlog>>(key).map { list -> list.filter { it.data.id != item.data.id }.plus(item) }
-            .flatMap { set(it) }.map { item }
+            .flatMap(::set).map { item }
 
     override fun set(list: List<Vlog>): Single<List<Vlog>> = cache.save(key, list)
 

@@ -5,7 +5,7 @@ import android.accounts.AccountManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.laixer.cache.Cache
-import com.laixer.swabbr.BuildConfig
+import com.laixer.swabbr.presentation.MainActivityViewModel
 import com.laixer.swabbr.data.datasource.AuthCacheDataSource
 import com.laixer.swabbr.data.datasource.AuthRemoteDataSource
 import com.laixer.swabbr.data.datasource.FollowCacheDataSource
@@ -46,11 +46,6 @@ import com.laixer.swabbr.data.datasource.model.remote.ReactionsApi
 import com.laixer.swabbr.data.datasource.model.remote.SettingsApi
 import com.laixer.swabbr.data.datasource.model.remote.UsersApi
 import com.laixer.swabbr.data.datasource.model.remote.VlogsApi
-import com.laixer.swabbr.domain.model.AuthUser
-import com.laixer.swabbr.domain.model.Reaction
-import com.laixer.swabbr.domain.model.Settings
-import com.laixer.swabbr.domain.model.User
-import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.repository.AuthRepository
 import com.laixer.swabbr.domain.repository.FollowRepository
 import com.laixer.swabbr.domain.repository.LivestreamRepository
@@ -69,10 +64,7 @@ import com.laixer.swabbr.domain.usecase.UserVlogsUseCase
 import com.laixer.swabbr.domain.usecase.UsersUseCase
 import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
 import com.laixer.swabbr.domain.usecase.VlogsUseCase
-import com.laixer.swabbr.presentation.auth.AuthViewModel
-import com.laixer.swabbr.presentation.auth.AuthenticatorService
-import com.laixer.swabbr.presentation.auth.SimpleAuthenticator
-import com.laixer.swabbr.presentation.auth.UserManager
+import com.laixer.swabbr.presentation.auth.*
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.livestream.LivestreamViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
@@ -122,6 +114,8 @@ val authModule: Module = module {
 }
 
 val viewModelModule: Module = module {
+    viewModel { MainActivityViewModel(userManager = get()) }
+    viewModel { AuthUserViewModel(userManager = get()) }
     viewModel { LivestreamViewModel(livestreamUseCase = get()) }
     viewModel { AuthViewModel(userManager = get(), authUseCase = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
@@ -198,7 +192,7 @@ val networkModule: Module = module {
             .build()
     }
 
-    single { AuthInterceptor(authCacheDataSource = get()) }
+    single { AuthInterceptor(userManager = get()) }
 
     single<LivestreamApi> { get<Retrofit>().create(LivestreamApi::class.java) }
     single<AuthApi> { get<Retrofit>().create(AuthApi::class.java) }

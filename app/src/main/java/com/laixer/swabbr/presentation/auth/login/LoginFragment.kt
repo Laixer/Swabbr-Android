@@ -1,6 +1,7 @@
 package com.laixer.swabbr.presentation.auth.login
 
 import android.accounts.Account
+import android.accounts.AccountAuthenticatorActivity
 import android.accounts.AccountManager
 import android.os.Bundle
 import android.text.Editable
@@ -16,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.iid.FirebaseInstanceId
+import com.laixer.cache.Cache
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
@@ -25,16 +27,18 @@ import com.laixer.swabbr.domain.model.PushNotificationPlatform
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.auth.UserManager
+import com.laixer.swabbr.presentation.auth.UserManager.Companion.KEY_ACCOUNT_NAME
 import com.laixer.swabbr.presentation.model.AuthUserItem
 import com.laixer.swabbr.presentation.model.LoginItem
 import kotlinx.android.synthetic.main.activity_app.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
-    private val vm: AuthViewModel by viewModel()
-    private val mUserManager: UserManager by inject()
+    private val vm: AuthViewModel by sharedViewModel()
+    private val cache: Cache by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_login, container, false)
@@ -42,14 +46,13 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().bottom_nav.visibility = View.GONE
         injectFeature()
 
-        vm.authenticatedUser.observe(viewLifecycleOwner, Observer { login(it) })
+        vm.authenticatedUser.observe(viewLifecycleOwner, Observer(this@LoginFragment::login))
 
         addListeners()
 
-        emailInput.setText(mUserManager.getCurrentAccount()?.name ?: "")
+        emailInput.setText(cache.get<String>(KEY_ACCOUNT_NAME) ?: "")
 
         loginButton.setOnClickListener {
             FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
@@ -77,21 +80,6 @@ class LoginFragment : Fragment() {
             }
             ResourceState.SUCCESS -> {
                 progressBar.gone()
-                requireActivity().onBackPressed()
-
-                res.data?.let {
-
-//                    Account(emailInput.text.toString(), "com.laixer.swabbr.account").also { account ->
-//                        mAccountManager.addAccountExplicitly(account, passwordInput.text.toString(),
-//                            bundleOf(
-//                                "id" to it.user.id
-//                            )
-//                        )
-//                    }
-                } ?: run {
-                    Log.e(TAG, res.message!!)
-                    Toast.makeText(requireActivity().applicationContext, res.message, Toast.LENGTH_SHORT).show()
-                }
             }
             ResourceState.ERROR -> {
                 progressBar.run { progressBar.gone() }
@@ -101,6 +89,7 @@ class LoginFragment : Fragment() {
             }
         }
     }
+
 
     private fun addListeners() {
         val watcher: TextWatcher = object : TextWatcher {
@@ -125,10 +114,6 @@ class LoginFragment : Fragment() {
         loginButton.isEnabled = !(emailInput.text.isNullOrEmpty() || passwordInput.text.isNullOrEmpty())
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        requireActivity().bottom_nav.visibility = View.VISIBLE
-    }
 
     companion object {
         private const val TAG = "LoginFragment"

@@ -5,6 +5,7 @@
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -38,6 +39,20 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".presentation.AuthActivity"
+            android:label="@string/login"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.Swabbr.Login">
+        </activity>
+
+        <activity
+            android:name=".presentation.livestream.LivestreamActivity"
+            android:label="@string/live_indicator"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.Swabbr.Recording">
         </activity>
 
         <!-- Authenticator service (AccountManager) -->

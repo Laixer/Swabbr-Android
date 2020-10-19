@@ -1,15 +1,16 @@
 package com.laixer.swabbr.presentation.auth
 
-import android.accounts.Account
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.laixer.presentation.Resource
 import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
-import com.laixer.swabbr.domain.model.PushNotificationPlatform
 import com.laixer.swabbr.domain.usecase.AuthUseCase
-import com.laixer.swabbr.presentation.model.*
+import com.laixer.swabbr.presentation.model.AuthUserItem
+import com.laixer.swabbr.presentation.model.RegistrationItem
+import com.laixer.swabbr.presentation.model.mapToDomain
+import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
@@ -21,19 +22,9 @@ open class AuthViewModel constructor(
     val authenticatedUser = MutableLiveData<Resource<AuthUserItem?>>()
     private val compositeDisposable = CompositeDisposable()
 
-    fun get(): Account? = userManager.getCurrentAccount()
-
     fun login(name: String, password: String, fbToken: String) =
         compositeDisposable.add(authUseCase
-            .login(
-                LoginItem(
-                    name,
-                    password,
-                    true,
-                    PushNotificationPlatform.FCM,
-                    fbToken
-                ).mapToDomain()
-            )
+            .login(name, password, fbToken)
             .doOnSubscribe { authenticatedUser.setLoading() }
             .subscribeOn(Schedulers.io())
             .subscribe(
@@ -69,7 +60,10 @@ open class AuthViewModel constructor(
                     userManager.disconnect()
                     authenticatedUser.setSuccess(null)
                 },
-                { authenticatedUser.setError(it.message) }
+                {
+                    userManager.disconnect(true)
+                    authenticatedUser.setError(it.message)
+                }
             )
         )
 
@@ -77,4 +71,5 @@ open class AuthViewModel constructor(
         compositeDisposable.dispose()
         super.onCleared()
     }
+
 }

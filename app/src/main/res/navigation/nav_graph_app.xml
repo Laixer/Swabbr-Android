@@ -1,51 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_app"
-    app:startDestination="@id/nav_graph_dashboard"
-    tools:ignore="InvalidNavigation">
+    app:startDestination="@id/nav_graph_dashboard">
 
     <include app:graph="@navigation/nav_graph_dashboard" />
     <include app:graph="@navigation/nav_graph_profile" />
     <include app:graph="@navigation/nav_graph_search" />
     <include app:graph="@navigation/nav_graph_vlogs" />
 
-    <fragment
-        android:id="@+id/streaming_dest"
-        android:name="com.laixer.swabbr.presentation.livestream.LivestreamFragment"
-        android:label="@string/connecting"
-        tools:layout="@layout/fragment_record">
+    <activity
+        android:id="@+id/livestream_dest"
+        android:name="com.laixer.swabbr.presentation.livestream.LivestreamActivity">
         <argument
             android:name="livestreamId"
             app:argType="string" />
-    </fragment>
+    </activity>
 
-    <fragment
-        android:id="@+id/login_dest"
-        android:name="com.laixer.swabbr.presentation.auth.login.LoginFragment"
-        android:label="@string/login"
-        tools:layout="@layout/fragment_login">
-        <action
-            android:id="@+id/action_register"
-            app:destination="@id/register_dest" />
-    </fragment>
 
-    <fragment
-        android:id="@+id/register_dest"
-        android:name="com.laixer.swabbr.presentation.auth.registration.RegistrationFragment"
-        android:label="@string/register_registerText"
-        tools:layout="@layout/fragment_registration" />
-
-    <action
-        android:id="@+id/action_global_authenticator"
-        app:destination="@id/login_dest"
-        app:enterAnim="@anim/nav_default_enter_anim"
-        app:exitAnim="@anim/nav_default_exit_anim"
-        app:launchSingleTop="true"
-        app:popEnterAnim="@anim/nav_default_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim"
-        app:popUpTo="@id/dashboard_dest"
-        app:popUpToInclusive="false" />
-
+    <activity
+        android:id="@+id/authAcitivty"
+        android:name="com.laixer.swabbr.presentation.AuthActivity" />
 </navigation>

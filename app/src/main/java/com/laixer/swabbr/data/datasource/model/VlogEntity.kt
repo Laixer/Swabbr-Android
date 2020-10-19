@@ -17,7 +17,7 @@ data class VlogListResponseEntity(
 data class VlogResponseEntity(
     @field:Json(name = "vlog") val vlog: VlogEntity,
     @field:Json(name = "vlogLikeSummary") val vlogLikeSummary: VlogLikeSummaryEntity,
-    @field:Json(name = "thumbnailUri") val thumbnailUri: String
+    @field:Json(name = "thumbnailUri") val thumbnailUri: String?
 )
 
 data class VlogEntity(

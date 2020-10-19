@@ -60,11 +60,10 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().bottom_nav.visibility = View.GONE
 
         savedInstanceState?.getParcelable<Bitmap?>("BitmapImage")?.let {
             selectedBitmap = it
-            avatarPicker.setImageBitmap(it)
+            avatarPicker::setImageBitmap
         }
 
         prepareUI()
@@ -94,7 +93,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
         injectFeature()
 
-        vm.authenticatedUser.observe(viewLifecycleOwner, Observer { register(it) })
+        vm.authenticatedUser.observe(viewLifecycleOwner, Observer(this@RegistrationFragment::register))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -288,12 +287,6 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     override fun onDateSet(view: DatePicker, year: Int, month: Int /* 0-11 */, dayOfMonth: Int) {
 //        selectedDate = selectedDate.withYear(year).withMonth(month + 1).withDayOfMonth(dayOfMonth)
 //        datePicker.text = selectedDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        requireActivity().bottom_nav.visibility = View.VISIBLE
-
     }
 
     companion object {

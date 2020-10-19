@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.auth0.android.jwt.JWT
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
@@ -44,11 +45,11 @@ class VlogFragment : AuthFragment() {
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var userVlogItem: UserVlogItem
     private var livestreamId: String? = null
-    private var reactionsAdapter: ReactionsAdapter? = null
+    private var reactionsAdapter: ReactionsAdapter? = ReactionsAdapter()
     private lateinit var gestureDetector: GestureDetector
 
     fun isVlogLiked(): Boolean =
-        vm.likes.value?.data?.usersSimplified?.any { it.id == getAuthUserId() } ?: false
+        vm.likes.value?.data?.usersSimplified?.any { it.id == authUserVm.getAuthUserId() } ?: false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +64,6 @@ class VlogFragment : AuthFragment() {
         })
 
         exoPlayer = ExoPlayerFactory.newSimpleInstance(requireContext())
-
-        reactionsAdapter = ReactionsAdapter()
 
         with(requireArguments()) {
             userVlogItem = getSerializable(PROFILEVLOGITEM_KEY) as UserVlogItem
@@ -131,7 +130,7 @@ class VlogFragment : AuthFragment() {
         }
 
     private fun toggleLike(like: Boolean) {
-        if (userVlogItem.user.id == getAuthUserId()) {
+        if (userVlogItem.user.id == authUserVm.getAuthUserId()) {
             like_button.isChecked = !like_button.isChecked
             return
         }
@@ -164,6 +163,7 @@ class VlogFragment : AuthFragment() {
         } ?: run {
             vm.watchResponse.observe(viewLifecycleOwner, Observer { start(it) })
         }
+
         val bottomSheet = BottomSheetBehavior.from(reactions_sheet).apply {
             addBottomSheetCallback(object :
                 BottomSheetBehavior.BottomSheetCallback() {
@@ -176,32 +176,24 @@ class VlogFragment : AuthFragment() {
                 }
             })
         }
-
-        reactions_sheet.run {
-            reactionsRecyclerView.run {
-                isNestedScrollingEnabled = false
-                adapter = reactionsAdapter
-            }
-
-            toggleButton.apply {
-                setOnClickListener {
-                    bottomSheet.state = when (bottomSheet.state) {
-                        BottomSheetBehavior.STATE_COLLAPSED -> BottomSheetBehavior.STATE_EXPANDED
-                        else -> BottomSheetBehavior.STATE_COLLAPSED
-                    }
+        toggleButton.apply {
+            setOnClickListener {
+                bottomSheet.state = when (bottomSheet.state) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> BottomSheetBehavior.STATE_EXPANDED
+                    else -> BottomSheetBehavior.STATE_COLLAPSED
                 }
             }
+        }
 
-            react_button.setOnClickListener {
-                // TODO: Implement react screen
-            }
+        react_button.setOnClickListener {
+            // TODO: Implement react screen
+        }
 
-            like_button.setOnClickListener {
-                // This might seem wrong, but because the checked state has priority over the click listener the
-                // checked state is already flipped before we can check the state when the user initially clicked.
-                // Because of this we have to interpret it in reverse.
-                toggleLike(isVlogLiked())
-            }
+        like_button.setOnClickListener {
+            // This might seem wrong, but because the checked state has priority over the click listener the
+            // checked state is already flipped before we can check the state when the user initially clicked.
+            // Because of this we have to interpret it in reverse.
+            toggleLike(isVlogLiked())
         }
 
         livestreamId?.let {
@@ -210,10 +202,18 @@ class VlogFragment : AuthFragment() {
             vm.watch(userVlogItem.vlog.data.id)
         }
 
+        vm.getReactions(userVlogItem.vlog.data.id, refresh = true)
+
+
+        reactions_sheet.run {
+            reactionsRecyclerView.run {
+                isNestedScrollingEnabled = false
+                adapter = reactionsAdapter
+            }
+        }
+
         vm.run {
             reactions.observe(viewLifecycleOwner, Observer { updateReactions(it) })
-
-            getReactions(userVlogItem.vlog.data.id, refresh = true)
         }
     }
 
@@ -223,7 +223,7 @@ class VlogFragment : AuthFragment() {
                 like_button.isEnabled = false
             }
             ResourceState.SUCCESS -> {
-                val isLiked = data?.usersSimplified?.any { it.id == getAuthUserId() } ?: false
+                val isLiked = data?.usersSimplified?.any { it.id == authUserVm.getAuthUserId() } ?: false
                 like_button.isChecked = isLiked
                 like_button.isEnabled = !isLiked
 

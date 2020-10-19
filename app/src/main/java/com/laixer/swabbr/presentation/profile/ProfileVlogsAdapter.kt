@@ -12,6 +12,7 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
+import com.laixer.swabbr.presentation.auth.AuthUserViewModel
 import com.laixer.swabbr.presentation.model.UserVlogItem
 import kotlinx.android.synthetic.main.item_list_uservlog.view.*
 import kotlinx.android.synthetic.main.item_list_uservlog.view.like_count
@@ -26,7 +27,7 @@ import java.time.ZonedDateTime
 
 class ProfileVlogsAdapter(
     private val vm: ProfileViewModel,
-    private val token: String,
+    private val authUserVm: AuthUserViewModel,
     private val onClick: (UserVlogItem) -> Unit,
     private val onDelete: ((UserVlogItem) -> Unit)? = null
 ) : ListAdapter<UserVlogItem, ProfileVlogsAdapter.ViewHolder>(ProfileDiffCallback()) {
@@ -41,16 +42,14 @@ class ProfileVlogsAdapter(
             if (item.vlog.data.dateStarted.isBefore(ZonedDateTime.now().minusMinutes(3))) {
                 processing_cover.visibility = View.GONE
 
-
                 /* We convert back to String because Glide's load(URL) function is deprecated because
                  of possible performance issues. */
-                val url = item.vlog.thumbnailUri.toString() ?: ""
+                val url = item.vlog.thumbnailUri?.toString() ?: ""
                 val glideUrl = GlideUrl(
                     url,
-                    LazyHeaders.Builder().addHeader("Authorization", "Bearer $token")
+                    LazyHeaders.Builder().addHeader("Authorization", "Bearer ${authUserVm.getAuthToken()}")
                         .build()
                 )
-
 
                 Glide.with(context)
                     .load(glideUrl)
@@ -97,5 +96,5 @@ private class ProfileDiffCallback : DiffUtil.ItemCallback<UserVlogItem>() {
         oldItem.vlog.data.id == newItem.vlog.data.id
 
     override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean =
-        oldItem.vlog.data.id == newItem.vlog.data.id
+        oldItem.vlog.equals(newItem.vlog)
 }

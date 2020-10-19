@@ -56,7 +56,7 @@ class V1 {
 
             override fun createPendingIntent(context: Context): PendingIntent = NavDeepLinkBuilder(context)
                 .setGraph(R.navigation.nav_graph_app)
-                .setDestination(R.id.streaming_dest)
+                .setDestination(R.id.livestream_dest)
                 .setArguments(LivestreamFragmentArgs(livestreamId).toBundle()).createPendingIntent()
         }
 

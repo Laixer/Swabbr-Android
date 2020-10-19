@@ -12,11 +12,11 @@ class SettingsRepositoryImpl constructor(
 ) : SettingsRepository {
 
     override fun get(refresh: Boolean): Single<Settings> = when (refresh) {
-        true -> remoteDataSource.get().flatMap { cacheDataSource.set(it) }
-        false -> cacheDataSource.get().onErrorResumeNext { get(true) }
+        true -> remoteDataSource.get().flatMap(cacheDataSource::set)
+        false -> cacheDataSource.get().onErrorResumeNext {  get(true) }
     }
 
     override fun set(settings: Settings): Single<Settings> = remoteDataSource.set(settings)
-        .flatMap { cacheDataSource.set(it) }
+        .flatMap(cacheDataSource::set)
 
 }

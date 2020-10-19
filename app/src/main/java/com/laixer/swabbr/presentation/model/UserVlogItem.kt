@@ -11,9 +11,7 @@ data class UserVlogItem(
     val user: UserItem,
     val vlog: VlogItem
 ) : Serializable {
-    val url = with(idList.random()) {
-        URL("https://assets.mixkit.co/videos/$this/$this-720.mp4")
-    }
+    fun equals(compare: UserVlogItem): Boolean = this.user.id == compare.user.id && this.vlog.equals(compare.vlog)
 }
 
 fun Pair<User, Vlog>.mapToPresentation(): UserVlogItem = UserVlogItem(
@@ -22,3 +20,4 @@ fun Pair<User, Vlog>.mapToPresentation(): UserVlogItem = UserVlogItem(
 )
 
 fun List<Pair<User, Vlog>>.mapToPresentation(): List<UserVlogItem> = map { it.mapToPresentation() }
+

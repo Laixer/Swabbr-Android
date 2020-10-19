@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.auth0.android.jwt.JWT
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
@@ -57,6 +58,12 @@ class VlogDetailsFragment : AuthFragment() {
             }
         }
 
+        if (userId != null) {
+            vm.getVlogs(UUID.fromString(userId), refresh = true)
+        } else {
+            vm.getVlog(UUID.fromString(vlogId), refresh = true)
+        }
+
         vlog_viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 mCurrentItemIndex = position
@@ -64,13 +71,6 @@ class VlogDetailsFragment : AuthFragment() {
             }
         })
 
-        if (savedInstanceState == null) {
-            if (userId != null) {
-                vm.getVlogs(UUID.fromString(userId), refresh = true)
-            } else {
-                vm.getVlog(UUID.fromString(vlogId), refresh = true)
-            }
-        }
     }
 
     private fun updateVlogs(resource: Resource<List<UserVlogItem>>) = with(resource) {
@@ -84,6 +84,7 @@ class VlogDetailsFragment : AuthFragment() {
 
 
                     vlog_viewpager.currentItem = mCurrentItemIndex!!
+                    vlog_viewpager.adapter?.notifyDataSetChanged()
                 }
             }
             ResourceState.ERROR -> {

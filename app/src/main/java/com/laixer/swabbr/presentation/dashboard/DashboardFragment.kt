@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.auth0.android.jwt.JWT
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
@@ -35,7 +36,7 @@ class DashboardFragment : AuthFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            vm.getRecommendedVlogs(refresh = true)
+            vm.getRecommendedVlogs(refresh = false)
         }
     }
 
@@ -44,35 +45,31 @@ class DashboardFragment : AuthFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vlogListAdapter = VlogListAdapter(vm, getAuthToken(), itemClick, profileClick)
-
         injectFeature()
 
-        if (savedInstanceState == null) {
-            vm.getRecommendedVlogs(refresh = false)
-        }
+        vlogListAdapter = VlogListAdapter(vm, authUserVm, itemClick, profileClick)
 
-        vlogsRecyclerView.adapter = vlogListAdapter
+        vlogsRecyclerView.adapter = vlogListAdapter  // MAKE SURE THIS HAPPENS BEFORE ADAPTER INSTANTIATION
+
+        swipeRefreshLayout.setOnRefreshListener { vm.getRecommendedVlogs(refresh = true) }
 
         vm.run {
-            vlogs.observe(viewLifecycleOwner, Observer { updateVlogs(it) })
-            swipeRefreshLayout.setOnRefreshListener { getRecommendedVlogs(refresh = true) }
+            vlogs.observe(viewLifecycleOwner, Observer(this@DashboardFragment::updateVlogs))
+            getRecommendedVlogs(refresh = false)
         }
     }
 
-    private fun updateVlogs(resource: Resource<List<UserVlogItem>>) = with(resource) {
-        with(swipeRefreshLayout) {
-            when (state) {
-                ResourceState.LOADING -> startRefreshing()
+    private fun updateVlogs(resource: Resource<List<UserVlogItem>>) {
+        when(resource.state) {
+                ResourceState.LOADING -> swipeRefreshLayout.startRefreshing()
                 ResourceState.SUCCESS -> {
-                    stopRefreshing()
-                    data?.let { vlogListAdapter?.submitList(it) }
+                    swipeRefreshLayout.stopRefreshing()
+                    vlogListAdapter?.submitList(resource.data)
+                    vlogListAdapter?.notifyDataSetChanged()
                 }
                 ResourceState.ERROR -> {
-                    stopRefreshing()
-                    onError(resource)
+                    swipeRefreshLayout.stopRefreshing()
                 }
             }
-        }
     }
 }

@@ -8,6 +8,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.auth0.android.jwt.JWT
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
@@ -40,20 +41,20 @@ class SettingsFragment : AuthFragment() {
 
         saveSettings.setOnClickListener {
             settings?.let {
+                enableSettings(false)
                 vm.setSettings(it)
             }
         }
 
         logout.setOnClickListener {
+            enableSettings(false)
             authVm.logout()
-        }
-
-        if (savedInstanceState == null) {
-            vm.getSettings(false)
         }
 
         vm.settings.observe(viewLifecycleOwner, Observer { loadSettings(it) })
         authVm.authenticatedUser.observe(viewLifecycleOwner, Observer { logout(it) })
+
+        vm.getSettings(true)
     }
 
     private fun loadSettings(res: Resource<SettingsItem>) {
@@ -76,7 +77,6 @@ class SettingsFragment : AuthFragment() {
             ResourceState.ERROR -> {
                 Toast.makeText(requireContext(), res.message, Toast.LENGTH_SHORT).show()
                 enableSettings(true)
-                onError(res)
                 checkChanges()
             }
         }
@@ -90,7 +90,6 @@ class SettingsFragment : AuthFragment() {
             }
             ResourceState.SUCCESS -> {
                 progressBar.gone()
-                requireActivity().onBackPressed()
             }
             ResourceState.ERROR -> {
                 Toast.makeText(requireContext(), res.message, Toast.LENGTH_SHORT).show()

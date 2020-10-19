@@ -5,16 +5,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import com.auth0.android.jwt.JWT
 import com.google.firebase.iid.FirebaseInstanceId
-import com.laixer.swabbr.domain.model.Login
-import com.laixer.swabbr.domain.model.PushNotificationPlatform
 import com.laixer.swabbr.domain.usecase.AuthUseCase
+import com.laixer.swabbr.presentation.AuthActivity
+import com.laixer.swabbr.presentation.auth.UserManager.Companion.ACCOUNT_TYPE
 import com.laixer.swabbr.presentation.auth.UserManager.Companion.KEY_AUTH_TOKEN_TYPE
 import com.laixer.swabbr.presentation.auth.UserManager.Companion.KEY_CONFIRM_ACCOUNT
 import com.laixer.swabbr.presentation.auth.UserManager.Companion.KEY_CREATE_ACCOUNT
 import com.laixer.swabbr.presentation.auth.UserManager.Companion.KEY_FEATURES
 import com.laixer.swabbr.presentation.auth.login.LoginFragment
-import com.laixer.swabbr.presentation.model.LoginItem
 
 class SimpleAuthenticator(
     private val context: Context,
@@ -31,7 +31,7 @@ class SimpleAuthenticator(
         account: Account,
         options: Bundle?
     ): Bundle? {
-        val intent = Intent(context, LoginFragment::class.java)
+        val intent = Intent(context, AuthActivity::class.java)
         intent.putExtras(
             bundleOf(
                 AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE to response,
@@ -68,13 +68,9 @@ class SimpleAuthenticator(
                     FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
                         require(task.isSuccessful) { "Unable to identify this device on Firebase" }
                         authToken = usecase.login(
-                            Login(
-                                account.name,
-                                it,
-                                true,
-                                PushNotificationPlatform.FCM,
-                                task.result!!.token
-                            )
+                            account.name,
+                            it,
+                            task.result!!.token
                         ).blockingGet().jwtToken
                     }
                 } catch (e: Throwable) {
@@ -84,14 +80,24 @@ class SimpleAuthenticator(
         }
 
         if (!authToken.isNullOrBlank()) {
-            return bundleOf(
-                AccountManager.KEY_ACCOUNT_NAME to account.name,
-                AccountManager.KEY_ACCOUNT_TYPE to account.type,
-                AccountManager.KEY_AUTHTOKEN to authToken
-            )
+            val jwt = JWT(authToken)
+
+            if (!jwt.isExpired(0L)) {
+                return bundleOf(
+                    AccountManager.KEY_ACCOUNT_NAME to account.name,
+                    AccountManager.KEY_ACCOUNT_TYPE to account.type,
+                    AccountManager.KEY_AUTHTOKEN to authToken
+                )
+            } else {
+                accountManager.invalidateAuthToken(ACCOUNT_TYPE, authToken)
+            }
         }
 
-        val intent = Intent(context, LoginFragment::class.java)
+
+        // If we get here, then we couldn't access the user's password - so we
+        // need to re-prompt them for their credentials. We do that by creating
+        // an intent to display our AuthenticatorActivity.
+        val intent = Intent(context, AuthActivity::class.java)
         intent.putExtras(
             bundleOf(
                 AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE to response,
@@ -141,6 +147,7 @@ class SimpleAuthenticator(
 
         return bundleOf(AccountManager.KEY_INTENT to intent)
     }
+
     internal companion object {
         val TAG = SimpleAuthenticator::class.simpleName
     }

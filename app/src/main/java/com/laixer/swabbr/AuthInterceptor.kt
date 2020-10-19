@@ -1,34 +1,31 @@
 package com.laixer.swabbr
 
-import com.auth0.android.jwt.JWT
-import com.laixer.swabbr.data.datasource.AuthCacheDataSource
+import com.laixer.swabbr.presentation.auth.UserManager
 import okhttp3.Interceptor
-import okhttp3.MediaType
 import okhttp3.Response
 
 class AuthInterceptor(
-    private val authCacheDataSource: AuthCacheDataSource
+    private val userManager: UserManager
 ) : Interceptor {
 
-    private var token: JWT? = null
     override fun intercept(chain: Interceptor.Chain): Response {
-        with(chain.request()) {
-            if (!header("No-Authentication").isNullOrEmpty()) {
-                return chain.proceed(
-                    newBuilder().build()
-                )
-            }
+        val response = with(chain) {
+            val request = chain.request()
+            val newBuilder = request.newBuilder()
 
-            try {
-                token = JWT(authCacheDataSource.get().blockingGet().jwtToken)
-            } catch (e: Exception) {
-                // If we land here the user is not authenticated but somehow tried to make a request that does require auth. Just return the chain with an error and handle it on fragment level
-//                val errorResponseBody = ResponseBody.create(MediaType.get())
+            if (!request.header("No-Authentication").isNullOrEmpty()) {
+                chain.proceed(newBuilder.build())
+            } else {
+                userManager.token?.let {
+                    chain.proceed(newBuilder.addHeader("Authorization", "Bearer $it").build())
+                } ?: chain.proceed(newBuilder.build())
             }
-
-            return chain.proceed(
-                newBuilder().addHeader("Authorization", "Bearer $token").build()
-            )
         }
+
+        if (response.code() == 401) {
+            userManager.invalidate()
+        }
+
+        return response
     }
 }

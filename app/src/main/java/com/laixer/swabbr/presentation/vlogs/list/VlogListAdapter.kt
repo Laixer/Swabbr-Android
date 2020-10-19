@@ -12,16 +12,18 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
+import com.laixer.swabbr.presentation.auth.AuthUserViewModel
 import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.UserVlogItem
 import kotlinx.android.synthetic.main.include_user_info.view.*
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.lang.IllegalStateException
 import java.time.ZonedDateTime
 
 class VlogListAdapter constructor(
     private val vm: VlogListViewModel,
-    private val token: String,
+    private val authUserVm: AuthUserViewModel,
     private val itemClick: (UserVlogItem) -> Unit,
     private val profileClick: (UserVlogItem) -> Unit
 ) : ListAdapter<UserVlogItem, VlogListAdapter.ViewHolder>(VlogDiffCallback()) {
@@ -38,11 +40,12 @@ class VlogListAdapter constructor(
 
                 var glideUrl: GlideUrl? = null
 
-                val url = item.vlog.thumbnailUri.toString() ?: ""
+                val url = item.vlog.thumbnailUri?.toString() ?: ""
+
                 if (!url.isBlank()) {
                      glideUrl = GlideUrl(
                         url,
-                        LazyHeaders.Builder().addHeader("Authorization", "Bearer $token")
+                        LazyHeaders.Builder().addHeader("Authorization", "Bearer ${authUserVm.getAuthUserId()}")
                             .build()
                     )
                 }
@@ -92,7 +95,6 @@ class VlogListAdapter constructor(
     }
 
     companion object {
-
         private const val THUMBNAIL_SIZE = 1f
     }
 }
@@ -102,5 +104,6 @@ private class VlogDiffCallback : DiffUtil.ItemCallback<UserVlogItem>() {
     override fun areItemsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean =
         oldItem.vlog.data.id == newItem.vlog.data.id
 
-    override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean = oldItem.vlog.data.id == newItem.vlog.data.id
+    override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean =
+        oldItem.vlog.equals(newItem.vlog)
 }

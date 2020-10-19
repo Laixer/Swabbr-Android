@@ -13,6 +13,7 @@ import com.laixer.cache.Cache
 import com.laixer.swabbr.R
 import com.laixer.swabbr.services.notifications.NotificationHandler
 import com.laixer.swabbr.services.notifications.V1
+import org.koin.android.ext.android.get
 import java.lang.Exception
 
 class FirebaseService : FirebaseMessagingService() {
@@ -69,13 +70,9 @@ class FirebaseService : FirebaseMessagingService() {
         val channelId = getString(R.string.default_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-        val title = notification?.data?.title?.let {
-            getString(it)
-        } ?: getString(R.string.default_notification_title)
+        val title = notification?.data?.title?.let(this@FirebaseService::getString) ?: getString(R.string.default_notification_title)
 
-        val message = notification?.data?.message?.let {
-            getString(it)
-        } ?: getString(R.string.default_notification_message)
+        val message = notification?.data?.message?.let(this@FirebaseService::getString) ?: getString(R.string.default_notification_message)
 
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_notification_icon)

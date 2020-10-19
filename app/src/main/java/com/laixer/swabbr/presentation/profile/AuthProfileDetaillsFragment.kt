@@ -20,10 +20,11 @@ import kotlinx.android.synthetic.main.fragment_auth_profile.*
 import kotlinx.android.synthetic.main.fragment_auth_profile_details.*
 import kotlinx.android.synthetic.main.fragment_profile.no_vlogs_text
 import kotlinx.android.synthetic.main.fragment_profile.swipeRefreshLayout
+import kotlinx.android.synthetic.main.include_user_details.*
 import kotlinx.android.synthetic.main.include_user_info.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class AuthProfileFragment : AuthFragment() {
+class AuthProfileDetaillsFragment : AuthFragment() {
 
     private val profileVm: ProfileViewModel by sharedViewModel()
     private val snackBar by lazy {
@@ -40,11 +41,6 @@ class AuthProfileFragment : AuthFragment() {
             .setDuration(Snackbar.LENGTH_LONG)
     }
     private var profileVlogsAdapter: ProfileVlogsAdapter? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        retainInstance = true
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -112,6 +108,7 @@ class AuthProfileFragment : AuthFragment() {
                 user_username.text = requireContext().getString(R.string.full_name, it, item.lastName)
                 user_username.visibility = View.VISIBLE
             }
+            follower_count.text = requireContext().getString(R.string.vlog_count, item.totalFollowers)
             vlog_count.text = requireContext().getString(R.string.vlog_count, item.totalVlogs)
         }
     }

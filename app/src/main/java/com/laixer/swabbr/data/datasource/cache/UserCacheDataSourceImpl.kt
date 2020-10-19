@@ -11,18 +11,15 @@ class UserCacheDataSourceImpl constructor(
     private val cache: Cache
 ) : UserCacheDataSource {
 
-    override fun set(list: List<User>): Single<List<User>> = cache.load<HashMap<UUID, User>>(key).onErrorReturn { HashMap() }
-        .flatMap { map ->
-            map.putAll(list.map { it.id to it }.toMap())
-            cache.save(key, map)
-        }.map { it.values.toList() }
+    override fun set(list: List<User>): Single<List<User>> = cache.save(key, list)
 
-    override fun get(): Single<List<User>> = cache.load<HashMap<UUID, User>>(key).map { it.values.toList() }
+    override fun get(): Single<List<User>> = cache.load(key)
 
-    override fun get(userId: UUID): Single<User> = cache.load<HashMap<UUID, User>>(key)
-        .map { map -> map[userId] }
+    override fun get(userId: UUID): Single<User> = cache.load<List<User>>(key).map { list -> list.first { it.id == userId} }
 
-    override fun add(user: User): Single<User> =  cache.load<HashMap<UUID, User>>(key).onErrorReturn { HashMap() }
-        .map { it.put(user.id, user) }
+    override fun add(user: User): Single<User> =  cache.load<List<User>>(key).onErrorResumeNext { Single.just(emptyList()) }
+        .map { list -> list.filter { it.id !== user.id }.toMutableList().apply { add(user) } }
+        .map { list -> set(list) }
+        .map { user }
 }
 

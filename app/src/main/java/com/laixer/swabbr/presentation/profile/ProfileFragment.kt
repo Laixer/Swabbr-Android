@@ -19,15 +19,12 @@ import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.FollowStatusItem
-import com.laixer.swabbr.presentation.model.LikeItem
-import com.laixer.swabbr.presentation.model.LikeListItem
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.UserVlogItem
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.include_user_info.*
-import kotlinx.android.synthetic.main.reactions_sheet.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.util.UUID
+import java.util.*
 
 class ProfileFragment : AuthFragment() {
 
@@ -61,11 +58,30 @@ class ProfileFragment : AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
-        profileVlogsAdapter = ProfileVlogsAdapter(profileVm, getAuthToken(), onClick)
+        profileVlogsAdapter = ProfileVlogsAdapter(profileVm, authUserVm, onClick)
 
-        followButton.setOnClickListener {
-            with(profileVm) {
-                when (profileVm.followStatus.value?.data?.status) {
+        profileVlogsRecyclerView.run {
+            isNestedScrollingEnabled = false
+            adapter = profileVlogsAdapter // MAKE SURE THIS HAPPENS BEFORE ADAPTER INSTANTIATION
+        }
+
+        profileVm.run {
+            profile.observe(viewLifecycleOwner, Observer { updateProfile(it) })
+            profileVlogs.observe(viewLifecycleOwner, Observer { updateProfileVlogs(it) })
+            followStatus.observe(viewLifecycleOwner, Observer { updateFollowStatus(it) })
+
+            with(userId) {
+                getProfile(this, refresh = false)
+                getProfileVlogs(this, refresh = false)
+                getFollowStatus(this)
+            }
+            swipeRefreshLayout.setOnRefreshListener {
+                getProfileVlogs(userId, refresh = true)
+                getFollowStatus(userId)
+            }
+
+            followButton.setOnClickListener {
+                when (followStatus.value?.data?.status) {
                     FollowStatus.FOLLOWING -> unfollow(userId)
                     FollowStatus.PENDING -> cancelFollowRequest(userId)
                     FollowStatus.NOT_FOLLOWING -> sendFollowRequest(userId)
@@ -75,33 +91,10 @@ class ProfileFragment : AuthFragment() {
                     }
                 }
             }
-        }
 
-        if (savedInstanceState == null) {
-            profileVm.run {
-                with(userId) {
-                    getProfile(this, refresh = false)
-                    getProfileVlogs(this, refresh = false)
-                    getFollowStatus(this)
-                }
-            }
-        }
-
-        profileVlogsRecyclerView.run {
-            isNestedScrollingEnabled = false
-            adapter = profileVlogsAdapter
-        }
-
-        profileVm.run {
-            profile.observe(viewLifecycleOwner, Observer { updateProfile(it) })
-            profileVlogs.observe(viewLifecycleOwner, Observer { updateProfileVlogs(it) })
-            followStatus.observe(viewLifecycleOwner, Observer { updateFollowStatus(it) })
-            swipeRefreshLayout.setOnRefreshListener {
-                getProfileVlogs(userId, refresh = true)
-                getFollowStatus(userId)
-            }
         }
     }
+
 
     private val onClick: (UserVlogItem) -> Unit = {
         findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${it.user.id}&vlogId=${it.vlog.data.id}"))

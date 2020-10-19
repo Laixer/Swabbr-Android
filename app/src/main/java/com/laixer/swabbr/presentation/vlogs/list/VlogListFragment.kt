@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.auth0.android.jwt.JWT
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
@@ -30,25 +31,18 @@ class VlogListFragment : AuthFragment() {
     }
     private var vlogListAdapter: VlogListAdapter? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (savedInstanceState == null) {
-            vm.getRecommendedVlogs(refresh = true)
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_vlog_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vlogListAdapter = VlogListAdapter(vm, getAuthToken(), itemClick, profileClick)
 
         injectFeature()
 
-        if (savedInstanceState == null) {
-            vm.getRecommendedVlogs(refresh = false)
-        }
+        vlogListAdapter = VlogListAdapter(vm, authUserVm, itemClick, profileClick)
+
+        vm.getRecommendedVlogs(refresh = true)
 
         vlogsRecyclerView.adapter = vlogListAdapter
 
@@ -64,11 +58,10 @@ class VlogListFragment : AuthFragment() {
                 ResourceState.LOADING -> startRefreshing()
                 ResourceState.SUCCESS -> {
                     stopRefreshing()
-                    data?.let { vlogListAdapter?.submitList(it) }
+                    data?.let{ vlogListAdapter?.submitList(it) }
                 }
                 ResourceState.ERROR -> {
                     stopRefreshing()
-                    onError(resource)
                 }
             }
         }

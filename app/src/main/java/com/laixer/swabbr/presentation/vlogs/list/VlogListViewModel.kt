@@ -21,7 +21,6 @@ class VlogListViewModel constructor(
 ) : ViewModel() {
 
     val vlogs = MutableLiveData<Resource<List<UserVlogItem>>>()
-    val likes = MutableLiveData<Resource<LikeListItem>>()
     private val compositeDisposable = CompositeDisposable()
 
     fun getRecommendedVlogs(refresh: Boolean) =

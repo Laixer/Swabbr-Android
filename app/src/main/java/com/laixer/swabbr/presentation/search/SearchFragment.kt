@@ -7,9 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.ViewCompat.canScrollVertically
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.auth0.android.jwt.JWT
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
@@ -39,25 +41,28 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         searchRecyclerView.apply {
             isNestedScrollingEnabled = false
             adapter = searchAdapter
+
             // Add a listener to respond to a scroll event
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
-                    if (canScrollVertically(1) && vm.lastQueryResultCount > 0) {
+                    if (recyclerView.canScrollVertically(1) && vm.lastQueryResultCount > 0) {
                         search(page = currentPage++)
                     }
                 }
             })
         }
 
-        vm.run {
-            profiles.observe(viewLifecycleOwner, Observer { updateUsers(it) })
-            swipeRefreshLayout.setOnRefreshListener { search(lastQuery) }
-        }
+        swipeRefreshLayout.setOnRefreshListener { search(lastQuery) }
 
         searchView.run {
+            search(lastQuery, 1, true)
             searchView.setOnQueryTextListener(this@SearchFragment)
             searchView.requestFocus()
+        }
+
+        vm.run {
+            profiles.observe(viewLifecycleOwner, Observer(this@SearchFragment::updateUsers))
         }
     }
 
@@ -96,13 +101,10 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
                     ResourceState.LOADING -> startRefreshing()
                     ResourceState.SUCCESS -> {
                         stopRefreshing()
-                        data?.let {
-                            searchAdapter.submitList(it)
-                        }
+                        data?.let(searchAdapter::submitList)
                     }
                     ResourceState.ERROR -> {
                         stopRefreshing()
-                        super.onError(resource)
                     }
                 }
             }

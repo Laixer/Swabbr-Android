@@ -16,21 +16,21 @@ class VlogRepositoryImpl constructor(
 ) : VlogRepository {
 
     override fun getUserVlogs(userId: UUID, refresh: Boolean): Single<List<Vlog>> = when (refresh) {
-        true -> remoteDataSource.getUserVlogs(userId).flatMap { cacheDataSource.set(it) }
+        true -> remoteDataSource.getUserVlogs(userId).flatMap(cacheDataSource::set)
         false -> cacheDataSource.getUserVlogs(userId).onErrorResumeNext { getUserVlogs(userId, refresh = true) }
     }
 
     override fun get(vlogId: UUID, refresh: Boolean): Single<Vlog> = when (refresh) {
-        true -> remoteDataSource.get(vlogId).flatMap { cacheDataSource.set(it) }
+        true -> remoteDataSource.get(vlogId).flatMap(cacheDataSource::set)
         false -> cacheDataSource.get(vlogId).onErrorResumeNext { get(vlogId, refresh = true) }
     }
 
     override fun getRecommendedVlogs(refresh: Boolean): Single<List<Vlog>> = when (refresh) {
-        true -> remoteDataSource.getRecommendedVlogs().flatMap { cacheDataSource.setRecommendedVlogs(it) }
+        true -> remoteDataSource.getRecommendedVlogs().flatMap(cacheDataSource::setRecommendedVlogs)
         false -> cacheDataSource.getRecommendedVlogs().onErrorResumeNext { getRecommendedVlogs(refresh = true) }
     }
 
-    override fun delete(vlogId: UUID): Completable = remoteDataSource.delete(vlogId).andThen(cacheDataSource.delete(vlogId))
+    override fun delete(vlogId: UUID): Completable = remoteDataSource.delete(vlogId).doOnComplete{ cacheDataSource.delete(vlogId) }
 
     override fun getReactionCount(vlogId: UUID): Single<Int> = remoteDataSource.getReactionCount(vlogId)
 

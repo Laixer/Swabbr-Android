@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -20,26 +21,22 @@ import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.data.datasource.model.StreamResponse
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.AuthFragment
-import com.laixer.swabbr.presentation.Utils.enterFullscreen
-import com.laixer.swabbr.presentation.Utils.exitFullscreen
 import io.antmedia.android.broadcaster.ILiveVideoBroadcaster
 import io.antmedia.android.broadcaster.LiveVideoBroadcaster
 import kotlinx.android.synthetic.main.fragment_record.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.Serializable
 import java.net.ConnectException
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
-open class LivestreamFragment : AuthFragment() {
+open class LivestreamFragment : Fragment() {
 
     private val args: LivestreamFragmentArgs by navArgs()
-    private val vm: LivestreamViewModel by sharedViewModel()
+    private val vm: LivestreamViewModel by viewModel()
     private lateinit var mLiveVideoBroadcaster: ILiveVideoBroadcaster
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -53,7 +50,6 @@ open class LivestreamFragment : AuthFragment() {
         vm.streamResponse.observe(viewLifecycleOwner, Observer { connect(it) })
         //all of your permissions have been accepted by the user
         // Hide parent UI and make the fragment fullscreen
-        enterFullscreen(requireActivity())
         // OpenGL ES 3.0 is supported from API >=18. Our minSdk is >=21, so this is safe to force.
         surface_view.setEGLContextClientVersion(3)
 
@@ -91,6 +87,7 @@ open class LivestreamFragment : AuthFragment() {
 
         initialize()
     }
+
 
     private fun initialize() = askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
         mLiveVideoBroadcaster = LiveVideoBroadcaster(requireActivity(), surface_view, true, cameraCallback)
@@ -223,7 +220,6 @@ open class LivestreamFragment : AuthFragment() {
     override fun onDestroy() {
         super.onDestroy()
         mLiveVideoBroadcaster.release()
-        exitFullscreen(requireActivity())
     }
 
     data class StreamRequest(

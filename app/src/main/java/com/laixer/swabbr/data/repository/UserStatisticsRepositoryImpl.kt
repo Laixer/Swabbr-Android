@@ -18,7 +18,7 @@ class UserStatisticsRepositoryImpl constructor(
     }
 
     override fun getSelfStatistics(refresh: Boolean): Single<UserStatistics> = when (refresh) {
-        true -> remoteDataSource.getSelfStatistics().flatMap { cacheDataSource.setSelfStatistics(it) }
+        true -> remoteDataSource.getSelfStatistics().flatMap(cacheDataSource::setSelfStatistics)
         false -> cacheDataSource.getSelfStatistics().onErrorResumeNext { getSelfStatistics(true) }
     }
 
