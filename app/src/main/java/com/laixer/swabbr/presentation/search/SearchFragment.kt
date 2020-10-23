@@ -7,11 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.ViewCompat.canScrollVertically
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.auth0.android.jwt.JWT
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
@@ -26,7 +24,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
 
     private val vm: SearchViewModel by sharedViewModel()
-    private val searchAdapter by lazy { SearchAdapter(requireContext(), onClick) }
+    private var userAdapter: UserAdapter? = null
     private var currentPage: Int = 1
     private var lastQuery: String = ""
 
@@ -38,9 +36,10 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
+        userAdapter = UserAdapter(requireContext(), onClick)
         searchRecyclerView.apply {
             isNestedScrollingEnabled = false
-            adapter = searchAdapter
+            adapter = userAdapter
 
             // Add a listener to respond to a scroll event
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -101,7 +100,7 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
                     ResourceState.LOADING -> startRefreshing()
                     ResourceState.SUCCESS -> {
                         stopRefreshing()
-                        data?.let(searchAdapter::submitList)
+                        data?.let { userAdapter?.submitList(it) }
                     }
                     ResourceState.ERROR -> {
                         stopRefreshing()
@@ -122,6 +121,7 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
     override fun onDestroyView() {
         super.onDestroyView()
         searchRecyclerView.adapter = null
+        userAdapter = null
     }
 
     companion object {

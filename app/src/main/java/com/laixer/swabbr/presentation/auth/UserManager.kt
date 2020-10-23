@@ -23,7 +23,7 @@ class UserManager(
     val statusObservable: Observable<Boolean> = _statusObservable
 
     val token: JWT?
-        get() = cache.get<String>(KEY_ACCOUNT_TOKEN)?.let { JWT(it) } ?: getCurrentAccount()?.let { acc ->
+        get() = cache.get(KEY_ACCOUNT_TOKEN) ?: getCurrentAccount()?.let { acc ->
             accountManager.peekAuthToken(acc, DEFAULT_AUTH_TOKEN_TYPE)?.let { JWT(it) }
         }
 
@@ -88,7 +88,7 @@ class UserManager(
     internal fun createAccount(
         email: String,
         password: String,
-        token: String? = null,
+        token: JWT? = null,
         extras: Bundle? = null
     ) {
         if (token != null) {
@@ -102,7 +102,7 @@ class UserManager(
     /**
      * Only meant to be called when sign in api responds successfully.
      */
-    internal fun connect(email: String, password: String, token: String, extras: Bundle? = null) {
+    internal fun connect(email: String, password: String, token: JWT, extras: Bundle? = null) {
         val account = getAccount(email)
 
         if (account == null)
@@ -110,11 +110,11 @@ class UserManager(
 
         getAccount(email)?.let { acc ->
             accountManager.setPassword(acc, password)
-            accountManager.setAuthToken(acc, DEFAULT_AUTH_TOKEN_TYPE, token)
+            accountManager.setAuthToken(acc, DEFAULT_AUTH_TOKEN_TYPE, token.toString())
 
             extras?.let { bundle ->
                 for (key in bundle.keySet()) {
-                    accountManager.setUserData(acc, key, bundle.getString(key))
+                    accountManager.setUserData(acc, key, bundle.get(key).toString())
                 }
             }
 

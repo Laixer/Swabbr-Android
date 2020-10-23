@@ -17,7 +17,7 @@ class FollowRemoteDataSourceImpl constructor(
     override fun getFollowStatus(userId: UUID): Single<FollowStatus> =
         api.getFollowStatus(userId).map { it.mapToDomain() }
 
-    override fun getIncomingRequests(): Single<List<FollowRequest>> = api.getIncomingRequests().map { it.mapToDomain() }
+    override fun getIncomingRequests(): Single<List<FollowRequest>> = api.getIncomingRequests().map { it.followRequests.mapToDomain() }
 
     override fun getOutgoingRequests(): Single<List<FollowRequest>> = api.getOutgoingRequests().map { it.mapToDomain() }
 

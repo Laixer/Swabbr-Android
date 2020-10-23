@@ -3,7 +3,7 @@
     <string name="error">Error</string>
     <string name="retry">Retry</string>
 
-    <string name="nickname">\@%1$s</string>
+    <string name="nickname"><b>\@%1$s</b></string>
     <string name="full_name">%1$s %2$s</string>
 
     <string name="logo">Logo</string>
@@ -31,10 +31,18 @@
     <string name="react">React</string>
 
     <string name="google_play_unsupported_device">This device is not supported by Google Play Services.</string>
-    <string name="vlog_count">%1$d vlogs</string>
-    <string name="view_count">%1$d</string>
-    <string name="like_count">%1$d</string>
-    <string name="reaction_count">%1$d</string>
+    <string name="followers_count"><b>%1$d</b> Followers</string>
+    <string name="following_count"><b>%1$d</b> Following</string>
+    <string name="count"><b>%1$d</b></string>
+    <string name="vlog_count"><b>%1$d</b> Vlogs</string>
+    <string name="view_count"><b>%1$d</b>  Views</string>
+
+    <string name="like_count"><b>%1$d</b> Love Its!</string>
+
+    <string name="reaction_count"><b>%1$d</b>  Reactions</string>
+    <string name="reactions_given_count"><b>%1$d</b>  Reactions Given</string>
+    <string name="reactions_received_count"><b>%1$d</b>  Reactions Received</string>
+
     <string name="duration">%1$02d:%2$02d</string>
     <string name="date">%1$02d/%2$02d/%3$d</string>
     <string name="vlogTransition">vlogtransition</string>
@@ -61,6 +69,8 @@
     <string name="notification_title_vlognewreaction">People are talking about you!</string>
     <string name="notification_message_vlognewreaction">Click here to see their reactions.</string>
     <string name="processing">Processing…</string>
+    <string name="accept">accept</string>
+    <string name="decline">decline</string>
 
 
 </resources>

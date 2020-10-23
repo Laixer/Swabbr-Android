@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.include_user_details.*
 import kotlinx.android.synthetic.main.include_user_info.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class AuthProfileDetaillsFragment : AuthFragment() {
+class AuthProfileDetailsFragment : AuthFragment() {
 
     private val profileVm: ProfileViewModel by sharedViewModel()
     private val snackBar by lazy {
@@ -43,26 +43,17 @@ class AuthProfileDetaillsFragment : AuthFragment() {
     private var profileVlogsAdapter: ProfileVlogsAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_auth_profile_details, container, false)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_userprofile, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        injectFeature()
 
         profileVm.run {
             profileVlogs.observe(viewLifecycleOwner, Observer { updateProfileVlogs(it) })
-            profile.observe(viewLifecycleOwner, Observer { updateProfile(it.data) })
-
         }
 
-        profileVlogsAdapter = ProfileVlogsAdapter(profileVm, authUserVm, onClick, onDelete)
+        profileVlogsAdapter = ProfileVlogsAdapter(requireContext(), profileVm, authUserVm, onClick, onDelete)
 
         profilevlogsRecyclerView.apply {
             isNestedScrollingEnabled = false
@@ -72,22 +63,12 @@ class AuthProfileDetaillsFragment : AuthFragment() {
         authUserVm.getAuthUserId()?.let {
             profileVm.run {
                 swipeRefreshLayout.setOnRefreshListener {
-                    getProfile(it, refresh = true)
                     getProfileVlogs(it, refresh = true)
                 }
 
                 getProfileVlogs(it, refresh = true)
-                getProfile(it, refresh = true)
             }
         }
-    }
-
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.settings_dest -> findNavController().navigate(AuthProfileFragmentDirections.actionViewSettings())
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private val onClick: (UserVlogItem) -> Unit = { item ->
@@ -97,19 +78,6 @@ class AuthProfileDetaillsFragment : AuthFragment() {
     private val onDelete: (UserVlogItem) -> Unit = { item ->
         authUserVm.getAuthUserId()?.let {
             profileVm.deleteVlog(it, item.vlog.data.id)
-        }
-    }
-
-    private fun updateProfile(item: UserItem?) {
-        item?.let { item ->
-            user_avatar.loadAvatar(item.profileImage, item.id)
-            user_nickname.text = requireContext().getString(R.string.nickname, item.nickname)
-            item.firstName?.let {
-                user_username.text = requireContext().getString(R.string.full_name, it, item.lastName)
-                user_username.visibility = View.VISIBLE
-            }
-            follower_count.text = requireContext().getString(R.string.vlog_count, item.totalFollowers)
-            vlog_count.text = requireContext().getString(R.string.vlog_count, item.totalVlogs)
         }
     }
 

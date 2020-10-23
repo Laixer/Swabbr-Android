@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="@dimen/item_margin"
     android:clickable="true"
+    app:cardElevation="0dp"
+    app:cardCornerRadius="12dp"
     android:foreground="?selectableItemBackground">
 
     <LinearLayout
@@ -24,110 +25,26 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/thumbnail_placeholder" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@color/color_window_background_transparent"
-                android:orientation="horizontal"
-                android:padding="@dimen/content_margin">
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/view_count"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_eye"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:textAlignment="textStart"
-                            android:textAppearance="@style/SmallTextAppearance"
-                            tools:text="@string/view_count" />
-
-                        <TextView
-                            android:id="@+id/like_count"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_thumb_up"
-                            android:ellipsize="end"
-                            android:maxLines="2"
-                            android:textAlignment="textStart"
-                            android:textAppearance="@style/SmallTextAppearance"
-                            tools:text="@string/like_count" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/content_margin"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/vlogPostDate"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_date_range"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:textAlignment="textStart"
-                            android:textAppearance="@style/SmallTextAppearance"
-                            tools:text="@string/date" />
-
-                        <TextView
-                            android:id="@+id/vlogDuration"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_access_time"
-                            android:ellipsize="end"
-                            android:maxLines="2"
-                            android:textAlignment="textStart"
-                            android:textAppearance="@style/SmallTextAppearance"
-                            tools:text="@string/duration" />
-                    </LinearLayout>
-
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                <include layout="@layout/include_vlog_stats"
+                    android:layout_width="300dp"
                     android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:orientation="horizontal">
+                    android:layout_margin="@dimen/content_margin"/>
 
-                    <TextView
-                        android:id="@+id/reaction_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:drawableEnd="@drawable/ic_message"
-                        tools:text="0" />
-
-                    <ImageButton
-                        android:visibility="gone"
-                        android:id="@+id/delete_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_baseline_delete" />
-
-                </LinearLayout>
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end">
-
-
-
+                <ImageButton
+                    android:id="@+id/delete_button"
+                    android:layout_width="@dimen/medium_icon_size"
+                    android:layout_height="@dimen/medium_icon_size"
+                    android:background="@color/transparent"
+                    android:src="@drawable/ic_baseline_delete"
+                    android:layout_margin="@dimen/content_margin"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -146,6 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="@color/transparent"
             android:orientation="vertical">
 
             <androidx.core.widget.ContentLoadingProgressBar

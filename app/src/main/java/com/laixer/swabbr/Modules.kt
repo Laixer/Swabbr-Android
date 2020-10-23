@@ -5,74 +5,28 @@ import android.accounts.AccountManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.laixer.cache.Cache
+import com.laixer.swabbr.data.datasource.*
+import com.laixer.swabbr.data.datasource.cache.*
+import com.laixer.swabbr.data.datasource.model.remote.*
+import com.laixer.swabbr.data.datasource.remote.*
+import com.laixer.swabbr.data.repository.*
+import com.laixer.swabbr.domain.repository.*
+import com.laixer.swabbr.domain.usecase.*
 import com.laixer.swabbr.presentation.MainActivityViewModel
-import com.laixer.swabbr.data.datasource.AuthCacheDataSource
-import com.laixer.swabbr.data.datasource.AuthRemoteDataSource
-import com.laixer.swabbr.data.datasource.FollowCacheDataSource
-import com.laixer.swabbr.data.datasource.FollowRemoteDataSource
-import com.laixer.swabbr.data.datasource.LivestreamDataSource
-import com.laixer.swabbr.data.datasource.ReactionCacheDataSource
-import com.laixer.swabbr.data.datasource.ReactionRemoteDataSource
-import com.laixer.swabbr.data.datasource.SettingsCacheDataSource
-import com.laixer.swabbr.data.datasource.SettingsRemoteDataSource
-import com.laixer.swabbr.data.datasource.UserCacheDataSource
-import com.laixer.swabbr.data.datasource.UserRemoteDataSource
-import com.laixer.swabbr.data.datasource.VlogCacheDataSource
-import com.laixer.swabbr.data.datasource.VlogRemoteDataSource
-import com.laixer.swabbr.data.datasource.cache.AuthCacheDataSourceImpl
-import com.laixer.swabbr.data.datasource.cache.FollowCacheDataSourceImpl
-import com.laixer.swabbr.data.datasource.cache.ReactionCacheDataSourceImpl
-import com.laixer.swabbr.data.datasource.cache.SettingsCacheDataSourceImpl
-import com.laixer.swabbr.data.datasource.cache.UserCacheDataSourceImpl
-import com.laixer.swabbr.data.datasource.cache.VlogCacheDataSourceImpl
-import com.laixer.swabbr.data.datasource.remote.AuthRemoteDataSourceImpl
-import com.laixer.swabbr.data.datasource.remote.FollowRemoteDataSourceImpl
-import com.laixer.swabbr.data.datasource.remote.LivestreamDataSourceImpl
-import com.laixer.swabbr.data.datasource.remote.ReactionRemoteDataSourceImpl
-import com.laixer.swabbr.data.datasource.remote.SettingsRemoteDataSourceImpl
-import com.laixer.swabbr.data.datasource.remote.UserRemoteDataSourceImpl
-import com.laixer.swabbr.data.datasource.remote.VlogRemoteDataSourceImpl
-import com.laixer.swabbr.data.repository.AuthRepositoryImpl
-import com.laixer.swabbr.data.repository.FollowRepositoryImpl
-import com.laixer.swabbr.data.repository.LivestreamRepositoryImpl
-import com.laixer.swabbr.data.repository.ReactionRepositoryImpl
-import com.laixer.swabbr.data.repository.SettingsRepositoryImpl
-import com.laixer.swabbr.data.repository.UserRepositoryImpl
-import com.laixer.swabbr.data.repository.VlogRepositoryImpl
-import com.laixer.swabbr.data.datasource.model.remote.AuthApi
-import com.laixer.swabbr.data.datasource.model.remote.FollowApi
-import com.laixer.swabbr.data.datasource.model.remote.LivestreamApi
-import com.laixer.swabbr.data.datasource.model.remote.ReactionsApi
-import com.laixer.swabbr.data.datasource.model.remote.SettingsApi
-import com.laixer.swabbr.data.datasource.model.remote.UsersApi
-import com.laixer.swabbr.data.datasource.model.remote.VlogsApi
-import com.laixer.swabbr.domain.repository.AuthRepository
-import com.laixer.swabbr.domain.repository.FollowRepository
-import com.laixer.swabbr.domain.repository.LivestreamRepository
-import com.laixer.swabbr.domain.repository.ReactionRepository
-import com.laixer.swabbr.domain.repository.SettingsRepository
-import com.laixer.swabbr.domain.repository.UserRepository
-import com.laixer.swabbr.domain.repository.VlogRepository
-import com.laixer.swabbr.domain.usecase.AuthUseCase
-import com.laixer.swabbr.domain.usecase.FollowUseCase
-import com.laixer.swabbr.domain.usecase.LivestreamUseCase
-import com.laixer.swabbr.domain.usecase.ReactionsUseCase
-import com.laixer.swabbr.domain.usecase.SettingsUseCase
-import com.laixer.swabbr.domain.usecase.UserReactionUseCase
-import com.laixer.swabbr.domain.usecase.UserVlogUseCase
-import com.laixer.swabbr.domain.usecase.UserVlogsUseCase
-import com.laixer.swabbr.domain.usecase.UsersUseCase
-import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
-import com.laixer.swabbr.domain.usecase.VlogsUseCase
-import com.laixer.swabbr.presentation.auth.*
-import com.laixer.swabbr.presentation.profile.ProfileViewModel
+import com.laixer.swabbr.presentation.auth.AuthUserViewModel
+import com.laixer.swabbr.presentation.auth.AuthViewModel
+import com.laixer.swabbr.presentation.auth.SimpleAuthenticator
+import com.laixer.swabbr.presentation.auth.UserManager
 import com.laixer.swabbr.presentation.livestream.LivestreamViewModel
-import com.laixer.swabbr.presentation.search.SearchViewModel
+import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.profile.settings.SettingsViewModel
+import com.laixer.swabbr.presentation.search.SearchViewModel
 import com.laixer.swabbr.presentation.vlogs.details.VlogDetailsViewModel
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import io.reactivex.schedulers.Schedulers
+import okhttp3.CacheControl
 import okhttp3.OkHttpClient
+import okhttp3.internal.cache.CacheInterceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -82,6 +36,8 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.io.File
+import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = BuildConfig.API_ENDPOINT
 
@@ -104,7 +60,7 @@ private val loadFeature by lazy {
 
 val firebaseModule: Module = module {
     single { FirebaseCrashlytics.getInstance() }
-    single { FirebaseAnalytics.getInstance(androidContext())}
+    single { FirebaseAnalytics.getInstance(androidContext()) }
 }
 
 val authModule: Module = module {
@@ -115,7 +71,7 @@ val authModule: Module = module {
 
 val viewModelModule: Module = module {
     viewModel { MainActivityViewModel(userManager = get()) }
-    viewModel { AuthUserViewModel(userManager = get()) }
+    viewModel { AuthUserViewModel(userManager = get(), authUserUseCase = get()) }
     viewModel { LivestreamViewModel(livestreamUseCase = get()) }
     viewModel { AuthViewModel(userManager = get(), authUseCase = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
@@ -133,6 +89,7 @@ val viewModelModule: Module = module {
 }
 val useCaseModule: Module = module {
     factory { LivestreamUseCase(livestreamRepository = get()) }
+    factory { AuthUserUseCase(authRepository = get(), userRepository = get()) }
     factory { AuthUseCase(authRepository = get()) }
     factory { UsersUseCase(userRepository = get()) }
     factory { UsersVlogsUseCase(userRepository = get(), vlogRepository = get()) }
@@ -161,7 +118,14 @@ val repositoryModule: Module = module {
 val dataSourceModule: Module = module {
     single<AuthCacheDataSource> { AuthCacheDataSourceImpl(get()) }
     single<LivestreamDataSource> { LivestreamDataSourceImpl(livestreamApi = get()) }
-    single<AuthRemoteDataSource> { AuthRemoteDataSourceImpl(authApi = get(), settingsApi = get()) }
+    single<AuthRemoteDataSource> {
+        AuthRemoteDataSourceImpl(
+            authApi = get(),
+            settingsApi = get(),
+            usersApi = get(),
+            followApi = get()
+        )
+    }
     single<UserCacheDataSource> { UserCacheDataSourceImpl(cache = get()) }
     single<UserRemoteDataSource> { UserRemoteDataSourceImpl(api = get()) }
     single<VlogCacheDataSource> { VlogCacheDataSourceImpl(cache = get()) }
@@ -186,12 +150,16 @@ val networkModule: Module = module {
     single {
         OkHttpClient.Builder()
             .addInterceptor(get<AuthInterceptor>())
+            .addInterceptor(get<com.laixer.swabbr.CacheInterceptor>())
             .addNetworkInterceptor(HttpLoggingInterceptor().apply {
                 this.level = HttpLoggingInterceptor.Level.BODY
             })
+            .cache(okhttp3.Cache(File(androidContext().cacheDir, "http-cache"), 10 * 1024 * 1024)) // 10Mb cache
+            .callTimeout(20, TimeUnit.SECONDS)
             .build()
     }
 
+    single { com.laixer.swabbr.CacheInterceptor() }
     single { AuthInterceptor(userManager = get()) }
 
     single<LivestreamApi> { get<Retrofit>().create(LivestreamApi::class.java) }

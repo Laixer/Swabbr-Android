@@ -24,6 +24,7 @@ class ProfileViewModel constructor(
     private val followUseCase: FollowUseCase
 ) : ViewModel() {
 
+    val followingUsers = MutableLiveData<Resource<List<UserItem>>>()
     val profile = MutableLiveData<Resource<UserItem>>()
     val profileVlogs = MutableLiveData<Resource<List<UserVlogItem>>>()
     val followStatus = MutableLiveData<Resource<FollowStatusItem>>()
@@ -66,6 +67,17 @@ class ProfileViewModel constructor(
                 { profileVlogs.setError(it.message) }
             )
         )
+
+    fun getFollowing(userId: UUID, refresh: Boolean = false) = compositeDisposable.add(usersUseCase
+        .getFollowing(userId, refresh)
+        .doOnSubscribe { followingUsers.setLoading() }
+        .subscribeOn(Schedulers.io())
+        .map { it.mapToPresentation() }
+        .subscribe(
+            { followingUsers.setSuccess(it) },
+            { followingUsers.setError(it.message) }
+        )
+    )
 
     fun getFollowStatus(userId: UUID) =
         compositeDisposable.add(followUseCase

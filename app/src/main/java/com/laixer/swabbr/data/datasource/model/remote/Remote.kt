@@ -64,6 +64,9 @@ interface UsersApi {
 
     @GET("users/self/statistics")
     fun getSelfStatistics(): Single<UserStatisticsEntity>
+
+    @GET("users/{userId}/following")
+    fun getFollowing(@Path("userId") id: UUID): Single<FollowingResponse>
 }
 
 interface ReactionsApi {
@@ -77,7 +80,7 @@ interface FollowApi {
     fun getFollowStatus(@Query("receiverId") id: UUID): Single<FollowStatusEntity>
 
     @GET("followrequests/incoming")
-    fun getIncomingRequests(): Single<List<FollowRequestEntity>>
+    fun getIncomingRequests(): Single<IncomingRequestsResponse>
 
     @GET("followrequests/outgoing")
     fun getOutgoingRequests(): Single<List<FollowRequestEntity>>

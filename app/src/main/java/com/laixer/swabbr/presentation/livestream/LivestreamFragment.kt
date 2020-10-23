@@ -2,6 +2,7 @@ package com.laixer.swabbr.presentation.livestream
 
 import android.Manifest
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
 import android.hardware.camera2.CameraDevice
 import android.os.Bundle
@@ -10,7 +11,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -52,6 +56,15 @@ open class LivestreamFragment : Fragment() {
         // Hide parent UI and make the fragment fullscreen
         // OpenGL ES 3.0 is supported from API >=18. Our minSdk is >=21, so this is safe to force.
         surface_view.setEGLContextClientVersion(3)
+
+        // We add a bottom margin to our overlay equal to the high of the navbar to prevent it from falling below the navbar
+        val resources: Resources = requireContext().resources
+        val resourceId: Int = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            bottom_stream_bar.layoutParams = (bottom_stream_bar.layoutParams as ConstraintLayout.LayoutParams).apply {
+                bottomMargin += resources.getDimensionPixelSize(resourceId)
+            }
+        }
 
         capture_button.apply {
             isEnabled = false
@@ -151,12 +164,14 @@ open class LivestreamFragment : Fragment() {
                         visibility = View.VISIBLE
                     }
 
-                    status_text.text = getString(R.string.connecting)
                 }
             }
             ResourceState.SUCCESS -> {
                 try {
-                    mLiveVideoBroadcaster.connect(data!!.getUrl())
+                    data?.let {
+                        status_text.text = getString(R.string.connecting)
+                        mLiveVideoBroadcaster.connect(it.getUrl())
+                    }
                 } catch (e: ConnectException) {
                     Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
                     stop()

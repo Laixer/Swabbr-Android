@@ -22,4 +22,7 @@ class UserRepositoryImpl constructor(
     override fun search(name: String?, page: Int, itemsPerPage: Int): Single<List<User>> =
         remoteDataSource.search(name, page, itemsPerPage).flatMap(cacheDataSource::set)
 
+    override fun getFollowing(userId: UUID, refresh: Boolean): Single<List<User>> = remoteDataSource.getFollowing(userId)
+
+
 }

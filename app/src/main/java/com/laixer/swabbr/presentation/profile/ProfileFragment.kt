@@ -58,7 +58,7 @@ class ProfileFragment : AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
-        profileVlogsAdapter = ProfileVlogsAdapter(profileVm, authUserVm, onClick)
+        profileVlogsAdapter = ProfileVlogsAdapter(requireContext(), profileVm, authUserVm, onClick)
 
         profileVlogsRecyclerView.run {
             isNestedScrollingEnabled = false

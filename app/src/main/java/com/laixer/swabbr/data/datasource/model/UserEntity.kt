@@ -34,6 +34,10 @@ data class SimplifiedUserEntity(
     @field:Json(name = "nickName") val nickname: String
 )
 
+data class FollowingResponse(
+    @field:Json(name = "following") val following: List<UserEntity>
+)
+
 fun SimplifiedUserEntity.mapToDomain(): SimplifiedUser = SimplifiedUser(
     UUID.fromString(id),
     nickname

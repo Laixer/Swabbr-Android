@@ -71,7 +71,7 @@ class SimpleAuthenticator(
                             account.name,
                             it,
                             task.result!!.token
-                        ).blockingGet().jwtToken
+                        ).blockingGet().jwtToken?.toString()
                     }
                 } catch (e: Throwable) {
                     throw NetworkErrorException(e)

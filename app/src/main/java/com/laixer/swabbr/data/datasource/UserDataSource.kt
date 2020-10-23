@@ -24,4 +24,6 @@ interface UserRemoteDataSource {
     fun get(userId: UUID): Single<User>
 
     fun search(query: String?, page: Int = 1, itemsPerPage: Int = 50): Single<List<User>>
+
+    fun getFollowing(userId: UUID): Single<List<User>>
 }

@@ -45,14 +45,6 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     //    private val date = LocalDate.now()
 //    private var selectedDate: ZonedDateTime = ZonedDateTime.now()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val transition = TransitionInflater.from(context).inflateTransition(android.R.transition.move).apply {
-            duration = 2000
-        }
-        sharedElementEnterTransition = transition
-        sharedElementReturnTransition = transition
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_registration, container, false)
@@ -109,8 +101,9 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             ResourceState.SUCCESS -> {
                 res.data?.jwtToken?.let {
                     progressBar.gone()
-                    requireActivity().onBackPressed()
+                    // Nav to main app is handled by our parent activity (AuthActivity)
                 } ?: run {
+                    Toast.makeText(requireActivity().applicationContext, "Registration successful, signing in you in…", Toast.LENGTH_SHORT).show()
                     vm.login(
                         emailInput.text.toString(),
                         passwordInput.text.toString(),
@@ -175,8 +168,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             mimeTypes = arrayOf(
                 "image/png",
                 "image/jpg",
-                "image/jpeg",
-                "image/gif"
+                "image/jpeg"
             )
         )
         .start()

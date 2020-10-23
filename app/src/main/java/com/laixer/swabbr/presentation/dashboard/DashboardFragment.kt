@@ -72,4 +72,11 @@ class DashboardFragment : AuthFragment() {
                 }
             }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        vlogListAdapter = null
+        vlogsRecyclerView?.adapter = null
+    }
+
 }

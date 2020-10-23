@@ -12,4 +12,6 @@ interface UserRepository {
 
     fun search(name: String?, page: Int = 1, itemsPerPage: Int = 50): Single<List<User>>
 
+    fun getFollowing(userId: UUID, refresh: Boolean): Single<List<User>>
+
 }

@@ -19,3 +19,5 @@ fun FollowRequest.mapToPresentation(): FollowRequestItem =
         this.status,
         this.timeCreated
     )
+
+fun List<FollowRequest>.mapToPresentation(): List<FollowRequestItem> = map { it.mapToPresentation() }

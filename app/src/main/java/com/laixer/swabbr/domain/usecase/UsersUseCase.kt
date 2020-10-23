@@ -11,4 +11,7 @@ class UsersUseCase constructor(private val userRepository: UserRepository) {
 
     fun search(query: String?, page: Int = 1, itemsPerPage: Int = 50): Single<List<User>> =
         userRepository.search(query, page, itemsPerPage)
+
+    fun getFollowing(userId: UUID, refresh: Boolean): Single<List<User>> =
+        userRepository.getFollowing(userId, refresh)
 }

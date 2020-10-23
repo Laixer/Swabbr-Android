@@ -2,7 +2,12 @@
 <resources>
     <color name="colorPrimary">#B53F3F</color>
     <color name="colorPrimaryDark">#802727</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#8A3E3E</color>
+
+    <color name="colorAccept">#3E8A42</color>
+    <color name="colorDecline">#8A3E3E</color>
+
+
 
     <color name="color_divider">#1F000000</color>
 
@@ -12,7 +17,7 @@
 
     <color name="color_window_background">@color/color_grey_50</color>
     <color name="color_window_background_transparent">#C3FAFAFA</color>
-    <color name="transparent">#00FAFAFA</color>
+    <color name="transparent">#0000</color>
 
     <color name="multiStateButtonPressed">#80ff8400</color>
     <color name="multiStateButtonDisabled">#c1636363</color>

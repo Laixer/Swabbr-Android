@@ -25,7 +25,7 @@ class LivestreamViewModel constructor(
             livestreamUseCase.startStreaming(livestreamId)
                 .doOnSubscribe { streamResponse.setLoading() }
                 .subscribe(
-                    { streamResponse::setSuccess},
+                    { streamResponse.setSuccess(it) },
                     { streamResponse.setError(it.message) }
                 )
         )

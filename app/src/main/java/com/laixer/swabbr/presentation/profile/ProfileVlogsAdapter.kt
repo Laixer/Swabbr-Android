@@ -1,11 +1,12 @@
 package com.laixer.swabbr.presentation.profile
 
+import android.content.Context
+import android.text.format.DateUtils
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.auth0.android.jwt.JWT
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
@@ -14,18 +15,18 @@ import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.auth.AuthUserViewModel
 import com.laixer.swabbr.presentation.model.UserVlogItem
+import kotlinx.android.synthetic.main.include_user_stats.view.*
+import kotlinx.android.synthetic.main.include_vlog_stats.view.*
 import kotlinx.android.synthetic.main.item_list_uservlog.view.*
-import kotlinx.android.synthetic.main.item_list_uservlog.view.like_count
 import kotlinx.android.synthetic.main.item_list_uservlog.view.thumbnail
-import kotlinx.android.synthetic.main.item_list_uservlog.view.view_count
-import kotlinx.android.synthetic.main.item_list_uservlog.view.vlogDuration
-import kotlinx.android.synthetic.main.item_list_uservlog.view.vlogPostDate
-import kotlinx.android.synthetic.main.item_list_vlog.view.*
+import kotlinx.android.synthetic.main.item_list_vlog.view.like_count
 import kotlinx.android.synthetic.main.item_list_vlog.view.processing_cover
 import kotlinx.android.synthetic.main.item_list_vlog.view.reaction_count
+import kotlinx.android.synthetic.main.item_list_vlog.view.view_count
 import java.time.ZonedDateTime
 
 class ProfileVlogsAdapter(
+    private val context: Context,
     private val vm: ProfileViewModel,
     private val authUserVm: AuthUserViewModel,
     private val onClick: (UserVlogItem) -> Unit,
@@ -44,32 +45,32 @@ class ProfileVlogsAdapter(
 
                 /* We convert back to String because Glide's load(URL) function is deprecated because
                  of possible performance issues. */
-                val url = item.vlog.thumbnailUri?.toString() ?: ""
-                val glideUrl = GlideUrl(
-                    url,
-                    LazyHeaders.Builder().addHeader("Authorization", "Bearer ${authUserVm.getAuthToken()}")
-                        .build()
-                )
-
-                Glide.with(context)
-                    .load(glideUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .thumbnail(0.1f)
-                    .into(thumbnail)
-
-                vlogPostDate.text =
-                    context.getString(
-                        R.string.date,
-                        item.vlog.data.dateStarted.dayOfMonth,
-                        item.vlog.data.dateStarted.monthValue,
-                        item.vlog.data.dateStarted.year
+                item.vlog.thumbnailUri?.toString()?.let {
+                    val glideUrl: GlideUrl? = GlideUrl(
+                        it,
+                        LazyHeaders.Builder().addHeader("Authorization", "Bearer ${authUserVm.getAuthToken()}")
+                            .build()
                     )
-                vlogDuration.text =
-                    context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
-                reaction_count.text = context.getString(R.string.reaction_count, vm.getReactionCount(item.vlog.data.id))
 
-                view_count.text = context.getString(R.string.view_count, item.vlog.data.views)
-                like_count.text = context.getString(R.string.like_count, item.vlog.vlogLikeSummary.totalLikes)
+
+                    glideUrl?.let {
+                        Glide.with(context)
+                            .load(glideUrl)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .thumbnail(1F)
+                            .placeholder(R.drawable.thumbnail_placeholder)
+                            .into(thumbnail)
+                    }
+                }
+
+                val timeLabels = DateUtils.getRelativeDateTimeString(context, item.vlog.data.dateStarted.toInstant().toEpochMilli(), DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0).split(',')
+
+                post_date.text = timeLabels[0]
+                post_date_label.text = timeLabels[1]
+
+                reaction_count.text = context.getString(R.string.count, vm.getReactionCount(item.vlog.data.id))
+                view_count.text = context.getString(R.string.count, item.vlog.data.views)
+                like_count.text = context.getString(R.string.count, item.vlog.vlogLikeSummary.totalLikes)
 
                 setOnClickListener {
                     this.isEnabled = false

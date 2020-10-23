@@ -6,6 +6,11 @@ import com.squareup.moshi.Json
 import java.time.ZonedDateTime
 import java.util.UUID
 
+data class IncomingRequestsResponse(
+    @field:Json(name = "followRequests") val followRequests: List<FollowRequestEntity>,
+    @field:Json(name = "count") val count: Int
+)
+
 data class FollowRequestEntity(
     @field:Json(name = "requesterId") val requesterId: String,
     @field:Json(name = "receiverId") val receiverId: String,

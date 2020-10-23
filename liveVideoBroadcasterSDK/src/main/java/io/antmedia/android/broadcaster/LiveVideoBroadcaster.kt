@@ -273,8 +273,10 @@ class LiveVideoBroadcaster(
                 cameraCallback.onOpened(device)
             }
 
-            override fun onDisconnected(device: CameraDevice) =
-                cont.resume(device).also { cameraCallback.onDisconnected(device) }
+            override fun onDisconnected(device: CameraDevice) = when (cont.isActive) {
+                true -> cont.resume(device).also { cameraCallback.onDisconnected(device) }
+                false -> {}
+            }
 
             override fun onClosed(device: CameraDevice) = cont.resume(device).also { cameraCallback.onClosed(device) }
 

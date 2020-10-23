@@ -15,4 +15,6 @@ class UserRemoteDataSourceImpl constructor(
     override fun search(query: String?, page: Int, itemsPerPage: Int): Single<List<User>> = api
         .search(query, page, itemsPerPage)
         .map { it.mapToDomain() }
+
+    override fun getFollowing(userId: UUID): Single<List<User>> = api.getFollowing(userId).map { it.following.mapToDomain() }
 }

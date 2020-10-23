@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/content_margin"
     android:orientation="horizontal">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -11,9 +12,9 @@
         android:layout_width="@dimen/medium_icon_size"
         android:layout_height="@dimen/medium_icon_size"
         android:layout_gravity="center"
-        android:src="@drawable/ic_user_placeholder"
+        android:src="@drawable/ic_person_large_256"
         android:transitionName="userAvatar"
-        app:civ_circle_background_color="@color/color_window_background_transparent" />
+        app:civ_circle_background_color="@color/color_grey_300" />
 
     <LinearLayout
         android:layout_width="wrap_content"

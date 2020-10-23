@@ -40,7 +40,9 @@ class AuthActivity : AppCompatActivity() {
             }
             ResourceState.SUCCESS -> {
                 progressBar.gone()
-                navHostFragment.navController.navigate(R.id.mainActivity)
+                res.data?.jwtToken?.let {
+                    navHostFragment.navController.navigate(R.id.mainActivity)
+                }
             }
             ResourceState.ERROR -> {
                 progressBar.gone()

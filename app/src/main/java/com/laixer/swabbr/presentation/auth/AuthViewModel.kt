@@ -1,5 +1,6 @@
 package com.laixer.swabbr.presentation.auth
 
+import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.laixer.presentation.Resource
@@ -29,8 +30,10 @@ open class AuthViewModel constructor(
             .subscribeOn(Schedulers.io())
             .subscribe(
                 {
-                    userManager.connect(name, password, it.jwtToken)
-                    authenticatedUser.setSuccess(it.mapToPresentation())
+                    it.jwtToken?.let { token ->
+                        userManager.connect(name, password, token, bundleOf("id" to it.user.id))
+                        authenticatedUser.setSuccess(it.mapToPresentation())
+                    } ?: authenticatedUser.setError("Auth token is null")
                 },
                 { authenticatedUser.setError(it.message) }
             )

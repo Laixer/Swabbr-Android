@@ -12,8 +12,6 @@ class AuthUseCase constructor(
     private val authRepository: AuthRepository
 ) {
 
-    fun getAuthenticatedUser(refresh: Boolean): Single<AuthUser> = authRepository.getAuthenticatedUser(refresh)
-
     fun login(name: String, password: String, fbToken: String): Single<AuthUser> = authRepository.login(Login(name, password, true, PushNotificationPlatform.FCM, fbToken))
 
     fun register(registration: Registration): Single<AuthUser> =

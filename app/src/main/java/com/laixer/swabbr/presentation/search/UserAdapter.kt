@@ -12,8 +12,8 @@ import com.laixer.swabbr.presentation.loadAvatar
 import com.laixer.swabbr.presentation.model.UserItem
 import kotlinx.android.synthetic.main.include_user_info.view.*
 
-class SearchAdapter(val context: Context, val onClick: (UserItem) -> Unit) :
-    ListAdapter<UserItem, SearchAdapter.ViewHolder>(ProfileDiffCallback()) {
+class UserAdapter(val context: Context, val onClick: (UserItem) -> Unit) :
+    ListAdapter<UserItem, UserAdapter.ViewHolder>(UserDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
 
@@ -35,7 +35,7 @@ class SearchAdapter(val context: Context, val onClick: (UserItem) -> Unit) :
     }
 }
 
-private class ProfileDiffCallback : DiffUtil.ItemCallback<UserItem>() {
+private class UserDiffCallback : DiffUtil.ItemCallback<UserItem>() {
     override fun areItemsTheSame(oldItem: UserItem, newItem: UserItem): Boolean = oldItem.id == newItem.id
 
     override fun areContentsTheSame(oldItem: UserItem, newItem: UserItem): Boolean = oldItem == newItem

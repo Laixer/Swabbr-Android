@@ -1,10 +1,6 @@
 package com.laixer.swabbr.data.datasource
 
-import com.laixer.swabbr.domain.model.AuthUser
-import com.laixer.swabbr.domain.model.Login
-import com.laixer.swabbr.domain.model.Registration
-import com.laixer.swabbr.domain.model.Settings
-import com.laixer.swabbr.domain.model.User
+import com.laixer.swabbr.domain.model.*
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -33,4 +29,8 @@ interface AuthRemoteDataSource {
     fun getSettings(): Single<Settings>
 
     fun saveSettings(settings: Settings): Single<Settings>
+
+    fun getStatistics(): Single<UserStatistics>
+
+    fun getIncomingFollowRequests(): Single<List<FollowRequest>>
 }
