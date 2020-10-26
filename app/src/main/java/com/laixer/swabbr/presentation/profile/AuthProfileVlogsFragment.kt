@@ -2,7 +2,9 @@ package com.laixer.swabbr.presentation.profile
 
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -11,17 +13,11 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
-import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
-import com.laixer.swabbr.presentation.loadAvatar
-import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.UserVlogItem
-import kotlinx.android.synthetic.main.fragment_auth_profile.*
-import kotlinx.android.synthetic.main.fragment_auth_profile_details.*
+import kotlinx.android.synthetic.main.fragment_auth_profile_vlogs.*
 import kotlinx.android.synthetic.main.fragment_profile.no_vlogs_text
 import kotlinx.android.synthetic.main.fragment_profile.swipeRefreshLayout
-import kotlinx.android.synthetic.main.include_user_details.*
-import kotlinx.android.synthetic.main.include_user_info.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class AuthProfileVlogsFragment : AuthFragment() {
@@ -43,7 +39,7 @@ class AuthProfileVlogsFragment : AuthFragment() {
     private var profileVlogsAdapter: ProfileVlogsAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_auth_profile_details, container, false)
+        return inflater.inflate(R.layout.fragment_auth_profile_vlogs, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,7 +51,7 @@ class AuthProfileVlogsFragment : AuthFragment() {
 
         profileVlogsAdapter = ProfileVlogsAdapter(requireContext(), profileVm, authUserVm, onClick, onDelete)
 
-        profilevlogsRecyclerView.apply {
+        profileVlogsRecyclerView.apply {
             isNestedScrollingEnabled = false
             adapter = profileVlogsAdapter  // MAKE SURE THIS HAPPENS BEFORE ADAPTER INSTANTIATION
         }

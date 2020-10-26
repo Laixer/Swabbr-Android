@@ -48,12 +48,11 @@ class AuthProfileRequestsFragment : AuthFragment() {
     }
 
     private val onAccept: (Pair<FollowRequestItem, UserItem>) -> Unit = {
-
-
+        authUserVm.acceptRequest(it.first.requesterId)
     }
 
     private val onDecline: (Pair<FollowRequestItem, UserItem>) -> Unit = {
-
+        authUserVm.declineRequest(it.first.requesterId)
     }
 
     private fun updateRequests(resource: Resource<List<Pair<FollowRequestItem, UserItem>>>) {

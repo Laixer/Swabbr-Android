@@ -1,44 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="8dp"
-    android:animateLayoutChanges="true"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="50dp">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
+        <EditText
+            android:id="@+id/nicknameInput"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:animateLayoutChanges="true">
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_person_24dp"
+            android:drawablePadding="5dp"
+            android:drawableTint="@color/colorPrimary"
+            android:ems="10"
+            android:hint="@string/register_nickname_hint"
+            android:inputType="textPersonName"
+            android:text="" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/profilevlogsRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_list_uservlog" />
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-        <TextView
-            android:id="@+id/no_vlogs_text"
+        <Switch
+            android:id="@+id/rememberMeSwitch"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/my_profile_no_vlogs"
+            android:layout_height="wrap_content"
+            android:text="Is profile private?" />
+
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/content_margin"
+            android:enabled="false"
+            android:text="Apply" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:visibility="gone" />
 
     </LinearLayout>
-
-</LinearLayout>
-
+</ScrollView>

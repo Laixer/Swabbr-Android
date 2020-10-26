@@ -7,7 +7,7 @@ import com.laixer.presentation.Resource
 import com.laixer.presentation.setError
 import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.usecase.AuthUserUseCase
-import com.laixer.swabbr.domain.usecase.UsersUseCase
+import com.laixer.swabbr.domain.usecase.FollowUseCase
 import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.UserStatisticsItem
@@ -18,7 +18,8 @@ import java.util.*
 
 open class AuthUserViewModel constructor(
     private val userManager: UserManager,
-    private val authUserUseCase: AuthUserUseCase
+    private val authUserUseCase: AuthUserUseCase,
+    private val followUseCase: FollowUseCase
 ) : ViewModel() {
 
     val user = MutableLiveData<Resource<UserItem>>()
@@ -50,13 +51,57 @@ open class AuthUserViewModel constructor(
 
     fun getIncomingFollowRequests() =
         compositeDisposable.add(authUserUseCase
-        .getIncomingFollowRequestsWithUser()
-        .subscribeOn(Schedulers.io())
-        .map { list -> list.map { Pair(it.first.mapToPresentation(), it.second.mapToPresentation())} }
-        .subscribe(
-            { followRequests.setSuccess(it) },
-            { followRequests.setError(it.message) }
+            .getIncomingFollowRequestsWithUser()
+            .subscribeOn(Schedulers.io())
+            .map { list -> list.map { Pair(it.first.mapToPresentation(), it.second.mapToPresentation()) } }
+            .subscribe(
+                { followRequests.setSuccess(it) },
+                { followRequests.setError(it.message) }
+            )
         )
+
+    fun acceptRequest(requesterId: UUID) = compositeDisposable.add(
+        followUseCase
+            .acceptRequest(requesterId)
+            .subscribeOn(Schedulers.io())
+            .map { it.mapToPresentation() }
+            .subscribe(
+                { request ->
+                    followRequests.value?.data?.let { list ->
+                        followRequests.setSuccess(list.toMutableList().apply {
+                            find { it.first.requesterId == requesterId }?.let {
+                                remove(it)
+                                add(Pair(request, it.second))
+                            }
+                        })
+                    }
+                },
+                {
+                    followRequests.setError(it.message)
+                }
+            )
+    )
+
+    fun declineRequest(requesterId: UUID) = compositeDisposable.add(
+        followUseCase
+            .declineRequest(requesterId)
+            .subscribeOn(Schedulers.io())
+            .map { it.mapToPresentation() }
+            .subscribe(
+                { request ->
+                    followRequests.value?.data?.let { list ->
+                        followRequests.setSuccess(list.toMutableList().apply {
+                            find { it.first.requesterId == requesterId }?.let {
+                                remove(it)
+                                add(Pair(request, it.second))
+                            }
+                        })
+                    }
+                },
+                {
+                    followRequests.setError(it.message)
+                }
+            )
     )
 
 

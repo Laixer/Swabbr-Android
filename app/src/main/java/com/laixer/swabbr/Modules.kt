@@ -71,7 +71,7 @@ val authModule: Module = module {
 
 val viewModelModule: Module = module {
     viewModel { MainActivityViewModel(userManager = get()) }
-    viewModel { AuthUserViewModel(userManager = get(), authUserUseCase = get()) }
+    viewModel { AuthUserViewModel(userManager = get(), authUserUseCase = get(), followUseCase = get()) }
     viewModel { LivestreamViewModel(livestreamUseCase = get()) }
     viewModel { AuthViewModel(userManager = get(), authUseCase = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
