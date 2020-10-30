@@ -1,6 +1,9 @@
 package com.laixer.swabbr.data.datasource
 
+import com.laixer.swabbr.data.datasource.model.WatchReactionResponse
 import com.laixer.swabbr.domain.model.Reaction
+import com.laixer.swabbr.domain.model.UploadReaction
+import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.UUID
 
@@ -17,4 +20,10 @@ interface ReactionCacheDataSource {
 interface ReactionRemoteDataSource {
 
     fun get(vlogId: UUID): Single<List<Reaction>>
+
+    fun new(targetVlogId: UUID): Single<UploadReaction>
+
+    fun finishUploading(reactionId: UUID): Completable
+
+    fun watch(reactionId: UUID): Single<WatchReactionResponse>
 }

@@ -11,14 +11,13 @@
 
     <activity
         android:id="@+id/livestream_dest"
-        android:name="com.laixer.swabbr.presentation.livestream.LivestreamActivity">
+        android:name="com.laixer.swabbr.presentation.streaming.StreamActivity">
         <argument
             android:name="livestreamId"
             app:argType="string" />
     </activity>
 
-
     <activity
-        android:id="@+id/authAcitivty"
+        android:id="@+id/auth_dest"
         android:name="com.laixer.swabbr.presentation.AuthActivity" />
 </navigation>

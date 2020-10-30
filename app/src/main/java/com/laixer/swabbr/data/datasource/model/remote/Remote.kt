@@ -1,6 +1,7 @@
 package com.laixer.swabbr.data.datasource.model.remote
 
 import com.laixer.swabbr.data.datasource.model.*
+import com.laixer.swabbr.domain.model.Reaction
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
@@ -73,6 +74,16 @@ interface ReactionsApi {
 
     @GET("reactions/for_vlog/{vlogId}")
     fun getReactions(@Path("vlogId") vlogId: UUID): Single<ReactionListResponse>
+
+    @POST("reactions/new")
+    fun newReaction(@Body newReaction: NewReaction): Single<UploadReactionEntity>
+
+    @POST("reactions/finished_uploading")
+    fun finishUploading(@Query("reactionId") id: UUID): Completable
+
+    @GET("reactions/{reactionId}/watch")
+    fun watch(@Path("reactionId") reactionId: UUID): Single<WatchReactionResponse>
+
 }
 
 interface FollowApi {
@@ -94,11 +105,11 @@ interface FollowApi {
     @POST("followrequests/unfollow")
     fun unfollow(@Query("receiverId") id: UUID): Completable
 
-    @PUT("followrequests/accept")
-    fun acceptRequest(@Query("requesterId") id: UUID): Single<FollowRequestEntity>
+    @POST("followrequests/accept")
+    fun acceptRequest(@Query("requesterId") id: UUID): Completable
 
-    @PUT("followrequests/decline")
-    fun declineRequest(@Query("requesterId") id: UUID): Single<FollowRequestEntity>
+    @POST("followrequests/decline")
+    fun declineRequest(@Query("requesterId") id: UUID): Completable
 
     @GET("users/{userId}/following")
     fun getFollowing(@Path("userId") id: UUID): Single<List<UserEntity>>

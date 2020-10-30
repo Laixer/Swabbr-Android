@@ -53,6 +53,8 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        injectFeature()
+
         savedInstanceState?.getParcelable<Bitmap?>("BitmapImage")?.let {
             selectedBitmap = it
             avatarPicker::setImageBitmap
@@ -63,6 +65,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             vm.register(
                 RegistrationItem(
 //                    firstNameInput.text.toString(),
+
 //                    lastNameInput.text.toString(),
 //                    Gender.values().firstOrNull { it.ordinal == genderSpinner.selectedItemPosition }
 //                        ?: Gender.UNSPECIFIED,
@@ -83,15 +86,13 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             )
         }
 
-        injectFeature()
-
         vm.authenticatedUser.observe(viewLifecycleOwner, Observer(this@RegistrationFragment::register))
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable("BitmapImage", selectedBitmap)
-    }
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//        outState.putParcelable("BitmapImage", selectedBitmap)
+//    }
 
     private fun register(res: Resource<AuthUserItem?>) {
         when (res.state) {

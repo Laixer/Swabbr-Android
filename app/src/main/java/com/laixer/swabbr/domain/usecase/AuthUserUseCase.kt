@@ -3,6 +3,8 @@ package com.laixer.swabbr.domain.usecase
 import com.laixer.swabbr.domain.model.*
 import com.laixer.swabbr.domain.repository.AuthRepository
 import com.laixer.swabbr.domain.repository.UserRepository
+import com.laixer.swabbr.presentation.model.UserItem
+import com.laixer.swabbr.presentation.model.mapToDomain
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -15,6 +17,8 @@ class AuthUserUseCase constructor(
 ) {
 
     fun getSelf(refresh: Boolean): Single<AuthUser> = authRepository.getAuthenticatedUser(refresh)
+
+    fun updateSelf(user: UserItem): Single<AuthUser> = authRepository.updateAuthenticatedUser(user.mapToDomain())
 
     fun getStatistics(refresh: Boolean) = authRepository.getStatistics(refresh)
 

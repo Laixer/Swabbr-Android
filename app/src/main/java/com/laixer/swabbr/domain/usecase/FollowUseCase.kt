@@ -22,9 +22,9 @@ class FollowUseCase constructor(private val followRepository: FollowRepository) 
 
     fun unfollow(userId: UUID): Completable = followRepository.unfollow(userId)
 
-    fun acceptRequest(userId: UUID): Single<FollowRequest> = followRepository.acceptRequest(userId)
+    fun acceptRequest(userId: UUID): Completable = followRepository.acceptRequest(userId)
 
-    fun declineRequest(userId: UUID): Single<FollowRequest> = followRepository.declineRequest(userId)
+    fun declineRequest(userId: UUID): Completable = followRepository.declineRequest(userId)
 
     fun getFollowers(userId: UUID, refresh: Boolean = false): Single<List<User>> = followRepository.getFollowers(userId, refresh)
 

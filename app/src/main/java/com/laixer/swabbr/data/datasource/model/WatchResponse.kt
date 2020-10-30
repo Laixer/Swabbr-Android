@@ -16,5 +16,10 @@ data class WatchLivestreamResponse(
     @field:Json(name = "liveVlogId") val liveVlogId: String
 )
 
+data class WatchReactionResponse(
+    @field:Json(name = "endpointUrl") val endpointUrl: String,
+    @field:Json(name = "token") val token: String,
+    @field:Json(name = "reactionId") val vlogId: String
+)
 
 

@@ -27,9 +27,9 @@ class FollowRepositoryImpl constructor(
 
     override fun unfollow(userId: UUID): Completable = remoteDataSource.unfollow(userId)
 
-    override fun acceptRequest(userId: UUID): Single<FollowRequest> = remoteDataSource.acceptRequest(userId)
+    override fun acceptRequest(userId: UUID): Completable = remoteDataSource.acceptRequest(userId)
 
-    override fun declineRequest(userId: UUID): Single<FollowRequest> = remoteDataSource.declineRequest(userId)
+    override fun declineRequest(userId: UUID): Completable = remoteDataSource.declineRequest(userId)
 
     override fun getFollowers(userId: UUID, refresh: Boolean): Single<List<User>> = when (refresh) {
         true -> remoteDataSource.getFollowers(userId).flatMap { cacheDataSource.setFollowers(userId, it) }

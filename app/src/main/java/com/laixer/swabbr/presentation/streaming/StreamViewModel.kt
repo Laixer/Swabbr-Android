@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.livestream
+package com.laixer.swabbr.presentation.streaming
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,7 +11,7 @@ import com.laixer.swabbr.data.datasource.model.WatchLivestreamResponse
 import com.laixer.swabbr.domain.usecase.LivestreamUseCase
 import io.reactivex.disposables.CompositeDisposable
 
-class LivestreamViewModel constructor(
+class StreamViewModel constructor(
     private val livestreamUseCase: LivestreamUseCase
 ) : ViewModel() {
 

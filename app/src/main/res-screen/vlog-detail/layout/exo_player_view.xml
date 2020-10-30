@@ -19,6 +19,7 @@
 
     <include
         android:id="@+id/reactions_sheet"
-        layout="@layout/reactions_sheet" />
+        layout="@layout/reactions_sheet"
+        android:visibility="gone"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

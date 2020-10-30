@@ -1,9 +1,12 @@
 package com.laixer.swabbr.domain.usecase
 
+import com.laixer.swabbr.data.datasource.model.WatchReactionResponse
 import com.laixer.swabbr.domain.model.Reaction
+import com.laixer.swabbr.domain.model.UploadReaction
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.repository.ReactionRepository
 import com.laixer.swabbr.domain.repository.UserRepository
+import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.UUID
 
@@ -25,6 +28,12 @@ class UserReactionUseCase constructor(
             .flatMapSingle { reaction ->
                 userRepository.get(reaction.userId, false).map { user -> Pair(user, reaction) }
             }.toList()
+
+    fun new(targetVlogId: UUID): Single<UploadReaction> = reactionRepository.new(targetVlogId)
+
+    fun watch(reactionId: UUID): Single<WatchReactionResponse> = reactionRepository.watch(reactionId)
+
+    fun finishUploading(reactionId: UUID): Completable = reactionRepository.finishUploading(reactionId)
 }
 
 /**

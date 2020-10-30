@@ -28,10 +28,9 @@ class FollowRemoteDataSourceImpl constructor(
 
     override fun unfollow(userId: UUID): Completable = api.unfollow(userId)
 
-    override fun acceptRequest(userId: UUID): Single<FollowRequest> = api.acceptRequest(userId).map { it.mapToDomain() }
+    override fun acceptRequest(userId: UUID): Completable = api.acceptRequest(userId)
 
-    override fun declineRequest(userId: UUID): Single<FollowRequest> =
-        api.declineRequest(userId).map { it.mapToDomain() }
+    override fun declineRequest(userId: UUID): Completable = api.declineRequest(userId)
 
     override fun getFollowers(userId: UUID): Single<List<User>> = api.getFollowers(userId).map { it.mapToDomain() }
 

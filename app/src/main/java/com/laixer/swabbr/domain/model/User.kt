@@ -17,7 +17,8 @@ data class User(
     val totalFollowing: Int,
     val nickname: String,
     val profileImage: String?,
-    val birthdate: LocalDate?
+    val birthdate: LocalDate?,
+    val isPrivate: Boolean
 )
 
 data class SimplifiedUser(

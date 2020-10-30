@@ -8,7 +8,7 @@ import java.util.UUID
 data class FollowRequestItem(
     val requesterId: UUID,
     val receiverId: UUID,
-    val status: FollowStatus,
+    var status: FollowStatus,
     val timeCreated: ZonedDateTime
 )
 

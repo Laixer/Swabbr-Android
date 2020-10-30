@@ -120,6 +120,8 @@ dependencies {
   implementation Libs.navigation_fragment_ktx
   implementation Libs.navigation_ui_ktx
 
+  implementation 'com.gu.android:toolargetool:0.2.1@aar'
+
   // Firebase
   // Import the BoM for the Firebase platform
   implementation platform('com.google.firebase:firebase-bom:25.12.0')

@@ -8,6 +8,8 @@ interface AuthRepository {
 
     fun getAuthenticatedUser(refresh: Boolean): Single<AuthUser>
 
+    fun updateAuthenticatedUser(item: User): Single<AuthUser>
+
     fun login(login: Login): Single<AuthUser>
 
     fun register(registration: Registration): Single<AuthUser>

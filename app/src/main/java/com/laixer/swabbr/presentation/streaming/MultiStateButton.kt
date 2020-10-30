@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.livestream
+package com.laixer.swabbr.presentation.streaming
 
 import android.content.Context
 import android.content.res.TypedArray

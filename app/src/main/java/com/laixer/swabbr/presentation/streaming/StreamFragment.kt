@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.livestream
+package com.laixer.swabbr.presentation.streaming
 
 import android.Manifest
 import android.content.Context
@@ -11,10 +11,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -27,7 +25,7 @@ import com.laixer.swabbr.data.datasource.model.StreamResponse
 import com.laixer.swabbr.injectFeature
 import io.antmedia.android.broadcaster.ILiveVideoBroadcaster
 import io.antmedia.android.broadcaster.LiveVideoBroadcaster
-import kotlinx.android.synthetic.main.fragment_record.*
+import kotlinx.android.synthetic.main.fragment_livestream.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -37,14 +35,14 @@ import java.net.ConnectException
 import java.text.SimpleDateFormat
 import java.util.*
 
-open class LivestreamFragment : Fragment() {
+open class StreamFragment : Fragment() {
 
-    private val args: LivestreamFragmentArgs by navArgs()
-    private val vm: LivestreamViewModel by viewModel()
+    private val args: StreamFragmentArgs by navArgs()
+    private val vm: StreamViewModel by viewModel()
     private lateinit var mLiveVideoBroadcaster: ILiveVideoBroadcaster
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_record, container, false)
+        return inflater.inflate(R.layout.fragment_livestream, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -128,7 +126,7 @@ open class LivestreamFragment : Fragment() {
 
     private val cameraCallback = object : CameraDevice.StateCallback() {
         override fun onOpened(camera: CameraDevice) {
-            this@LivestreamFragment.lifecycleScope.launch(Dispatchers.Main) {
+            this@StreamFragment.lifecycleScope.launch(Dispatchers.Main) {
                 status_text.text = getString(R.string.retrieving_credentials)
             }
             vm.startStreaming(args.livestreamId)
@@ -158,7 +156,7 @@ open class LivestreamFragment : Fragment() {
     private fun connect(res: Resource<StreamResponse>) = with(res) {
         when (state) {
             ResourceState.LOADING -> {
-                this@LivestreamFragment.lifecycleScope.launch(Dispatchers.Main) {
+                this@StreamFragment.lifecycleScope.launch(Dispatchers.Main) {
                     capture_button.apply {
                         isEnabled = false
                         visibility = View.VISIBLE

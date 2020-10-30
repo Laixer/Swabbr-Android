@@ -51,8 +51,16 @@
         </activity>
 
         <activity
-            android:name=".presentation.livestream.LivestreamActivity"
-            android:label="@string/live_indicator"
+            android:name=".presentation.reaction.ReactionActivity"
+            android:label="Reaction"
+            android:launchMode="singleInstance"
+            android:fitsSystemWindows="true"
+            android:theme="@style/Theme.Swabbr.Recording">
+        </activity>
+
+        <activity
+            android:name=".presentation.streaming.StreamActivity"
+            android:label="Live"
             android:launchMode="singleInstance"
             android:fitsSystemWindows="true"
             android:theme="@style/Theme.Swabbr.Recording">

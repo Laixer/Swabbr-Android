@@ -26,6 +26,8 @@ interface AuthRemoteDataSource {
 
     fun getAuthenticatedUser(): Single<User>
 
+    fun updateAuthenticatedUser(user: User): Single<User>
+
     fun getSettings(): Single<Settings>
 
     fun saveSettings(settings: Settings): Single<Settings>

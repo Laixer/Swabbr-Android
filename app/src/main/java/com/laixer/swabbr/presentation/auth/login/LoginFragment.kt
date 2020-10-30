@@ -66,10 +66,9 @@ class LoginFragment : Fragment() {
         }
 
         registerButton.setOnClickListener {
-            val extras = FragmentNavigatorExtras(
+            findNavController().navigate(LoginFragmentDirections.actionRegister(), FragmentNavigatorExtras(
                 emailInput to "emailInput"
-            )
-            findNavController().navigate(LoginFragmentDirections.actionRegister(), extras)
+            ))
         }
     }
 

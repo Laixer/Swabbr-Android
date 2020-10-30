@@ -27,6 +27,8 @@ class AuthRemoteDataSourceImpl constructor(
 
     override fun getAuthenticatedUser(): Single<User> = authApi.self().map { it.mapToDomain() }
 
+    override fun updateAuthenticatedUser(user: User): Single<User> = usersApi.update(user.mapToData()).map { it.mapToDomain() }
+
     override fun getSettings(): Single<Settings> = settingsApi.get()
         .map { it.mapToDomain() }
 

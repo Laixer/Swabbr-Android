@@ -21,9 +21,9 @@ interface FollowRemoteDataSource {
 
     fun unfollow(userId: UUID): Completable
 
-    fun acceptRequest(userId: UUID): Single<FollowRequest>
+    fun acceptRequest(userId: UUID): Completable
 
-    fun declineRequest(userId: UUID): Single<FollowRequest>
+    fun declineRequest(userId: UUID): Completable
 
     fun getFollowers(userId: UUID): Single<List<User>>
 

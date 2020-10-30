@@ -12,30 +12,76 @@
         tools:layout="@layout/fragment_vlog_list" />
 
     <fragment
-        android:id="@+id/vlog_details_dest"
-        android:name="com.laixer.swabbr.presentation.vlogs.details.VlogDetailsFragment"
+        android:id="@+id/watch_user_vlogs_dest"
+        android:name="com.laixer.swabbr.presentation.vlogs.details.WatchUserVlogsFragment"
         android:label="Vlog"
-        tools:layout="@layout/fragment_vlog_details">
+        tools:layout="@layout/fragment_vlogs_pager">
         <argument
-            android:name="vlogId"
-            app:argType="string" />
+            android:name="initialVlogId"
+            app:argType="string"
+            app:nullable="true"/>
         <argument
             android:name="userId"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="livestreamId"
-            app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null"/>
+            app:argType="string" />
         <deepLink
             android:id="@+id/deepLink"
             android:autoVerify="true"
-            app:uri="https://swabbr.com/profileWatchVlog?userId={userId}&amp;vlogId={vlogId}" />
+            app:uri="https://swabbr.com/profileWatchVlog?userId={userId}&amp;initiaVlogId={initialVlogId}" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/watch_vlog_dest"
+        android:name="com.laixer.swabbr.presentation.vlogs.details.WatchVlogFragment"
+        android:label="Vlog"
+        tools:layout="@layout/fragment_vlogs_pager">
+        <argument
+            android:name="vlogId"
+            app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLink"
+            android:autoVerify="true"
+            app:uri="https://swabbr.com/watchVlog?userId={userId}&amp;vlogId={vlogId}" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/watch_livestream_dest"
+        android:name="com.laixer.swabbr.presentation.vlogs.details.WatchStreamFragment"
+        android:label="Livestream"
+        tools:layout="@layout/item_vlog">
+        <argument
+            android:name="livestreamId"
+            app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLink"
+            android:autoVerify="true"
+            app:uri="https://swabbr.com/watchLivestream?livestreamId={livestreamId}" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/watch_reaction_dest"
+        android:name="com.laixer.swabbr.presentation.vlogs.details.WatchReactionFragment"
+        android:label="Reaction"
+        tools:layout="@layout/item_vlog">
+        <argument
+            android:name="reactionId"
+            app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLink"
+            android:autoVerify="true"
+            app:uri="https://swabbr.com/watchReaction?reactionId={reactionId}" />
     </fragment>
 
     <action
-        android:id="@+id/action_view_vlog"
-        app:destination="@id/vlog_details_dest" />
+        android:id="@+id/action_react"
+        app:destination="@id/react_dest" />
+
+    <activity
+        android:id="@+id/react_dest"
+        android:name="com.laixer.swabbr.presentation.reaction.ReactionActivity">
+        <argument
+            android:name="vlogId"
+            app:argType="string" />
+    </activity>
 
 </navigation>

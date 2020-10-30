@@ -2,13 +2,9 @@ package com.laixer.swabbr
 
 import android.app.Application
 import android.content.res.Configuration
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.gu.toolargetool.TooLargeTool
 import com.laixer.cache.CacheLibrary
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
@@ -20,6 +16,8 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        TooLargeTool.startLogging(this)
 
         // Unique initialization of Dependency Injection library to allow the use of application context
         startKoin { androidContext(this@App) }

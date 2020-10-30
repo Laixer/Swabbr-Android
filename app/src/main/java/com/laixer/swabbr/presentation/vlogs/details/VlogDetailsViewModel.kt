@@ -11,10 +11,7 @@ import com.laixer.swabbr.domain.usecase.UserReactionUseCase
 import com.laixer.swabbr.domain.usecase.UserVlogUseCase
 import com.laixer.swabbr.domain.usecase.UserVlogsUseCase
 import com.laixer.swabbr.domain.usecase.VlogsUseCase
-import com.laixer.swabbr.presentation.model.LikeListItem
-import com.laixer.swabbr.presentation.model.ReactionItem
-import com.laixer.swabbr.presentation.model.UserVlogItem
-import com.laixer.swabbr.presentation.model.mapToPresentation
+import com.laixer.swabbr.presentation.model.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.UUID
@@ -27,9 +24,10 @@ class VlogDetailsViewModel constructor(
 ) : ViewModel() {
 
     val vlogs = MutableLiveData<Resource<List<UserVlogItem>>>()
-    val reactions = MutableLiveData<Resource<List<ReactionItem>>>()
+    val reactions = MutableLiveData<Resource<List<ReactionUserItem>>>()
     val likes = MutableLiveData<Resource<LikeListItem>>()
-    val watchResponse = MutableLiveData<Resource<WatchVlogResponse>>()
+
+    val watchVlogResponse = MutableLiveData<Resource<WatchVlogResponse>>()
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -61,10 +59,10 @@ class VlogDetailsViewModel constructor(
 
     fun watch(vlogId: UUID) = compositeDisposable.add(
         vlogsUseCase.watch(vlogId)
-            .doOnSubscribe { watchResponse.setLoading() }
+            .doOnSubscribe { watchVlogResponse.setLoading() }
             .subscribe(
-                { watchResponse.setSuccess(it) },
-                { watchResponse.setError(it.message) }
+                { watchVlogResponse.setSuccess(it) },
+                { watchVlogResponse.setError(it.message) }
             )
     )
 

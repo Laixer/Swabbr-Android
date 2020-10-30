@@ -26,7 +26,8 @@ data class UserEntity(
     // Profile
     @field:Json(name = "nickname") val nickname: String,
     @field:Json(name = "profileImageBase64Encoded") val profileImage: String?,
-    @field:Json(name = "birthDate") val birthdate: String?
+    @field:Json(name = "birthDate") val birthdate: String?,
+    @field:Json(name = "isPrivate") val isPrivate: Boolean
 )
 
 data class SimplifiedUserEntity(
@@ -61,7 +62,8 @@ fun UserEntity.mapToDomain(): User = User(
     totalFollowing,
     nickname,
     profileImage,
-    birthdate?.let { LocalDate.parse(it.split("T")[0]) }
+    birthdate?.let { LocalDate.parse(it.split("T")[0]) },
+    isPrivate
 )
 
 fun User.mapToData(): UserEntity = UserEntity(
@@ -77,7 +79,8 @@ fun User.mapToData(): UserEntity = UserEntity(
     totalFollowing,
     nickname,
     profileImage,
-    birthdate?.atStartOfDay()?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+    birthdate?.atStartOfDay()?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+    isPrivate
 )
 
 // Have to use Collection instead of List because Java sucks and erases types which causes same type signatures for List<T> functions.

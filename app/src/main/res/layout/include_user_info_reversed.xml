@@ -35,7 +35,7 @@
             android:textAppearance="@style/SmallTextAppearance"
             android:textSize="14sp"
             android:transitionName="userName"
-            android:visibility="visible"
+            android:visibility="gone"
             tools:text="Name" />
 
     </LinearLayout>

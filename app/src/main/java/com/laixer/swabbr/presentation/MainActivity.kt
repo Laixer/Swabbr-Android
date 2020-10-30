@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                 // We should try to reauthorize first if we can
 
                 // Otherwise go to login
-                navHostFragment.navController.navigate(R.id.authAcitivty)
+                navHostFragment.navController.navigate(R.id.auth_dest)
             }
         }
     }

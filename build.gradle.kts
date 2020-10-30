@@ -2,6 +2,7 @@ buildscript {
     repositories {
         jcenter()
         google()
+
     }
 
     dependencies {
@@ -28,6 +29,8 @@ allprojects {
         maven("https://plugins.gradle.org/m2/")
         maven("https://dl.bintray.com/microsoftazuremobile/SDK")
         maven("https://jitpack.io")
+        maven("https://dl.bintray.com/guardian/android")
+
         google()
         jcenter()
     }

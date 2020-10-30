@@ -3,7 +3,7 @@ package com.laixer.swabbr
 import com.laixer.swabbr.data.datasource.model.*
 import com.laixer.swabbr.domain.model.*
 import com.laixer.swabbr.presentation.model.*
-import com.laixer.swabbr.services.notifications.ActionType
+import com.laixer.swabbr.services.notifications. ActionType
 import com.laixer.swabbr.services.notifications.protocols.BaseNotification
 import com.laixer.swabbr.services.notifications.V1
 import java.time.LocalDate
@@ -159,7 +159,7 @@ object Items {
         Models.followRequest.status,
         Models.followRequest.timeCreated
     )
-    val reaction = ReactionItem(
+    val reaction = ReactionUserItem(
         Models.reaction.id,
         Models.reaction.userId,
         Models.reaction.vlogId,

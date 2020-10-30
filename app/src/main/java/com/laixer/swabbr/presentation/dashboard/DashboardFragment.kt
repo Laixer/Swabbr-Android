@@ -25,7 +25,7 @@ class DashboardFragment : AuthFragment() {
 
     private val vm: VlogListViewModel by sharedViewModel()
     private val itemClick: (UserVlogItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${it.user.id}&vlogId=${it.vlog.data.id}"))
+        findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${it.user.id}&initialVlogId=${it.vlog.data.id}"))
 
     }
     private val profileClick: (UserVlogItem) -> Unit = {

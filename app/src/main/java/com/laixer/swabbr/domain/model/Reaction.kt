@@ -6,7 +6,12 @@ import java.util.UUID
 data class Reaction(
     val id: UUID,
     val userId: UUID,
-    val vlogId: UUID,
-    val datePosted: ZonedDateTime,
+    val targetVlogId: UUID,
+    val createDate: ZonedDateTime,
     val isPrivate: Boolean
+)
+
+data class UploadReaction(
+    val reaction: Reaction,
+    val uploadUrl: String
 )

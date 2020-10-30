@@ -6,12 +6,14 @@ import com.auth0.android.jwt.JWT
 import com.laixer.presentation.Resource
 import com.laixer.presentation.setError
 import com.laixer.presentation.setSuccess
+import com.laixer.swabbr.domain.model.FollowStatus
 import com.laixer.swabbr.domain.usecase.AuthUserUseCase
 import com.laixer.swabbr.domain.usecase.FollowUseCase
 import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.UserStatisticsItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
+import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -37,6 +39,18 @@ open class AuthUserViewModel constructor(
             { user.setError(it.message) }
         )
     )
+
+    fun updateSelf(item: UserItem) {
+        compositeDisposable.add(authUserUseCase
+            .updateSelf(item)
+            .subscribeOn(Schedulers.io())
+            .map { it.mapToPresentation() }
+            .subscribe(
+                { user.setSuccess(it.user) },
+                { user.setError(it.message) }
+            )
+        )
+    }
 
     fun getStatistics(refresh: Boolean) =
         compositeDisposable.add(authUserUseCase
@@ -64,14 +78,13 @@ open class AuthUserViewModel constructor(
         followUseCase
             .acceptRequest(requesterId)
             .subscribeOn(Schedulers.io())
-            .map { it.mapToPresentation() }
             .subscribe(
-                { request ->
+                {
                     followRequests.value?.data?.let { list ->
                         followRequests.setSuccess(list.toMutableList().apply {
-                            find { it.first.requesterId == requesterId }?.let {
-                                remove(it)
-                                add(Pair(request, it.second))
+                            find { it.first.requesterId == requesterId }?.let { pair ->
+                                remove(pair)
+                                add(Pair(pair.first.apply { status = FollowStatus.FOLLOWING }, pair.second))
                             }
                         })
                     }
@@ -86,14 +99,13 @@ open class AuthUserViewModel constructor(
         followUseCase
             .declineRequest(requesterId)
             .subscribeOn(Schedulers.io())
-            .map { it.mapToPresentation() }
             .subscribe(
-                { request ->
+                {
                     followRequests.value?.data?.let { list ->
                         followRequests.setSuccess(list.toMutableList().apply {
-                            find { it.first.requesterId == requesterId }?.let {
-                                remove(it)
-                                add(Pair(request, it.second))
+                            find { it.first.requesterId == requesterId }?.let { pair ->
+                                remove(pair)
+                                add(Pair(pair.first.apply { status = FollowStatus.DECLINED }, pair.second))
                             }
                         })
                     }

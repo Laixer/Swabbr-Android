@@ -62,7 +62,10 @@ class AuthProfileRequestsFragment : AuthFragment() {
                     ResourceState.LOADING -> startRefreshing()
                     ResourceState.SUCCESS -> {
                         stopRefreshing()
-                        data?.let { requestAdapter?.submitList(it) }
+                        data?.let {
+                            requestAdapter?.submitList(it)
+                            requestAdapter?.notifyDataSetChanged()
+                        }
                     }
                     ResourceState.ERROR -> {
                         stopRefreshing()

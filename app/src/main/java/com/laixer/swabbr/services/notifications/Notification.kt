@@ -4,8 +4,10 @@ import android.app.PendingIntent
 import android.content.Context
 import androidx.navigation.NavDeepLinkBuilder
 import com.laixer.swabbr.R
-import com.laixer.swabbr.presentation.livestream.LivestreamFragmentArgs
-import com.laixer.swabbr.presentation.vlogs.details.VlogDetailsFragmentArgs
+import com.laixer.swabbr.presentation.streaming.StreamFragmentArgs
+import com.laixer.swabbr.presentation.vlogs.details.WatchReactionFragmentArgs
+import com.laixer.swabbr.presentation.vlogs.details.WatchStreamFragmentArgs
+import com.laixer.swabbr.presentation.vlogs.details.WatchVlogFragmentArgs
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonDataException
@@ -57,7 +59,7 @@ class V1 {
             override fun createPendingIntent(context: Context): PendingIntent = NavDeepLinkBuilder(context)
                 .setGraph(R.navigation.nav_graph_app)
                 .setDestination(R.id.livestream_dest)
-                .setArguments(LivestreamFragmentArgs(livestreamId).toBundle()).createPendingIntent()
+                .setArguments(StreamFragmentArgs(livestreamId).toBundle()).createPendingIntent()
         }
 
         data class FollowedProfileLive(
@@ -69,8 +71,8 @@ class V1 {
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
                     .setGraph(R.navigation.nav_graph_vlogs)
-                    .setDestination(R.id.vlog_details_dest)
-                    .setArguments(VlogDetailsFragmentArgs(liveVlogId, liveUserId, liveLivestreamId).toBundle())
+                    .setDestination(R.id.watch_livestream_dest)
+                    .setArguments(WatchStreamFragmentArgs(liveLivestreamId).toBundle())
                     .createPendingIntent()
         }
 
@@ -82,8 +84,8 @@ class V1 {
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
                     .setGraph(R.navigation.nav_graph_vlogs)
-                    .setDestination(R.id.vlog_details_dest)
-                    .setArguments(VlogDetailsFragmentArgs(vlogId, vlogOwnerUserId, null).toBundle())
+                    .setDestination(R.id.watch_vlog_dest)
+                    .setArguments(WatchVlogFragmentArgs(vlogId).toBundle())
                     .createPendingIntent()
         }
 
@@ -95,8 +97,8 @@ class V1 {
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
                     .setGraph(R.navigation.nav_graph_vlogs)
-                    .setDestination(R.id.vlog_details_dest)
-                    .setArguments(VlogDetailsFragmentArgs(vlogId, null, null).toBundle())
+                    .setDestination(R.id.watch_vlog_dest)
+                    .setArguments(WatchVlogFragmentArgs(vlogId).toBundle())
                     .createPendingIntent()
         }
 
@@ -109,8 +111,8 @@ class V1 {
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
                     .setGraph(R.navigation.nav_graph_vlogs)
-                    .setDestination(R.id.vlog_details_dest)
-                    .setArguments(VlogDetailsFragmentArgs(vlogId, null, null).toBundle())
+                    .setDestination(R.id.watch_reaction_dest)
+                    .setArguments(WatchReactionFragmentArgs(reactionId).toBundle())
                     .createPendingIntent()
         }
     }

@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".presentation.AuthActivity">
+    tools:context=".presentation.reaction.ReactionActivity">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_host_container_livestream"
+        android:id="@+id/nav_host_container_reaction"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -17,6 +17,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/nav_graph_livestream" />
+        app:navGraph="@navigation/nav_graph_reaction" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -75,7 +75,6 @@ class SettingsFragment : AuthFragment() {
                 }
             }
             ResourceState.ERROR -> {
-                Toast.makeText(requireContext(), res.message, Toast.LENGTH_SHORT).show()
                 enableSettings(true)
                 checkChanges()
             }
@@ -92,7 +91,6 @@ class SettingsFragment : AuthFragment() {
                 progressBar.gone()
             }
             ResourceState.ERROR -> {
-                Toast.makeText(requireContext(), res.message, Toast.LENGTH_SHORT).show()
                 progressBar.gone()
                 enableSettings(true)
             }

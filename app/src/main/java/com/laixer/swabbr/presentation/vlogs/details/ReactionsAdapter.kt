@@ -8,20 +8,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.loadAvatar
-import com.laixer.swabbr.presentation.model.ReactionItem
+import com.laixer.swabbr.presentation.model.FollowRequestItem
+import com.laixer.swabbr.presentation.model.ReactionUserItem
+import com.laixer.swabbr.presentation.model.UserItem
 import kotlinx.android.synthetic.main.include_user_info.view.*
 import kotlinx.android.synthetic.main.item_list_reaction.view.*
 
-class ReactionsAdapter() :
-    ListAdapter<ReactionItem, ReactionsAdapter.ViewHolder>(ReactionDiffCallback()) {
+class ReactionsAdapter(
+    val onProfileClick: (ReactionUserItem) -> Unit,
+    val onReactionClick: (ReactionUserItem) -> Unit
+) :
+    ListAdapter<ReactionUserItem, ReactionsAdapter.ViewHolder>(ReactionDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
 
-    class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_reaction)) {
+    inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_reaction)) {
 
-        fun bind(item: ReactionItem) = with(itemView) {
+        fun bind(item: ReactionUserItem) = with(itemView) {
             user_avatar.loadAvatar(item.profileImage, item.userId)
 
             item.firstname?.let {
@@ -33,17 +38,21 @@ class ReactionsAdapter() :
             user_nickname.text = context.getString(R.string.nickname, item.nickname)
             reactionPostDate.text = context.getString(
                 R.string.date,
-                item.datePosted.dayOfMonth,
-                item.datePosted.monthValue,
-                item.datePosted.year
+                item.createDate.dayOfMonth,
+                item.createDate.monthValue,
+                item.createDate.year
             )
+
+            user_avatar.setOnClickListener { onProfileClick.invoke(item) }
+            itemView.setOnClickListener { onReactionClick.invoke(item) }
         }
     }
 }
 
-private class ReactionDiffCallback : DiffUtil.ItemCallback<ReactionItem>() {
+private class ReactionDiffCallback : DiffUtil.ItemCallback<ReactionUserItem>() {
 
-    override fun areItemsTheSame(oldItem: ReactionItem, newItem: ReactionItem): Boolean = oldItem.id == newItem.id
+    override fun areItemsTheSame(oldItem: ReactionUserItem, newItem: ReactionUserItem): Boolean =
+        oldItem.id == newItem.id
 
-    override fun areContentsTheSame(oldItem: ReactionItem, newItem: ReactionItem): Boolean = oldItem == newItem
+    override fun areContentsTheSame(oldItem: ReactionUserItem, newItem: ReactionUserItem): Boolean = oldItem == newItem
 }

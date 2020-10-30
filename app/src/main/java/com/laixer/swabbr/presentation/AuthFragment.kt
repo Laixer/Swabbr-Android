@@ -28,6 +28,7 @@ abstract class AuthFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+
 }
 
 

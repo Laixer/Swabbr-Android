@@ -17,16 +17,15 @@ import com.laixer.swabbr.presentation.auth.AuthUserViewModel
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.auth.SimpleAuthenticator
 import com.laixer.swabbr.presentation.auth.UserManager
-import com.laixer.swabbr.presentation.livestream.LivestreamViewModel
+import com.laixer.swabbr.presentation.streaming.StreamViewModel
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.profile.settings.SettingsViewModel
+import com.laixer.swabbr.presentation.reaction.ReactionViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
 import com.laixer.swabbr.presentation.vlogs.details.VlogDetailsViewModel
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import io.reactivex.schedulers.Schedulers
-import okhttp3.CacheControl
 import okhttp3.OkHttpClient
-import okhttp3.internal.cache.CacheInterceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -72,7 +71,7 @@ val authModule: Module = module {
 val viewModelModule: Module = module {
     viewModel { MainActivityViewModel(userManager = get()) }
     viewModel { AuthUserViewModel(userManager = get(), authUserUseCase = get(), followUseCase = get()) }
-    viewModel { LivestreamViewModel(livestreamUseCase = get()) }
+    viewModel { StreamViewModel(livestreamUseCase = get()) }
     viewModel { AuthViewModel(userManager = get(), authUseCase = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogsUseCase = get()) }
@@ -86,6 +85,7 @@ val viewModelModule: Module = module {
     }
     viewModel { SearchViewModel(usersUseCase = get()) }
     viewModel { SettingsViewModel(settingsUseCase = get()) }
+    viewModel { ReactionViewModel(reactionsUseCase = get()) }
 }
 val useCaseModule: Module = module {
     factory { LivestreamUseCase(livestreamRepository = get()) }
@@ -147,7 +147,7 @@ val networkModule: Module = module {
             .build()
     }
 
-    single {
+    single<OkHttpClient> {
         OkHttpClient.Builder()
             .addInterceptor(get<AuthInterceptor>())
             .addInterceptor(get<com.laixer.swabbr.CacheInterceptor>())

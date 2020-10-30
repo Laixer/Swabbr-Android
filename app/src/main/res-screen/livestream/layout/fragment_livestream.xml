@@ -127,7 +127,7 @@
                 android:layout_marginHorizontal="32dp"
                 android:orientation="horizontal">
 
-                <com.laixer.swabbr.presentation.livestream.MultiStateButton
+                <com.laixer.swabbr.presentation.streaming.MultiStateButton
                     android:id="@+id/toggle_torch"
                     android:layout_width="@dimen/small_icon_size"
                     android:layout_height="@dimen/small_icon_size"
@@ -146,7 +146,7 @@
                 android:layout_marginHorizontal="32dp"
                 android:orientation="horizontal">
 
-                <com.laixer.swabbr.presentation.livestream.MultiStateButton
+                <com.laixer.swabbr.presentation.streaming.MultiStateButton
                     android:id="@+id/switch_camera"
                     android:layout_width="@dimen/small_icon_size"
                     android:layout_height="@dimen/small_icon_size"
@@ -167,7 +167,7 @@
             android:background="@drawable/rounded_bg"
             android:orientation="horizontal">
 
-            <com.laixer.swabbr.presentation.livestream.TimerView
+            <com.laixer.swabbr.presentation.streaming.TimerView
                 android:id="@+id/stream_position_timer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
