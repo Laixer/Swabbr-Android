@@ -62,24 +62,21 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
         prepareUI()
         registerButton.setOnClickListener {
+            if (passwordInput.text.toString().length > 8) {
+                Toast.makeText(requireContext(), "Password must consist of at least 8 characters.", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+
             vm.register(
                 RegistrationItem(
-//                    firstNameInput.text.toString(),
-
-//                    lastNameInput.text.toString(),
-//                    Gender.values().firstOrNull { it.ordinal == genderSpinner.selectedItemPosition }
-//                        ?: Gender.UNSPECIFIED,
-//                    Locale.getAvailableLocales()
-//                        .first { it.displayCountry == countrySpinner.selectedItem.toString() }.country,
                     emailInput.text.toString(),
                     passwordInput.text.toString(),
-//                    selectedDate,
                     ZoneId.systemDefault().rules.getOffset(Instant.now()),
                     nicknameInput.text.toString(),
                     selectedBitmap?.let {
                         encodeImageToBase64(convertBitmapToByteArray(it))
                     },
-//                    phoneNumberInput.text.toString(),
                     PUSH_NOTIFICATION_PLATFORM,
                     firebaseInstanceId
                 )
@@ -104,7 +101,11 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                     progressBar.gone()
                     // Nav to main app is handled by our parent activity (AuthActivity)
                 } ?: run {
-                    Toast.makeText(requireActivity().applicationContext, "Registration successful, signing in you in…", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireActivity().applicationContext,
+                        "Registration successful, signing in you in…",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     vm.login(
                         emailInput.text.toString(),
                         passwordInput.text.toString(),
