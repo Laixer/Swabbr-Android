@@ -1,6 +1,5 @@
 package com.laixer.swabbr.presentation
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -54,6 +53,11 @@ class MainActivity : AppCompatActivity() {
         nav_host_container_app.post {
             NavigationUI.setupWithNavController(bottom_nav, navHostFragment.navController)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        vm.probeAuthToken()
     }
 
     private fun updateAppState(res: Resource<JWT>) {
@@ -114,6 +118,11 @@ class MainActivity : AppCompatActivity() {
             return false
         }
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        RxJavaPlugins.setErrorHandler(null)
     }
 
     companion object {

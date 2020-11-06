@@ -4,6 +4,7 @@ import android.accounts.AbstractAccountAuthenticator
 import android.accounts.AccountManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.messaging.FirebaseMessaging
 import com.laixer.cache.Cache
 import com.laixer.swabbr.data.datasource.*
 import com.laixer.swabbr.data.datasource.cache.*
@@ -20,7 +21,7 @@ import com.laixer.swabbr.presentation.auth.UserManager
 import com.laixer.swabbr.presentation.streaming.StreamViewModel
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.profile.settings.SettingsViewModel
-import com.laixer.swabbr.presentation.reaction.ReactionViewModel
+import com.laixer.swabbr.presentation.vlogs.details.ReactionViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
 import com.laixer.swabbr.presentation.vlogs.details.VlogDetailsViewModel
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
@@ -60,6 +61,7 @@ private val loadFeature by lazy {
 val firebaseModule: Module = module {
     single { FirebaseCrashlytics.getInstance() }
     single { FirebaseAnalytics.getInstance(androidContext()) }
+    single { FirebaseMessaging.getInstance() }
 }
 
 val authModule: Module = module {
@@ -72,7 +74,7 @@ val viewModelModule: Module = module {
     viewModel { MainActivityViewModel(userManager = get()) }
     viewModel { AuthUserViewModel(userManager = get(), authUserUseCase = get(), followUseCase = get()) }
     viewModel { StreamViewModel(livestreamUseCase = get()) }
-    viewModel { AuthViewModel(userManager = get(), authUseCase = get()) }
+    viewModel { AuthViewModel(userManager = get(), authUseCase = get(), firebaseMessaging = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogsUseCase = get()) }
     viewModel {
@@ -85,7 +87,7 @@ val viewModelModule: Module = module {
     }
     viewModel { SearchViewModel(usersUseCase = get()) }
     viewModel { SettingsViewModel(settingsUseCase = get()) }
-    viewModel { ReactionViewModel(reactionsUseCase = get()) }
+    viewModel { ReactionViewModel(mHttpClient = get(), reactionsUseCase = get(), context = androidContext()) }
 }
 val useCaseModule: Module = module {
     factory { LivestreamUseCase(livestreamRepository = get()) }
@@ -155,7 +157,9 @@ val networkModule: Module = module {
                 this.level = HttpLoggingInterceptor.Level.BODY
             })
             .cache(okhttp3.Cache(File(androidContext().cacheDir, "http-cache"), 10 * 1024 * 1024)) // 10Mb cache
-            .callTimeout(20, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .callTimeout(30, TimeUnit.SECONDS)
             .build()
     }
 

@@ -32,8 +32,8 @@ class UserManager(
     }
 
     override fun onAccountsUpdated(accounts: Array<out Account>?) = with(isConnected()) {
-//        if (_statusObservable.value != this)
-//            _statusObservable.onNext(this)
+        if (_statusObservable.value != this)
+            _statusObservable.onNext(this)
     }
 
     fun disconnect(force: Boolean = false) {
@@ -61,7 +61,7 @@ class UserManager(
     private fun isConnected() = this.token.isTokenValid()
 
     fun getUserProperty(key: String): String? {
-        return accountManager.getUserData(getCurrentAccount(), key)
+        return getCurrentAccount()?.let { accountManager.getUserData(it, key) }
     }
 
     fun refreshToken(activity: Activity, callback: AccountManagerCallback<Bundle>) {

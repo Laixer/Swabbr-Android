@@ -149,9 +149,11 @@ class LiveVideoBroadcaster(
     }
 
     override fun release() {
+        _camera.close()
         audioHandlerThread.quitSafely()
         mRtmpHandlerThread.quitSafely()
         mCameraHandler.invalidateHandler()
+        cameraThread.quitSafely()
     }
 
     @Throws(ConnectException::class)

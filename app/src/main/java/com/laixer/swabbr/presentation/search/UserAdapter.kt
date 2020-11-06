@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
-import com.laixer.swabbr.presentation.loadAvatar
+import com.laixer.swabbr.utils.loadAvatar
 import com.laixer.swabbr.presentation.model.UserItem
 import kotlinx.android.synthetic.main.include_user_info.view.*
 

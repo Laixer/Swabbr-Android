@@ -3,7 +3,11 @@ package com.laixer.swabbr
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.FragmentTransaction
+import com.google.firebase.FirebaseApp
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.messaging.FirebaseMessaging
 import com.gu.toolargetool.TooLargeTool
 import com.laixer.cache.CacheLibrary
 import org.koin.android.ext.android.inject
@@ -13,11 +17,10 @@ import org.koin.core.context.startKoin
 class App : Application() {
 
     private val crashlytics: FirebaseCrashlytics by inject()
+    private val analytics: FirebaseAnalytics by inject()
 
     override fun onCreate() {
         super.onCreate()
-
-        TooLargeTool.startLogging(this)
 
         // Unique initialization of Dependency Injection library to allow the use of application context
         startKoin { androidContext(this@App) }
@@ -25,7 +28,10 @@ class App : Application() {
         // Inject our dependencies straight away (for this Application instance only)
         injectFeature()
 
-        crashlytics.setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
+
+        FirebaseApp.initializeApp(this)
+        crashlytics.setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG_MODE)
+        analytics.setAnalyticsCollectionEnabled(true)
 
         // Unique initialization of Cache library to allow saving into device
         CacheLibrary.init(this)

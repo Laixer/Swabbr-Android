@@ -26,7 +26,7 @@
         <deepLink
             android:id="@+id/deepLink"
             android:autoVerify="true"
-            app:uri="https://swabbr.com/profileWatchVlog?userId={userId}&amp;initiaVlogId={initialVlogId}" />
+            app:uri="https://swabbr.com/profileWatchVlog?userId={userId}&amp;initialVlogId={initialVlogId}" />
     </fragment>
 
     <fragment
@@ -73,15 +73,24 @@
     </fragment>
 
     <action
-        android:id="@+id/action_react"
-        app:destination="@id/react_dest" />
+        android:id="@+id/action_record_reaction"
+        app:destination="@id/record_reaction_dest" />
 
-    <activity
-        android:id="@+id/react_dest"
-        android:name="com.laixer.swabbr.presentation.reaction.ReactionActivity">
+    <fragment
+        android:id="@+id/record_reaction_dest"
+        android:name="com.laixer.swabbr.presentation.reaction.RecordReactionFragment"
+        android:label="Reaction"
+        tools:layout="@layout/fragment_record">
+
+        <argument
+            android:name="cameraId"
+            app:argType="string"
+            app:nullable="false"/>
+
         <argument
             android:name="vlogId"
-            app:argType="string" />
-    </activity>
+            app:argType="string"
+            app:nullable="false"/>
+    </fragment>
 
 </navigation>

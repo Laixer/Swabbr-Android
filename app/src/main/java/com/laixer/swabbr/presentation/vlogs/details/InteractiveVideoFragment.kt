@@ -1,30 +1,44 @@
 package com.laixer.swabbr.presentation.vlogs.details
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.*
+import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
-import com.laixer.swabbr.presentation.loadAvatar
+import com.laixer.swabbr.utils.loadAvatar
 import com.laixer.swabbr.presentation.model.*
+import com.laixer.swabbr.utils.Utils
 import com.plattysoft.leonids.ParticleSystem
 import kotlinx.android.synthetic.main.exo_player_view.*
 import kotlinx.android.synthetic.main.include_user_info.*
 import kotlinx.android.synthetic.main.item_vlog.*
 import kotlinx.android.synthetic.main.reactions_sheet.*
 import kotlinx.android.synthetic.main.reactions_sheet.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
+import kotlin.concurrent.schedule
 
-open class InteractiveVideoFragment(enableLikes: Boolean = true, enableReactions: Boolean = true) : VideoFragment() {
+open class InteractiveVideoFragment(/* enableLikes: Boolean = true, enableReactions: Boolean = true*/) :
+    VideoFragment() {
 
     protected val vlogVm: VlogDetailsViewModel by viewModel()
+
     private lateinit var vlogId: UUID
 
     private val onProfileClick: (ReactionUserItem) -> Unit = {
@@ -44,11 +58,14 @@ open class InteractiveVideoFragment(enableLikes: Boolean = true, enableReactions
             reactions.observe(viewLifecycleOwner, Observer(this@InteractiveVideoFragment::updateReactions))
             likes.observe(viewLifecycleOwner, Observer(this@InteractiveVideoFragment::updateLikes))
         }
+
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Utils.enterFullscreen(requireActivity())
 
         reactions_sheet.run {
             reactionsRecyclerView.run {
@@ -59,7 +76,7 @@ open class InteractiveVideoFragment(enableLikes: Boolean = true, enableReactions
 
         react_button.setOnClickListener {
             if (!::vlogId.isInitialized) return@setOnClickListener
-            findNavController().navigate(WatchStreamFragmentDirections.actionReact(vlogId.toString()))
+            findNavController().navigate(WatchVlogFragmentDirections.actionRecordReaction("1", vlogId.toString()))
         }
 
         player.setOnTouchListener { v, event ->
@@ -102,6 +119,15 @@ open class InteractiveVideoFragment(enableLikes: Boolean = true, enableReactions
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        Utils.enterFullscreen(requireActivity())
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Utils.exitFullscreen(requireActivity())
+    }
 
     private fun toggleLike(like: Boolean) {
         if (!::vlogId.isInitialized) return
@@ -194,9 +220,9 @@ open class InteractiveVideoFragment(enableLikes: Boolean = true, enableReactions
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         reactionsRecyclerView?.adapter = null
     }
+
 }

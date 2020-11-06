@@ -3,6 +3,7 @@ package com.laixer.swabbr.presentation.auth
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 import com.laixer.presentation.Resource
 import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
@@ -17,7 +18,8 @@ import io.reactivex.schedulers.Schedulers
 
 open class AuthViewModel constructor(
     private val userManager: UserManager,
-    private val authUseCase: AuthUseCase
+    private val authUseCase: AuthUseCase,
+    private val firebaseMessaging: FirebaseMessaging
 ) : ViewModel() {
 
     val authenticatedUser = MutableLiveData<Resource<AuthUserItem?>>()
@@ -31,6 +33,7 @@ open class AuthViewModel constructor(
             .subscribe(
                 {
                     it.jwtToken?.let { token ->
+                        firebaseMessaging.isAutoInitEnabled = true
                         userManager.connect(name, password, token, bundleOf("id" to it.user.id))
                         authenticatedUser.setSuccess(it.mapToPresentation())
                     } ?: authenticatedUser.setError("Auth token is null")

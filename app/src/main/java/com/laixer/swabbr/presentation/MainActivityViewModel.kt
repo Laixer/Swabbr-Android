@@ -24,7 +24,7 @@ open class MainActivityViewModel constructor(
 
     init {
         compositeDisposable.add(
-            userManager. statusObservable
+            userManager.statusObservable
                 .doOnSubscribe { authToken.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .subscribe(
@@ -34,6 +34,18 @@ open class MainActivityViewModel constructor(
                     { authToken.setError(it.message) }
                 )
         )
+    }
+
+    fun probeAuthToken() {
+        val token = userManager.token
+        if (token === null) {
+            authToken.setError("token null")
+        } else {
+            if (token.isExpired(0L)) {
+                authToken.setError("token expired")
+            }
+        }
+
     }
 
     fun invalidateSession() {

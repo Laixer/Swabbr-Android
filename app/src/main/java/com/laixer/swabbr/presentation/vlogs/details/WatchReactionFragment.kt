@@ -8,7 +8,6 @@ import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.data.datasource.model.WatchReactionResponse
-import com.laixer.swabbr.presentation.reaction.ReactionViewModel
 import kotlinx.android.synthetic.main.item_vlog.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*

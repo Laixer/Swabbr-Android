@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation
+package com.laixer.swabbr.utils
 
 import android.content.Intent
 import android.graphics.Bitmap

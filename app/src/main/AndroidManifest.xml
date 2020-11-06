@@ -33,7 +33,7 @@
         android:theme="@style/Theme.Swabbr">
 
         <!-- Our main entry point -->
-        <activity android:name=".presentation.MainActivity"
+        <activity android:name="com.laixer.swabbr.presentation.MainActivity"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.Swabbr.Launcher">
 
@@ -44,14 +44,14 @@
         </activity>
 
         <activity
-            android:name=".presentation.AuthActivity"
+            android:name="com.laixer.swabbr.presentation.AuthActivity"
             android:label="@string/login"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.Swabbr.Login">
         </activity>
 
         <activity
-            android:name=".presentation.reaction.ReactionActivity"
+            android:name="com.laixer.swabbr.presentation.reaction.RecordReactionFragment"
             android:label="Reaction"
             android:launchMode="singleInstance"
             android:fitsSystemWindows="true"
@@ -59,7 +59,7 @@
         </activity>
 
         <activity
-            android:name=".presentation.streaming.StreamActivity"
+            android:name="com.laixer.swabbr.presentation.streaming.StreamActivity"
             android:label="Live"
             android:launchMode="singleInstance"
             android:fitsSystemWindows="true"
@@ -98,6 +98,17 @@
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
+
+        <!-- FileProvider used to share media with other apps -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
     </application>
 
 </manifest>

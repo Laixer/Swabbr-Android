@@ -5,6 +5,14 @@ apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
+  signingConfigs {
+    release {
+    storeFile file('/home/pnobbe/StudioProjects/Swabbr-Android/contrib/keystore.jks')
+      storePassword 'nQsfdqNcnokU1JRRM899'
+      keyPassword '3RPWvITJRMF2NkmqgSQ4'
+      keyAlias 'swabbr_release'
+    }
+  }
   compileSdkVersion DefaultConfig.compileSdk
 
   ndkVersion "21.3.6528147"
@@ -19,8 +27,6 @@ android {
     versionName Releases.versionName
 
     multiDexEnabled true
-    signingConfig signingConfigs.debug
-
   }
 
   buildFeatures {
@@ -29,6 +35,7 @@ android {
 
   lintOptions {
     abortOnError false
+    checkReleaseBuilds false
   }
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
@@ -41,14 +48,26 @@ android {
 
   buildTypes {
     release {
+      debuggable true
       minifyEnabled true
+      shrinkResources true
 
-      buildConfigField "String", "API_ENDPOINT", "\"https://swabbr.azurewebsites.net/api/v1/\""
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+      buildConfigField "Boolean", "DEBUG_MODE", "false"
+      buildConfigField "String", "API_ENDPOINT", "\"https://swabbr-api.azurewebsites.net/api/1/\""
+
+      signingConfig signingConfigs.release
     }
+
     debug {
       debuggable true
-      signingConfig signingConfigs.debug
+      minifyEnabled false
+      shrinkResources false
 
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+      buildConfigField "Boolean", "DEBUG_MODE", "true"
       buildConfigField "String", "API_ENDPOINT", "\"https://swabbr-api-development.azurewebsites.net/api/1/\""
     }
   }

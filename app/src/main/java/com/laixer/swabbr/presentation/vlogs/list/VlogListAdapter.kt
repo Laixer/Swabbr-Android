@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.auth0.android.jwt.JWT
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
@@ -13,12 +12,10 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.auth.AuthUserViewModel
-import com.laixer.swabbr.presentation.loadAvatar
+import com.laixer.swabbr.utils.loadAvatar
 import com.laixer.swabbr.presentation.model.UserVlogItem
 import kotlinx.android.synthetic.main.include_user_info.view.*
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.lang.IllegalStateException
 import java.time.ZonedDateTime
 
 class VlogListAdapter constructor(

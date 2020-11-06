@@ -49,79 +49,84 @@ open class StreamFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         injectFeature()
-        vm.streamResponse.observe(viewLifecycleOwner, Observer { connect(it) })
+
+        surface_view.setEGLContextClientVersion(3)
+
+        mLiveVideoBroadcaster = LiveVideoBroadcaster(requireActivity(), surface_view, true, cameraCallback)
+        mLiveVideoBroadcaster.initializeCamera()
+
         //all of your permissions have been accepted by the user
         // Hide parent UI and make the fragment fullscreen
         // OpenGL ES 3.0 is supported from API >=18. Our minSdk is >=21, so this is safe to force.
-        surface_view.setEGLContextClientVersion(3)
 
         // We add a bottom margin to our overlay equal to the high of the navbar to prevent it from falling below the navbar
         val resources: Resources = requireContext().resources
         val resourceId: Int = resources.getIdentifier("navigation_bar_height", "dimen", "android")
         if (resourceId > 0) {
-            bottom_stream_bar.layoutParams = (bottom_stream_bar.layoutParams as ConstraintLayout.LayoutParams).apply {
-                bottomMargin += resources.getDimensionPixelSize(resourceId)
-            }
+            bottom_stream_bar.layoutParams =
+                (bottom_stream_bar.layoutParams as ConstraintLayout.LayoutParams).apply {
+                    bottomMargin += resources.getDimensionPixelSize(resourceId)
+                }
         }
 
-        capture_button.apply {
-            isEnabled = false
-            setOnClickListener { stop() }
+        askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
+            vm.streamResponse.observe(viewLifecycleOwner, Observer { connect(it) })
+
+            capture_button.apply {
+                isEnabled = false
+                setOnClickListener { stop() }
+            }
+
+            enableStopProgressBar.max =
+                ((DEFAULT_MINIMUM_RECORD_TIME_MINUTES * 60) + DEFAULT_MINIMUM_RECORD_TIME_SECONDS) * 10
+
+            stream_progress.max =
+                ((DEFAULT_MAXIMUM_RECORD_TIME_MINUTES * 60) + DEFAULT_MAXIMUM_RECORD_TIME_SECONDS) * 10
+
+            stream_max_duration.text =
+                getString(
+                    R.string.timer_value,
+                    DEFAULT_MAXIMUM_RECORD_TIME_MINUTES,
+                    DEFAULT_MAXIMUM_RECORD_TIME_SECONDS
+                )
+
+            stream_position_timer.apply {
+                addProgressBar(enableStopProgressBar) {
+                    // Allow broadcast to be stopped
+                    capture_button.isEnabled = true
+                    enableStopProgressBar.visibility = View.GONE
+                }
+
+                addProgressBar(stream_progress) {
+                    Toast.makeText(requireContext(), "Time limit reached, stopping broadcast.", Toast.LENGTH_LONG)
+                        .show()
+                    stop()
+                }
+
+                addEventAt(DEFAULT_MAXIMUM_RECORD_TIME_MINUTES - 1, DEFAULT_MAXIMUM_RECORD_TIME_SECONDS) {
+                    Toast.makeText(requireContext(), "One minute left!", Toast.LENGTH_LONG).show()
+                    setTextColor(Color.RED)
+                }
+            }
+
+            if (mLiveVideoBroadcaster.canChangeCamera()) {
+                switch_camera.apply {
+                    visibility = View.VISIBLE
+                    setOnClickListener { mLiveVideoBroadcaster.changeCamera() }
+                }
+            }
+
+            if (mLiveVideoBroadcaster.canToggleTorch()) {
+                toggle_torch.apply {
+                    visibility = View.VISIBLE
+                    setOnClickListener { mLiveVideoBroadcaster.toggleTorch() }
+                }
+            }
+        }.onDeclined {
+            //at least one permission has been declined by the user
+            Toast.makeText(requireContext(), "Unable to stream without permissions", Toast.LENGTH_LONG).show()
+            stop()
         }
-
-        enableStopProgressBar.max =
-            ((DEFAULT_MINIMUM_RECORD_TIME_MINUTES * 60) + DEFAULT_MINIMUM_RECORD_TIME_SECONDS) * 10
-
-        stream_progress.max =
-            ((DEFAULT_MAXIMUM_RECORD_TIME_MINUTES * 60) + DEFAULT_MAXIMUM_RECORD_TIME_SECONDS) * 10
-
-        stream_max_duration.text =
-            getString(R.string.timer_value, DEFAULT_MAXIMUM_RECORD_TIME_MINUTES, DEFAULT_MAXIMUM_RECORD_TIME_SECONDS)
-
-        stream_position_timer.apply {
-            addProgressBar(enableStopProgressBar) {
-                // Allow broadcast to be stopped
-                capture_button.isEnabled = true
-                enableStopProgressBar.visibility = View.GONE
-            }
-
-            addProgressBar(stream_progress) {
-                Toast.makeText(requireContext(), "Time limit reached, stopping broadcast.", Toast.LENGTH_LONG).show()
-                stop()
-            }
-
-            addEventAt(DEFAULT_MAXIMUM_RECORD_TIME_MINUTES - 1, DEFAULT_MAXIMUM_RECORD_TIME_SECONDS) {
-                Toast.makeText(requireContext(), "One minute left!", Toast.LENGTH_LONG).show()
-                setTextColor(Color.RED)
-            }
-        }
-
-        initialize()
-    }
-
-
-    private fun initialize() = askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
-        mLiveVideoBroadcaster = LiveVideoBroadcaster(requireActivity(), surface_view, true, cameraCallback)
-
-        if (mLiveVideoBroadcaster.canChangeCamera()) {
-            switch_camera.apply {
-                visibility = View.VISIBLE
-                setOnClickListener { mLiveVideoBroadcaster.changeCamera() }
-            }
-        }
-
-        if (mLiveVideoBroadcaster.canToggleTorch()) {
-            toggle_torch.apply {
-                visibility = View.VISIBLE
-                setOnClickListener { mLiveVideoBroadcaster.toggleTorch() }
-            }
-        }
-
-        mLiveVideoBroadcaster.initializeCamera()
-    }.onDeclined { e ->
-        //at least one permission have been declined by the user
-        Toast.makeText(requireContext(), "Unable to stream without permissions", Toast.LENGTH_LONG).show()
-        stop()
     }
 
     private val cameraCallback = object : CameraDevice.StateCallback() {
@@ -196,6 +201,7 @@ open class StreamFragment : Fragment() {
         if (mLiveVideoBroadcaster.isConnected()) {
             mLiveVideoBroadcaster.stopBroadcasting()
         }
+
         requireActivity().onBackPressed()
     }
 
@@ -232,6 +238,7 @@ open class StreamFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d(TAG, "Releasing camera")
         mLiveVideoBroadcaster.release()
     }
 

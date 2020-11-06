@@ -17,7 +17,6 @@ import android.widget.DatePicker
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.transition.TransitionInflater
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.iid.FirebaseInstanceId
 import com.laixer.presentation.Resource
@@ -28,11 +27,10 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.model.PushNotificationPlatform
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthViewModel
-import com.laixer.swabbr.presentation.convertBitmapToByteArray
-import com.laixer.swabbr.presentation.encodeImageToBase64
+import com.laixer.swabbr.utils.convertBitmapToByteArray
+import com.laixer.swabbr.utils.encodeImageToBase64
 import com.laixer.swabbr.presentation.model.AuthUserItem
 import com.laixer.swabbr.presentation.model.RegistrationItem
-import kotlinx.android.synthetic.main.activity_app.*
 import kotlinx.android.synthetic.main.fragment_registration.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.Instant
@@ -62,7 +60,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
         prepareUI()
         registerButton.setOnClickListener {
-            if (passwordInput.text.toString().length > 8) {
+            if (passwordInput.text.toString().length < 8) {
                 Toast.makeText(requireContext(), "Password must consist of at least 8 characters.", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener

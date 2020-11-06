@@ -17,7 +17,7 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.model.FollowStatus
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
-import com.laixer.swabbr.presentation.loadAvatar
+import com.laixer.swabbr.utils.loadAvatar
 import com.laixer.swabbr.presentation.model.FollowStatusItem
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.UserVlogItem

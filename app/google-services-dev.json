@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "300178742761",
+    "firebase_url": "https://swabbr-development.firebaseio.com",
+    "project_id": "swabbr-development",
+    "storage_bucket": "swabbr-development.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:300178742761:android:cd7a65e6dd43d201297f78",
+        "android_client_info": {
+          "package_name": "com.laixer.swabbr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "300178742761-4jfendnnd8ldqrtmrpa28iobpod9ggah.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGJ7DBbfFbIAhWB6cJWIcTf1zUEozgwsE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "300178742761-4jfendnnd8ldqrtmrpa28iobpod9ggah.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
