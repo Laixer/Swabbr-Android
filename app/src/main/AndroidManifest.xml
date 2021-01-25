@@ -22,18 +22,19 @@
 
     <!-- RequestLegacyExternalStorage is required for our image picker -->
     <application
-        android:requestLegacyExternalStorage="true"
         android:name="com.laixer.swabbr.App"
-        android:icon="@mipmap/ic_logo"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup"
+        android:icon="@mipmap/ic_logo"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Swabbr">
 
         <!-- Our main entry point -->
-        <activity android:name="com.laixer.swabbr.presentation.MainActivity"
+        <activity
+            android:name="com.laixer.swabbr.presentation.MainActivity"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.Swabbr.Launcher">
 
@@ -47,42 +48,41 @@
             android:name="com.laixer.swabbr.presentation.AuthActivity"
             android:label="@string/login"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.Swabbr.Login">
-        </activity>
+            android:theme="@style/Theme.Swabbr.Login"></activity>
 
         <activity
             android:name="com.laixer.swabbr.presentation.reaction.RecordReactionFragment"
+            android:fitsSystemWindows="true"
             android:label="Reaction"
             android:launchMode="singleInstance"
-            android:fitsSystemWindows="true"
-            android:theme="@style/Theme.Swabbr.Recording">
-        </activity>
+            android:theme="@style/Theme.Swabbr.Recording"></activity>
 
         <activity
             android:name="com.laixer.swabbr.presentation.streaming.StreamActivity"
+            android:fitsSystemWindows="true"
             android:label="Live"
             android:launchMode="singleInstance"
-            android:fitsSystemWindows="true"
-            android:theme="@style/Theme.Swabbr.Recording">
-        </activity>
+            android:theme="@style/Theme.Swabbr.Recording"></activity>
 
         <!-- Authenticator service (AccountManager) -->
-        <service android:name="com.laixer.swabbr.presentation.auth.AuthenticatorService"
+        <service
+            android:name="com.laixer.swabbr.presentation.auth.AuthenticatorService"
             android:process=":authenticator"
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
 
-            <meta-data android:name="android.accounts.AccountAuthenticator"
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
 
         <!-- Firebase service -->
         <service
             android:name="com.laixer.swabbr.services.FirebaseService"
-            android:stopWithTask="false"
-            android:exported="false">
+            android:exported="false"
+            android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -107,7 +107,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
 
