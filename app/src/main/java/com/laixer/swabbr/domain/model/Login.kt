@@ -1,5 +1,10 @@
 package com.laixer.swabbr.domain.model
 
+import com.laixer.swabbr.domain.types.PushNotificationPlatform
+
+/**
+ * Wrapper for logging the user in.
+ */
 data class Login(
     val email: String,
     val password: String,
@@ -7,8 +12,3 @@ data class Login(
     val pushNotificationPlatform: PushNotificationPlatform,
     val handle: String
 )
-
-enum class PushNotificationPlatform(val value: String) {
-    APNS("apns"),
-    FCM("fcm")
-}

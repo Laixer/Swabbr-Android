@@ -1,36 +1,32 @@
 package com.laixer.swabbr.data.datasource.model
 
 import com.laixer.swabbr.domain.model.FollowRequest
-import com.laixer.swabbr.domain.model.FollowStatus
+import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.squareup.moshi.Json
 import java.time.ZonedDateTime
-import java.util.UUID
-
-data class IncomingRequestsResponse(
-    @field:Json(name = "followRequests") val followRequests: List<FollowRequestEntity>,
-    @field:Json(name = "count") val count: Int
-)
+import java.util.*
 
 data class FollowRequestEntity(
-    @field:Json(name = "requesterId") val requesterId: String,
-    @field:Json(name = "receiverId") val receiverId: String,
-    @field:Json(name = "status") val followStatus: String,
-    @field:Json(name = "timeCreated") val timeCreated: String
+    @field:Json(name = "requesterId") val requesterId: UUID,
+    @field:Json(name = "receiverId") val receiverId: UUID,
+    @field:Json(name = "followRequestStatus") val followRequestStatus: Int,
+    @field:Json(name = "dateCreated") val dateCreated: ZonedDateTime,
+    @field:Json(name = "dateUpdated") val dateUpdated: ZonedDateTime?
 )
 
+/**
+ * Map a follow request from data to domain.
+ */
 fun FollowRequestEntity.mapToDomain(): FollowRequest = FollowRequest(
-    UUID.fromString(requesterId),
-    UUID.fromString(receiverId),
-    FollowStatus.values().first { it.value == followStatus },
-    ZonedDateTime.parse(timeCreated)
+    requesterId,
+    receiverId,
+    FollowRequestStatus.values()[followRequestStatus],
+    dateCreated,
+    dateUpdated
 )
 
-fun FollowRequest.mapToData(): FollowRequestEntity = FollowRequestEntity(
-    requesterId.toString(),
-    receiverId.toString(),
-    status.value,
-    timeCreated.toInstant().toString()
-)
-
+/**
+ * Map a collection of follow requests from data to domain.
+ */
 fun List<FollowRequestEntity>.mapToDomain(): List<FollowRequest> = map { it.mapToDomain() }
-fun List<FollowRequest>.mapToData(): List<FollowRequestEntity> = map { it.mapToData() }
+

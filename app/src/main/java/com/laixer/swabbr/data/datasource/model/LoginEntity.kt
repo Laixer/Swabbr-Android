@@ -1,32 +1,27 @@
 package com.laixer.swabbr.data.datasource.model
 
 import com.laixer.swabbr.domain.model.Login
-import com.laixer.swabbr.domain.model.PushNotificationPlatform
+import com.laixer.swabbr.domain.types.PushNotificationPlatform
 import com.squareup.moshi.Json
 
+/**
+ * Entity used for logging in. This is only sent to the server.
+ */
 data class LoginEntity(
     @field:Json(name = "email") val email: String,
     @field:Json(name = "password") val password: String,
     @field:Json(name = "rememberMe") val rememberMe: Boolean,
-    @field:Json(name = "pushNotificationPlatform") val pushNotificationPlatform: String,
+    @field:Json(name = "pushNotificationPlatform") val pushNotificationPlatform: Int,
     @field:Json(name = "handle") val handle: String
 )
 
+/**
+ * Map a login wrapper from domain to data.
+ */
 fun Login.mapToData(): LoginEntity = LoginEntity(
     email,
     password,
     remember,
-    pushNotificationPlatform.value,
+    pushNotificationPlatform.ordinal,
     handle
 )
-
-fun LoginEntity.mapToDomain(): Login = Login(
-    email,
-    password,
-    rememberMe,
-    PushNotificationPlatform.values().first { it.value == pushNotificationPlatform },
-    handle
-)
-
-fun List<LoginEntity>.mapToDomain(): List<Login> = map { it.mapToDomain() }
-fun List<Login>.mapToData(): List<LoginEntity> = map { it.mapToData() }

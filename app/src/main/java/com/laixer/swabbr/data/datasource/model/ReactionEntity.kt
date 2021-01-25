@@ -1,64 +1,59 @@
 package com.laixer.swabbr.data.datasource.model
 
+import android.net.Uri
 import com.laixer.swabbr.domain.model.Reaction
-import com.laixer.swabbr.domain.model.UploadReaction
+import com.laixer.swabbr.domain.types.ReactionStatus
 import com.squareup.moshi.Json
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.*
 
+/**
+ * Entity representing a single reaction.
+ * Note: length is in seconds.
+ */
 data class ReactionEntity(
-    @field:Json(name = "reaction") val reaction: ReactionDataEntity,
-    @field:Json(name = "thumbnailUri") val thumbnailUri: String
+    @field:Json(name = "id") val id: UUID,
+    @field:Json(name = "userId") val userId: UUID,
+    @field:Json(name = "targetVlogId") val targetVlogId: UUID,
+    @field:Json(name = "dateCreated") val dateCreated: ZonedDateTime,
+    @field:Json(name = "isPrivate") val isPrivate: Boolean,
+    @field:Json(name = "length") val length: Int?,
+    @field:Json(name = "reactionStatus") val reactionStatus: Int,
+    @field:Json(name = "videoUri") val videoUri: Uri?,
+    @field:Json(name = "thumbnailUri") val thumbnailUri: Uri?
 )
 
-data class ReactionDataEntity(
-    @field:Json(name = "id") val id: String,
-    @field:Json(name = "userId") val userId: String,
-    @field:Json(name = "targetVlogId") val vlogId: String,
-    @field:Json(name = "createDate") val datePosted: String,
-    @field:Json(name = "isPrivate") val isPrivate: Boolean
+/**
+ * Map a reaction from data to domain.
+ */
+fun ReactionEntity.mapToDomain(): Reaction = Reaction(
+    id,
+    userId,
+    targetVlogId,
+    dateCreated,
+    isPrivate,
+    length,
+    ReactionStatus.values()[reactionStatus],
+    videoUri,
+    thumbnailUri
 )
 
-data class UploadReactionEntity(
-    @field:Json(name = "reaction") val reaction: ReactionDataEntity,
-    @field:Json(name = "uploadUrl") val uploadUrl: String
+/**
+ * Map a reaction from domain to data.
+ */
+fun Reaction.mapToData(): ReactionEntity = ReactionEntity(
+    id,
+    userId,
+    targetVlogId,
+    dateCreated,
+    isPrivate,
+    length,
+    reactionStatus.ordinal,
+    videoUri,
+    thumbnailUri
 )
 
-data class ReactionListResponse(
-    @field:Json(name = "reactionsTotalCount") val totalCount: Int,
-    @field:Json(name = "reactionCount") val count: Int,
-    @field:Json(name = "reactions") val reactions: List<ReactionEntity>
-)
-
-data class ReactionCount(
-    @field:Json(name = "reactionCount") val count: Int
-)
-
-data class NewReaction(
-    @field:Json(name = "targetVlogId") val targetVlogId: String,
-    @field:Json(name = "isPrivate") val isPrivate: Boolean
-)
-
-fun ReactionDataEntity.mapToDomain(): Reaction = Reaction(
-    UUID.fromString(id),
-    UUID.fromString(userId),
-    UUID.fromString(vlogId),
-    ZonedDateTime.parse(datePosted),
-    isPrivate
-)
-
-fun UploadReactionEntity.mapToDomain(): UploadReaction = UploadReaction(
-    reaction.mapToDomain(),
-    uploadUrl
-)
-
-fun Reaction.mapToData(): ReactionDataEntity = ReactionDataEntity(
-    id.toString(),
-    userId.toString(),
-    targetVlogId.toString(),
-    createDate.toInstant().toString(),
-    isPrivate
-)
-
-fun List<ReactionEntity>.mapToDomain(): List<Reaction> = map { it.reaction.mapToDomain() }
-fun List<Reaction>.mapToData(): List<ReactionDataEntity> = map { it.mapToData() }
+/**
+ * Map a collection of reactions from data to domain.
+ */
+fun List<ReactionEntity>.mapToDomain(): List<Reaction> = map { it.mapToDomain() }

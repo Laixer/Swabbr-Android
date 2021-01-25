@@ -1,77 +1,62 @@
 package com.laixer.swabbr.presentation.model
 
-import android.os.Parcel
-import android.os.Parcelable
-import com.laixer.swabbr.domain.model.Gender
 import com.laixer.swabbr.domain.model.User
-import java.time.LocalDate
-import java.util.TimeZone
-import java.util.UUID
+import com.laixer.swabbr.domain.types.Gender
+import java.util.*
 
 data class UserItem(
     val id: UUID,
-    var firstName: String?,
-    var lastName: String?,
-    var gender: Gender,
-    var country: String?,
-    val email: String,
-    val timezone: TimeZone,
-    val totalVlogs: Int,
-    val totalFollowers: Int,
-    val totalFollowing: Int,
-    var nickname: String,
-    var profileImage: String?,
-    var birthdate: LocalDate?,
-    var isPrivate: Boolean
+    val firstName: String?,
+    val lastName: String?,
+    val gender: Gender,
+    val country: String?,
+    val nickname: String,
+    val profileImage: String?
 ) {
-
-    fun equals(otheritem: UserItem): Boolean =
-        firstName == otheritem.firstName
-            && lastName == otheritem.lastName
-            && gender == otheritem.gender
-            && country == otheritem.country
-            && birthdate == otheritem.birthdate
-            && nickname == otheritem.nickname
-            && profileImage == otheritem.profileImage
-            && isPrivate == otheritem.isPrivate
-
+    // TODO Do we need more?
+    fun equals(compare: UserItem): Boolean = this.id == compare.id
+//        firstName == compare.firstName
+//            && lastName == compare.lastName
+//            && gender == compare.gender
+//            && country == compare.country
+//            && birthdate == compare.birthdate
+//            && nickname == compare.nickname
+//            && profileImage == compare.profileImage
+//            && isPrivate == compare.isPrivate
 }
 
-fun User.mapToPresentation(): UserItem = UserItem(
-    this.id,
-    this.firstName,
-    this.lastName,
-    this.gender,
-    this.country,
-    this.email,
-    this.timezone,
-    this.totalVlogs,
-    this.totalFollowers,
-    this.totalFollowing,
-    this.nickname,
-    this.profileImage,
-    this.birthdate,
-    this.isPrivate
-)
-
+/**
+ * Map a user from presentation to domain.
+ */
 fun UserItem.mapToDomain(): User = User(
-    this.id,
-    this.firstName,
-    this.lastName,
-    this.gender,
-    this.country,
-    this.email,
-    this.timezone,
-    this.totalVlogs,
-    this.totalFollowers,
-    this.totalFollowing,
-    this.nickname,
-    this.profileImage,
-    this.birthdate,
-    this.isPrivate
+    id,
+    firstName,
+    lastName,
+    gender,
+    country,
+    nickname,
+    profileImage
 )
 
-fun List<UserItem>.mapToDomain(): List<User> = map { it.mapToDomain() }
+/**
+ * Map a user from domain to presentation.
+ */
+fun User.mapToPresentation(): UserItem = UserItem(
+    id,
+    firstName,
+    lastName,
+    gender,
+    country,
+    nickname,
+    profileImage
+)
+
+/**
+ * Map a collection of users from domain to presentation.
+ */
 fun List<User>.mapToPresentation(): List<UserItem> = map { it.mapToPresentation() }
 
-
+/**
+ * Map a collection of users from presentation to domain
+ */
+fun List<UserItem>.mapToDomain(): List<User> = map { it.mapToDomain() }

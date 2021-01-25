@@ -1,145 +1,153 @@
 package com.laixer.swabbr.data.datasource.model.remote
 
 import com.laixer.swabbr.data.datasource.model.*
-import com.laixer.swabbr.domain.model.Reaction
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
-import java.util.UUID
-
-interface VlogsApi {
-
-    @GET("vlogs/foruser/{userId}")
-    fun getUserVlogs(@Path("userId") userId: UUID): Single<VlogListResponseEntity>
-
-    @GET("vlogs/{vlogId}")
-    fun getVlog(@Path("vlogId") vlogId: UUID): Single<VlogResponseEntity>
-
-    @GET("vlogs/recommended")
-    fun getRecommendedVlogs(): Single<VlogListResponseEntity>
-
-    @GET("vlogs/{vlogId}/vlog_likes")
-    fun getLikes(@Path("vlogId") vlogId: UUID): Single<LikeListEntity>
-
-    @POST("vlogs/{vlogId}/like")
-    fun like(@Path("vlogId") vlogId: UUID): Completable
-
-    @POST("vlogs/{vlogId}/unlike")
-    fun unlike(@Path("vlogId") vlogId: UUID): Completable
-
-    @GET("vlogs/{vlogId}/watch")
-    fun watch(@Path("vlogId") vlogId: UUID): Single<WatchVlogResponse>
-
-    @DELETE("vlogs/{vlogId}")
-    fun delete(@Path("vlogId") vlogId: UUID): Completable
-
-    @GET("reactions/for_vlog/{vlogId}/count")
-    fun getReactionCount(@Path("vlogId") vlogId: UUID): Single<ReactionCount>
-}
-
-interface LivestreamApi {
-    @POST("livestreams/{livestreamId}/start_streaming")
-    fun startStreaming(@Path("livestreamId") livestreamId: String): Single<StreamResponse>
-
-    @GET("livestreams/{livestreamId}/watch")
-    fun watch(@Path("livestreamId") livestreamId: String): Single<WatchLivestreamResponse>
-}
-
-interface UsersApi {
-
-    @GET("users/{userId}")
-    fun getUser(@Path("userId") userId: UUID): Single<UserEntity>
-
-    @GET("users/search")
-    fun search(
-        @Query("query") query: String?,
-        @Query("page") page: Int = 1,
-        @Query("itemsPerPage") itemsPerPage: Int = 50
-    ): Single<List<UserEntity>>
-
-    @POST("users/update")
-    fun update(@Body updatedUser: UserEntity): Single<UserEntity>
-
-    @GET("users/{userId}/statistics")
-    fun getStatistics(@Path("userId") id: UUID): Single<UserStatisticsEntity>
-
-    @GET("users/self/statistics")
-    fun getSelfStatistics(): Single<UserStatisticsEntity>
-
-    @GET("users/{userId}/following")
-    fun getFollowing(@Path("userId") id: UUID): Single<FollowingResponse>
-}
-
-interface ReactionsApi {
-
-    @GET("reactions/for_vlog/{vlogId}")
-    fun getReactions(@Path("vlogId") vlogId: UUID): Single<ReactionListResponse>
-
-    @POST("reactions/new")
-    fun newReaction(@Body newReaction: NewReaction): Single<UploadReactionEntity>
-
-    @POST("reactions/finished_uploading")
-    fun finishUploading(@Query("reactionId") id: UUID): Completable
-
-    @GET("reactions/{reactionId}/watch")
-    fun watch(@Path("reactionId") reactionId: UUID): Single<WatchReactionResponse>
-
-}
-
-interface FollowApi {
-    @GET("followrequests/outgoing/status")
-    fun getFollowStatus(@Query("receiverId") id: UUID): Single<FollowStatusEntity>
-
-    @GET("followrequests/incoming")
-    fun getIncomingRequests(): Single<IncomingRequestsResponse>
-
-    @GET("followrequests/outgoing")
-    fun getOutgoingRequests(): Single<List<FollowRequestEntity>>
-
-    @POST("followrequests/send")
-    fun sendFollowRequest(@Query("receiverId") userId: UUID): Single<FollowRequestEntity>
-
-    @POST("followrequests/cancel")
-    fun cancelFollowRequest(@Query("receiverId") id: UUID): Completable
-
-    @POST("followrequests/unfollow")
-    fun unfollow(@Query("receiverId") id: UUID): Completable
-
-    @POST("followrequests/accept")
-    fun acceptRequest(@Query("requesterId") id: UUID): Completable
-
-    @POST("followrequests/decline")
-    fun declineRequest(@Query("requesterId") id: UUID): Completable
-
-    @GET("users/{userId}/following")
-    fun getFollowing(@Path("userId") id: UUID): Single<List<UserEntity>>
-
-    @GET("users/{userId}/followers")
-    fun getFollowers(@Path("userId") id: UUID): Single<List<UserEntity>>
-}
-
-interface SettingsApi {
-
-    @GET("users/self/settings")
-    fun get(): Single<SettingsEntity>
-
-    @POST("users/self/settings")
-    fun set(@Body settings: SettingsEntity): Single<SettingsEntity>
-}
+import java.util.*
 
 interface AuthApi {
 
-    @GET("users/self")
-    fun self(): Single<UserEntity>
-
     @POST("authentication/login")
     @Headers("No-Authentication: true")
-    fun login(@Body login: LoginEntity): Single<AuthUserEntity>
+    fun login(@Body login: LoginEntity): Single<TokenWrapperEntity>
 
     @POST("authentication/register")
     @Headers("No-Authentication: true")
-    fun register(@Body registration: RegistrationEntity): Single<AuthUserEntity>
+    fun register(@Body registration: RegistrationEntity): Completable
 
     @POST("authentication/logout")
     fun logout(): Completable
+
+}
+
+interface FollowRequestApi {
+
+    @GET("followrequest")
+    fun get(@Query("requesterId") requesterId: UUID,
+        @Query("receiverId") receiverId: UUID): Single<FollowRequestEntity>
+
+    @GET("followrequest/incoming")
+    fun getIncomingRequests(): Single<List<FollowRequestEntity>>
+
+    @GET("followrequest/outgoing")
+    fun getOutgoingRequests(): Single<List<FollowRequestEntity>>
+
+    @POST("followrequest/send")
+    fun sendFollowRequest(@Query("receiverId") userId: UUID): Completable
+
+    @PUT("followrequest/cancel")
+    fun cancelFollowRequest(@Query("receiverId") receiverId: UUID): Completable
+
+    @POST("followrequest/unfollow")
+    fun unfollow(@Query("receiverId") receiverId: UUID): Completable
+
+    @PUT("followrequest/accept")
+    fun acceptRequest(@Query("requesterId") requesterId: UUID): Completable
+
+    @PUT("followrequest/decline")
+    fun declineRequest(@Query("requesterId") requesterId: UUID): Completable
+
+}
+
+interface ReactionApi {
+
+    @DELETE("reaction/{reactionId}")
+    fun delete(@Path("reactionId") reactionId: UUID): Completable
+
+    @GET("reaction/generate-upload-uri")
+    fun generateUploadWrapper(): Single<UploadWrapperEntity>
+
+    @GET("reaction/{reactionId}")
+    fun getReaction(@Path("reactionId") reactionId: UUID): Single<ReactionEntity>
+
+    @PUT("reaction")
+    fun updateReaction(@Body updatedReaction: ReactionEntity): Completable
+
+    @GET("reaction/for-vlog/{vlogId}")
+    fun getReactionsForVlog(@Path("vlogId") vlogId: UUID): Single<List<ReactionEntity>>
+
+    @GET("reaction/for-vlog/{vlogId}/count")
+    fun getReactionCountForVlog(@Path("vlogId") vlogId: UUID): Single<DatasetStatsEntity>
+
+    @POST("reaction")
+    fun postReaction(@Body newReaction: ReactionEntity): Completable
+
+}
+
+interface UserApi {
+
+    @GET("user/{userId}")
+    fun getUser(@Path("userId") userId: UUID): Single<UserEntity>
+
+    @GET("user/{userId}/statistics")
+    fun getWithStats(@Path("userId") userId: UUID): Single<UserWithStatsEntity>
+
+    @GET("user/self/statistics")
+    fun getSelfWithStats(): Single<UserWithStatsEntity>
+
+    @GET("user/{userId}/following")
+    fun getFollowing(@Path("userId") userId: UUID): Single<List<UserEntity>>
+
+    @GET("user/{userId}/followers")
+    fun getFollowers(@Path("userId") userId: UUID): Single<List<UserEntity>>
+
+    @GET("user/search")
+    fun search(
+        @Query("query") query: String,
+        @Query("offset") offset: Int = 0,
+        @Query("limit") limit: Int = 50
+    ): Single<List<UserEntity>>
+
+    @GET("user/self")
+    fun getSelf(): Single<UserCompleteEntity>
+
+    @PUT("user")
+    fun update(@Body updatedUser: UserUpdateEntity): Completable
+
+}
+
+interface VlogApi {
+
+    // TODO Add views
+
+    @DELETE("vlog/{vlogId}")
+    fun delete(@Path("vlogId") vlogId: UUID): Completable
+
+    @GET("vlog/{vlogId}")
+    fun getVlog(@Path("vlogId") vlogId: UUID): Single<VlogEntity>
+
+    @GET("vlog/generate-upload-uri")
+    fun generateUploadWrapper(): Single<UploadWrapperEntity>
+
+    @PUT("vlog/{vlogId}")
+    fun updateVlog(
+        @Path("vlogId") vlogId: UUID,
+        @Body updatedVlog: VlogEntity
+    ): Completable
+
+    @GET("vlog/{vlogId}/summary")
+    fun getVlogLikeSummary(@Path("vlogId") vlogId: UUID): Single<VlogLikeSummaryEntity>
+
+    @GET("vlog/{vlogId}/likes")
+    fun getLikes(@Path("vlogId") vlogId: UUID): Single<List<VlogLikeEntity>>
+
+    @GET("vlog/for-user/{userId}")
+    fun getVlogsForUser(@Path("userId") userId: UUID): Single<List<VlogEntity>>
+
+    @GET("vlog/recommended")
+    fun getRecommendedVlogs(): Single<List<VlogEntity>>
+
+    @POST("vlog/{vlogId}/like")
+    fun like(@Path("vlogId") vlogId: UUID): Completable
+
+    @GET("vlog/for-user/{userId}")
+    fun getRecommendedVlogs(@Path("userId") userId: UUID): Single<List<VlogEntity>>
+
+    @POST("vlog")
+    fun postVlog(@Body newVlog: VlogEntity): Completable
+
+    @POST("vlog/{vlogId}/unlike")
+    fun unlike(@Path("vlogId") vlogId: UUID): Completable
+
 }

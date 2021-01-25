@@ -1,6 +1,6 @@
 package com.laixer.swabbr.data.datasource.model
 
-import com.laixer.swabbr.domain.model.Registration
+import com.laixer.swabbr.domain.model.UserComplete
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
 import com.squareup.moshi.Json
@@ -8,19 +8,19 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 /**
- * Entity used to register a new user. Note that almost all fields
- * are nullable and thus are not required.
+ * Entity used to update a user. Any value left at null
+ * will not be changed. Each field is nullable. Note that
+ * any server-side nullable field will be set to null in
+ * this case.
  */
-data class RegistrationEntity(
-    @field:Json(name = "email") val email: String,
-    @field:Json(name = "password") val password: String,
-    @field:Json(name = "nickname") val nickname: String,
+data class UserUpdateEntity(
     @field:Json(name = "firstName") val firstName: String?,
     @field:Json(name = "lastName") val lastName: String?,
     @field:Json(name = "gender") val gender: Int?,
     @field:Json(name = "country") val country: String?,
     @field:Json(name = "birthDate") val birthDate: ZonedDateTime?,
-    @field:Json(name = "timezone") val timezone: ZoneOffset?,
+    @field:Json(name = "timeZone") val timeZone: ZoneOffset?,
+    @field:Json(name = "nickname") val nickname: String?,
     @field:Json(name = "profileImageBase64Encoded") val profileImage: String?,
     @field:Json(name = "latitude") val latitude: Double?,
     @field:Json(name = "longitude") val longitude: Double?,
@@ -29,23 +29,22 @@ data class RegistrationEntity(
     @field:Json(name = "followMode") val followMode: Int?
 )
 
+// TODO Look into this.
 /**
- * Map a registration object from domain to data.
+ *  Map a user domain object to a user update object.
  */
-fun Registration.mapToData(): RegistrationEntity = RegistrationEntity(
-    email,
-    password,
-    nickname,
+fun UserComplete.mapToUpdateData(): UserUpdateEntity = UserUpdateEntity(
     firstName,
     lastName,
-    gender?.ordinal,
+    gender.ordinal,
     country,
     birthDate,
-    timezone,
+    timeZone,
+    nickname,
     profileImage,
     latitude,
     longitude,
     isPrivate,
     dailyVlogRequestLimit,
-    followMode?.ordinal
+    followMode.ordinal
 )
