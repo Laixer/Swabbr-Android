@@ -18,15 +18,21 @@ import com.laixer.swabbr.presentation.auth.AuthUserViewModel
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.auth.SimpleAuthenticator
 import com.laixer.swabbr.presentation.auth.UserManager
-import com.laixer.swabbr.presentation.streaming.StreamViewModel
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.profile.settings.SettingsViewModel
-import com.laixer.swabbr.presentation.vlogs.details.ReactionViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
+import com.laixer.swabbr.presentation.streaming.StreamViewModel
+import com.laixer.swabbr.presentation.vlogs.details.ReactionViewModel
 import com.laixer.swabbr.presentation.vlogs.details.VlogDetailsViewModel
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
+import com.laixer.swabbr.utils.BuildWithCustomAdapters
+import com.laixer.swabbr.utils.UriAdapter
+import com.laixer.swabbr.utils.UuidJsonAdapter
+import com.laixer.swabbr.utils.ZonedDateTimeAdapter
+import com.squareup.moshi.Moshi
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -37,6 +43,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = BuildConfig.API_ENDPOINT
@@ -73,78 +80,50 @@ val authModule: Module = module {
 val viewModelModule: Module = module {
     viewModel { MainActivityViewModel(userManager = get()) }
     viewModel { AuthUserViewModel(userManager = get(), authUserUseCase = get(), followUseCase = get()) }
-    viewModel { StreamViewModel(livestreamUseCase = get()) }
-    viewModel { AuthViewModel(userManager = get(), authUseCase = get(), firebaseMessaging = get()) }
-    viewModel { ProfileViewModel(usersUseCase = get(), userVlogsUseCase = get(), followUseCase = get()) }
-    viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogsUseCase = get()) }
-    viewModel {
-        VlogDetailsViewModel(
-            userVlogsUseCase = get(),
-            userVlogUseCase = get(),
-            reactionsUseCase = get(),
-            vlogsUseCase = get()
-        )
-    }
+    viewModel { StreamViewModel(vlogUseCase = get()) }
+    viewModel { AuthViewModel(userManager = get(), authUserUseCase = get(), authUseCase = get(), firebaseMessaging = get()) }
+    viewModel { ProfileViewModel(usersUseCase = get(), vlogUseCase = get(), followUseCase = get(), authUserUseCase = get()) }
+    viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogUseCase = get()) }
+    viewModel { VlogDetailsViewModel(reactionsUseCase = get(), vlogUseCase = get()) }
     viewModel { SearchViewModel(usersUseCase = get()) }
     viewModel { SettingsViewModel(settingsUseCase = get()) }
     viewModel { ReactionViewModel(mHttpClient = get(), reactionsUseCase = get(), context = androidContext()) }
 }
 val useCaseModule: Module = module {
-    factory { LivestreamUseCase(livestreamRepository = get()) }
-    factory { AuthUserUseCase(authRepository = get(), userRepository = get()) }
+    factory { AuthUserUseCase(userRepository = get(), followRequestRepository = get()) }
     factory { AuthUseCase(authRepository = get()) }
     factory { UsersUseCase(userRepository = get()) }
-    factory { UsersVlogsUseCase(userRepository = get(), vlogRepository = get()) }
-    factory { UserVlogUseCase(userRepository = get(), vlogRepository = get()) }
-    factory { UserVlogsUseCase(vlogRepository = get(), userRepository = get()) }
-    factory { VlogsUseCase(vlogRepository = get()) }
-    factory { UserReactionUseCase(userRepository = get(), reactionRepository = get()) }
+    factory { VlogUseCase(userRepository = get(), vlogRepository = get(), reactionRepository = get()) }
+    factory { ReactionUseCase(userRepository = get(), reactionRepository = get()) }
     factory { ReactionsUseCase(reactionRepository = get()) }
-    factory { FollowUseCase(followRepository = get()) }
-    factory { SettingsUseCase(repository = get()) }
+    factory { FollowUseCase(followRequestRepository = get(), userRepository = get()) }
+    factory { SettingsUseCase(userRepository = get()) }
 }
 val repositoryModule: Module = module {
-    single<AuthRepository> {
-        AuthRepositoryImpl(
-            authCacheDataSource = get(),
-            authRemoteDataSource = get()
-        )
-    }
-    single<LivestreamRepository> { LivestreamRepositoryImpl(livestreamDataSource = get()) }
+    single<AuthRepository> { AuthRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
     single<UserRepository> { UserRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
     single<VlogRepository> { VlogRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
     single<ReactionRepository> { ReactionRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
-    single<FollowRepository> { FollowRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
-    single<SettingsRepository> { SettingsRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
+    single<FollowRequestRepository> { FollowRequestRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
 }
 val dataSourceModule: Module = module {
     single<AuthCacheDataSource> { AuthCacheDataSourceImpl(get()) }
-    single<LivestreamDataSource> { LivestreamDataSourceImpl(livestreamApi = get()) }
-    single<AuthRemoteDataSource> {
-        AuthRemoteDataSourceImpl(
-            authApi = get(),
-            settingsApi = get(),
-            usersApi = get(),
-            followApi = get()
-        )
-    }
+    single<AuthDataSource> { AuthRemoteDataSourceImpl(authApi = get()) }
     single<UserCacheDataSource> { UserCacheDataSourceImpl(cache = get()) }
-    single<UserRemoteDataSource> { UserRemoteDataSourceImpl(api = get()) }
+    single<UserDataSource> { UserDataSourceImpl(api = get()) }
     single<VlogCacheDataSource> { VlogCacheDataSourceImpl(cache = get()) }
-    single<VlogRemoteDataSource> { VlogRemoteDataSourceImpl(api = get()) }
+    single<VlogDataSource> { VlogDataSourceImpl(api = get()) }
     single<ReactionCacheDataSource> { ReactionCacheDataSourceImpl(cache = get()) }
-    single<ReactionRemoteDataSource> { ReactionRemoteDataSourceImpl(api = get()) }
-    single<FollowRemoteDataSource> { FollowRemoteDataSourceImpl(api = get()) }
-    single<FollowCacheDataSource> { FollowCacheDataSourceImpl(cache = get()) }
-    single<SettingsCacheDataSource> { SettingsCacheDataSourceImpl(cache = get()) }
-    single<SettingsRemoteDataSource> { SettingsRemoteDataSourceImpl(api = get()) }
+    single<ReactionDataSource> { ReactionDataSourceImpl(api = get()) }
+    single<FollowRequestDataSource> { FollowRequestRemoteDataSourceImpl(api = get()) }
+    single<FollowRequestCacheDataSource> { FollowRequestCacheDataSourceImpl(cache = get()) }
 }
 val networkModule: Module = module {
     single {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(get())
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(Moshi.Builder().BuildWithCustomAdapters()))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .build()
     }
@@ -166,13 +145,11 @@ val networkModule: Module = module {
     single { com.laixer.swabbr.CacheInterceptor() }
     single { AuthInterceptor(userManager = get()) }
 
-    single<LivestreamApi> { get<Retrofit>().create(LivestreamApi::class.java) }
     single<AuthApi> { get<Retrofit>().create(AuthApi::class.java) }
-    single<UsersApi> { get<Retrofit>().create(UsersApi::class.java) }
-    single<VlogsApi> { get<Retrofit>().create(VlogsApi::class.java) }
-    single<ReactionsApi> { get<Retrofit>().create(ReactionsApi::class.java) }
-    single<FollowApi> { get<Retrofit>().create(FollowApi::class.java) }
-    single<SettingsApi> { get<Retrofit>().create(SettingsApi::class.java) }
+    single<UserApi> { get<Retrofit>().create(UserApi::class.java) }
+    single<VlogApi> { get<Retrofit>().create(VlogApi::class.java) }
+    single<ReactionApi> { get<Retrofit>().create(ReactionApi::class.java) }
+    single<FollowRequestApi> { get<Retrofit>().create(FollowRequestApi::class.java) }
 }
 val cacheModule: Module = module {
     single { Cache() }
