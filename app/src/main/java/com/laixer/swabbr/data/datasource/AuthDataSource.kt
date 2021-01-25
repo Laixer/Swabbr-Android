@@ -1,38 +1,34 @@
 package com.laixer.swabbr.data.datasource
 
-import com.laixer.swabbr.domain.model.*
+import com.laixer.swabbr.domain.model.Login
+import com.laixer.swabbr.domain.model.Registration
+import com.laixer.swabbr.domain.model.TokenWrapper
+import com.laixer.swabbr.domain.model.UserComplete
 import io.reactivex.Completable
 import io.reactivex.Single
 
+/**
+ * Caching for authentication data.
+ */
 interface AuthCacheDataSource {
 
-    val key: String
-        get() = "AUTH"
+    val key: String get() = "AUTH"
 
-    fun set(authUser: AuthUser): Single<AuthUser>
+    fun set(tokenWrapper: TokenWrapper): Single<TokenWrapper>
 
-    fun get(): Single<AuthUser>
+    fun get(): Single<TokenWrapper>
 
     fun logout(): Completable
 }
 
-interface AuthRemoteDataSource {
+/**
+ *  Data source for authentication related operations.
+ */
+interface AuthDataSource {
 
-    fun login(login: Login): Single<AuthUser>
+    fun login(login: Login): Single<TokenWrapper>
 
-    fun register(registration: Registration): Single<AuthUser>
+    fun register(registration: Registration): Completable
 
     fun logout(): Completable
-
-    fun getAuthenticatedUser(): Single<User>
-
-    fun updateAuthenticatedUser(user: User): Single<User>
-
-    fun getSettings(): Single<Settings>
-
-    fun saveSettings(settings: Settings): Single<Settings>
-
-    fun getStatistics(): Single<UserStatistics>
-
-    fun getIncomingFollowRequests(): Single<List<FollowRequest>>
 }

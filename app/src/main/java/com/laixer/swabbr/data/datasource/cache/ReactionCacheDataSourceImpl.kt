@@ -4,8 +4,11 @@ import com.laixer.cache.Cache
 import com.laixer.swabbr.data.datasource.ReactionCacheDataSource
 import com.laixer.swabbr.domain.model.Reaction
 import io.reactivex.Single
-import java.util.UUID
+import java.util.*
 
+/**
+ *  Caching for reaction objects.
+ */
 class ReactionCacheDataSourceImpl constructor(
     private val cache: Cache
 ) : ReactionCacheDataSource {

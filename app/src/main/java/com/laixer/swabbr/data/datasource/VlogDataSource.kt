@@ -1,21 +1,22 @@
 package com.laixer.swabbr.data.datasource
 
-import com.laixer.swabbr.data.datasource.model.WatchVlogResponse
-import com.laixer.swabbr.domain.model.LikeList
+import com.laixer.swabbr.domain.model.UploadWrapper
 import com.laixer.swabbr.domain.model.Vlog
+import com.laixer.swabbr.domain.model.VlogLike
+import com.laixer.swabbr.domain.model.VlogLikeSummary
 import io.reactivex.Completable
 import io.reactivex.Single
-import java.util.UUID
+import java.util.*
 
+/**
+ * Interface for caching vlog data.
+ */
 interface VlogCacheDataSource {
 
-    val key: String
-        get() = "VLOGS"
+    val key: String get() = "VLOGS"
+    val keyRecommended: String get() = "RECOMMENDED_VLOGS"
 
-    val recommendedKey: String
-        get() = "RECOMMENDED_VLOGS"
-
-    fun getUserVlogs(userId: UUID): Single<List<Vlog>>
+    fun getForUser(userId: UUID): Single<List<Vlog>>
 
     fun set(list: List<Vlog>): Single<List<Vlog>>
 
@@ -30,23 +31,33 @@ interface VlogCacheDataSource {
     fun delete(vlogId: UUID): Completable
 }
 
-interface VlogRemoteDataSource {
+/**
+ * Interface for a vlog data source.
+ */
+interface VlogDataSource {
 
-    fun getUserVlogs(userId: UUID): Single<List<Vlog>>
-
-    fun get(vlogId: UUID): Single<Vlog>
-
-    fun getRecommendedVlogs(): Single<List<Vlog>>
-
-    fun getLikes(vlogId: UUID): Single<LikeList>
-
-    fun like(vlogId: UUID): Completable
-
-    fun unlike(vlogId: UUID): Completable
-
-    fun watch(vlogId: UUID): Single<WatchVlogResponse>
+    // TODO Implement
+    fun addView(vlogId: UUID): Completable
 
     fun delete(vlogId: UUID): Completable
 
-    fun getReactionCount(vlogId: UUID): Single<Int>
+    fun generateUploadWrapper(): Single<UploadWrapper>
+
+    fun get(vlogId: UUID): Single<Vlog>
+
+    fun getVlogLikeSummary(vlogId: UUID): Single<VlogLikeSummary>
+
+    fun getLikes(vlogId: UUID): Single<List<VlogLike>>
+
+    fun getRecommended(): Single<List<Vlog>>
+
+    fun getForUser(userId: UUID): Single<List<Vlog>>
+
+    fun like(vlogId: UUID): Completable
+
+    fun post(vlog: Vlog): Completable
+
+    fun unlike(vlogId: UUID): Completable
+
+    fun update(updatedVlog: Vlog): Completable
 }
