@@ -6,43 +6,51 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.lifecycle.Observer
-import com.auth0.android.jwt.JWT
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
-import com.laixer.swabbr.domain.model.FollowMode
+import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.auth.AuthViewModel
-import com.laixer.swabbr.presentation.model.AuthUserItem
-import com.laixer.swabbr.presentation.model.SettingsItem
+import com.laixer.swabbr.presentation.model.UserCompleteItem
+import com.laixer.swabbr.presentation.model.UserUpdatablePropertiesItem
+import com.laixer.swabbr.presentation.model.copy
 import kotlinx.android.synthetic.main.fragment_settings.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+// TODO This contains some race conditions. Updates sent to the backend
+//      don't show until refreshed.
+/**
+ *  Fragment for displaying and updating user settings.
+ */
 class SettingsFragment : AuthFragment() {
     private val vm: SettingsViewModel by sharedViewModel()
     private val authVm: AuthViewModel by sharedViewModel()
 
-    private var settings: SettingsItem? = null
-    private var savedSettings: SettingsItem? = null
+    private var userProperties: UserUpdatablePropertiesItem? = null
+    private var userPropertiesSaved: UserUpdatablePropertiesItem? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_settings, container, false)
     }
 
+    /**
+     *  Adds onClickListeners and binds change functions to
+     *  observable view model resources.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
         prepareUI()
 
         saveSettings.setOnClickListener {
-            settings?.let {
+            userProperties?.let {
                 enableSettings(false)
-                vm.setSettings(it)
+                vm.setUpdatableProperties(it)
             }
         }
 
@@ -51,25 +59,32 @@ class SettingsFragment : AuthFragment() {
             authVm.logout()
         }
 
-        vm.settings.observe(viewLifecycleOwner, Observer { loadSettings(it) })
+        // TODO Question Why is this called in OnViewCreated, while
+        //      other fragments have these functions in OnCreateView?
+        vm.settings.observe(viewLifecycleOwner, Observer { loadSettingsFromResource(it) })
         authVm.authenticatedUser.observe(viewLifecycleOwner, Observer { logout(it) })
 
-        vm.getSettings(true)
+        vm.getUpdatableProperties(true)
     }
 
-    private fun loadSettings(res: Resource<SettingsItem>) {
+    /**
+     *  Called when the observed [vm] resource changes.
+     *
+     *  @param res The observed resource.
+     */
+    private fun loadSettingsFromResource(res: Resource<UserUpdatablePropertiesItem>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 enableSettings(false)
             }
             ResourceState.SUCCESS -> {
-                settings = res.data
-                settings?.let {
-                    savedSettings = it.copy()
+                userProperties = res.data
+                userProperties?.let {
+                    userPropertiesSaved = it.copy()
 
-                    privateSwitch.isChecked = it.private
-                    dailyVlogRequestLimitSpinner.setSelection(it.dailyVlogRequestLimit)
-                    followmodeSpinner.setSelection(it.followMode.ordinal)
+                    privateSwitch.isChecked = it.isPrivate!!
+                    dailyVlogRequestLimitSpinner.setSelection(it.dailyVlogRequestLimit!!)
+                    followmodeSpinner.setSelection(it.followMode?.ordinal!!)
                     enableSettings(true)
                     checkChanges()
                 }
@@ -81,7 +96,14 @@ class SettingsFragment : AuthFragment() {
         }
     }
 
-    private fun logout(res: Resource<AuthUserItem?>) {
+    // TODO Why do we need this?
+    /**
+     *  Logout function which is called when the observed
+     *  user resource changes.
+     *
+     *  @param res The observed user resource.
+     */
+    private fun logout(res: Resource<UserCompleteItem?>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 enableSettings(false)
@@ -104,7 +126,7 @@ class SettingsFragment : AuthFragment() {
 
     private fun prepareSwitch() {
         privateSwitch.setOnCheckedChangeListener { _, isChecked ->
-            settings?.private = isChecked
+            userProperties?.isPrivate = isChecked
             checkChanges()
         }
     }
@@ -116,7 +138,7 @@ class SettingsFragment : AuthFragment() {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                settings?.dailyVlogRequestLimit = position
+                userProperties?.dailyVlogRequestLimit = position
                 checkChanges()
             }
         }
@@ -127,7 +149,7 @@ class SettingsFragment : AuthFragment() {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                settings?.followMode = FollowMode.values().first { it.ordinal == position }
+                userProperties?.followMode = FollowMode.values().first { it.ordinal == position }
                 checkChanges()
             }
         }
@@ -154,6 +176,6 @@ class SettingsFragment : AuthFragment() {
     }
 
     private fun checkChanges() {
-        saveSettings.isEnabled = settings != savedSettings
+        saveSettings.isEnabled = userProperties != userPropertiesSaved
     }
 }

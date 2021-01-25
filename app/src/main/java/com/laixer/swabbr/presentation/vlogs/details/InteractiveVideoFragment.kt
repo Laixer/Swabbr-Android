@@ -1,39 +1,32 @@
 package com.laixer.swabbr.presentation.vlogs.details
 
-import android.Manifest
-import android.app.Activity
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.*
-import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
-import com.laixer.swabbr.utils.loadAvatar
 import com.laixer.swabbr.presentation.model.*
 import com.laixer.swabbr.utils.Utils
+import com.laixer.swabbr.utils.loadAvatar
 import com.plattysoft.leonids.ParticleSystem
 import kotlinx.android.synthetic.main.exo_player_view.*
 import kotlinx.android.synthetic.main.include_user_info.*
 import kotlinx.android.synthetic.main.item_vlog.*
 import kotlinx.android.synthetic.main.reactions_sheet.*
 import kotlinx.android.synthetic.main.reactions_sheet.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
-import kotlin.concurrent.schedule
 
+// TODO Explain better!
+/**
+ *  Fragment for video display with which the user can interact.
+ */
 open class InteractiveVideoFragment(/* enableLikes: Boolean = true, enableReactions: Boolean = true*/) :
     VideoFragment() {
 
@@ -41,16 +34,16 @@ open class InteractiveVideoFragment(/* enableLikes: Boolean = true, enableReacti
 
     private lateinit var vlogId: UUID
 
-    private val onProfileClick: (ReactionUserItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.userId}"))
+    private val onProfileClick: (ReactionWrapperItem) -> Unit = {
+        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
     }
 
-    private val onReactionClick: (ReactionUserItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/watchReaction?reactionId=${it.id}"))
+    private val onReactionClick: (ReactionWrapperItem) -> Unit = {
+        findNavController().navigate(Uri.parse("https://swabbr.com/watchReaction?reactionId=${it.reaction.id}"))
     }
 
     fun isVlogLiked(): Boolean =
-        vlogVm.likes.value?.data?.usersSimplified?.any { it.id == authUserVm.getAuthUserId() } ?: false
+        vlogVm.likes.value?.data?.users?.any { it.id == authUserVm.getAuthUserId() } ?: false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         vlogVm.apply {
@@ -152,15 +145,15 @@ open class InteractiveVideoFragment(/* enableLikes: Boolean = true, enableReacti
         }
     }
 
-    private fun updateVlog(res: Resource<List<UserVlogItem>>) {
+    private fun updateVlog(res: Resource<List<VlogWrapperItem>>) {
         when (res.state) {
             ResourceState.LOADING -> {
             }
             ResourceState.SUCCESS -> {
                 res.data?.first()?.let {
-                    vlogId = it.vlog.data.id
+                    vlogId = it.vlog.id
                     vlogVm.getReactions(vlogId)
-                    vlogVm.getLikes(vlogId)
+                    vlogVm.getVlogLikeSummary(vlogId)
 
                     user_avatar.loadAvatar(it.user.profileImage, it.user.id)
                     user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
@@ -176,18 +169,18 @@ open class InteractiveVideoFragment(/* enableLikes: Boolean = true, enableReacti
         }
     }
 
-    private fun updateLikes(resource: Resource<LikeListItem>) = with(resource) {
+    private fun updateLikes(resource: Resource<VlogLikeSummaryItem>) = with(resource) {
         when (state) {
             ResourceState.LOADING -> {
                 like_button.isEnabled = false
             }
             ResourceState.SUCCESS -> {
-                val isLiked = data?.usersSimplified?.any { it.id == authUserVm.getAuthUserId() } ?: false
+                val isLiked = data?.users?.any { it.id == authUserVm.getAuthUserId() } ?: false
                 like_button.isChecked = isLiked
                 like_button.isEnabled = !isLiked
 
                 like_button.isEnabled = true
-                like_count.text = "${data?.totalLikeCount ?: 0}"
+                like_count.text = "${data?.totalLikes ?: 0}"
             }
             ResourceState.ERROR -> {
                 like_button.isEnabled = true
@@ -196,7 +189,7 @@ open class InteractiveVideoFragment(/* enableLikes: Boolean = true, enableReacti
         }
     }
 
-    private fun updateReactions(resource: Resource<List<ReactionUserItem>>) {
+    private fun updateReactions(resource: Resource<List<ReactionWrapperItem>>) {
         with(resource) {
             when (state) {
                 ResourceState.LOADING -> {
@@ -224,5 +217,4 @@ open class InteractiveVideoFragment(/* enableLikes: Boolean = true, enableReacti
         super.onDestroyView()
         reactionsRecyclerView?.adapter = null
     }
-
 }

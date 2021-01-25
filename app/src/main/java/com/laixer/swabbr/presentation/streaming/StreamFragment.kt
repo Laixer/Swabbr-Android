@@ -21,7 +21,6 @@ import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
-import com.laixer.swabbr.data.datasource.model.StreamResponse
 import com.laixer.swabbr.injectFeature
 import io.antmedia.android.broadcaster.ILiveVideoBroadcaster
 import io.antmedia.android.broadcaster.LiveVideoBroadcaster
@@ -70,7 +69,11 @@ open class StreamFragment : Fragment() {
         }
 
         askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
-            vm.streamResponse.observe(viewLifecycleOwner, Observer { connect(it) })
+
+            // TODO
+            throw NotImplementedError()
+
+            //vm.streamResponse.observe(viewLifecycleOwner, Observer { connect(it) })
 
             capture_button.apply {
                 isEnabled = false
@@ -158,42 +161,42 @@ open class StreamFragment : Fragment() {
         }
     }
 
-    private fun connect(res: Resource<StreamResponse>) = with(res) {
-        when (state) {
-            ResourceState.LOADING -> {
-                this@StreamFragment.lifecycleScope.launch(Dispatchers.Main) {
-                    capture_button.apply {
-                        isEnabled = false
-                        visibility = View.VISIBLE
-                    }
-
-                }
-            }
-            ResourceState.SUCCESS -> {
-                try {
-                    data?.let {
-                        status_text.text = getString(R.string.connecting)
-                        mLiveVideoBroadcaster.connect(it.getUrl())
-                    }
-                } catch (e: ConnectException) {
-                    Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
-                    stop()
-                } finally {
-                    if (mLiveVideoBroadcaster.isConnected()) {
-                        // We successfully connected, start countdown to broadcast
-                        start()
-                    } else {
-                        stop()
-                    }
-                }
-            }
-            ResourceState.ERROR -> {
-                Toast.makeText(requireContext(), "Unable to retrieve connection credentials.", Toast.LENGTH_SHORT)
-                    .show()
-                stop()
-            }
-        }
-    }
+//    private fun connect(res: Resource<StreamResponse>) = with(res) {
+//        when (state) {
+//            ResourceState.LOADING -> {
+//                this@StreamFragment.lifecycleScope.launch(Dispatchers.Main) {
+//                    capture_button.apply {
+//                        isEnabled = false
+//                        visibility = View.VISIBLE
+//                    }
+//
+//                }
+//            }
+//            ResourceState.SUCCESS -> {
+//                try {
+//                    data?.let {
+//                        status_text.text = getString(R.string.connecting)
+//                        mLiveVideoBroadcaster.connect(it.getUrl())
+//                    }
+//                } catch (e: ConnectException) {
+//                    Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
+//                    stop()
+//                } finally {
+//                    if (mLiveVideoBroadcaster.isConnected()) {
+//                        // We successfully connected, start countdown to broadcast
+//                        start()
+//                    } else {
+//                        stop()
+//                    }
+//                }
+//            }
+//            ResourceState.ERROR -> {
+//                Toast.makeText(requireContext(), "Unable to retrieve connection credentials.", Toast.LENGTH_SHORT)
+//                    .show()
+//                stop()
+//            }
+//        }
+//    }
 
     private fun stop() = lifecycleScope.launch(Dispatchers.Main) {
         stream_position_timer.stopTimer()

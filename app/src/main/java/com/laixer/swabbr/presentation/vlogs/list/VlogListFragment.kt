@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.auth0.android.jwt.JWT
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
@@ -15,17 +14,20 @@ import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
-import com.laixer.swabbr.presentation.model.UserVlogItem
+import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+/**
+ * Fragment displaying a list of vlogs using [VlogListAdapter].
+ */
 class VlogListFragment : AuthFragment() {
 
     private val vm: VlogListViewModel by sharedViewModel()
-    private val itemClick: (UserVlogItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${it.user.id}&vlogId=${it.vlog.data.id}"))
+    private val itemClick: (VlogWrapperItem) -> Unit = {
+        findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${it.user.id}&vlogId=${it.vlog.id}"))
     }
-    private val profileClick: (UserVlogItem) -> Unit = {
+    private val profileClick: (VlogWrapperItem) -> Unit = {
         findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
 
     }
@@ -52,7 +54,7 @@ class VlogListFragment : AuthFragment() {
         }
     }
 
-    private fun updateVlogs(resource: Resource<List<UserVlogItem>>) = with(resource) {
+    private fun updateVlogs(resource: Resource<List<VlogWrapperItem>>) = with(resource) {
         with(swipeRefreshLayout) {
             when (state) {
                 ResourceState.LOADING -> startRefreshing()

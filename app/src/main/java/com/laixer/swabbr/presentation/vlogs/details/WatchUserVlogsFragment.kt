@@ -8,16 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
-import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
-import com.laixer.swabbr.presentation.model.UserVlogItem
+import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import kotlinx.android.synthetic.main.fragment_vlogs_pager.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.UUID
+import java.util.*
 
 class WatchUserVlogsFragment : AuthFragment() {
 
@@ -44,10 +42,10 @@ class WatchUserVlogsFragment : AuthFragment() {
 //            })
         }
 
-        vm.getVlogs(UUID.fromString(userId), refresh = true)
+        vm.getVlogsForUser(UUID.fromString(userId), refresh = true)
     }
 
-    private fun updateVlogs(resource: Resource<List<UserVlogItem>>) = with(resource) {
+    private fun updateVlogs(resource: Resource<List<VlogWrapperItem>>) = with(resource) {
         when (state) {
             ResourceState.LOADING -> {
             }
@@ -55,7 +53,7 @@ class WatchUserVlogsFragment : AuthFragment() {
                 data?.let {
                     initialVlogId?.let {
                         vlog_viewpager.currentItem = vm.vlogs.value?.data?.indexOf(vm.vlogs.value?.data?.first { item ->
-                            item.vlog.data.id.toString() == it
+                            item.vlog.id.toString() == it
                         }) ?: 0
                     }
 
@@ -83,7 +81,7 @@ class WatchUserVlogsFragment : AuthFragment() {
 
     internal inner class FragmentAdapter : FragmentStateAdapter(this@WatchUserVlogsFragment) {
         override fun createFragment(position: Int): Fragment =
-            getVlogAtIndex(position).vlog.data.id.let { WatchVlogFragment.create(it.toString()) }
+            getVlogAtIndex(position).vlog.id.let { WatchVlogFragment.create(it.toString()) }
 
         override fun getItemCount(): Int = vm.vlogs.value?.data?.size ?: 0
     }
@@ -93,7 +91,7 @@ class WatchUserVlogsFragment : AuthFragment() {
         vlog_viewpager.adapter = null
     }
 
-    private fun getVlogAtIndex(index: Int): UserVlogItem = vm.vlogs.value!!.data!![index]
+    private fun getVlogAtIndex(index: Int): VlogWrapperItem = vm.vlogs.value!!.data!![index]
 
     companion object {
         private const val CURRENT_ITEM_INDEX = "CURRENTITEMINDEX"

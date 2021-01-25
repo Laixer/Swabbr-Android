@@ -29,16 +29,13 @@ import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.BuildConfig
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.model.UploadReactionItem
+import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.vlogs.details.ReactionViewModel
 import com.laixer.swabbr.utils.AutoFitSurfaceView
 import com.laixer.swabbr.utils.Utils
 import com.laixer.swabbr.utils.getPreviewOutputSize
 import io.antmedia.android.broadcaster.utils.OrientationLiveData
 import kotlinx.android.synthetic.main.fragment_record.*
-import kotlinx.android.synthetic.main.fragment_record.capture_button
-import kotlinx.android.synthetic.main.fragment_record.stream_position_timer
-import kotlinx.android.synthetic.main.fragment_record.stream_progress
 import kotlinx.android.synthetic.main.video_confirm_dialogue.*
 import kotlinx.coroutines.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -50,16 +47,26 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 /**
- * This activity uses the camera/camcorder as the A/V source for the [android.media.MediaRecorder] API.
- * A [android.view.TextureView] is used as the camera preview which limits the code to API 14+. This
- * can be easily replaced with a [android.view.SurfaceView] to run on older devices.
+ *  Fragment for recording a reaction. The reaction is buffered into a file,
+ *  and a playback & confirmation popup is shown after recording. When the
+ *  user decides to proceed with the reaction, the file is uploaded to the
+ *  blob storage and the backend is notified of this.
+ *
+ *  This activity uses the camera/camcorder as the A/V source for the [android.media.MediaRecorder] API.
+ *  A [android.view.TextureView] is used as the camera preview which limits the code to API 14+. This
+ *  can be easily replaced with a [android.view.SurfaceView] to run on older devices.
  */
 class RecordReactionFragment : Fragment() {
     /** AndroidX navigation arguments */
     private val args: RecordReactionFragmentArgs by navArgs()
     private val reactionVm: ReactionViewModel by viewModel()
 
-    private val vlogId: UUID by lazy { UUID.fromString(args.vlogId) }
+    private val targetVlogId: UUID by lazy { UUID.fromString(args.vlogId) }
+
+    // TODO This shouldn't be in a fragment
+    /**
+     *  Url to which we will upload the reactions.
+     */
     private lateinit var uploadUrl: String
 
     private var recording = false
@@ -75,7 +82,9 @@ class RecordReactionFragment : Fragment() {
         cameraManager.getCameraCharacteristics(args.cameraId)
     }
 
-    /** File where the recording will be saved */
+    /**
+     * File where the recording will be saved
+     */
     private val outputFile: File by lazy { createFile(requireContext(), "mp4") }
 
     private val supportedCameraSizeList: List<CameraInfo> by lazy {
@@ -173,7 +182,9 @@ class RecordReactionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Utils.enterFullscreen(requireActivity())
         reactionVm.newReaction.observe(viewLifecycleOwner, Observer { observeNewReaction(it) })
-        reactionVm.newReaction(vlogId)
+
+        // TODO Understand
+        //reactionVm.newReaction(vlogId)
 
         viewFinder = view.findViewById(R.id.view_finder)
 
@@ -209,15 +220,20 @@ class RecordReactionFragment : Fragment() {
         }
     }
 
-    private fun observeNewReaction(resource: Resource<UploadReactionItem>) = with(resource) {
+    private fun observeNewReaction(resource: Resource<ReactionItem>) = with(resource) {
         when (state) {
             ResourceState.LOADING -> {
                 // Present loading state
             }
             ResourceState.SUCCESS -> {
+                // TODO Azure coupled
                 data?.let {
-                    val arr = it.uploadUrl.split("?sv=")
-                    uploadUrl = "${arr[0]}/video.mp4?sv=${arr[1]}"
+
+                    // TODO
+                    throw NotImplementedError();
+
+                    //val arr = it.uploadUrl.split("?sv=")
+                    //uploadUrl = "${arr[0]}/video.mp4?sv=${arr[1]}"
                 }
             }
             ResourceState.ERROR -> {
@@ -312,7 +328,9 @@ class RecordReactionFragment : Fragment() {
     }
 
     private fun stop() = lifecycleScope.launch(Dispatchers.IO) {
-        if (!recording) { cancel() }
+        if (!recording) {
+            cancel()
+        }
         // Unlocks screen rotation after recording finished
         requireActivity().requestedOrientation =
             ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -335,6 +353,7 @@ class RecordReactionFragment : Fragment() {
         lifecycleScope.launch(Dispatchers.Main) {
             stream_position_timer.stopTimer()
 
+            // Confirmation playback popup
             Dialog(requireActivity()).apply {
                 setCancelable(true)
                 setContentView(R.layout.video_confirm_dialogue)
@@ -403,7 +422,7 @@ class RecordReactionFragment : Fragment() {
         lifecycleScope.launch(Dispatchers.IO) {
             reactionVm.uploadReaction(uri, uploadUrl)
         }.invokeOnCompletion {
-            reactionVm.finishUploading(reactionVm.newReaction.value!!.data!!.reaction.id, {
+            reactionVm.postReactionAfterUpload(reactionVm.newReaction.value!!.data!!, {
                 lifecycleScope.launch(Dispatchers.Main) {
                     Toast.makeText(requireContext(), "Finished uploading reaction!", Toast.LENGTH_SHORT).show()
                     requireActivity().onBackPressed()

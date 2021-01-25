@@ -7,11 +7,15 @@ import androidx.navigation.fragment.navArgs
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
-import com.laixer.swabbr.data.datasource.model.WatchReactionResponse
+import com.laixer.swabbr.presentation.model.ReactionItem
+import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import kotlinx.android.synthetic.main.item_vlog.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
+/**
+ *  Wrapper around [VideoFragment] used for [ReactionItem] playback.
+ */
 class WatchReactionFragment(id: String? = null) : VideoFragment() {
     private val args by navArgs<WatchReactionFragmentArgs>()
 
@@ -28,15 +32,19 @@ class WatchReactionFragment(id: String? = null) : VideoFragment() {
         reactionVm.watch(reactionId)
     }
 
-    private fun start(res: Resource<WatchReactionResponse>) = with(res) {
+    /**
+     *  Attempts to start video playback.
+     *
+     *  @param res Reaction resource item containing [ReactionItem.videoUri].
+     */
+    private fun start(res: Resource<ReactionWrapperItem>) = with(res) {
         when (state) {
             ResourceState.LOADING -> {
                 content_loading_progressbar.visibility = View.VISIBLE
             }
             ResourceState.SUCCESS -> {
                 data?.let {
-                    stream(it.endpointUrl, it.token)
-
+                    stream(it.reaction.videoUri.toString())
                 }
             }
             ResourceState.ERROR -> {

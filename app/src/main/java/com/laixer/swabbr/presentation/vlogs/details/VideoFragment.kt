@@ -2,7 +2,9 @@ package com.laixer.swabbr.presentation.vlogs.details
 
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
@@ -12,18 +14,27 @@ import com.laixer.swabbr.presentation.AuthFragment
 import kotlinx.android.synthetic.main.item_vlog.*
 import kotlinx.android.synthetic.main.item_vlog.view.*
 
+/**
+ *  Fragment for video playback.
+ */
 open class VideoFragment : AuthFragment() {
-
     private val exoPlayer: ExoPlayer by lazy { ExoPlayerFactory.newSimpleInstance(requireContext()) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return layoutInflater.inflate(R.layout.item_vlog, container, false)
     }
 
-    protected fun stream(endpoint: String, decrypt_token: String) {
-        val dataSourceFactory = DefaultHttpDataSourceFactory(requireContext().getString(R.string.app_name)).apply {
-            defaultRequestProperties.set("Authorization", "Bearer=$decrypt_token")
-        }
+    /**
+     *  Attempts to stream video from a given https endpoint. Note that
+     *  no tokens or encryption is expected, the endpoint should be pre-
+     *  signed.
+     *
+     *  @param endpoint Resource location.
+     */
+    protected fun stream(endpoint: String) {
+        val dataSourceFactory = DefaultHttpDataSourceFactory(requireContext().getString(R.string.app_name))
+
+        // TODO Correct protocol!
         val mediaSourceFactory = HlsMediaSource.Factory(dataSourceFactory).setAllowChunklessPreparation(true)
         val mediaSource = mediaSourceFactory.createMediaSource(Uri.parse(endpoint))
 

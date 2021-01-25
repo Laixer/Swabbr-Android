@@ -12,13 +12,18 @@ import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.AuthFragment
+import com.laixer.swabbr.presentation.model.UserCompleteItem
+import com.laixer.swabbr.presentation.model.UserWithStatsItem
 import com.laixer.swabbr.utils.loadAvatar
-import com.laixer.swabbr.presentation.model.UserItem
-import com.laixer.swabbr.presentation.model.UserStatisticsItem
 import kotlinx.android.synthetic.main.fragment_auth_profile.*
 import kotlinx.android.synthetic.main.include_user_details.*
 import kotlinx.android.synthetic.main.include_user_stats.*
 
+/**
+ *  Fragment for displaying generic user profile information.
+ *  This fragment contains tabs for more specific user details
+ *  and information display.
+ */
 class AuthProfileFragment : AuthFragment() {
 
     private var profileTabAdapter: ProfileTabAdapter? = null
@@ -28,15 +33,22 @@ class AuthProfileFragment : AuthFragment() {
         retainInstance = true
     }
 
+    /**
+     *  Binds update functions to observable resources in the
+     *  [authUserVm].
+     */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
 
-        authUserVm.user.observe(viewLifecycleOwner, Observer { updateProfile(it) })
-        authUserVm.statistics.observe(viewLifecycleOwner, Observer { updateStats(it) })
+        authUserVm.user.observe(viewLifecycleOwner, Observer { updatePropertiesFromViewModel(it) })
+        authUserVm.statistics.observe(viewLifecycleOwner, Observer { updateStatsFromViewModel(it) })
 
         return inflater.inflate(R.layout.fragment_auth_profile, container, false)
     }
 
+    /**
+     *  Setup for the tabs.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -44,8 +56,8 @@ class AuthProfileFragment : AuthFragment() {
         pager.adapter = profileTabAdapter
         pager.offscreenPageLimit = 4
 
-        authUserVm.getSelf(refresh = false)
-        authUserVm.getStatistics(refresh = false)
+        authUserVm.getSelf(refresh = true) // TODO Was false, look at this
+        authUserVm.getStatistics(refresh = true) // TODO Was false, look at this
 
         TabLayoutMediator(tab_layout, pager) { tab, position ->
             tab.text = when (position) {
@@ -58,7 +70,17 @@ class AuthProfileFragment : AuthFragment() {
         }.attach()
     }
 
-    private fun updateProfile(res: Resource<UserItem>) {
+    /**
+     *  This function is attached to the observable user object
+     *  in the [authUserVm]. Whenever the current user object in
+     *  [authUserVm] changes, this function gets called.
+     *
+     *  Note that this function does not actually perform any user
+     *  updating operation. It just syncs the UI with [authUserVm].
+     *
+     *  @param res The user resource.
+     */
+    private fun updatePropertiesFromViewModel(res: Resource<UserCompleteItem>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 // TODO: Loading state
@@ -79,7 +101,14 @@ class AuthProfileFragment : AuthFragment() {
         }
     }
 
-    private fun updateStats(res: Resource<UserStatisticsItem>) {
+    /**
+     *  This function is attached to the observable stats object
+     *  in the [authUserVm]. Whenever the current stats object in
+     *  [authUserVm] changes, this function gets called.
+     *
+     *  @param res The user resource.
+     */
+    private fun updateStatsFromViewModel(res: Resource<UserWithStatsItem>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 // TODO: Loading state

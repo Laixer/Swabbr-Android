@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.auth0.android.jwt.JWT
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
@@ -15,23 +14,33 @@ import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
-import com.laixer.swabbr.presentation.model.UserVlogItem
+import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.vlogs.list.VlogListAdapter
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+/**
+ *  Fragment representing the user dashboard, displaying vlogs.
+ */
 class DashboardFragment : AuthFragment() {
-
     private val vm: VlogListViewModel by sharedViewModel()
-    private val itemClick: (UserVlogItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${it.user.id}&initialVlogId=${it.vlog.data.id}"))
+    private var vlogListAdapter: VlogListAdapter? = null
 
+    /**
+     *  Handle for when we click on a vlog.
+     */
+    private val itemClick: (VlogWrapperItem) -> Unit = {
+        findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${it.user.id}&initialVlogId=${it.vlog.id}"))
     }
-    private val profileClick: (UserVlogItem) -> Unit = {
+
+    // TODO Is this correct?
+    /**
+     *  Handle for when we click on a profile.
+     */
+    private val profileClick: (VlogWrapperItem) -> Unit = {
         findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
     }
-    private var vlogListAdapter: VlogListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,23 +63,29 @@ class DashboardFragment : AuthFragment() {
         swipeRefreshLayout.setOnRefreshListener { vm.getRecommendedVlogs(refresh = true) }
 
         vm.run {
-            vlogs.observe(viewLifecycleOwner, Observer(this@DashboardFragment::updateVlogs))
+            vlogs.observe(viewLifecycleOwner, Observer(this@DashboardFragment::updateVlogsFromViewModel))
             getRecommendedVlogs(refresh = false)
         }
     }
 
-    private fun updateVlogs(resource: Resource<List<UserVlogItem>>) {
-        when(resource.state) {
-                ResourceState.LOADING -> swipeRefreshLayout.startRefreshing()
-                ResourceState.SUCCESS -> {
-                    swipeRefreshLayout.stopRefreshing()
-                    vlogListAdapter?.submitList(resource.data)
-                    vlogListAdapter?.notifyDataSetChanged()
-                }
-                ResourceState.ERROR -> {
-                    swipeRefreshLayout.stopRefreshing()
-                }
+    /**
+     *  Called when the observed vlog collection resource is updated.
+     *
+     *  @param res The observed vlog collection resource
+     */
+    private fun updateVlogsFromViewModel(res: Resource<List<VlogWrapperItem>>) {
+        when (res.state) {
+            ResourceState.LOADING ->
+                swipeRefreshLayout.startRefreshing()
+            ResourceState.SUCCESS -> {
+                swipeRefreshLayout.stopRefreshing()
+                vlogListAdapter?.submitList(res.data)
+                vlogListAdapter?.notifyDataSetChanged()
             }
+            ResourceState.ERROR -> {
+                swipeRefreshLayout.stopRefreshing()
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -78,5 +93,4 @@ class DashboardFragment : AuthFragment() {
         vlogListAdapter = null
         vlogsRecyclerView?.adapter = null
     }
-
 }

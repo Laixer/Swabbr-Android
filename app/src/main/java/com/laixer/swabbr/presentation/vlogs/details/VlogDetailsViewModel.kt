@@ -6,34 +6,41 @@ import com.laixer.presentation.Resource
 import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
-import com.laixer.swabbr.data.datasource.model.WatchVlogResponse
-import com.laixer.swabbr.domain.usecase.UserReactionUseCase
-import com.laixer.swabbr.domain.usecase.UserVlogUseCase
-import com.laixer.swabbr.domain.usecase.UserVlogsUseCase
-import com.laixer.swabbr.domain.usecase.VlogsUseCase
+import com.laixer.swabbr.domain.usecase.ReactionUseCase
+import com.laixer.swabbr.domain.usecase.VlogUseCase
 import com.laixer.swabbr.presentation.model.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import java.util.UUID
+import java.util.*
 
+/**
+ *  Viewmodel which contains details about a vlog. This contains its
+ *  [VlogWrapperItem], its [ReactionItem] collection and the summary
+ *  [VlogLikeSummaryItem].
+ */
 class VlogDetailsViewModel constructor(
-    private val userVlogsUseCase: UserVlogsUseCase,
-    private val reactionsUseCase: UserReactionUseCase,
-    private val userVlogUseCase: UserVlogUseCase,
-    private val vlogsUseCase: VlogsUseCase
+    private val reactionsUseCase: ReactionUseCase,
+    private val vlogUseCase: VlogUseCase
 ) : ViewModel() {
 
-    val vlogs = MutableLiveData<Resource<List<UserVlogItem>>>()
-    val reactions = MutableLiveData<Resource<List<ReactionUserItem>>>()
-    val likes = MutableLiveData<Resource<LikeListItem>>()
+    val vlogs = MutableLiveData<Resource<List<VlogWrapperItem>>>()
+    val reactions = MutableLiveData<Resource<List<ReactionWrapperItem>>>()
+    val likes = MutableLiveData<Resource<VlogLikeSummaryItem>>()
 
-    val watchVlogResponse = MutableLiveData<Resource<WatchVlogResponse>>()
+    val watchVlogResponse = MutableLiveData<Resource<VlogWrapperItem>>()
 
     private val compositeDisposable = CompositeDisposable()
 
+    /**
+     *  Gets a vlog and stores it in [vlogs] as a [list]
+     *  with length 1.
+     *
+     *  @param vlogId The vlog to get.
+     *  @param refresh Force a data refresh.
+     */
     fun getVlog(vlogId: UUID, refresh: Boolean = false) =
         compositeDisposable.add(
-            userVlogUseCase.get(vlogId, refresh)
+            vlogUseCase.get(vlogId, refresh)
                 .doOnSubscribe { vlogs.setLoading() }
                 .subscribeOn(Schedulers.io()).map { it.mapToPresentation() }
                 .subscribe(
@@ -42,13 +49,19 @@ class VlogDetailsViewModel constructor(
                 )
         )
 
-    fun getVlogs(userId: UUID, refresh: Boolean = false) =
+    /**
+     *  Gets vlogs for a user and stores them in [vlogs].
+     *
+     *  @param vlogId The vlog to get.
+     *  @param refresh Force a data refresh.
+     */
+    fun getVlogsForUser(userId: UUID, refresh: Boolean = false) =
         compositeDisposable.add(
-            userVlogsUseCase.get(userId, refresh)
+            vlogUseCase.getAllForUser(userId, refresh)
                 .doOnSubscribe { vlogs.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .map { list ->
-                    list.sortedByDescending { it.second.data.dateStarted }
+                    list.sortedByDescending { it.vlog.dateStarted }
                         .mapToPresentation()
                 }
                 .subscribe(
@@ -57,45 +70,76 @@ class VlogDetailsViewModel constructor(
                 )
         )
 
+    // TODO Can this go?
+    /**
+     *  This simply gets a vlog, which is probably incorrect.
+     */
     fun watch(vlogId: UUID) = compositeDisposable.add(
-        vlogsUseCase.watch(vlogId)
+        vlogUseCase.get(vlogId, true)
             .doOnSubscribe { watchVlogResponse.setLoading() }
             .subscribe(
-                { watchVlogResponse.setSuccess(it) },
+                { watchVlogResponse.setSuccess(it.mapToPresentation()) },
                 { watchVlogResponse.setError(it.message) }
             )
     )
 
+    /**
+     *  Get reaction for a vlog and store them in [reactions].
+     *
+     *  @param vlogId The vlog to get reactions for.
+     *  @param refresh Force a data refresh, false by default.
+     */
     fun getReactions(vlogId: UUID, refresh: Boolean = false) =
         compositeDisposable.add(
-            reactionsUseCase.get(vlogId, refresh)
+            reactionsUseCase.getAllForVlog(vlogId, refresh)
                 .doOnSubscribe { reactions.setLoading() }
-                .subscribeOn(Schedulers.io()).map { it.mapToPresentation() }
+                .subscribeOn(Schedulers.io())
+                .map { it.mapToPresentation() }
                 .subscribe(
                     { reactions.setSuccess(it) },
                     { reactions.setError(it.message) }
                 )
         )
 
-    fun like(vlogId: UUID) = vlogsUseCase.like(vlogId)
+    /**
+     *  Like a vlog, then call [getVlogLikeSummary] to update
+     *  the displayed information.
+     *
+     *  @param vlogId The vlog to like.
+     */
+    fun like(vlogId: UUID) = vlogUseCase.like(vlogId)
         .doOnSubscribe { likes.setLoading() }
         .subscribeOn(Schedulers.io())
         .subscribe(
-            { getLikes(vlogId) },
+            { getVlogLikeSummary(vlogId) },
             { likes.setError(it.message) }
         )
 
-    fun unlike(vlogId: UUID) = vlogsUseCase.unlike(vlogId)
+    /**
+     *  Unlike a vlog, then call [getVlogLikeSummary] to update
+     *  the displayed information.
+     *
+     *  @param vlogId The vlog to unlike.
+     */
+    fun unlike(vlogId: UUID) = vlogUseCase.unlike(vlogId)
         .doOnSubscribe { likes.setLoading() }
         .subscribeOn(Schedulers.io())
         .subscribe(
-            { getLikes(vlogId) },
+            { getVlogLikeSummary(vlogId) },
             { likes.setError(it.message) }
         )
 
-    fun getLikes(vlogId: UUID) =
+    // TODO Is this supposed to be the vlog like summary or a list of likes?
+    /**
+     *  Gets a vlog like summary for a vlog. This is called after
+     *  [like] and [unlike] to keep the displayed information up
+     *  to date.
+     *
+     *  @param vlogId The vlog to get the summary for.
+     */
+    fun getVlogLikeSummary(vlogId: UUID) =
         compositeDisposable.add(
-            vlogsUseCase.getLikes(vlogId)
+            vlogUseCase.getVlogLikeSummary(vlogId)
                 .doOnSubscribe { likes.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .map { it.mapToPresentation() }
@@ -105,6 +149,9 @@ class VlogDetailsViewModel constructor(
                 )
         )
 
+    /**
+     *  Called on graceful disposal. This will dispose the [compositeDisposable]
+     */
     override fun onCleared() {
         compositeDisposable.dispose()
         super.onCleared()

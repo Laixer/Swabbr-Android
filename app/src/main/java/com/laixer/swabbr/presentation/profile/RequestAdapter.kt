@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
-import com.laixer.swabbr.domain.model.FollowStatus
+import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.utils.loadAvatar
 import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.UserItem
@@ -44,8 +44,8 @@ class RequestAdapter(
             itemView.followrequest_accept.setOnClickListener { onAccept.invoke(item) }
             itemView.followrequest_decline.setOnClickListener { onDecline.invoke(item) }
             itemView.followrequest_user_info.setOnClickListener { onProfileClick.invoke(item) }
-            itemView.visibility = when(item.first.status) {
-                FollowStatus.PENDING -> View.VISIBLE
+            itemView.visibility = when(item.first.requestStatus) {
+                FollowRequestStatus.PENDING -> View.VISIBLE
                 else -> View.GONE
             }
         }
@@ -61,5 +61,5 @@ private class RequestDiffCallback : DiffUtil.ItemCallback<Pair<FollowRequestItem
     override fun areContentsTheSame(
         oldItem: Pair<FollowRequestItem, UserItem>,
         newItem: Pair<FollowRequestItem, UserItem>
-    ): Boolean = oldItem.first.status == newItem.first.status
+    ): Boolean = oldItem.first.requestStatus == newItem.first.requestStatus
 }

@@ -6,31 +6,36 @@ import com.laixer.presentation.Resource
 import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
-import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
-import com.laixer.swabbr.domain.usecase.VlogsUseCase
-import com.laixer.swabbr.presentation.model.LikeListItem
-import com.laixer.swabbr.presentation.model.UserVlogItem
+import com.laixer.swabbr.domain.usecase.VlogUseCase
+import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import java.util.UUID
+import java.util.*
 
+/**
+ *  View model for vlog list display.
+ */
 class VlogListViewModel constructor(
-    private val usersVlogsUseCase: UsersVlogsUseCase,
-    private val vlogsUseCase: VlogsUseCase
+    private val usersVlogsUseCase: VlogUseCase,
+    private val vlogUseCase: VlogUseCase
 ) : ViewModel() {
 
-    val vlogs = MutableLiveData<Resource<List<UserVlogItem>>>()
+    val vlogs = MutableLiveData<Resource<List<VlogWrapperItem>>>()
     private val compositeDisposable = CompositeDisposable()
 
+    /**
+     *  Gets the reccomended vlogs from the data store.
+     *
+     *  @param refresh Force a data refresh.
+     */
     fun getRecommendedVlogs(refresh: Boolean) =
         compositeDisposable.add(
             usersVlogsUseCase.getRecommendedVlogs(refresh)
                 .doOnSubscribe { vlogs.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .map { list ->
-                    list.map { pair -> Pair(pair.first, pair.second) }
-                        .sortedByDescending { it.second.data.dateStarted }
+                    list.sortedByDescending { it.vlog.dateStarted }
                         .mapToPresentation()
                 }
                 .subscribe(
@@ -39,7 +44,12 @@ class VlogListViewModel constructor(
                 )
         )
 
-    fun getReactionCount(vlogId: UUID) = vlogsUseCase.getReactionCount(vlogId)
+    /**
+     *  Get the amount of reactions that belong to a vlog.
+     *
+     *  @param vlogId The vlog to get the count for.
+     */
+    fun getReactionCount(vlogId: UUID) = vlogUseCase.getReactionCount(vlogId)
 
     override fun onCleared() {
         compositeDisposable.dispose()

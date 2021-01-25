@@ -14,7 +14,7 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.auth.AuthUserViewModel
-import com.laixer.swabbr.presentation.model.UserVlogItem
+import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import kotlinx.android.synthetic.main.include_user_stats.view.*
 import kotlinx.android.synthetic.main.include_vlog_stats.view.*
 import kotlinx.android.synthetic.main.item_list_uservlog.view.*
@@ -29,9 +29,9 @@ class ProfileVlogsAdapter(
     private val context: Context,
     private val vm: ProfileViewModel,
     private val authUserVm: AuthUserViewModel,
-    private val onClick: (UserVlogItem) -> Unit,
-    private val onDelete: ((UserVlogItem) -> Unit)? = null
-) : ListAdapter<UserVlogItem, ProfileVlogsAdapter.ViewHolder>(ProfileDiffCallback()) {
+    private val onClick: (VlogWrapperItem) -> Unit,
+    private val onDelete: ((VlogWrapperItem) -> Unit)? = null
+) : ListAdapter<VlogWrapperItem, ProfileVlogsAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
 
@@ -39,8 +39,8 @@ class ProfileVlogsAdapter(
 
     inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_uservlog)) {
 
-        fun bind(item: UserVlogItem) = with(itemView) {
-            if (item.vlog.data.dateStarted.isBefore(ZonedDateTime.now().minusMinutes(3))) {
+        fun bind(item: VlogWrapperItem) = with(itemView) {
+            if (item.vlog.dateCreated.isBefore(ZonedDateTime.now().minusMinutes(3))) {
                 processing_cover.visibility = View.GONE
 
                 /* We convert back to String because Glide's load(URL) function is deprecated because
@@ -52,7 +52,6 @@ class ProfileVlogsAdapter(
                             .build()
                     )
 
-
                     glideUrl?.let {
                         Glide.with(context)
                             .load(glideUrl)
@@ -63,14 +62,21 @@ class ProfileVlogsAdapter(
                     }
                 }
 
-                val timeLabels = DateUtils.getRelativeDateTimeString(context, item.vlog.data.dateStarted.toInstant().toEpochMilli(), DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0).split(',')
+                val timeLabels = DateUtils.getRelativeDateTimeString(context,
+                    item.vlog.dateCreated.toInstant().toEpochMilli(),
+                    DateUtils.SECOND_IN_MILLIS,
+                    DateUtils.WEEK_IN_MILLIS,
+                    0)
+                    .split(',')
 
                 post_date.text = timeLabels[0]
                 post_date_label.text = timeLabels[1]
 
-                reaction_count.text = context.getString(R.string.count, vm.getReactionCount(item.vlog.data.id))
-                view_count.text = context.getString(R.string.count, item.vlog.data.views)
-                like_count.text = context.getString(R.string.count, item.vlog.vlogLikeSummary.totalLikes)
+                reaction_count.text = context.getString(R.string.count, vm
+                    .getReactionCount(item.vlog.id)
+                    .blockingGet()) // TODO Blocking get
+                view_count.text = context.getString(R.string.count, item.vlog.views)
+                like_count.text = context.getString(R.string.count, item.vlogLikeSummary.totalLikes)
 
                 setOnClickListener {
                     this.isEnabled = false
@@ -91,11 +97,11 @@ class ProfileVlogsAdapter(
     }
 }
 
-private class ProfileDiffCallback : DiffUtil.ItemCallback<UserVlogItem>() {
+private class ProfileDiffCallback : DiffUtil.ItemCallback<VlogWrapperItem>() {
 
-    override fun areItemsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean =
-        oldItem.vlog.data.id == newItem.vlog.data.id
+    override fun areItemsTheSame(oldItem: VlogWrapperItem, newItem: VlogWrapperItem): Boolean =
+        oldItem.vlog.id == newItem.vlog.id
 
-    override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean =
+    override fun areContentsTheSame(oldItem: VlogWrapperItem, newItem: VlogWrapperItem): Boolean =
         oldItem.vlog.equals(newItem.vlog)
 }

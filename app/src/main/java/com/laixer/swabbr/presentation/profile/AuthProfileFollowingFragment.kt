@@ -16,6 +16,10 @@ import com.laixer.swabbr.presentation.search.UserAdapter
 import kotlinx.android.synthetic.main.fragment_auth_profile_following.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+/**
+ *  Fragment displaying all users that the currently
+ *  authenticated user is following.
+ */
 class AuthProfileFollowingFragment : AuthFragment() {
 
     private val profileVm: ProfileViewModel by sharedViewModel()
@@ -25,11 +29,16 @@ class AuthProfileFollowingFragment : AuthFragment() {
         return inflater.inflate(R.layout.fragment_auth_profile_following, container, false)
     }
 
+    /**
+     *  Setup UI, attach observers to observable [profileVm] vars.
+     *  This will trigger [getFollowingUsers] to display up to date
+     *  information about who the current user is following.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         profileVm.run {
-            followingUsers.observe(viewLifecycleOwner, Observer { updateUsers(it) })
+            followingUsers.observe(viewLifecycleOwner, Observer { updateUsersFromViewModel(it) })
         }
 
         userAdapter = UserAdapter(requireContext(), onClick)
@@ -38,20 +47,27 @@ class AuthProfileFollowingFragment : AuthFragment() {
             adapter = userAdapter
         }
 
-        swipeRefreshLayout.setOnRefreshListener { getUsers(true) }
+        swipeRefreshLayout.setOnRefreshListener { getFollowingUsers(true) }
 
-        getUsers(true)
+        getFollowingUsers(true)
     }
 
     private val onClick: (UserItem) -> Unit = {
         findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.id}"))
     }
 
-    private fun updateUsers(resource: Resource<List<UserItem>>) {
+
+    /**
+     *  Called when the observed resource of [UserItem]s changes.
+     *
+     *  @param res The observed resource.
+     */
+    private fun updateUsersFromViewModel(resource: Resource<List<UserItem>>) {
         resource.run {
             swipeRefreshLayout.run {
                 when (state) {
-                    ResourceState.LOADING -> startRefreshing()
+                    ResourceState.LOADING ->
+                        startRefreshing()
                     ResourceState.SUCCESS -> {
                         stopRefreshing()
                         data?.let { userAdapter?.submitList(it) }
@@ -64,7 +80,14 @@ class AuthProfileFollowingFragment : AuthFragment() {
         }
     }
 
-    fun getUsers(refresh: Boolean = false) {
+    /**
+     *  Triggers a get for the following users.
+     *
+     *  @param refresh Force a data refresh.
+     */
+    private fun getFollowingUsers(refresh: Boolean = false) {
+        var id = authUserVm.getAuthUserId()
+
         authUserVm.getAuthUserId()?.let {
             profileVm.getFollowing(it, refresh)
         }

@@ -13,10 +13,12 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.UserItem
-import com.laixer.swabbr.presentation.search.UserAdapter
 import kotlinx.android.synthetic.main.fragment_auth_profile_following.*
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+/**
+ *  Fragment displaying incoming follow requests which
+ *  can either be accepted or declined.
+ */
 class AuthProfileRequestsFragment : AuthFragment() {
 
     private var requestAdapter: RequestAdapter? = null
@@ -25,11 +27,15 @@ class AuthProfileRequestsFragment : AuthFragment() {
         return inflater.inflate(R.layout.fragment_auth_profile_following, container, false)
     }
 
+    /**
+     *  Setup listeners and attach observers to
+     *  observable [authUserVm] resources.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         authUserVm.run {
-            followRequests.observe(viewLifecycleOwner, Observer { updateRequests(it) })
+            followRequests.observe(viewLifecycleOwner, Observer { updateRequestsFromViewModel(it) })
         }
 
         requestAdapter = RequestAdapter(requireContext(), onProfileClick, onAccept, onDecline)
@@ -55,8 +61,14 @@ class AuthProfileRequestsFragment : AuthFragment() {
         authUserVm.declineRequest(it.first.requesterId)
     }
 
-    private fun updateRequests(resource: Resource<List<Pair<FollowRequestItem, UserItem>>>) {
-        resource.run {
+    /**
+     *  Called when the observed incoming follow requests
+     *  resource changes.
+     *
+     *  @param res The observed resource.
+     */
+    private fun updateRequestsFromViewModel(res: Resource<List<Pair<FollowRequestItem, UserItem>>>) {
+        res.run {
             swipeRefreshLayout.run {
                 when (state) {
                     ResourceState.LOADING -> startRefreshing()

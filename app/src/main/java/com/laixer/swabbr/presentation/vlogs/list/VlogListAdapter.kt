@@ -8,52 +8,51 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.auth.AuthUserViewModel
+import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.utils.loadAvatar
-import com.laixer.swabbr.presentation.model.UserVlogItem
 import kotlinx.android.synthetic.main.include_user_info.view.*
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
 import java.time.ZonedDateTime
 
+/**
+ *  Re-usable adapter for displaying a list of [VlogWrapperItem]s.
+ */
 class VlogListAdapter constructor(
     private val vm: VlogListViewModel,
     private val authUserVm: AuthUserViewModel,
-    private val itemClick: (UserVlogItem) -> Unit,
-    private val profileClick: (UserVlogItem) -> Unit
-) : ListAdapter<UserVlogItem, VlogListAdapter.ViewHolder>(VlogDiffCallback()) {
+    private val itemClick: (VlogWrapperItem) -> Unit,
+    private val profileClick: (VlogWrapperItem) -> Unit // TODO Is this correct?
+) : ListAdapter<VlogWrapperItem, VlogListAdapter.ViewHolder>(VlogDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
 
+    /**
+     *  Inner class used to represent a single vlog.
+     */
     inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_vlog)) {
-
-        fun bind(item: UserVlogItem) = with(itemView) {
-            if (item.vlog.data.dateStarted.isBefore(ZonedDateTime.now().minusMinutes(3))) {
+        /**
+         *  Binds this [ViewHolder] to a specific [VlogWrapperItem] in the adapter.
+         */
+        fun bind(item: VlogWrapperItem) = with(itemView) {
+            // TODO Question why?
+            if (item.vlog.dateCreated.isBefore(ZonedDateTime.now().minusMinutes(3))) {
+                // TODO Question why?
                 processing_cover.visibility = View.GONE
 
-                var glideUrl: GlideUrl? = null
-
-                val url = item.vlog.thumbnailUri?.toString() ?: ""
-
-                if (!url.isBlank()) {
-                     glideUrl = GlideUrl(
-                        url,
-                        LazyHeaders.Builder().addHeader("Authorization", "Bearer ${authUserVm.getAuthUserId()}")
-                            .build()
-                    )
-                }
-
+                // Load the thumbnail image.
                 Glide.with(context)
-                    .load(glideUrl ?: url)
+                    .load(GlideUrl(item.vlog.thumbnailUri.toString()))
                     .placeholder(R.drawable.thumbnail_placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .thumbnail(0.1f)
                     .into(thumbnail)
 
+                // Load information about the user.
                 user_avatar.loadAvatar(item.user.profileImage, item.user.id)
                 user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
                 item.user.firstName?.let {
@@ -63,18 +62,30 @@ class VlogListAdapter constructor(
                     }
                 }
 
+                // Load information about the vlog and its metadata.
                 vlogPostDate.text =
                     context.getString(
-                        R.string.date, item.vlog.data.dateStarted.dayOfMonth, item.vlog.data.dateStarted.monthValue, item.vlog.data.dateStarted.year
+                        R.string.date,
+                        item.vlog.dateCreated.dayOfMonth,
+                        item.vlog.dateCreated.monthValue,
+                        item.vlog.dateCreated.year
                     )
 
-                vlogDuration.text =
-                    context.getString(R.string.duration, (Math.random() * 10).toInt(), (Math.random() * 60).toInt())
-                reaction_count.text = context.getString(R.string.reaction_count, vm.getReactionCount(item.vlog.data.id))
+                vlogDuration.text = context.getString(
+                    R.string.duration,
+                    item.vlog.length.run { if (this != null) (this - this.rem(60)) / 60 else 0 },
+                    item.vlog.length?.rem(60) ?: 0
+                )
 
-                view_count.text = context.getString(R.string.view_count, item.vlog.data.views)
+                reaction_count.text = context.getString(
+                    R.string.reaction_count, vm
+                        .getReactionCount(item.vlog.id)
+                        .blockingGet()
+                ) // TODO Blocking get
 
-                like_count.text = context.getString(R.string.like_count, item.vlog.vlogLikeSummary.totalLikes)
+                view_count.text = context.getString(R.string.view_count, item.vlog.views)
+
+                like_count.text = context.getString(R.string.like_count, item.vlogLikeSummary.totalLikes)
 
                 user_avatar.setOnClickListener { profileClick.invoke(item) }
                 user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
@@ -86,7 +97,9 @@ class VlogListAdapter constructor(
                     }
                 }
 
-                setOnClickListener { itemClick.invoke(item) }
+                setOnClickListener {
+                    itemClick.invoke(item)
+                }
             }
         }
     }
@@ -96,11 +109,11 @@ class VlogListAdapter constructor(
     }
 }
 
-private class VlogDiffCallback : DiffUtil.ItemCallback<UserVlogItem>() {
+private class VlogDiffCallback : DiffUtil.ItemCallback<VlogWrapperItem>() {
 
-    override fun areItemsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean =
-        oldItem.vlog.data.id == newItem.vlog.data.id
+    override fun areItemsTheSame(oldItem: VlogWrapperItem, newItem: VlogWrapperItem): Boolean =
+        oldItem.vlog.id == newItem.vlog.id
 
-    override fun areContentsTheSame(oldItem: UserVlogItem, newItem: UserVlogItem): Boolean =
-        oldItem.vlog.equals(newItem.vlog)
+    override fun areContentsTheSame(oldItem: VlogWrapperItem, newItem: VlogWrapperItem): Boolean =
+        oldItem.equals(newItem)
 }

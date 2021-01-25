@@ -14,7 +14,7 @@ import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.AuthFragment
-import com.laixer.swabbr.presentation.model.UserVlogItem
+import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import kotlinx.android.synthetic.main.fragment_auth_profile_vlogs.*
 import kotlinx.android.synthetic.main.fragment_profile.no_vlogs_text
 import kotlinx.android.synthetic.main.fragment_profile.swipeRefreshLayout
@@ -67,17 +67,17 @@ class AuthProfileVlogsFragment : AuthFragment() {
         }
     }
 
-    private val onClick: (UserVlogItem) -> Unit = { item ->
-        findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${item.user.id}&vlogId=${item.vlog.data.id}"))
+    private val onClick: (VlogWrapperItem) -> Unit = { item ->
+        findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${item.user.id}&vlogId=${item.vlog.id}"))
     }
 
-    private val onDelete: (UserVlogItem) -> Unit = { item ->
+    private val onDelete: (VlogWrapperItem) -> Unit = { item ->
         authUserVm.getAuthUserId()?.let {
-            profileVm.deleteVlog(it, item.vlog.data.id)
+            profileVm.deleteVlog(it, item.vlog.id)
         }
     }
 
-    private fun updateProfileVlogs(res: Resource<List<UserVlogItem>>) = res.run {
+    private fun updateProfileVlogs(res: Resource<List<VlogWrapperItem>>) = res.run {
         with(swipeRefreshLayout) {
             when (state) {
                 ResourceState.LOADING -> startRefreshing()
