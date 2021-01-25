@@ -15,7 +15,7 @@ class VlogCacheDataSourceImplTest {
 
     private lateinit var dataSource: VlogCacheDataSourceImpl
     private val key by lazy { dataSource.key }
-    private val recommendedKey by lazy { dataSource.recommendedKey }
+    private val recommendedKey by lazy { dataSource.keyRecommended }
 
     private val mockCache: ReactiveCache<List<Vlog>> = mock()
 

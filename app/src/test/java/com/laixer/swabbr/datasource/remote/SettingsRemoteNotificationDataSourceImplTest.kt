@@ -2,7 +2,6 @@ package com.laixer.swabbr.datasource.remote
 
 import com.laixer.swabbr.Entities
 import com.laixer.swabbr.Models
-import com.laixer.swabbr.data.datasource.remote.SettingsRemoteDataSourceImpl
 import com.laixer.swabbr.data.datasource.model.remote.SettingsApi
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify

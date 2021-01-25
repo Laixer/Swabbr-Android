@@ -2,8 +2,8 @@ package com.laixer.swabbr.datasource.remote
 
 import com.laixer.swabbr.Entities
 import com.laixer.swabbr.Models
-import com.laixer.swabbr.data.datasource.remote.UserRemoteDataSourceImpl
-import com.laixer.swabbr.data.datasource.model.remote.UsersApi
+import com.laixer.swabbr.data.datasource.remote.UserDataSourceImpl
+import com.laixer.swabbr.data.datasource.model.remote.UserApi
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -13,8 +13,8 @@ import org.junit.Test
 
 class UserRemoteDataSourceImplTest {
 
-    private lateinit var dataSource: UserRemoteDataSourceImpl
-    private val mockApi: UsersApi = mock()
+    private lateinit var dataSource: UserDataSourceImpl
+    private val mockApi: UserApi = mock()
     private val userId = Models.user.id
 
     private val entity = Entities.user
@@ -27,7 +27,7 @@ class UserRemoteDataSourceImplTest {
 
     @Before
     fun setUp() {
-        dataSource = UserRemoteDataSourceImpl(mockApi)
+        dataSource = UserDataSourceImpl(mockApi)
     }
 
     @Test

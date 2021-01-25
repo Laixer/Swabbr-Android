@@ -10,9 +10,9 @@ import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
 
-class UsersVlogsUseCaseTest {
+class VlogUseCaseTest {
 
-    private lateinit var usersVlogsUseCase: UsersVlogsUseCase
+    private lateinit var vlogUseCase: VlogUseCase
     private val mockUserRepository: UserRepository = mock()
     private val mockVlogRepository: VlogRepository = mock()
 
@@ -24,7 +24,7 @@ class UsersVlogsUseCaseTest {
 
     @Before
     fun setUp() {
-        usersVlogsUseCase = UsersVlogsUseCase(mockUserRepository, mockVlogRepository)
+        vlogUseCase = VlogUseCase(mockUserRepository, mockVlogRepository)
     }
 
     @Test
@@ -33,7 +33,7 @@ class UsersVlogsUseCaseTest {
         whenever(mockUserRepository.get(userId, false)).thenReturn(Single.just(user))
         whenever(mockVlogRepository.get(vlogId, false)).thenReturn(Single.just(vlog))
         // when
-        val test = usersVlogsUseCase.get(listOf(vlogId), false).test()
+        val test = vlogUseCase.getFromIdList(listOf(vlogId), false).test()
         // then
         verify(mockUserRepository).get(userId, false)
         verify(mockVlogRepository).get(vlogId, false)
@@ -50,7 +50,7 @@ class UsersVlogsUseCaseTest {
         val throwable = Throwable()
         whenever(mockVlogRepository.get(vlogId, false)).thenReturn(Single.error(throwable))
         // when
-        val test = usersVlogsUseCase.get(listOf(vlogId), false).test()
+        val test = vlogUseCase.getFromIdList(listOf(vlogId), false).test()
         // then
         verify(mockVlogRepository).get(vlogId, false)
 
@@ -130,7 +130,7 @@ class UserVlogsUseCaseTest {
         // given
         whenever(mockVlogRepository.getUserVlogs(userId, false)).thenReturn(Single.just(listOf(vlog)))
         // when
-        val test = userVlogsUseCase.get(userId, false).test()
+        val test = userVlogsUseCase.getAllFromUser(userId, false).test()
         // then
         verify(mockVlogRepository).getUserVlogs(userId, false)
 
@@ -146,7 +146,7 @@ class UserVlogsUseCaseTest {
         val throwable = Throwable()
         whenever(mockVlogRepository.getUserVlogs(userId, false)).thenReturn(Single.error(throwable))
         // when
-        val test = userVlogsUseCase.get(userId, false).test()
+        val test = userVlogsUseCase.getAllFromUser(userId, false).test()
         // then
         verify(mockVlogRepository).getUserVlogs(userId, false)
 

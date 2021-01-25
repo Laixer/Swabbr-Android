@@ -42,7 +42,7 @@ class ProfileViewModelTest {
 
     private val followStatusModel = Models.followStatus
     private val followStatusItem = Items.followStatus
-    
+
     private val profileVlogs = Pair(model, vlogModelList)
     private val userId = Models.user.id
     private val throwable = Throwable()
@@ -75,11 +75,11 @@ class ProfileViewModelTest {
     @Test
     fun `get profilevlogs succeeds`() {
         // given
-        whenever(mockUserVlogsUseCase.get(userId, false)).thenReturn(Single.just(profileVlogs.second))
+        whenever(mockUserVlogsUseCase.getAllFromUser(userId, false)).thenReturn(Single.just(profileVlogs.second))
         // when
         viewModel.getProfileVlogs(userId, false)
         // then
-        verify(mockUserVlogsUseCase).get(userId, false)
+        verify(mockUserVlogsUseCase).getAllFromUser(userId, false)
         assertEquals(
             Resource(
                 state = ResourceState.SUCCESS,
@@ -92,11 +92,11 @@ class ProfileViewModelTest {
     @Test
     fun `get profilevlogs fails`() {
         // given
-        whenever(mockUserVlogsUseCase.get(userId, true)).thenReturn(Single.error(throwable))
+        whenever(mockUserVlogsUseCase.getAllFromUser(userId, true)).thenReturn(Single.error(throwable))
         // when
         viewModel.getProfileVlogs(userId, true)
         // then
-        verify(mockUserVlogsUseCase).get(userId, true)
+        verify(mockUserVlogsUseCase).getAllFromUser(userId, true)
         assertEquals(
             Resource(state = ResourceState.ERROR, data = null, message = throwable.message),
             viewModel.profileVlogs.value
@@ -109,7 +109,7 @@ class ProfileViewModelTest {
         whenever(mockFollowUseCase.getFollowStatus(userId))
             .thenReturn(Single.just(followStatusModel))
         // when
-        viewModel.getFollowStatus(userId)
+        viewModel.getFollowRequest(userId)
 
         // then
         verify(mockFollowUseCase).getFollowStatus(userId)
@@ -127,7 +127,7 @@ class ProfileViewModelTest {
         // given
         whenever(mockFollowUseCase.getFollowStatus(userId)).thenReturn(Single.error(throwable))
         // when
-        viewModel.getFollowStatus(userId)
+        viewModel.getFollowRequest(userId)
         // then
         verify(mockFollowUseCase).getFollowStatus(userId)
         assertEquals(

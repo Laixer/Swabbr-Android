@@ -3,11 +3,11 @@ package com.laixer.swabbr.datasource.remote
 import com.laixer.cache.ReactiveCache
 import com.laixer.swabbr.Entities
 import com.laixer.swabbr.Models
-import com.laixer.swabbr.data.datasource.FollowCacheDataSource
-import com.laixer.swabbr.data.datasource.FollowRemoteDataSource
-import com.laixer.swabbr.data.datasource.cache.FollowCacheDataSourceImpl
-import com.laixer.swabbr.data.datasource.remote.FollowRemoteDataSourceImpl
-import com.laixer.swabbr.data.datasource.model.remote.FollowApi
+import com.laixer.swabbr.data.datasource.FollowRequestCacheDataSource
+import com.laixer.swabbr.data.datasource.FollowRequestDataSource
+import com.laixer.swabbr.data.datasource.cache.FollowRequestCacheDataSourceImpl
+import com.laixer.swabbr.data.datasource.remote.FollowRequestRemoteDataSourceImpl
+import com.laixer.swabbr.data.datasource.model.remote.FollowRequestApi
 import com.laixer.swabbr.domain.model.User
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -18,10 +18,10 @@ import org.junit.Test
 
 class FollowDataSourceImplTest {
 
-    private lateinit var remoteDataSource: FollowRemoteDataSource
-    private lateinit var cacheDataSource: FollowCacheDataSource
+    private lateinit var requestDataSource: FollowRequestDataSource
+    private lateinit var requestCacheDataSource: FollowRequestCacheDataSource
 
-    private val mockApi: FollowApi = mock()
+    private val mockRequestApi: FollowRequestApi = mock()
 
     private val mockCache: ReactiveCache<List<User>> = mock()
 
@@ -36,29 +36,29 @@ class FollowDataSourceImplTest {
 
     @Before
     fun setUp() {
-        remoteDataSource = FollowRemoteDataSourceImpl(mockApi)
-        cacheDataSource = FollowCacheDataSourceImpl(mockCache)
+        requestDataSource = FollowRequestRemoteDataSourceImpl(mockRequestApi)
+        requestCacheDataSource = FollowRequestCacheDataSourceImpl(mockCache)
     }
 
     @Test
     fun `get incoming followrequest remote success`() {
         // given
-        whenever(mockApi.getIncomingRequests()).thenReturn(Single.just(entityList))
+        whenever(mockRequestApi.getIncomingRequests()).thenReturn(Single.just(entityList))
         // when
-        val test = remoteDataSource.getIncomingRequests().test()
+        val test = requestDataSource.getIncomingRequests().test()
         // then
-        verify(mockApi).getIncomingRequests()
+        verify(mockRequestApi).getIncomingRequests()
         test.assertValue(modelList)
     }
 
     @Test
     fun `get incoming followrequest remote fail`() {
         // given
-        whenever(mockApi.getIncomingRequests()).thenReturn(Single.error(throwable))
+        whenever(mockRequestApi.getIncomingRequests()).thenReturn(Single.error(throwable))
         // when
-        val test = remoteDataSource.getIncomingRequests().test()
+        val test = requestDataSource.getIncomingRequests().test()
         // then
-        verify(mockApi).getIncomingRequests()
+        verify(mockRequestApi).getIncomingRequests()
         test.assertError(throwable)
     }
 }

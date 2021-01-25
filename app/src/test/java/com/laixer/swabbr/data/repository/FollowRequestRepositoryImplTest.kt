@@ -2,8 +2,8 @@ package com.laixer.swabbr.data.repository
 
 import com.laixer.swabbr.Items
 import com.laixer.swabbr.Models
-import com.laixer.swabbr.data.datasource.FollowCacheDataSource
-import com.laixer.swabbr.data.datasource.FollowRemoteDataSource
+import com.laixer.swabbr.data.datasource.FollowRequestCacheDataSource
+import com.laixer.swabbr.data.datasource.FollowRequestDataSource
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -12,11 +12,11 @@ import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
 
-class FollowRepositoryImplTest {
+class FollowRequestRepositoryImplTest {
 
-    private lateinit var repository: FollowRepositoryImpl
-    private val mockRemoteDataSource: FollowRemoteDataSource = mock()
-    private val mockCacheDataSource: FollowCacheDataSource = mock()
+    private lateinit var repository: FollowRequestRepositoryImpl
+    private val mockRequestDataSource: FollowRequestDataSource = mock()
+    private val mockRequestCacheDataSource: FollowRequestCacheDataSource = mock()
 
     private val userId = Models.user.id
 
@@ -34,204 +34,204 @@ class FollowRepositoryImplTest {
 
     @Before
     fun setUp() {
-        repository = FollowRepositoryImpl(mockRemoteDataSource, mockCacheDataSource)
+        repository = FollowRequestRepositoryImpl(mockRequestDataSource, mockRequestCacheDataSource)
     }
 
     @Test
     fun `get follow status success`() {
         // given
-        whenever(mockRemoteDataSource.getFollowStatus(userId)).thenReturn(Single.just(followStatus))
+        whenever(mockRequestDataSource.getFollowStatus(userId)).thenReturn(Single.just(followStatus))
         // when
         val test = repository.getFollowStatus(userId).test()
         // then
-        verify(mockRemoteDataSource).getFollowStatus(userId)
+        verify(mockRequestDataSource).getFollowStatus(userId)
         test.assertValue(followStatus)
     }
 
     @Test
     fun `get follow status fail`() {
         // given
-        whenever(mockRemoteDataSource.getFollowStatus(userId)).thenReturn(Single.error(throwable))
+        whenever(mockRequestDataSource.getFollowStatus(userId)).thenReturn(Single.error(throwable))
         // when
         val test = repository.getFollowStatus(userId).test()
         // then
-        verify(mockRemoteDataSource).getFollowStatus(userId)
+        verify(mockRequestDataSource).getFollowStatus(userId)
         test.assertError(throwable)
     }
 
     @Test
     fun `get incoming requests success`() {
         // given
-        whenever(mockRemoteDataSource.getIncomingRequests()).thenReturn(Single.just(followRequestList))
+        whenever(mockRequestDataSource.getIncomingRequests()).thenReturn(Single.just(followRequestList))
         // when
         val test = repository.getIncomingRequests().test()
         // then
-        verify(mockRemoteDataSource).getIncomingRequests()
+        verify(mockRequestDataSource).getIncomingRequests()
         test.assertValue(followRequestList)
     }
 
     @Test
     fun `get incoming requests fail`() {
         // given
-        whenever(mockRemoteDataSource.getIncomingRequests()).thenReturn(Single.error(throwable))
+        whenever(mockRequestDataSource.getIncomingRequests()).thenReturn(Single.error(throwable))
         // when
         val test = repository.getIncomingRequests().test()
         // then
-        verify(mockRemoteDataSource).getIncomingRequests()
+        verify(mockRequestDataSource).getIncomingRequests()
         test.assertError(throwable)
     }
 
     @Test
     fun `send follow request success`() {
         // given
-        whenever(mockRemoteDataSource.sendFollowRequest(userId)).thenReturn(Single.just(followRequest))
+        whenever(mockRequestDataSource.sendFollowRequest(userId)).thenReturn(Single.just(followRequest))
         // when
         val test = repository.sendFollowRequest(userId).test()
         // then
-        verify(mockRemoteDataSource).sendFollowRequest(userId)
+        verify(mockRequestDataSource).sendFollowRequest(userId)
         test.assertValue(followRequest)
     }
 
     @Test
     fun `send follow request fail`() {
         // given
-        whenever(mockRemoteDataSource.sendFollowRequest(userId)).thenReturn(Single.error(throwable))
+        whenever(mockRequestDataSource.sendFollowRequest(userId)).thenReturn(Single.error(throwable))
         // when
         val test = repository.sendFollowRequest(userId).test()
         // then
-        verify(mockRemoteDataSource).sendFollowRequest(userId)
+        verify(mockRequestDataSource).sendFollowRequest(userId)
         test.assertError(throwable)
     }
 
     @Test
     fun `cancel follow request success`() {
         // given
-        whenever(mockRemoteDataSource.cancelFollowRequest(userId)).thenReturn(Completable.complete())
+        whenever(mockRequestDataSource.cancelFollowRequest(userId)).thenReturn(Completable.complete())
         // when
         val test = repository.cancelFollowRequest(userId).test()
         // then
-        verify(mockRemoteDataSource).cancelFollowRequest(userId)
+        verify(mockRequestDataSource).cancelFollowRequest(userId)
         test.assertNoErrors()
     }
 
     @Test
     fun `cancel follow request fail`() {
         // given
-        whenever(mockRemoteDataSource.cancelFollowRequest(userId)).thenReturn(Completable.error(throwable))
+        whenever(mockRequestDataSource.cancelFollowRequest(userId)).thenReturn(Completable.error(throwable))
         // when
         val test = repository.cancelFollowRequest(userId).test()
         // then
-        verify(mockRemoteDataSource).cancelFollowRequest(userId)
+        verify(mockRequestDataSource).cancelFollowRequest(userId)
         test.assertError(throwable)
     }
 
     @Test
     fun `unfollow success`() {
         // given
-        whenever(mockRemoteDataSource.unfollow(userId)).thenReturn(Completable.complete())
+        whenever(mockRequestDataSource.unfollow(userId)).thenReturn(Completable.complete())
         // when
         val test = repository.unfollow(userId).test()
         // then
-        verify(mockRemoteDataSource).unfollow(userId)
+        verify(mockRequestDataSource).unfollow(userId)
         test.assertNoErrors()
     }
 
     @Test
     fun `unfollow fail`() {
         // given
-        whenever(mockRemoteDataSource.unfollow(userId)).thenReturn(Completable.error(throwable))
+        whenever(mockRequestDataSource.unfollow(userId)).thenReturn(Completable.error(throwable))
         // when
         val test = repository.unfollow(userId).test()
         // then
-        verify(mockRemoteDataSource).unfollow(userId)
+        verify(mockRequestDataSource).unfollow(userId)
         test.assertError(throwable)
     }
 
     @Test
     fun `accept request success`() {
         // given
-        whenever(mockRemoteDataSource.acceptRequest(userId)).thenReturn(Single.just(followRequest))
+        whenever(mockRequestDataSource.acceptRequest(userId)).thenReturn(Single.just(followRequest))
         // when
         val test = repository.acceptRequest(userId).test()
         // then
-        verify(mockRemoteDataSource).acceptRequest(userId)
+        verify(mockRequestDataSource).acceptRequest(userId)
         test.assertValue(followRequest)
     }
 
     @Test
     fun `accept request fail`() {
         // given
-        whenever(mockRemoteDataSource.acceptRequest(userId)).thenReturn(Single.error(throwable))
+        whenever(mockRequestDataSource.acceptRequest(userId)).thenReturn(Single.error(throwable))
         // when
         val test = repository.acceptRequest(userId).test()
         // then
-        verify(mockRemoteDataSource).acceptRequest(userId)
+        verify(mockRequestDataSource).acceptRequest(userId)
         test.assertError(throwable)
     }
 
     @Test
     fun `decline request success`() {
         // given
-        whenever(mockRemoteDataSource.declineRequest(userId)).thenReturn(Single.just(followRequest))
+        whenever(mockRequestDataSource.declineRequest(userId)).thenReturn(Single.just(followRequest))
         // when
         val test = repository.declineRequest(userId).test()
         // then
-        verify(mockRemoteDataSource).declineRequest(userId)
+        verify(mockRequestDataSource).declineRequest(userId)
         test.assertValue(followRequest)
     }
 
     @Test
     fun `decline request fail`() {
         // given
-        whenever(mockRemoteDataSource.declineRequest(userId)).thenReturn(Single.error(throwable))
+        whenever(mockRequestDataSource.declineRequest(userId)).thenReturn(Single.error(throwable))
         // when
         val test = repository.declineRequest(userId).test()
         // then
-        verify(mockRemoteDataSource).declineRequest(userId)
+        verify(mockRequestDataSource).declineRequest(userId)
         test.assertError(throwable)
     }
 
     @Test
     fun `get followers success`() {
         // given
-        whenever(mockRemoteDataSource.getFollowers(userId)).thenReturn(Single.just(userModelList))
+        whenever(mockRequestDataSource.getFollowers(userId)).thenReturn(Single.just(userModelList))
         // when
         val test = repository.getFollowers(userId).test()
         // then
-        verify(mockRemoteDataSource).getFollowers(userId)
+        verify(mockRequestDataSource).getFollowers(userId)
         test.assertValue(userModelList)
     }
 
     @Test
     fun `get followers fail`() {
         // given
-        whenever(mockRemoteDataSource.getFollowStatus(userId)).thenReturn(Single.error(throwable))
+        whenever(mockRequestDataSource.getFollowStatus(userId)).thenReturn(Single.error(throwable))
         // when
         val test = repository.getFollowStatus(userId).test()
         // then
-        verify(mockRemoteDataSource).getFollowStatus(userId)
+        verify(mockRequestDataSource).getFollowStatus(userId)
         test.assertError(throwable)
     }
 
     @Test
     fun `get following success`() {
         // given
-        whenever(mockRemoteDataSource.getFollowing(userId)).thenReturn(Single.just(userModelList))
+        whenever(mockRequestDataSource.getFollowing(userId)).thenReturn(Single.just(userModelList))
         // when
         val test = repository.getFollowing(userId).test()
         // then
-        verify(mockRemoteDataSource).getFollowing(userId)
+        verify(mockRequestDataSource).getFollowing(userId)
         test.assertValue(userModelList)
     }
 
     @Test
     fun `get following fail`() {
         // given
-        whenever(mockRemoteDataSource.getFollowing(userId)).thenReturn(Single.error(throwable))
+        whenever(mockRequestDataSource.getFollowing(userId)).thenReturn(Single.error(throwable))
         // when
         val test = repository.getFollowing(userId).test()
         // then
-        verify(mockRemoteDataSource).getFollowing(userId)
+        verify(mockRequestDataSource).getFollowing(userId)
         test.assertError(throwable)
     }
 }

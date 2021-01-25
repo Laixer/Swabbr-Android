@@ -2,7 +2,7 @@ package com.laixer.swabbr.data.repository
 
 import com.laixer.swabbr.Models
 import com.laixer.swabbr.data.datasource.ReactionCacheDataSource
-import com.laixer.swabbr.data.datasource.ReactionRemoteDataSource
+import com.laixer.swabbr.data.datasource.ReactionDataSource
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -15,7 +15,7 @@ class ReactionRepositoryImplTest {
 
     private lateinit var repository: ReactionRepositoryImpl
     private val mockCacheDataSource: ReactionCacheDataSource = mock()
-    private val mockRemoteDataSource: ReactionRemoteDataSource = mock()
+    private val mockRemoteDataSource: ReactionDataSource = mock()
     private val vlogId = Models.vlog.id
     private val cacheItem = Models.reaction.copy(id = UUID.randomUUID())
     private val remoteItem = Models.reaction.copy(id = UUID.randomUUID())
@@ -43,13 +43,13 @@ class ReactionRepositoryImplTest {
     fun `get reactions cache fail fallback remote succeeds`() {
         // given
         whenever(mockCacheDataSource.get(vlogId)).thenReturn(Single.error(throwable))
-        whenever(mockRemoteDataSource.get(vlogId)).thenReturn(Single.just(remoteList))
+        whenever(mockRemoteDataSource.getForVlog(vlogId)).thenReturn(Single.just(remoteList))
         whenever(mockCacheDataSource.set(vlogId, remoteList)).thenReturn(Single.just(remoteList))
         // when
         val test = repository.get(vlogId, false).test()
         // then
         verify(mockCacheDataSource).get(vlogId)
-        verify(mockRemoteDataSource).get(vlogId)
+        verify(mockRemoteDataSource).getForVlog(vlogId)
         verify(mockCacheDataSource).set(vlogId, remoteList)
         test.assertValue(remoteList)
     }
@@ -57,12 +57,12 @@ class ReactionRepositoryImplTest {
     @Test
     fun `get reactions remote success`() {
         // given
-        whenever(mockRemoteDataSource.get(vlogId)).thenReturn(Single.just(remoteList))
+        whenever(mockRemoteDataSource.getForVlog(vlogId)).thenReturn(Single.just(remoteList))
         whenever(mockCacheDataSource.set(vlogId, remoteList)).thenReturn(Single.just(remoteList))
         // when
         val test = repository.get(vlogId, true).test()
         // then
-        verify(mockRemoteDataSource).get(vlogId)
+        verify(mockRemoteDataSource).getForVlog(vlogId)
         verify(mockCacheDataSource).set(vlogId, remoteList)
         test.assertValue(remoteList)
     }
@@ -70,11 +70,11 @@ class ReactionRepositoryImplTest {
     @Test
     fun `get reactions remote fail`() {
         // given
-        whenever(mockRemoteDataSource.get(vlogId)).thenReturn(Single.error(throwable))
+        whenever(mockRemoteDataSource.getForVlog(vlogId)).thenReturn(Single.error(throwable))
         // when
         val test = repository.get(vlogId, true).test()
         // then
-        verify(mockRemoteDataSource).get(vlogId)
+        verify(mockRemoteDataSource).getForVlog(vlogId)
         test.assertError(throwable)
     }
 }

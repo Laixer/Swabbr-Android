@@ -5,8 +5,8 @@ import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.Items
 import com.laixer.swabbr.Models
-import com.laixer.swabbr.domain.usecase.UserReactionUseCase
-import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
+import com.laixer.swabbr.domain.usecase.ReactionUseCase
+import com.laixer.swabbr.domain.usecase.VlogUseCase
 import com.laixer.swabbr.presentation.RxSchedulersOverrideRule
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -22,8 +22,8 @@ import java.util.UUID
 class VlogDetailsViewModelTest {
 
     private lateinit var viewModel: VlogDetailsViewModel
-    private val mockUsersVlogsUseCase: UsersVlogsUseCase = mock()
-    private val mockUserReactionUseCase: UserReactionUseCase = mock()
+    private val mockVlogUseCase: VlogUseCase = mock()
+    private val mockReactionUseCase: ReactionUseCase = mock()
 
     private val combinedUserReactionModel = Pair(Models.user, Models.reaction)
     private val combindUserReactionsModelList = listOf(combinedUserReactionModel)
@@ -54,19 +54,19 @@ class VlogDetailsViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = VlogDetailsViewModel(mockUsersVlogsUseCase, mockUserReactionUseCase)
+        viewModel = VlogDetailsViewModel(mockVlogUseCase, mockReactionUseCase)
     }
 
     @Test
     fun `get single vlog succeeds`() {
         // given
         val idList = listOf(vlogId)
-        whenever(mockUsersVlogsUseCase.get(idList, false))
+        whenever(mockVlogUseCase.getFromIdList(idList, false))
             .thenReturn(Single.just(userVlogModelList))
         // when
-        viewModel.getVlogs(idList)
+        viewModel.getVlogsForUser(idList)
         // then
-        verify(mockUsersVlogsUseCase).get(idList, false)
+        verify(mockVlogUseCase).getFromIdList(idList, false)
         assertEquals(userVlogItem, viewModel.vlogs.value?.data?.get(0))
     }
 
@@ -74,12 +74,12 @@ class VlogDetailsViewModelTest {
     fun `get multiple vlogs succeeds`() {
         // given
         val idList = listOf(vlogId, vlogId)
-        whenever(mockUsersVlogsUseCase.get(idList, false))
+        whenever(mockVlogUseCase.getFromIdList(idList, false))
             .thenReturn(Single.just(listOf(userVlogModel, userVlogModel)))
         // when
-        viewModel.getVlogs(idList)
+        viewModel.getVlogsForUser(idList)
         // then
-        verify(mockUsersVlogsUseCase).get(idList, false)
+        verify(mockVlogUseCase).getFromIdList(idList, false)
         assertEquals(userVlogItem, viewModel.vlogs.value?.data?.get(0))
         assertEquals(userVlogItem, viewModel.vlogs.value?.data?.get(1))
     }
@@ -88,23 +88,23 @@ class VlogDetailsViewModelTest {
     fun `get zero vlogs succeeds`() {
         // given
         val idList = listOf<UUID>()
-        whenever(mockUsersVlogsUseCase.get(idList, false))
+        whenever(mockVlogUseCase.getFromIdList(idList, false))
             .thenReturn(Single.just(listOf()))
         // when
-        viewModel.getVlogs(idList)
+        viewModel.getVlogsForUser(idList)
         // then
-        verify(mockUsersVlogsUseCase).get(idList, false)
+        verify(mockVlogUseCase).getFromIdList(idList, false)
         assert(viewModel.vlogs.value?.data?.isEmpty() ?: false)
     }
 
     @Test
     fun `get reactions succeeds`() {
         // given
-        whenever(mockUserReactionUseCase.get(vlogId, false)).thenReturn(Single.just(combindUserReactionsModelList))
+        whenever(mockReactionUseCase.getAllForVlog(vlogId, false)).thenReturn(Single.just(combindUserReactionsModelList))
         // when
         viewModel.getReactions(vlogId, false)
         // then
-        verify(mockUserReactionUseCase).get(vlogId, false)
+        verify(mockReactionUseCase).getAllForVlog(vlogId, false)
         assertEquals(
             Resource(
                 state = ResourceState.SUCCESS,
@@ -117,11 +117,11 @@ class VlogDetailsViewModelTest {
     @Test
     fun `get reactions fails`() {
         // given
-        whenever(mockUserReactionUseCase.get(vlogId, true)).thenReturn(Single.error(throwable))
+        whenever(mockReactionUseCase.getAllForVlog(vlogId, true)).thenReturn(Single.error(throwable))
         // when
         viewModel.getReactions(vlogId, true)
         // then
-        verify(mockUserReactionUseCase).get(vlogId, true)
+        verify(mockReactionUseCase).getAllForVlog(vlogId, true)
         assertEquals(
             Resource(state = ResourceState.ERROR, data = null, message = throwable.message),
             viewModel.reactions.value

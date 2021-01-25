@@ -10,9 +10,9 @@ import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
 
-class UserReactionUseCaseTest {
+class ReactionUseCaseTest {
 
-    private lateinit var userReactionUseCase: UserReactionUseCase
+    private lateinit var reactionUseCase: ReactionUseCase
     private val mockUserRepository: UserRepository = mock()
     private val mockReactionRepository: ReactionRepository = mock()
 
@@ -26,7 +26,7 @@ class UserReactionUseCaseTest {
 
     @Before
     fun setUp() {
-        userReactionUseCase = UserReactionUseCase(mockUserRepository, mockReactionRepository)
+        reactionUseCase = ReactionUseCase(mockUserRepository, mockReactionRepository)
     }
 
     @Test
@@ -35,7 +35,7 @@ class UserReactionUseCaseTest {
         whenever(mockUserRepository.get(userId, false)).thenReturn(Single.just(user))
         whenever(mockReactionRepository.get(vlogId, false)).thenReturn(Single.just(list))
         // when
-        val test = userReactionUseCase.get(vlogId, false).test()
+        val test = reactionUseCase.getAllForVlog(vlogId, false).test()
         // then
         verify(mockUserRepository).get(userId, false)
         verify(mockReactionRepository).get(vlogId, false)
@@ -52,7 +52,7 @@ class UserReactionUseCaseTest {
         val throwable = Throwable()
         whenever(mockReactionRepository.get(vlogId, false)).thenReturn(Single.error(throwable))
         // when
-        val test = userReactionUseCase.get(vlogId, false).test()
+        val test = reactionUseCase.getAllForVlog(vlogId, false).test()
         // then
         verify(mockReactionRepository).get(vlogId, false)
 

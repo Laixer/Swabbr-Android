@@ -2,8 +2,8 @@ package com.laixer.swabbr.datasource.remote
 
 import com.laixer.swabbr.Entities
 import com.laixer.swabbr.Models
-import com.laixer.swabbr.data.datasource.remote.ReactionRemoteDataSourceImpl
-import com.laixer.swabbr.data.datasource.model.remote.ReactionsApi
+import com.laixer.swabbr.data.datasource.remote.ReactionDataSourceImpl
+import com.laixer.swabbr.data.datasource.model.remote.ReactionApi
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -13,8 +13,8 @@ import org.junit.Test
 
 class ReactionRemoteNotificationDataSourceImplTest {
 
-    private lateinit var dataSource: ReactionRemoteDataSourceImpl
-    private val mockApi: ReactionsApi = mock()
+    private lateinit var dataSource: ReactionDataSourceImpl
+    private val mockApi: ReactionApi = mock()
 
     private val vlogId = Models.vlog.id
     private val entity = Entities.reaction
@@ -27,28 +27,28 @@ class ReactionRemoteNotificationDataSourceImplTest {
 
     @Before
     fun setUp() {
-        dataSource = ReactionRemoteDataSourceImpl(mockApi)
+        dataSource = ReactionDataSourceImpl(mockApi)
     }
 
     @Test
     fun `get reactions remote success`() {
         // given
-        whenever(mockApi.getReactions(vlogId)).thenReturn(Single.just(entityList))
+        whenever(mockApi.getReaction(vlogId)).thenReturn(Single.just(entityList))
         // when
-        val test = dataSource.get(vlogId).test()
+        val test = dataSource.getForVlog(vlogId).test()
         // then
-        verify(mockApi).getReactions(vlogId)
+        verify(mockApi).getReaction(vlogId)
         test.assertValue(modelList)
     }
 
     @Test
     fun `get reactions remote fail`() {
         // given
-        whenever(mockApi.getReactions(vlogId)).thenReturn(Single.error(throwable))
+        whenever(mockApi.getReaction(vlogId)).thenReturn(Single.error(throwable))
         // when
-        val test = dataSource.get(vlogId).test()
+        val test = dataSource.getForVlog(vlogId).test()
         // then
-        verify(mockApi).getReactions(vlogId)
+        verify(mockApi).getReaction(vlogId)
         test.assertError(throwable)
     }
 }

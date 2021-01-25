@@ -5,8 +5,7 @@ import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.Items
 import com.laixer.swabbr.Models
-import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
-import com.laixer.swabbr.domain.usecase.VlogsUseCase
+import com.laixer.swabbr.domain.usecase.VlogUseCase
 import com.laixer.swabbr.presentation.RxSchedulersOverrideRule
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -21,8 +20,8 @@ import org.junit.rules.TestRule
 class VlogListViewModelTest {
 
     private lateinit var viewModel: VlogListViewModel
-    private val mockUsersVlogsUseCase: UsersVlogsUseCase = mock()
-    private val mockVlogsUseCase: VlogsUseCase = mock()
+    private val mockUsersVlogsUseCase: VlogUseCase = mock()
+    private val mockVlogUseCase: VlogUseCase = mock()
 
 
     private val userModel = Models.user
@@ -48,7 +47,7 @@ class VlogListViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = VlogListViewModel(mockUsersVlogsUseCase, mockVlogsUseCase)
+        viewModel = VlogListViewModel(mockUsersVlogsUseCase, mockVlogUseCase)
     }
 
     @Test

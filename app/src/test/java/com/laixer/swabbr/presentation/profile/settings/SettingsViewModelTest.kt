@@ -46,7 +46,7 @@ class SettingsViewModelTest {
         whenever(mockSettingsUseCase.get(false))
             .thenReturn(Single.just(model))
         // when
-        viewModel.getSettings(false)
+        viewModel.getUpdatableProperties(false)
         // then
         verify(mockSettingsUseCase).get(false)
         assertEquals(
@@ -60,7 +60,7 @@ class SettingsViewModelTest {
         // given
         whenever(mockSettingsUseCase.get(true)).thenReturn(Single.error(throwable))
         // when
-        viewModel.getSettings(true)
+        viewModel.getUpdatableProperties(true)
         // then
         verify(mockSettingsUseCase).get(true)
         assertEquals(
