@@ -21,7 +21,7 @@ import java.util.UUID
 
 fun ImageView.loadAvatar(profileImage: String?, userId: UUID) = profileImage?.let {
     this.setImageBitmap(convertBase64ToBitmap(it))
-} ?: loadImageUrl(URL("https://api.adorable.io/avatars/285/${userId}"))
+} ?: loadImageUrl(URL("https://api.hello-avatar.com/adorables/285/${userId}"))
 
 /**
  * Manages the various graphs needed for a [BottomNavigationView].
@@ -143,15 +143,18 @@ private fun BottomNavigationView.setupDeepLinks(
 }
 
 fun encodeImageToBase64(byteArray: ByteArray): String = Base64.encodeToString(byteArray, Base64.DEFAULT)
+
 fun decodeStringFromBase64(base64: String): ByteArray = Base64.decode(base64, Base64.DEFAULT)
 
 fun convertByteArrayToBitmap(byteArray: ByteArray): Bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+
 fun convertBitmapToByteArray(bitmap: Bitmap): ByteArray = with(ByteArrayOutputStream()) {
     bitmap.compress(Bitmap.CompressFormat.WEBP, 100, this)
     return this.toByteArray()
 }
 
 fun convertBase64ToBitmap(base64: String): Bitmap = convertByteArrayToBitmap(decodeStringFromBase64(base64))
+
 fun convertBitmapToBase64(bitmap: Bitmap): String = encodeImageToBase64(convertBitmapToByteArray(bitmap))
 
 private fun BottomNavigationView.setupItemReselected(
