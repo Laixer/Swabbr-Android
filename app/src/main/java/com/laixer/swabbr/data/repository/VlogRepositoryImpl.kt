@@ -1,47 +1,50 @@
 package com.laixer.swabbr.data.repository
 
 import com.laixer.swabbr.data.datasource.VlogCacheDataSource
-import com.laixer.swabbr.data.datasource.VlogRemoteDataSource
-import com.laixer.swabbr.data.datasource.model.WatchVlogResponse
-import com.laixer.swabbr.domain.model.LikeList
+import com.laixer.swabbr.data.datasource.VlogDataSource
+import com.laixer.swabbr.domain.model.UploadWrapper
 import com.laixer.swabbr.domain.model.Vlog
+import com.laixer.swabbr.domain.model.VlogLike
+import com.laixer.swabbr.domain.model.VlogLikeSummary
 import com.laixer.swabbr.domain.repository.VlogRepository
 import io.reactivex.Completable
 import io.reactivex.Single
-import java.util.UUID
+import java.util.*
 
+// TODO Use caching refresh option.
+/**
+ *  Vlog repository implementation.
+ */
 class VlogRepositoryImpl constructor(
     private val cacheDataSource: VlogCacheDataSource,
-    private val remoteDataSource: VlogRemoteDataSource
+    private val remoteDataSource: VlogDataSource
 ) : VlogRepository {
 
-    override fun getUserVlogs(userId: UUID, refresh: Boolean): Single<List<Vlog>> = when (refresh) {
-        true -> remoteDataSource.getUserVlogs(userId).flatMap(cacheDataSource::set)
-        false -> cacheDataSource.getUserVlogs(userId).onErrorResumeNext { getUserVlogs(userId, refresh = true) }
+    override fun addView(vlogId: UUID): Completable {
+        TODO("Not yet implemented")
     }
 
-    override fun get(vlogId: UUID, refresh: Boolean): Single<Vlog> = when (refresh) {
-        true -> remoteDataSource.get(vlogId).flatMap(cacheDataSource::set)
-        false -> cacheDataSource.get(vlogId).onErrorResumeNext { get(vlogId, refresh = true) }
-    }
+    override fun delete(vlogId: UUID): Completable =
+        remoteDataSource.delete(vlogId).doOnComplete { cacheDataSource.delete(vlogId) }
 
-    override fun getRecommendedVlogs(refresh: Boolean): Single<List<Vlog>> = when (refresh) {
-        true -> remoteDataSource.getRecommendedVlogs().flatMap(cacheDataSource::setRecommendedVlogs)
-        false -> cacheDataSource.getRecommendedVlogs().onErrorResumeNext { getRecommendedVlogs(refresh = true) }
-    }
+    override fun generateUploadWrapper(): Single<UploadWrapper> = remoteDataSource.generateUploadWrapper()
 
-    override fun delete(vlogId: UUID): Completable = remoteDataSource.delete(vlogId).doOnComplete{ cacheDataSource.delete(vlogId) }
+    override fun get(vlogId: UUID): Single<Vlog> = remoteDataSource.get(vlogId)
 
-    override fun getReactionCount(vlogId: UUID): Single<Int> = remoteDataSource.getReactionCount(vlogId)
+    // TODO This REALLY benefits from caching
+    override fun getVlogLikeSummary(vlogId: UUID): Single<VlogLikeSummary> = remoteDataSource.getVlogLikeSummary(vlogId)
 
+    override fun getLikes(vlogId: UUID): Single<List<VlogLike>> = remoteDataSource.getLikes(vlogId)
 
-    override fun getLikes(vlogId: UUID): Single<LikeList> = remoteDataSource.getLikes(vlogId)
+    override fun getRecommended(): Single<List<Vlog>> = remoteDataSource.getRecommended()
 
-    override fun like(vlogId: UUID): Completable =
-        remoteDataSource.like(vlogId)
+    override fun getForUser(userId: UUID): Single<List<Vlog>> = remoteDataSource.getForUser(userId)
 
-    override fun unlike(vlogId: UUID): Completable =
-        remoteDataSource.unlike(vlogId)
+    override fun like(vlogId: UUID): Completable = remoteDataSource.like(vlogId)
 
-    override fun watch(vlogId: UUID): Single<WatchVlogResponse> = remoteDataSource.watch(vlogId)
+    override fun post(vlog: Vlog): Completable = remoteDataSource.post(vlog)
+
+    override fun unlike(vlogId: UUID): Completable = remoteDataSource.unlike(vlogId)
+
+    override fun update(vlog: Vlog): Completable = remoteDataSource.update(vlog)
 }

@@ -1,19 +1,27 @@
 package com.laixer.swabbr.domain.repository
 
-import com.laixer.swabbr.data.datasource.model.WatchReactionResponse
+import com.laixer.swabbr.domain.model.DatasetStats
 import com.laixer.swabbr.domain.model.Reaction
-import com.laixer.swabbr.domain.model.UploadReaction
+import com.laixer.swabbr.domain.model.UploadWrapper
 import io.reactivex.Completable
 import io.reactivex.Single
-import java.util.UUID
+import java.util.*
 
+/**
+ *  Interface for a reaction repository.
+ */
 interface ReactionRepository {
+    fun delete(reactionId: UUID): Completable
 
-    fun get(vlogId: UUID, refresh: Boolean): Single<List<Reaction>>
+    fun generateUploadWrapper(): Single<UploadWrapper>
 
-    fun new(targetVlogId: UUID): Single<UploadReaction>
+    fun get(reactionId: UUID): Single<Reaction>
 
-    fun finishUploading(reactionId: UUID): Completable
+    fun getForVlog(vlogId: UUID): Single<List<Reaction>>
 
-    fun watch(reactionId: UUID): Single<WatchReactionResponse>
+    fun getCountForVlog(vlogId: UUID): Single<DatasetStats>
+
+    fun post(reaction: Reaction): Completable
+
+    fun update(reaction: Reaction): Completable
 }

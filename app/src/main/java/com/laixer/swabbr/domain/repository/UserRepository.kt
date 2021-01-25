@@ -1,17 +1,82 @@
 package com.laixer.swabbr.domain.repository
 
 import com.laixer.swabbr.domain.model.User
+import com.laixer.swabbr.domain.model.UserComplete
+import com.laixer.swabbr.domain.model.UserWithStats
+import io.reactivex.Completable
 import io.reactivex.Single
-import java.util.UUID
+import java.util.*
 
+/**
+ *  Interface for a user repository. This is also capable of
+ *  retrieving user statistics and personal details.
+ *
+ *  The forceRefresh parameter can be used to bypass any caching
+ *  if an implementation uses caching. This can be desirable if
+ *  we have to guarantee the retrieval of the most up-to-date
+ *  information.
+ */
 interface UserRepository {
 
-    fun get(userId: UUID, refresh: Boolean): Single<User>
+    /**
+     *  Gets a user from our data store.
+     *
+     *  @param userId The user id to retrieve.
+     *  @param forceRefresh Force a cache update if any caching is used.
+     */
+    fun get(userId: UUID, forceRefresh: Boolean = false): Single<User>
 
-    fun set(user: User): Single<User>
+    /**
+     *  Gets a user with its statistics from our data store.
+     *
+     *  @param userId The user id to retrieve.
+     *  @param forceRefresh Force a cache update if any caching is used.
+     */
+    fun getWithStats(userId: UUID, forceRefresh: Boolean = false): Single<UserWithStats>
 
-    fun search(name: String?, page: Int = 1, itemsPerPage: Int = 50): Single<List<User>>
+    /**
+     *  Gets the currently authenticated user from our data store.
+     *
+     *  @param forceRefresh Force a cache update if any caching is used.
+     */
+    fun getSelf(forceRefresh: Boolean = false): Single<UserComplete>
 
-    fun getFollowing(userId: UUID, refresh: Boolean): Single<List<User>>
+    /**
+     *  Gets the currently authenticated user with stats from our data store.
+     *
+     *  @param forceRefresh Force a cache update if any caching is used.
+     */
+    fun getSelfWithStats(forceRefresh: Boolean = false): Single<UserWithStats>
 
+    /**
+     *  Get all users that a user is following itself.
+     *
+     *  @param userId The follow request requesting user.
+     *  @param forceRefresh Force a cache update if any caching is used.
+     */
+    fun getFollowing(userId: UUID, forceRefresh: Boolean = false): Single<List<User>>
+
+    /**
+     *  Get all users that are following a given user.
+     *
+     *  @param userId The follow request receiving user.
+     *  @param forceRefresh Force a cache update if any caching is used.
+     */
+    fun getFollowers(userId: UUID, forceRefresh: Boolean = false): Single<List<User>>
+
+    /**
+     *  Search for users in our data store.
+     *
+     *  @param query Search query, can't be empty.
+     *  @param offset Offset of the result set.
+     *  @param limit Maximum result set size.
+     */
+    fun search(query: String, offset: Int = 1, limit: Int = 50): Single<List<User>>
+
+    /**
+     *  Update the currently authenticated user.
+     *
+     *  @param user The user with updated properties.
+     */
+    fun update(user: UserComplete): Completable
 }

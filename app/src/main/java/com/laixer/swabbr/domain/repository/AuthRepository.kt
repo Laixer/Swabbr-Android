@@ -1,26 +1,19 @@
 package com.laixer.swabbr.domain.repository
 
-import com.laixer.swabbr.domain.model.*
+import com.laixer.swabbr.domain.model.Login
+import com.laixer.swabbr.domain.model.Registration
+import com.laixer.swabbr.domain.model.TokenWrapper
 import io.reactivex.Completable
 import io.reactivex.Single
 
+/**
+ *  Interface for a user authentication repository.
+ */
 interface AuthRepository {
 
-    fun getAuthenticatedUser(refresh: Boolean): Single<AuthUser>
+    fun login(login: Login): Single<TokenWrapper>
 
-    fun updateAuthenticatedUser(item: User): Single<AuthUser>
-
-    fun login(login: Login): Single<AuthUser>
-
-    fun register(registration: Registration): Single<AuthUser>
+    fun register(registration: Registration): Completable
 
     fun logout(): Completable
-
-    fun getSettings(refresh: Boolean): Single<Settings>
-
-    fun saveSettings(settings: Settings): Single<Settings>
-
-    fun getStatistics(refresh: Boolean): Single<UserStatistics>
-
-    fun getIncomingFollowRequests(): Single<List<FollowRequest>>
 }
