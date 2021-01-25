@@ -24,17 +24,18 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
-import com.laixer.swabbr.domain.model.PushNotificationPlatform
+import com.laixer.swabbr.domain.types.PushNotificationPlatform
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthViewModel
+import com.laixer.swabbr.presentation.model.RegistrationItem
+import com.laixer.swabbr.presentation.model.UserCompleteItem
 import com.laixer.swabbr.utils.convertBitmapToByteArray
 import com.laixer.swabbr.utils.encodeImageToBase64
-import com.laixer.swabbr.presentation.model.AuthUserItem
-import com.laixer.swabbr.presentation.model.RegistrationItem
 import kotlinx.android.synthetic.main.fragment_registration.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.time.Instant
-import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.util.*
 
 class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private val vm: AuthViewModel by sharedViewModel()
@@ -59,6 +60,12 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         }
 
         prepareUI()
+
+        /**
+         *  This listener registers the user. Note that a lot of the
+         *  registration values are nullable and are missing at this
+         *  moment. These registration options can be added later.
+         */
         registerButton.setOnClickListener {
             if (passwordInput.text.toString().length < 8) {
                 Toast.makeText(requireContext(), "Password must consist of at least 8 characters.", Toast.LENGTH_SHORT)
@@ -66,18 +73,30 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                 return@setOnClickListener
             }
 
+            // FUTURE More properties can be added later.
             vm.register(
                 RegistrationItem(
-                    emailInput.text.toString(),
-                    passwordInput.text.toString(),
-                    ZoneId.systemDefault().rules.getOffset(Instant.now()),
-                    nicknameInput.text.toString(),
-                    selectedBitmap?.let {
+                    email = emailInput.text.toString(),
+                    password = passwordInput.text.toString(),
+                    nickname = nicknameInput.text.toString(),
+                    firstName = null,
+                    lastName = null,
+                    gender = null,
+                    country = null,
+                    birthDate = null,
+                    // timeZone = //ZonedDateTime.now().offset, // TODO Is this correct?
+                    // TODO This doesn't work
+                    timeZone = null, // TODO Is this correct?
+                    profileImage = selectedBitmap?.let {
                         encodeImageToBase64(convertBitmapToByteArray(it))
                     },
-                    PUSH_NOTIFICATION_PLATFORM,
-                    firebaseInstanceId
-                )
+                    latitude = null,
+                    longitude = null,
+                    isPrivate = null,
+                    dailyVlogRequestLimit = null,
+                    followMode = null
+                ),
+                firebaseToken = firebaseInstanceId
             )
         }
 
@@ -89,13 +108,13 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 //        outState.putParcelable("BitmapImage", selectedBitmap)
 //    }
 
-    private fun register(res: Resource<AuthUserItem?>) {
+    private fun register(res: Resource<UserCompleteItem?>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 progressBar.visible()
             }
             ResourceState.SUCCESS -> {
-                res.data?.jwtToken?.let {
+                res.data?.let {
                     progressBar.gone()
                     // Nav to main app is handled by our parent activity (AuthActivity)
                 } ?: run {

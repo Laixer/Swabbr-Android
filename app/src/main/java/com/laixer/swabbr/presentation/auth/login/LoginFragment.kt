@@ -1,8 +1,5 @@
 package com.laixer.swabbr.presentation.auth.login
 
-import android.accounts.Account
-import android.accounts.AccountAuthenticatorActivity
-import android.accounts.AccountManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -23,18 +19,14 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
-import com.laixer.swabbr.domain.model.PushNotificationPlatform
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthViewModel
-import com.laixer.swabbr.presentation.auth.UserManager
 import com.laixer.swabbr.presentation.auth.UserManager.Companion.KEY_ACCOUNT_NAME
-import com.laixer.swabbr.presentation.model.AuthUserItem
-import com.laixer.swabbr.presentation.model.LoginItem
+import com.laixer.swabbr.presentation.model.UserCompleteItem
 import kotlinx.android.synthetic.main.activity_app.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
     private val vm: AuthViewModel by sharedViewModel()
@@ -58,21 +50,23 @@ class LoginFragment : Fragment() {
             FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
                 require(task.isSuccessful) { "Unable to identify this device on Firebase" }
                 vm.login(
-                        emailInput.text.toString(),
-                        passwordInput.text.toString(),
-                        task.result!!.token
+                    emailInput.text.toString(),
+                    passwordInput.text.toString(),
+                    task.result!!.token
                 )
             }
         }
 
         registerButton.setOnClickListener {
-            findNavController().navigate(LoginFragmentDirections.actionRegister(), FragmentNavigatorExtras(
-                emailInput to "emailInput"
-            ))
+            findNavController().navigate(
+                LoginFragmentDirections.actionRegister(), FragmentNavigatorExtras(
+                    emailInput to "emailInput"
+                )
+            )
         }
     }
 
-    private fun login(res: Resource<AuthUserItem?>) {
+    private fun login(res: Resource<UserCompleteItem?>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 progressBar.visible()

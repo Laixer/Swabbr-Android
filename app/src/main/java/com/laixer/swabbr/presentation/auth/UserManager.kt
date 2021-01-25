@@ -11,10 +11,11 @@ import com.laixer.cache.Cache
 import com.laixer.swabbr.BuildConfig
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
+// TODO Properly doc this!
+/**
+ *  User manager containing our authentication details.
+ */
 class UserManager(
     private val accountManager: AccountManager,
     val cache: Cache
@@ -22,6 +23,9 @@ class UserManager(
     private val _statusObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
     val statusObservable: Observable<Boolean> = _statusObservable
 
+    /**
+     *  Location where the user login jwt token is stored.
+     */
     val token: JWT?
         get() = cache.get(KEY_ACCOUNT_TOKEN) ?: getCurrentAccount()?.let { acc ->
             accountManager.peekAuthToken(acc, DEFAULT_AUTH_TOKEN_TYPE)?.let { JWT(it) }
@@ -96,17 +100,19 @@ class UserManager(
         } else if (accountManager.addAccountExplicitly(Account(email, ACCOUNT_TYPE), password, extras)) {
             cache.set(KEY_ACCOUNT_NAME, email)
         }
-
     }
 
     /**
      * Only meant to be called when sign in api responds successfully.
+     *
+     *  @param extras Additional user data to be stored in the account manager.
      */
     internal fun connect(email: String, password: String, token: JWT, extras: Bundle? = null) {
         val account = getAccount(email)
 
-        if (account == null)
+        if (account == null) {
             createAccount(email, password)
+        }
 
         getAccount(email)?.let { acc ->
             accountManager.setPassword(acc, password)
@@ -121,8 +127,9 @@ class UserManager(
             cache.set(KEY_ACCOUNT_NAME, email)
             cache.set(KEY_ACCOUNT_TOKEN, token)
 
-            if (_statusObservable.value != true)
+            if (_statusObservable.value != true) {
                 _statusObservable.onNext(true)
+            }
         }
     }
 
@@ -137,12 +144,15 @@ class UserManager(
     fun getCurrentAccount(): Account? {
         val accountName = cache.get<String>(KEY_ACCOUNT_NAME)
 
-        if (accountName?.isBlank() == true) return null
+        if (accountName?.isBlank() == true) {
+            return null
+        }
 
         val accounts = accountManager.accounts
         accounts.forEach { account ->
-            if (accountName == account.name)
+            if (accountName == account.name) {
                 return account
+            }
         }
 
         cache.remove(KEY_ACCOUNT_NAME)
@@ -166,5 +176,4 @@ class UserManager(
         const val KEY_ACCOUNT_TOKEN = "account_token"
 
     }
-
 }

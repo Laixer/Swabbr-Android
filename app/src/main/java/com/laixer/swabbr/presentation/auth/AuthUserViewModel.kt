@@ -6,26 +6,29 @@ import com.auth0.android.jwt.JWT
 import com.laixer.presentation.Resource
 import com.laixer.presentation.setError
 import com.laixer.presentation.setSuccess
-import com.laixer.swabbr.domain.model.FollowStatus
+import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.domain.usecase.AuthUserUseCase
 import com.laixer.swabbr.domain.usecase.FollowUseCase
-import com.laixer.swabbr.presentation.model.FollowRequestItem
-import com.laixer.swabbr.presentation.model.UserItem
-import com.laixer.swabbr.presentation.model.UserStatisticsItem
-import com.laixer.swabbr.presentation.model.mapToPresentation
-import io.reactivex.Completable
+import com.laixer.swabbr.presentation.model.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
+/**
+ *  View model for displaying the currently authenticated user.
+ *  This also contains some functionality for incoming follow
+ *  requests. TODO Split functionality.
+ */
 open class AuthUserViewModel constructor(
     private val userManager: UserManager,
     private val authUserUseCase: AuthUserUseCase,
     private val followUseCase: FollowUseCase
 ) : ViewModel() {
 
-    val user = MutableLiveData<Resource<UserItem>>()
-    val statistics = MutableLiveData<Resource<UserStatisticsItem>>()
+    val user = MutableLiveData<Resource<UserCompleteItem>>()
+    val statistics = MutableLiveData<Resource<UserWithStatsItem>>()
+
+    // TODO FollowRequestWithUserWrapper or something similar.
     val followRequests = MutableLiveData<Resource<List<Pair<FollowRequestItem, UserItem>>>>()
 
     private val compositeDisposable = CompositeDisposable()
@@ -35,18 +38,18 @@ open class AuthUserViewModel constructor(
         .subscribeOn(Schedulers.io())
         .map { it.mapToPresentation() }
         .subscribe(
-            { user.setSuccess(it.user) },
+            { user.setSuccess(it) },
             { user.setError(it.message) }
         )
     )
 
-    fun updateSelf(item: UserItem) {
+    fun updateSelf(item: UserCompleteItem) {
         compositeDisposable.add(authUserUseCase
-            .updateSelf(item)
+            .updateSelf(item.mapToDomain())
             .subscribeOn(Schedulers.io())
             .map { it.mapToPresentation() }
             .subscribe(
-                { user.setSuccess(it.user) },
+                { user.setSuccess(it) },
                 { user.setError(it.message) }
             )
         )
@@ -54,7 +57,7 @@ open class AuthUserViewModel constructor(
 
     fun getStatistics(refresh: Boolean) =
         compositeDisposable.add(authUserUseCase
-            .getStatistics(refresh)
+            .getSelfWithStats(refresh)
             .subscribeOn(Schedulers.io())
             .map { it.mapToPresentation() }
             .subscribe(
@@ -65,7 +68,7 @@ open class AuthUserViewModel constructor(
 
     fun getIncomingFollowRequests() =
         compositeDisposable.add(authUserUseCase
-            .getIncomingFollowRequestsWithUser()
+            .getIncomingFollowRequestsWithUsers()
             .subscribeOn(Schedulers.io())
             .map { list -> list.map { Pair(it.first.mapToPresentation(), it.second.mapToPresentation()) } }
             .subscribe(
@@ -84,7 +87,12 @@ open class AuthUserViewModel constructor(
                         followRequests.setSuccess(list.toMutableList().apply {
                             find { it.first.requesterId == requesterId }?.let { pair ->
                                 remove(pair)
-                                add(Pair(pair.first.apply { status = FollowStatus.FOLLOWING }, pair.second))
+                                add(
+                                    Pair(
+                                        pair.first.apply { requestStatus = FollowRequestStatus.ACCEPTED },
+                                        pair.second
+                                    )
+                                )
                             }
                         })
                     }
@@ -105,7 +113,12 @@ open class AuthUserViewModel constructor(
                         followRequests.setSuccess(list.toMutableList().apply {
                             find { it.first.requesterId == requesterId }?.let { pair ->
                                 remove(pair)
-                                add(Pair(pair.first.apply { status = FollowStatus.DECLINED }, pair.second))
+                                add(
+                                    Pair(
+                                        pair.first.apply { requestStatus = FollowRequestStatus.DECLINED },
+                                        pair.second
+                                    )
+                                )
                             }
                         })
                     }
@@ -116,9 +129,16 @@ open class AuthUserViewModel constructor(
             )
     )
 
-
+    /**
+     *  Get the jwt token of the current user.
+     */
     fun getAuthToken(): JWT? = userManager.token
-    fun getAuthUserId(): UUID? = userManager.getUserProperty("id")?.let(UUID::fromString)
+
+    // TODO We might want to store this in the usermanager
+    /**
+     *  Get the id of the current user.
+     */
+    fun getAuthUserId(): UUID? = this.authUserUseCase.getSelfId()
 
     override fun onCleared() {
         compositeDisposable.dispose()

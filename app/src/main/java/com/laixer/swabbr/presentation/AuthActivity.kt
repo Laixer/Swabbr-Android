@@ -11,14 +11,17 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
+import com.laixer.swabbr.domain.model.TokenWrapper
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthViewModel
-import com.laixer.swabbr.presentation.model.AuthUserItem
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.system.exitProcess
 
-
+/**
+ *  Activity for authenticating the user, meaning login,
+ *  registration and logout.
+ */
 class AuthActivity : AppCompatActivity() {
     private val vm: AuthViewModel by viewModel()
     private val navHostFragment by lazy { supportFragmentManager.findFragmentById(R.id.nav_host_container_auth) as NavHostFragment }
@@ -28,12 +31,14 @@ class AuthActivity : AppCompatActivity() {
 
         injectFeature()
 
-        vm.authenticatedUser.observe(this, Observer(this@AuthActivity::login))
+        // TODO Question --> What exactly does this imply?
+        //      Before refactor this observed vm.authenticatedUser
+        vm.tokenWrapper.observe(this, Observer(this@AuthActivity::login))
 
         setContentView(R.layout.activity_auth)
     }
 
-    private fun login(res: Resource<AuthUserItem?>) {
+    private fun login(res: Resource<TokenWrapper?>) {
         when (res.state) {
             ResourceState.LOADING -> {
                 progressBar.visible()
