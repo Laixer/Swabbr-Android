@@ -1,29 +1,56 @@
 package com.laixer.swabbr.domain.usecase
 
-import com.laixer.swabbr.domain.model.*
+import com.laixer.swabbr.domain.model.FollowRequest
+import com.laixer.swabbr.domain.model.User
+import com.laixer.swabbr.domain.model.UserComplete
+import com.laixer.swabbr.domain.model.UserWithStats
 import com.laixer.swabbr.domain.repository.AuthRepository
+import com.laixer.swabbr.domain.repository.FollowRequestRepository
 import com.laixer.swabbr.domain.repository.UserRepository
-import com.laixer.swabbr.presentation.model.UserItem
-import com.laixer.swabbr.presentation.model.mapToDomain
-import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.rxkotlin.toFlowable
-import io.reactivex.schedulers.Schedulers
+import java.util.*
 
+// TODO Look at this naming due to inconsistency with domain and data.
+/**
+ *  Use case with regards to the currently authenticated user.
+ *  This is responsible for operations on said user.
+ */
 class AuthUserUseCase constructor(
-    private val authRepository: AuthRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val followRequestRepository: FollowRequestRepository
 ) {
 
-    fun getSelf(refresh: Boolean): Single<AuthUser> = authRepository.getAuthenticatedUser(refresh)
+    // TODO This seems suboptimal
+    /**
+     *  Gets the id of the currently authenticated user.
+     */
+    fun getSelfId(): UUID = getSelf(false)
+        .blockingGet()
+        .id
 
-    fun updateSelf(user: UserItem): Single<AuthUser> = authRepository.updateAuthenticatedUser(user.mapToDomain())
+    /**
+     *  Get the currently authenticated user. This contains
+     *  personal details as well.
+     *
+     *  @param refresh Force a data refresh.
+     */
+    fun getSelf(refresh: Boolean): Single<UserComplete> = userRepository.getSelf(refresh)
 
-    fun getStatistics(refresh: Boolean) = authRepository.getStatistics(refresh)
+    /**
+     *  Get the currently authenticated user with statistics,
+     *  without any personal details.
+     *
+     *  @param refresh Force a data refresh.
+     */
+    fun getSelfWithStats(refresh: Boolean): Single<UserWithStats> = userRepository.getSelfWithStats(refresh)
 
-    fun getIncomingFollowRequestsWithUser(): Single<List<Pair<FollowRequest, User>>> =
-        authRepository.getIncomingFollowRequests()
+    // TODO Maybe move this functionality to the Backend?
+    /**
+     *  Get all incoming follow requests for the currently
+     *  authenticated user.
+     */
+    fun getIncomingFollowRequestsWithUsers(): Single<List<Pair<FollowRequest, User>>> =
+        followRequestRepository.getIncomingRequests()
             .flattenAsObservable { followRequests -> followRequests }
             .flatMap { request ->
                 userRepository.get(request.requesterId, true).map { user ->
@@ -31,7 +58,12 @@ class AuthUserUseCase constructor(
                 }.toObservable()
             }.toList()
 
-
+    /**
+     *  Update the currently authenticated user.
+     *
+     *  @param user User with updated properties.
+     */
+    fun updateSelf(user: UserComplete): Single<UserComplete> = userRepository
+        .update(user)
+        .andThen(userRepository.getSelf(true))
 }
-
-

@@ -1,33 +1,43 @@
 package com.laixer.swabbr.domain.usecase
 
 import com.laixer.swabbr.domain.model.FollowRequest
-import com.laixer.swabbr.domain.model.FollowStatus
 import com.laixer.swabbr.domain.model.User
-import com.laixer.swabbr.domain.repository.FollowRepository
+import com.laixer.swabbr.domain.repository.FollowRequestRepository
+import com.laixer.swabbr.domain.repository.UserRepository
 import io.reactivex.Completable
 import io.reactivex.Single
-import java.util.UUID
+import java.util.*
 
-class FollowUseCase constructor(private val followRepository: FollowRepository) {
+/**
+ *  Use case for anything follow request related. This includes the actual
+ *  user objects of the users which are following some other user.
+ */
+class FollowUseCase constructor(
+    private val followRequestRepository: FollowRequestRepository,
+    private val userRepository: UserRepository
+) {
+    fun get(requesterId: UUID, receiverId: UUID): Single<FollowRequest> =
+        followRequestRepository.get(requesterId, receiverId)
 
-    fun getFollowStatus(userId: UUID): Single<FollowStatus> = followRepository.getFollowStatus(userId)
+    fun getIncomingRequests(): Single<List<FollowRequest>> = followRequestRepository.getIncomingRequests()
 
-    fun getIncomingRequests(): Single<List<FollowRequest>> = followRepository.getIncomingRequests()
+    fun getOutgoingRequests(): Single<List<FollowRequest>> = followRequestRepository.getOutgoingRequests()
 
-    fun getOutgoingRequests(): Single<List<FollowRequest>> = followRepository.getOutgoingRequests()
+    fun sendFollowRequest(userId: UUID): Completable = followRequestRepository.sendFollowRequest(userId)
 
-    fun sendFollowRequest(userId: UUID): Single<FollowRequest> = followRepository.sendFollowRequest(userId)
+    fun cancelFollowRequest(userId: UUID): Completable = followRequestRepository.cancelFollowRequest(userId)
 
-    fun cancelFollowRequest(userId: UUID): Completable = followRepository.cancelFollowRequest(userId)
+    fun unfollow(userId: UUID): Completable = followRequestRepository.unfollow(userId)
 
-    fun unfollow(userId: UUID): Completable = followRepository.unfollow(userId)
+    fun acceptRequest(userId: UUID): Completable = followRequestRepository.acceptRequest(userId)
 
-    fun acceptRequest(userId: UUID): Completable = followRepository.acceptRequest(userId)
+    fun declineRequest(userId: UUID): Completable = followRequestRepository.declineRequest(userId)
 
-    fun declineRequest(userId: UUID): Completable = followRepository.declineRequest(userId)
+    // TODO Pass force refresh
+    fun getFollowers(userId: UUID, refresh: Boolean = false): Single<List<User>> =
+        userRepository.getFollowers(userId, refresh)
 
-    fun getFollowers(userId: UUID, refresh: Boolean = false): Single<List<User>> = followRepository.getFollowers(userId, refresh)
-
-    fun getFollowing(userId: UUID, refresh: Boolean = false): Single<List<User>> = followRepository.getFollowing(userId, refresh)
-
+    // TODO Pass force refresh
+    fun getFollowing(userId: UUID, refresh: Boolean = false): Single<List<User>> =
+        userRepository.getFollowing(userId, refresh)
 }
