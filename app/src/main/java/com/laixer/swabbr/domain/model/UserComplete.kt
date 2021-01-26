@@ -2,6 +2,7 @@ package com.laixer.swabbr.domain.model
 
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
+import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.*
@@ -16,7 +17,7 @@ data class UserComplete(
     val lastName: String?,
     val gender: Gender,
     val country: String?,
-    val birthDate: ZonedDateTime?,
+    val birthDate: LocalDate?,
     val timeZone: ZoneOffset?,
     val nickname: String,
     val profileImage: String?,

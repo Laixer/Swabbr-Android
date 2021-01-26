@@ -3,6 +3,7 @@ package com.laixer.swabbr.presentation.model
 import com.laixer.swabbr.domain.model.UserUpdatableProperties
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
+import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.*
@@ -16,7 +17,7 @@ class UserUpdatablePropertiesItem(
     var lastName: String?,
     var gender: Gender?,
     var country: String?,
-    var birthDate: ZonedDateTime?,
+    var birthDate: LocalDate?,
     var timeZone: ZoneOffset?,
     var nickname: String?,
     var profileImage: String?,

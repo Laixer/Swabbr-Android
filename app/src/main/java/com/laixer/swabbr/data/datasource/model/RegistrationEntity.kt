@@ -4,6 +4,7 @@ import com.laixer.swabbr.domain.model.Registration
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
 import com.squareup.moshi.Json
+import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
@@ -19,7 +20,7 @@ data class RegistrationEntity(
     @field:Json(name = "lastName") val lastName: String?,
     @field:Json(name = "gender") val gender: Int?,
     @field:Json(name = "country") val country: String?,
-    @field:Json(name = "birthDate") val birthDate: ZonedDateTime?,
+    @field:Json(name = "birthDate") val birthDate: LocalDate?,
     @field:Json(name = "timezone") val timezone: ZoneOffset?,
     @field:Json(name = "profileImageBase64Encoded") val profileImage: String?,
     @field:Json(name = "latitude") val latitude: Double?,
