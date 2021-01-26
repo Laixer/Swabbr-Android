@@ -24,17 +24,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.github.florent37.runtimepermission.kotlin.askPermission
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.BuildConfig
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.vlogs.details.ReactionViewModel
 import com.laixer.swabbr.utils.AutoFitSurfaceView
 import com.laixer.swabbr.utils.Utils
 import com.laixer.swabbr.utils.getPreviewOutputSize
 import io.antmedia.android.broadcaster.utils.OrientationLiveData
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_record.*
 import kotlinx.android.synthetic.main.video_confirm_dialogue.*
 import kotlinx.coroutines.*
@@ -62,12 +60,6 @@ class RecordReactionFragment : Fragment() {
     private val reactionVm: ReactionViewModel by viewModel()
 
     private val targetVlogId: UUID by lazy { UUID.fromString(args.vlogId) }
-
-    // TODO This shouldn't be in a fragment
-    /**
-     *  Url to which we will upload the reactions.
-     */
-    private lateinit var uploadUrl: String
 
     private var recording = false
 
@@ -97,7 +89,8 @@ class RecordReactionFragment : Fragment() {
     }
 
     /**
-     * Setup a persistent [Surface] for the recorder so we can use it as an output target for the
+     * Setup a persistent [Surface] for the recorder
+     * so we can use it as an output target for the
      * camera session without preparing the recorder
      */
     private val recorderSurface: Surface by lazy {
@@ -177,17 +170,17 @@ class RecordReactionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_record, container, false)
 
+    /**
+     *
+     */
     @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Utils.enterFullscreen(requireActivity())
-        reactionVm.newReaction.observe(viewLifecycleOwner, Observer { observeNewReaction(it) })
-
-        // TODO Understand
-        //reactionVm.newReaction(vlogId)
 
         viewFinder = view.findViewById(R.id.view_finder)
 
+        // TODO Question what does this do?
         viewFinder.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceDestroyed(holder: SurfaceHolder) = Unit
             override fun surfaceChanged(
@@ -220,29 +213,10 @@ class RecordReactionFragment : Fragment() {
         }
     }
 
-    private fun observeNewReaction(resource: Resource<ReactionItem>) = with(resource) {
-        when (state) {
-            ResourceState.LOADING -> {
-                // Present loading state
-            }
-            ResourceState.SUCCESS -> {
-                // TODO Azure coupled
-                data?.let {
-
-                    // TODO
-                    throw NotImplementedError();
-
-                    //val arr = it.uploadUrl.split("?sv=")
-                    //uploadUrl = "${arr[0]}/video.mp4?sv=${arr[1]}"
-                }
-            }
-            ResourceState.ERROR -> {
-                requireActivity().onBackPressed()
-            }
-        }
-    }
-
-    /** Creates a [MediaRecorder] instance using the provided [Surface] as input */
+    /**
+     * Creates a [MediaRecorder] instance using the
+     * provided [Surface] as input
+     */
     private fun createRecorder(surface: Surface) = MediaRecorder().apply {
         setAudioSource(MediaRecorder.AudioSource.MIC)
         setVideoSource(MediaRecorder.VideoSource.SURFACE)
@@ -292,11 +266,17 @@ class RecordReactionFragment : Fragment() {
         }
     }
 
+    /**
+     *  Resets the recording process.
+     */
     private fun reset() = lifecycleScope.launch(Dispatchers.IO) {
         recorder = createRecorder(recorderSurface)
         prepare()
     }
 
+    /**
+     *  Prepares the recording process.
+     */
     private fun prepare() = lifecycleScope.launch(Dispatchers.IO) {
         // Prevents screen rotation during the video recording
         requireActivity().requestedOrientation =
@@ -310,6 +290,9 @@ class RecordReactionFragment : Fragment() {
 
     }
 
+    /**
+     *  Starts the recording process.
+     */
     private fun start() = lifecycleScope.launch(Dispatchers.IO) {
         // Start recording repeating requests, which will stop the ongoing preview
         //  repeating requests without having to explicitly call `session.stopRepeating`
@@ -327,6 +310,10 @@ class RecordReactionFragment : Fragment() {
         recording = true
     }
 
+    /**
+     *  Stops the recording process. This will launch a
+     *  playback and confirmation popup.
+     */
     private fun stop() = lifecycleScope.launch(Dispatchers.IO) {
         if (!recording) {
             cancel()
@@ -348,17 +335,24 @@ class RecordReactionFragment : Fragment() {
         MediaScannerConnection.scanFile(requireContext(), arrayOf(outputFile.absolutePath), null, null)
 
         val authority = "${BuildConfig.APPLICATION_ID}.provider"
-        val uri = FileProvider.getUriForFile(requireContext(), authority, outputFile)
+        val localVideoUri = FileProvider.getUriForFile(requireContext(), authority, outputFile)
+
+        // TODO THIS IS INCORRECT
+        // TODO THIS IS INCORRECT
+        // TODO THIS IS INCORRECT
+        // TODO THIS IS INCORRECT
+        // TODO THIS IS INCORRECT
+        val localThumbnailUri = FileProvider.getUriForFile(requireContext(), authority, outputFile)
 
         lifecycleScope.launch(Dispatchers.Main) {
             stream_position_timer.stopTimer()
 
-            // Confirmation playback popup
+            // Confirmation and playback popup
             Dialog(requireActivity()).apply {
                 setCancelable(true)
                 setContentView(R.layout.video_confirm_dialogue)
 
-                preview_container.setVideoURI(uri)
+                preview_container.setVideoURI(localVideoUri)
                 preview_container.start()
 
                 preview_cancel.setOnClickListener {
@@ -368,7 +362,7 @@ class RecordReactionFragment : Fragment() {
 
                 preview_ok.setOnClickListener {
                     dismiss()
-                    upload(uri)
+                    upload(localVideoUri, localThumbnailUri)
                 }
             }.show()
         }
@@ -376,6 +370,9 @@ class RecordReactionFragment : Fragment() {
         recording = false
     }
 
+    /**
+     *  Prepares the recording view.
+     */
     private fun initView() = lifecycleScope.launch(Dispatchers.Main) {
         enableStopProgressBar.max =
             ((DEFAULT_MINIMUM_RECORD_TIME_MINUTES * 60) + DEFAULT_MINIMUM_RECORD_TIME_SECONDS) * 10
@@ -400,7 +397,6 @@ class RecordReactionFragment : Fragment() {
             addProgressBar(stream_progress) {
                 stop()
             }
-
         }
 
         stream_position_timer.apply {
@@ -410,32 +406,37 @@ class RecordReactionFragment : Fragment() {
         stream_progress.isIndeterminate = false
     }
 
-
-    private fun upload(uri: Uri) {
-        // Upload to Azure
-        if (!::uploadUrl.isInitialized) {
-            Toast.makeText(requireContext(), "Unable to post reaction, try again later.", Toast.LENGTH_SHORT).show()
-            requireActivity().onBackPressed()
-            return
-        }
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            reactionVm.uploadReaction(uri, uploadUrl)
-        }.invokeOnCompletion {
-            reactionVm.postReactionAfterUpload(reactionVm.newReaction.value!!.data!!, {
-                lifecycleScope.launch(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Finished uploading reaction!", Toast.LENGTH_SHORT).show()
-                    requireActivity().onBackPressed()
-                }
-            }, {
-                lifecycleScope.launch(Dispatchers.Main) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Failed to upload reaction, please try again.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            })
+    /**
+     *  Called when the user confirms the reaction post after playback.
+     *  This method includes success and failure callbacks.
+     *
+     *  @param localVideoUri Locally stored video file uri.
+     *  @param localThumbnailUri Locally stored thumbnail file uri.
+     */
+    private fun upload(localVideoUri: Uri, localThumbnailUri: Uri) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            reactionVm.postReaction(localVideoUri, localThumbnailUri, targetVlogId, true)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            Toast.makeText(
+                                requireContext(),
+                                "The reaction has been posted!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            requireActivity().onBackPressed()
+                        }
+                    },
+                    {
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            Toast.makeText(
+                                requireContext(),
+                                "Failed to upload reaction, please try again.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    })
         }
     }
 

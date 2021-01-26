@@ -6,6 +6,7 @@ import com.laixer.swabbr.domain.types.ReactionStatus
 import java.time.ZonedDateTime
 import java.util.*
 
+// TODO Reaction thumbnails aren't used atm.
 /**
  *  Item representing a single reaction.
  *  Note: length is in seconds.
@@ -20,7 +21,30 @@ data class ReactionItem(
     val reactionStatus: ReactionStatus,
     val videoUri: Uri?,
     val thumbnailUri: Uri?
-)
+) {
+    companion object ForPosting {
+        /**
+         *  Generates a new [ReactionItem] based on the properties
+         *  required for posting a reaction. All other properties
+         *  are either left at null or are set to their defaults.
+         *
+         *  @param id Reaction id as specified by the backend.
+         *  @param targetVlogId The vlog to which this reaction should be posted.
+         *  @param isPrivate Public access modifier.
+         */
+        fun createForPosting(id: UUID, targetVlogId: UUID, isPrivate: Boolean): ReactionItem = ReactionItem(
+            id = id,
+            userId = UUID(0, 0), // TODO Suboptimal, represents an empty uuid.
+            targetVlogId = targetVlogId,
+            dateCreated = ZonedDateTime.now(),
+            isPrivate = isPrivate,
+            length = null,
+            reactionStatus = ReactionStatus.UP_TO_DATE,
+            videoUri = null,
+            thumbnailUri = null
+        )
+    }
+}
 
 /**
  * Map a reaction from presentation to domain.

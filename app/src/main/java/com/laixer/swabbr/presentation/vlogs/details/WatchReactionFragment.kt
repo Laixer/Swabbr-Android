@@ -44,7 +44,7 @@ class WatchReactionFragment(id: String? = null) : VideoFragment() {
             }
             ResourceState.SUCCESS -> {
                 data?.let {
-                    stream(it.reaction.videoUri.toString())
+                    stream(it.reaction.videoUri!!)
                 }
             }
             ResourceState.ERROR -> {

@@ -16,6 +16,7 @@ import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.mapToDomain
 import com.laixer.swabbr.presentation.model.mapToPresentation
+import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +40,6 @@ class ReactionViewModel constructor(
     private val context: Context
 ) : ViewModel() {
     val toast: Toast = Toast.makeText(context, "", Toast.LENGTH_LONG)
-    val newReaction = MutableLiveData<Resource<ReactionItem>>()
 
     /**
      *  Mutable resource in which a reaction we want to watch will be
@@ -63,19 +63,57 @@ class ReactionViewModel constructor(
             )
     )
 
-    // TODO Bundle with postReactionAfterUpload()?
+    // TODO This is messy.
+    // TODO Hard coded content types
+    // TODO Make sure the order of execution is correct! It works though...
+    // TODO This error hides
     /**
-     *  Uploads a reaction to the blob storage. After uploading has
-     *  been completed, [postReactionAfterUpload] should be called.
+     *  Uploads a [ReactionItem] including thumbnail and posts the
+     *  reaction to the backend.
+     *
+     *  @param localVideoUri Location of the reaction video file.
+     *  @param localThumbnailUri Location of the thumbnail file.
+     *  @param targetVlogId The vlog to post a reaction to.
+     *  @param isPrivate Indicates reaction accessibility.
+     */
+    fun postReaction(
+        localVideoUri: Uri,
+        localThumbnailUri: Uri,
+        targetVlogId: UUID,
+        isPrivate: Boolean
+    ): Completable =
+        reactionsUseCase.generateUploadWrapper()
+            .map { uploadWrapper ->
+                Completable.fromCallable {
+                    uploadFile(localVideoUri, uploadWrapper.videoUploadUri, "video/mp4")
+                    uploadFile(localThumbnailUri, uploadWrapper.thumbnailUploadUri, "image/jpeg")
+                }
+                    .andThen(
+                        reactionsUseCase.postReaction(
+                            ReactionItem.createForPosting(
+                                id = uploadWrapper.id,
+                                targetVlogId = targetVlogId,
+                                isPrivate = isPrivate
+                            ).mapToDomain()
+                        )
+                    )
+                    .subscribeOn(Schedulers.io())
+                    .subscribe()
+            }
+            .ignoreElement()
+
+    /**
+     *  Uploads a file to the blob storage.
      *
      *  Note that the id of the reaction should already be contained
      *  in the name of the video file.
      *
-     *  @param videoFileUri The local uri to the recorded video file.
+     *  @param localVideoUri The local uri to the recorded video file.
      *  @param uploadUrl The uri to which the video file should be uploaded.
+     *  @param contentType The MIME type.
      */
-    fun uploadReaction(videoFileUri: Uri, uploadUrl: String) {
-        context.contentResolver.openInputStream(videoFileUri)?.let {
+    private fun uploadFile(localVideoUri: Uri, uploadUrl: Uri, contentType: String) {
+        context.contentResolver.openInputStream(localVideoUri)?.let {
             val bis = BufferedInputStream(it)
             val blockIds = emptyList<String>().toMutableList()
 
@@ -88,7 +126,8 @@ class ReactionViewModel constructor(
                 val buffer = ByteArray(bufferLength)
                 bis.read(buffer, 0, buffer.size)
 
-                val blockId = Base64.getEncoder().encodeToString(("Block-${counter++}").toByteArray(Charsets.UTF_8))
+                val blockId =
+                    Base64.getEncoder().encodeToString(("Block-${counter++}").toByteArray(Charsets.UTF_8))
 
                 val available = bis.available()
                 viewModelScope.launch(Dispatchers.Main) {
@@ -98,17 +137,18 @@ class ReactionViewModel constructor(
                                 total.toDouble().div(blockSize)
                             ).toInt() + 1
                         } (${
-                            (available.toDouble() / 1_000_000).toBigDecimal().setScale(1, RoundingMode.HALF_EVEN)
+                            (available.toDouble() / 1_000_000).toBigDecimal()
+                                .setScale(1, RoundingMode.HALF_EVEN)
                         }MB remaining)"
                     )
                     toast.show()
                 }
 
-                uploadBlock(uploadUrl, buffer, blockId)
+                uploadBlock(uploadUrl.toString(), buffer, blockId, contentType)
                 blockIds.add(blockId)
             }
 
-            commitBlockList(uploadUrl, blockIds)
+            commitBlockList(uploadUrl.toString(), blockIds)
 
             bis.close()
             it.close()
@@ -116,24 +156,20 @@ class ReactionViewModel constructor(
     }
 
     /**
-     *  Indicates that uploading a reaction has finished. This
-     *  will post the reaction and should be called after calling
-     *  [uploadReaction].
+     *  Upload a block of bytes.
      *
-     *  @param reaction The reaction with essential properties populated.
+     *  @param baseUri The uri to upload to.
+     *  @param blockContents The contents to upload.
+     *  @param blockId The id of this block.
+     *  @param contentType MIME type.
      */
-    fun postReactionAfterUpload(reaction: ReactionItem, onComplete: () -> Unit, onError: () -> Unit) =
-        compositeDisposable.add(
-            reactionsUseCase.postReaction(reaction.mapToDomain())
-                .doOnSubscribe { }
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                    { onComplete.invoke() },
-                    { onError.invoke() })
-        )
-
-    private fun uploadBlock(baseUri: String, blockContents: ByteArray, blockId: String) {
-        val mime = MediaType.get("video/mp4")
+    private fun uploadBlock(
+        baseUri: String,
+        blockContents: ByteArray,
+        blockId: String,
+        contentType: String
+    ) {
+        val mime = MediaType.get(contentType) // TODO Not that bulletproof, but private so ok for now
         val body = RequestBody.create(mime, blockContents)
 
         Log.d(TAG, body.toString())

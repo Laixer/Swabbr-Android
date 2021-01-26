@@ -24,7 +24,7 @@ class UsersUseCase constructor(private val userRepository: UserRepository) {
      *  @param offset Offset of the result set.
      *  @param limit Maximum result set size.
      */
-    fun search(query: String, offset: Int = 1, limit: Int = 50): Single<List<User>> =
+    fun search(query: String, offset: Int = 0, limit: Int = 25): Single<List<User>> =
         userRepository.search(query, offset, limit)
 
     /**

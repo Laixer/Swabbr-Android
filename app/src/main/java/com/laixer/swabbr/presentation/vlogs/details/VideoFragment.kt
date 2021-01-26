@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.laixer.swabbr.R
@@ -31,12 +32,11 @@ open class VideoFragment : AuthFragment() {
      *
      *  @param endpoint Resource location.
      */
-    protected fun stream(endpoint: String) {
+    protected fun stream(endpoint: Uri) {
         val dataSourceFactory = DefaultHttpDataSourceFactory(requireContext().getString(R.string.app_name))
 
-        // TODO Correct protocol!
-        val mediaSourceFactory = HlsMediaSource.Factory(dataSourceFactory).setAllowChunklessPreparation(true)
-        val mediaSource = mediaSourceFactory.createMediaSource(Uri.parse(endpoint))
+        val mediaSourceFactory = ProgressiveMediaSource.Factory(dataSourceFactory)
+        val mediaSource = mediaSourceFactory.createMediaSource(endpoint)
 
         content_loading_progressbar.visibility = View.GONE
         exoPlayer.apply {

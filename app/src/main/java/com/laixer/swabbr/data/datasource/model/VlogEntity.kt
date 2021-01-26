@@ -18,8 +18,8 @@ data class VlogEntity(
     @field:Json(name = "views") val views: Int,
     @field:Json(name = "length") val length: Int?,
     @field:Json(name = "vlogStatus") val vlogStatus: Int,
-    @field:Json(name = "videoUri") val videoUri: Uri,
-    @field:Json(name = "thumbnailUri") val thumbnail: Uri
+    @field:Json(name = "videoUri") val videoUri: Uri?,
+    @field:Json(name = "thumbnailUri") val thumbnail: Uri?
 )
 
 /**

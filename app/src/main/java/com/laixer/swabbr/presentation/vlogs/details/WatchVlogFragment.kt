@@ -42,10 +42,11 @@ class WatchVlogFragment(id: String? = null) : InteractiveVideoFragment() {
             }
             ResourceState.SUCCESS -> {
                 data?.let {
-                    stream(it.vlog.videoUri.toString())
+                    stream(it.vlog.videoUri!!)
                 }
             }
             ResourceState.ERROR -> {
+                // TODO
             }
         }
     }

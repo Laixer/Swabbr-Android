@@ -21,8 +21,8 @@ data class VlogItem(
     val views: Int,
     val length: Int?,
     val vlogStatus: VlogStatus,
-    val videoUri: Uri,
-    val thumbnailUri: Uri,
+    val videoUri: Uri?,
+    val thumbnailUri: Uri?,
     val vlogLikeSummary: VlogLikeSummaryItem?
 )
 
