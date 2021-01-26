@@ -18,9 +18,9 @@ class SearchViewModel constructor(private val usersUseCase: UsersUseCase) : View
     var lastQueryResultCount = 0
     private val compositeDisposable = CompositeDisposable()
 
-    fun search(query: String, page: Int = 1, itemsPerPage: Int = 50, refreshList: Boolean = false) =
+    fun search(query: String, offset: Int = 0, limit: Int = 50, refreshList: Boolean = false) =
         compositeDisposable
-            .add(usersUseCase.search(query, page, itemsPerPage)
+            .add(usersUseCase.search(query, offset, limit)
                 .doOnSubscribe { profiles.setLoading() }
                 .subscribeOn(Schedulers.io()).map { it.mapToPresentation() }
                 .subscribe(
@@ -34,7 +34,9 @@ class SearchViewModel constructor(private val usersUseCase: UsersUseCase) : View
                             }
                         )
                     },
-                    { profiles.setError(it.message) })
+                    {
+                        profiles.setError(it.message)
+                    })
             )
 
     override fun onCleared() {

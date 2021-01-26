@@ -69,7 +69,7 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
     private fun search(
         query: String = lastQuery,
         page: Int = currentPage,
-        refreshList: Boolean = false
+        refreshList: Boolean = true
     ): Boolean {
         // Can't search negative pages
         if (currentPage < 1) {
@@ -83,9 +83,10 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
             return false
         }
 
+        val limit = 25
         lastQuery = query
         currentPage = page
-        vm.search(query = query, page = page, refreshList = refreshList)
+        vm.search(query = query, offset = (page - 1) * limit, limit = limit, refreshList = refreshList)
         return true
     }
 
