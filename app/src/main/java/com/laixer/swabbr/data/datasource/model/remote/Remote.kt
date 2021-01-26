@@ -33,7 +33,7 @@ interface FollowRequestApi {
     @GET("followrequest/outgoing")
     fun getOutgoingRequests(): Single<List<FollowRequestEntity>>
 
-    @POST("followrequest/send")
+    @POST("followrequest")
     fun sendFollowRequest(@Query("receiverId") userId: UUID): Completable
 
     @PUT("followrequest/cancel")
