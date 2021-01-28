@@ -74,6 +74,8 @@ class WatchUserVlogsFragment : AuthFragment() {
         super.onViewStateRestored(savedInstanceState)
     }
 
+    // TODO This crashes after lock and unlock of phone
+    //  java.lang.IllegalStateException: vlog_viewpager must not be null
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(CURRENT_ITEM_INDEX, vlog_viewpager.currentItem)
         super.onSaveInstanceState(outState)
