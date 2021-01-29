@@ -77,10 +77,15 @@ class AuthProfileVlogsFragment : AuthFragment() {
         }
     }
 
+    /**
+     *  Called when the observed user [VlogWrapperItem] resource
+     *  list changes.
+     */
     private fun updateProfileVlogs(res: Resource<List<VlogWrapperItem>>) = res.run {
         with(swipeRefreshLayout) {
             when (state) {
-                ResourceState.LOADING -> startRefreshing()
+                ResourceState.LOADING ->
+                    startRefreshing()
                 ResourceState.SUCCESS -> {
                     stopRefreshing()
                     data?.let {

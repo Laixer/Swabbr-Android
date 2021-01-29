@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.streaming
+package com.laixer.swabbr.presentation.vlogs.recording
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -6,17 +6,21 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
 import com.laixer.swabbr.R
 
-
-class StreamActivity : AppCompatActivity() {
-
+/**
+ *  Container in which the fragments for recording a vlog exist.
+ */
+class RecordVlogActivity : AppCompatActivity() {
     private val navHostFragment by lazy { supportFragmentManager.findFragmentById(R.id.nav_host_container_stream) as NavHostFragment }
-    private val args: StreamActivityArgs by navArgs()
+    private val args: RecordVlogActivityArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_stream)
-        navHostFragment.navController.setGraph(R.navigation.nav_graph_stream, StreamFragmentArgs(args.livestreamId).toBundle())
+        setContentView(R.layout.activity_record_vlog)
+        navHostFragment.navController.setGraph(
+            R.navigation.nav_graph_recordvlog,
+            RecordVlogActivityArgs(args.vlogId).toBundle() // TODO Should be fragment args
+        )
     }
 
     override fun onBackPressed() {
@@ -25,6 +29,6 @@ class StreamActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val TAG = "LivestreamActivity"
+        const val TAG = "RecordVlogActivity"
     }
 }

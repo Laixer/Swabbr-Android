@@ -24,24 +24,46 @@ data class VlogItem(
     val videoUri: Uri?,
     val thumbnailUri: Uri?,
     val vlogLikeSummary: VlogLikeSummaryItem?
-)
-
+) {
+    companion object ForPosting {
+        /**
+         *  Generates a new [VlogItem] based on the properties
+         *  required for posting a vlog. All other properties
+         *  are either left at null or are set to their defaults.
+         *
+         *  @param id Vlog id as specified by the backend.
+         *  @param isPrivate Public access modifier.
+         */
+        fun createForPosting(id: UUID, isPrivate: Boolean): VlogItem = VlogItem(
+            id = id,
+            userId = UUID(0, 0), // TODO Suboptimal, represents an empty uuid.
+            isPrivate = isPrivate,
+            dateCreated = ZonedDateTime.now(),
+            views = 0,
+            length = 0, // TODO Pass length?
+            vlogStatus = VlogStatus.UP_TO_DATE,
+            videoUri = null,
+            thumbnailUri = null,
+            vlogLikeSummary = null
+        )
+    }
+}
 
 /**
  *  Map a vlog from presentation to domain. Note that this does not
  *  take the vlog like summary with it, since this concatenation of
  *  entities does not exist in the domain layer.
  */
-fun Vlog.mapToDomain(): Vlog = Vlog(
+fun VlogItem.mapToDomain(): Vlog = Vlog(
     id,
     userId,
     isPrivate,
-    dateStarted,
+    dateCreated,
     views,
     length,
     vlogStatus,
     videoUri,
-    thumbnail
+    thumbnailUri
 )
 
 // TODO Is this correct? Seems dangerous.

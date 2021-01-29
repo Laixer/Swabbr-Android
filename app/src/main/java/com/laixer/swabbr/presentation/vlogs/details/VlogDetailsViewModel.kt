@@ -96,7 +96,9 @@ class VlogDetailsViewModel constructor(
                 .subscribeOn(Schedulers.io())
                 .map { it.mapToPresentation() }
                 .subscribe(
-                    { reactions.setSuccess(it) },
+                    {
+                        reactions.setSuccess(it)
+                    },
                     { reactions.setError(it.message) }
                 )
         )

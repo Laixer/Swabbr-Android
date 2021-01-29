@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.vlogs.details
+package com.laixer.swabbr.presentation.reaction
 
 import android.os.Bundle
 import android.view.*
@@ -9,6 +9,8 @@ import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
+import com.laixer.swabbr.presentation.vlogs.details.VideoFragment
+import com.laixer.swabbr.presentation.reaction.WatchReactionFragmentArgs
 import kotlinx.android.synthetic.main.item_vlog.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*

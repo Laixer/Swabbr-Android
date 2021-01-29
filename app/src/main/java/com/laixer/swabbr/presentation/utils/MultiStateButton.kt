@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.streaming
+package com.laixer.swabbr.presentation.utils
 
 import android.content.Context
 import android.content.res.TypedArray
@@ -12,6 +12,10 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.laixer.swabbr.R
 
+/**
+ *  UI component for a button which contains an on and and off
+ *  state. The drawable of the button depends on the state.
+ */
 class MultiStateButton(context: Context, attrs: AttributeSet?) : AppCompatImageView(context, attrs) {
     constructor(context: Context) : this(context, null)
 

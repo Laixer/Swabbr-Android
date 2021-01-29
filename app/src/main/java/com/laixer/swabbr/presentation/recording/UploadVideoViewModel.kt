@@ -1,24 +1,12 @@
-package com.laixer.swabbr.presentation.vlogs.details
+package com.laixer.swabbr.presentation.recording
 
 import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.laixer.presentation.Resource
-import com.laixer.presentation.setError
-import com.laixer.presentation.setLoading
-import com.laixer.presentation.setSuccess
-import com.laixer.swabbr.domain.usecase.ReactionUseCase
-import com.laixer.swabbr.presentation.model.ReactionItem
-import com.laixer.swabbr.presentation.model.ReactionWrapperItem
-import com.laixer.swabbr.presentation.model.mapToDomain
-import com.laixer.swabbr.presentation.model.mapToPresentation
-import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
@@ -31,88 +19,24 @@ import java.util.*
 import kotlin.math.ceil
 
 /**
- *  Viewmodel containing functionality for watching and posting
- *  reactions. This includes uploading functionality.
+ *  View model containing functionality for uploading a video.
  */
-class ReactionViewModel constructor(
+open class UploadVideoViewModel constructor(
     private val mHttpClient: OkHttpClient,
-    private val reactionsUseCase: ReactionUseCase,
     private val context: Context
 ) : ViewModel() {
-    val toast: Toast = Toast.makeText(context, "", Toast.LENGTH_LONG)
-
-    /**
-     *  Mutable resource in which a reaction we want to watch will be
-     *  stored dynamically.
-     */
-    val watchReactionResponse = MutableLiveData<Resource<ReactionWrapperItem>>()
+    protected val toast: Toast = Toast.makeText(context, "", Toast.LENGTH_LONG)
 
     private val compositeDisposable = CompositeDisposable()
 
     /**
-     *  Gets a reaction from the data store and stores it in
-     *  [watchReactionResponse] on completion.
-     */
-    fun watch(reactionId: UUID) = compositeDisposable.add(
-        reactionsUseCase.get(reactionId)
-            .doOnSubscribe { watchReactionResponse.setLoading() }
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                { watchReactionResponse.setSuccess(it.mapToPresentation()) },
-                { watchReactionResponse.setError(it.message) }
-            )
-    )
-
-    // TODO This is messy.
-    // TODO Hard coded content types
-    // TODO Make sure the order of execution is correct! It works though...
-    // TODO This error hides
-    /**
-     *  Uploads a [ReactionItem] including thumbnail and posts the
-     *  reaction to the backend.
-     *
-     *  @param localVideoUri Location of the reaction video file.
-     *  @param localThumbnailUri Location of the thumbnail file.
-     *  @param targetVlogId The vlog to post a reaction to.
-     *  @param isPrivate Indicates reaction accessibility.
-     */
-    fun postReaction(
-        localVideoUri: Uri,
-        localThumbnailUri: Uri,
-        targetVlogId: UUID,
-        isPrivate: Boolean
-    ): Completable =
-        reactionsUseCase.generateUploadWrapper()
-            .map { uploadWrapper ->
-                Completable.fromCallable {
-                    uploadFile(localVideoUri, uploadWrapper.videoUploadUri, "video/mp4")
-                    uploadFile(localThumbnailUri, uploadWrapper.thumbnailUploadUri, "image/jpeg")
-                }
-                    .andThen(
-                        reactionsUseCase.postReaction(
-                            ReactionItem.createForPosting(
-                                id = uploadWrapper.id,
-                                targetVlogId = targetVlogId,
-                                isPrivate = isPrivate
-                            ).mapToDomain()
-                        )
-                    )
-                    .subscribeOn(Schedulers.io())
-                    .subscribe()
-            }
-            .ignoreElement()
-
-    /**
-     *  Uploads a file to the blob storage.
-     *
-     *  Note that the id of the reaction should already be contained
-     *  in the name of the video file.
+     *  Uploads a file to an external uri.
      *
      *  @param localVideoUri The local uri to the recorded video file.
-     *  @param uploadUrl The uri to which the video file should be uploaded.
+     *  @param uploadUri The uri to which the video file should be uploaded.
      *  @param contentType The MIME type.
      */
-    private fun uploadFile(localVideoUri: Uri, uploadUrl: Uri, contentType: String) {
+    protected fun uploadFile(localVideoUri: Uri, uploadUri: Uri, contentType: String) {
         context.contentResolver.openInputStream(localVideoUri)?.let {
             val bis = BufferedInputStream(it)
             val blockIds = emptyList<String>().toMutableList()
@@ -144,11 +68,11 @@ class ReactionViewModel constructor(
                     toast.show()
                 }
 
-                uploadBlock(uploadUrl.toString(), buffer, blockId, contentType)
+                uploadBlock(uploadUri.toString(), buffer, blockId, contentType)
                 blockIds.add(blockId)
             }
 
-            commitBlockList(uploadUrl.toString(), blockIds)
+            commitBlockList(uploadUri.toString(), blockIds)
 
             bis.close()
             it.close()
@@ -169,7 +93,8 @@ class ReactionViewModel constructor(
         blockId: String,
         contentType: String
     ) {
-        val mime = MediaType.get(contentType) // TODO Not that bulletproof, but private so ok for now
+        // TODO Not that bulletproof
+        val mime = MediaType.get(contentType)
         val body = RequestBody.create(mime, blockContents)
 
         Log.d(TAG, body.toString())
@@ -216,7 +141,7 @@ class ReactionViewModel constructor(
     }
 
     companion object {
-        private const val TAG = "ReactionViewModel"
+        private const val TAG = "UploadVideoViewModel"
         private const val X_MS_VERSION = "2019-02-02"
         private const val X_MS_BLOB_TYPE = "BlockBlob"
     }

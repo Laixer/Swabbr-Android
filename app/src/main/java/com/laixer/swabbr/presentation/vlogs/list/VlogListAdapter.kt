@@ -15,7 +15,6 @@ import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.utils.loadAvatar
 import kotlinx.android.synthetic.main.include_user_info.view.*
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
-import java.time.ZonedDateTime
 
 /**
  *  Re-usable adapter for displaying a list of [VlogWrapperItem]s.
@@ -39,67 +38,63 @@ class VlogListAdapter constructor(
          *  Binds this [ViewHolder] to a specific [VlogWrapperItem] in the adapter.
          */
         fun bind(item: VlogWrapperItem) = with(itemView) {
-            // TODO Question why?
-            if (item.vlog.dateCreated.isBefore(ZonedDateTime.now().minusMinutes(3))) {
-                // TODO Question why?
-                processing_cover.visibility = View.GONE
+            processing_cover.visibility = View.GONE
 
-                // Load the thumbnail image.
-                Glide.with(context)
-                    .load(GlideUrl(item.vlog.thumbnailUri.toString()))
-                    .placeholder(R.drawable.thumbnail_placeholder)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .thumbnail(0.1f)
-                    .into(thumbnail)
+            // Load the thumbnail image.
+            Glide.with(context)
+                .load(GlideUrl(item.vlog.thumbnailUri.toString()))
+                .placeholder(R.drawable.thumbnail_placeholder)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .thumbnail(0.1f)
+                .into(thumbnail)
 
-                // Load information about the user.
-                user_avatar.loadAvatar(item.user.profileImage, item.user.id)
-                user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
-                item.user.firstName?.let {
-                    user_username.apply {
-                        text = context.getString(R.string.full_name, it, item.user.lastName)
-                        visibility = View.VISIBLE
-                    }
+            // Load information about the user.
+            user_avatar.loadAvatar(item.user.profileImage, item.user.id)
+            user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
+            item.user.firstName?.let {
+                user_username.apply {
+                    text = context.getString(R.string.full_name, it, item.user.lastName)
+                    visibility = View.VISIBLE
                 }
+            }
 
-                // Load information about the vlog and its metadata.
-                vlogPostDate.text =
-                    context.getString(
-                        R.string.date,
-                        item.vlog.dateCreated.dayOfMonth,
-                        item.vlog.dateCreated.monthValue,
-                        item.vlog.dateCreated.year
-                    )
-
-                vlogDuration.text = context.getString(
-                    R.string.duration,
-                    item.vlog.length.run { if (this != null) (this - this.rem(60)) / 60 else 0 },
-                    item.vlog.length?.rem(60) ?: 0
+            // Load information about the vlog and its metadata.
+            vlogPostDate.text =
+                context.getString(
+                    R.string.date,
+                    item.vlog.dateCreated.dayOfMonth,
+                    item.vlog.dateCreated.monthValue,
+                    item.vlog.dateCreated.year
                 )
 
-                reaction_count.text = context.getString(
-                    R.string.reaction_count, vm
-                        .getReactionCount(item.vlog.id)
-                        .blockingGet()
-                ) // TODO Blocking get
+            vlogDuration.text = context.getString(
+                R.string.duration,
+                item.vlog.length.run { if (this != null) (this - this.rem(60)) / 60 else 0 },
+                item.vlog.length?.rem(60) ?: 0
+            )
 
-                view_count.text = context.getString(R.string.view_count, item.vlog.views)
+            reaction_count.text = context.getString(
+                R.string.reaction_count, vm
+                    .getReactionCount(item.vlog.id)
+                    .blockingGet()
+            ) // TODO Blocking get
 
-                like_count.text = context.getString(R.string.like_count, item.vlogLikeSummary.totalLikes)
+            view_count.text = context.getString(R.string.view_count, item.vlog.views)
 
-                user_avatar.setOnClickListener { profileClick.invoke(item) }
-                user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
+            like_count.text = context.getString(R.string.like_count, item.vlogLikeSummary.totalLikes)
 
-                item.user.firstName?.let {
-                    itemView.user_username.apply {
-                        text = context.getString(R.string.full_name, it, item.user.lastName)
-                        visibility = View.VISIBLE
-                    }
+            user_avatar.setOnClickListener { profileClick.invoke(item) }
+            user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
+
+            item.user.firstName?.let {
+                itemView.user_username.apply {
+                    text = context.getString(R.string.full_name, it, item.user.lastName)
+                    visibility = View.VISIBLE
                 }
+            }
 
-                setOnClickListener {
-                    itemClick.invoke(item)
-                }
+            setOnClickListener {
+                itemClick.invoke(item)
             }
         }
     }
