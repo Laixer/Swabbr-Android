@@ -28,7 +28,7 @@ class FirebaseService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         Log.d(TAG, "From: ${remoteMessage.from}")
-        remoteMessage.data.values.first().let {
+        remoteMessage.data.values.first()?.let {
             try {
                 sendNotification(notificationHandler.parse(it))
             } catch (e: Exception) {
@@ -59,10 +59,10 @@ class FirebaseService : FirebaseMessagingService() {
         throw UnsupportedOperationException(token)
     }
 
-    // TODO Why send?
     /**
      * Create and show a simple notification containing
-     * the received FCM message.
+     * the received FCM message. This will generate the
+     * actual notification popup on the phone.
      *
      * @param notification FCM message body received.
      */

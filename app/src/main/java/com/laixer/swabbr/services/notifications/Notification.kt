@@ -4,9 +4,9 @@ import android.app.PendingIntent
 import android.content.Context
 import androidx.navigation.NavDeepLinkBuilder
 import com.laixer.swabbr.R
-import com.laixer.swabbr.presentation.vlogrecording.StreamFragmentArgs
-import com.laixer.swabbr.presentation.vlogs.details.WatchReactionFragmentArgs
+import com.laixer.swabbr.presentation.reaction.WatchReactionFragmentArgs
 import com.laixer.swabbr.presentation.vlogs.details.WatchVlogFragmentArgs
+import com.laixer.swabbr.presentation.vlogs.recording.RecordVlogActivityArgs
 import com.squareup.moshi.Json
 import java.time.ZonedDateTime
 
@@ -57,11 +57,12 @@ class V1 {
             /**
              *  This notification will take us to the vlog recording fragment.
              */
-            override fun createPendingIntent(context: Context): PendingIntent = NavDeepLinkBuilder(context)
-                .setGraph(R.navigation.nav_graph_app)
-                .setDestination(R.id.livestream_dest)
-                .setArguments(StreamFragmentArgs(vlogId).toBundle())
-                .createPendingIntent()
+            override fun createPendingIntent(context: Context): PendingIntent =
+                NavDeepLinkBuilder(context)
+                    .setGraph(R.navigation.nav_graph_app)
+                    .setDestination(R.id.record_vlog_dest)
+                    .setArguments(RecordVlogActivityArgs(vlogId).toBundle())
+                    .createPendingIntent()
         }
 
         // TODO
