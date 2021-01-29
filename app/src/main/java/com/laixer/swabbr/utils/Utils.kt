@@ -14,9 +14,9 @@ object Utils {
     private const val IMMERSIVE_FLAG_TIMEOUT = 500L
 
     fun enterFullscreen(activity: Activity) = with(activity) {
-        toolbar.visibility = View.GONE
-        bottom_nav.visibility = View.GONE
-
+        // TODO Correct? Was without null safety operator
+        toolbar?.visibility = View.GONE
+        bottom_nav?.visibility = View.GONE
 
         window.apply {
             addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -32,17 +32,15 @@ object Utils {
         }
     }
 
-
     fun exitFullscreen(activity: Activity) = with(activity) {
 
-        toolbar.visibility = View.VISIBLE
-        bottom_nav.visibility = View.VISIBLE
+        toolbar?.visibility = View.VISIBLE
+        bottom_nav?.visibility = View.VISIBLE
 
         window.apply {
             clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or WindowManager.LayoutParams.FLAG_FULLSCREEN)
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
         }
-
     }
 
     /**

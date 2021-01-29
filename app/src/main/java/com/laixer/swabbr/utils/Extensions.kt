@@ -17,6 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.laixer.presentation.loadImageUrl
 import java.io.ByteArrayOutputStream
 import java.net.URL
+import java.time.Duration
 import java.util.UUID
 
 fun ImageView.loadAvatar(profileImage: String?, userId: UUID) = profileImage?.let {
@@ -214,3 +215,13 @@ private fun FragmentManager.isOnBackStack(backStackName: String): Boolean {
 }
 
 private fun getFragmentTag(index: Int) = "bottomNavigation#$index"
+
+/**
+ *  Gets the amount of seconds in the last minute of this duration.
+ */
+fun Duration.lastMinuteSeconds(): Long = seconds % 60
+
+/**
+ *  Gets the amount of minutes in this duration.
+ */
+fun Duration.minutes(): Long = (seconds / 60) - lastMinuteSeconds()
