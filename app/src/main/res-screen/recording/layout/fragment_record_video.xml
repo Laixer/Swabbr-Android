@@ -13,18 +13,12 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:custom="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <io.antmedia.android.broadcaster.utils.AutoFitGLSurfaceView
-        android:id="@+id/surface_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:visibility="visible" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -34,18 +28,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/status_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_bg"
-            android:padding="@dimen/content_margin"
-            android:gravity="center"
-            android:text="@string/connecting"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:typeface="monospace" />
+        <com.laixer.swabbr.utils.AutoFitSurfaceView
+            android:id="@+id/view_finder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="visible" />
 
     </RelativeLayout>
 
@@ -99,7 +87,7 @@
                 android:visibility="visible" />
 
             <ProgressBar
-                android:id="@+id/enableStopProgressBar"
+                android:id="@+id/circular_progress_bar"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -127,7 +115,7 @@
                 android:layout_marginHorizontal="32dp"
                 android:orientation="horizontal">
 
-                <com.laixer.swabbr.presentation.streaming.MultiStateButton
+                <com.laixer.swabbr.presentation.utils.MultiStateButton
                     android:id="@+id/toggle_torch"
                     android:layout_width="@dimen/small_icon_size"
                     android:layout_height="@dimen/small_icon_size"
@@ -146,7 +134,7 @@
                 android:layout_marginHorizontal="32dp"
                 android:orientation="horizontal">
 
-                <com.laixer.swabbr.presentation.streaming.MultiStateButton
+                <com.laixer.swabbr.presentation.utils.MultiStateButton
                     android:id="@+id/switch_camera"
                     android:layout_width="@dimen/small_icon_size"
                     android:layout_height="@dimen/small_icon_size"
@@ -167,7 +155,7 @@
             android:background="@drawable/rounded_bg"
             android:orientation="horizontal">
 
-            <com.laixer.swabbr.presentation.streaming.TimerView
+            <com.laixer.swabbr.presentation.utils.TimerView
                 android:id="@+id/stream_position_timer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -175,12 +163,11 @@
                 android:layout_marginVertical="@dimen/content_margin"
                 android:fontFamily="sans-serif-light"
                 android:includeFontPadding="false"
-                android:text="00:00"
+                android:text= "@string/zero_time"
                 android:textColor="@android:color/white" />
 
-
             <ProgressBar
-                android:id="@+id/stream_progress"
+                android:id="@+id/horizontal_progress_bar"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

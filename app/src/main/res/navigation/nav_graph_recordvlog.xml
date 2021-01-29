@@ -10,10 +10,10 @@
 
     <fragment
         android:id="@+id/stream_dest"
-        android:name="com.laixer.swabbr.presentation.streaming.StreamFragment"
-        tools:layout="@layout/fragment_livestream">
+        android:name="com.laixer.swabbr.presentation.vlogs.recording.RecordVlogFragment"
+        tools:layout="@layout/fragment_record_video">
         <argument
-            android:name="livestreamId"
+            android:name="vlogId"
             app:argType="string" />
     </fragment>
 

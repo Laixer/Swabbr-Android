@@ -44,23 +44,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/watch_livestream_dest"
-        android:name="com.laixer.swabbr.presentation.vlogs.details.WatchStreamFragment"
-        android:label="Livestream"
-        tools:layout="@layout/item_vlog">
-        <argument
-            android:name="livestreamId"
-            app:argType="string" />
-        <deepLink
-            android:id="@+id/deepLink"
-            android:autoVerify="true"
-            app:uri="https://swabbr.com/watchLivestream?livestreamId={livestreamId}" />
-
-    </fragment>
-
-    <fragment
         android:id="@+id/watch_reaction_dest"
-        android:name="com.laixer.swabbr.presentation.vlogs.details.WatchReactionFragment"
+        android:name="com.laixer.swabbr.presentation.reaction.WatchReactionFragment"
         android:label="Reaction"
         tools:layout="@layout/item_vlog">
         <argument
@@ -80,7 +65,7 @@
         android:id="@+id/record_reaction_dest"
         android:name="com.laixer.swabbr.presentation.reaction.RecordReactionFragment"
         android:label="Reaction"
-        tools:layout="@layout/fragment_record">
+        tools:layout="@layout/fragment_record_video">
 
         <argument
             android:name="cameraId"
