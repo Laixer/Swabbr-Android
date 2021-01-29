@@ -30,7 +30,6 @@ data class UserUpdateEntity(
     @field:Json(name = "followMode") val followMode: Int?
 )
 
-// TODO Look into this.
 /**
  *  Map a user domain object to a user update object.
  */

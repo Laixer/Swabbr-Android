@@ -4,7 +4,6 @@ import com.laixer.swabbr.domain.model.FollowRequest
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.model.UserComplete
 import com.laixer.swabbr.domain.model.UserWithStats
-import com.laixer.swabbr.domain.repository.AuthRepository
 import com.laixer.swabbr.domain.repository.FollowRequestRepository
 import com.laixer.swabbr.domain.repository.UserRepository
 import io.reactivex.Single

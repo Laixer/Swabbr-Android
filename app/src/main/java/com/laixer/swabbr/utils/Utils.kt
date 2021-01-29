@@ -14,7 +14,6 @@ object Utils {
     private const val IMMERSIVE_FLAG_TIMEOUT = 500L
 
     fun enterFullscreen(activity: Activity) = with(activity) {
-        // TODO Correct? Was without null safety operator
         toolbar?.visibility = View.GONE
         bottom_nav?.visibility = View.GONE
 

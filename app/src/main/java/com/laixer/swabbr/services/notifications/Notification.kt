@@ -65,7 +65,9 @@ class V1 {
                     .createPendingIntent()
         }
 
-        // TODO
+        /**
+         *  Indicates a user that the current user is following has posted a vlog.
+         */
         data class FollowedProfileVlogPosted(
             @Json(name = "VlogId") val vlogId: String,
             @Json(name = "VlogOwnerUserId") val vlogOwnerUserId: String
@@ -82,7 +84,9 @@ class V1 {
                     .createPendingIntent()
         }
 
-        // TODO
+        /**
+         *  Indicates one of the current users vlogs has gained a like.
+         */
         data class VlogGainedLikes(
             @Json(name = "VlogId") val vlogId: String,
             @Json(name = "UserThatLikedId") val userThatLikedId: String
@@ -99,7 +103,9 @@ class V1 {
                     .createPendingIntent()
         }
 
-        // TODO
+        /**
+         *  Indicates a reaction was posted to one of the current users vlogs.
+         */
         data class VlogNewReaction(
             @Json(name = "VlogId") val vlogId: String,
             @Json(name = "ReactionId") val reactionId: String
