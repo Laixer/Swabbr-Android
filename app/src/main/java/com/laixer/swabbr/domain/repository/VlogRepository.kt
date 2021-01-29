@@ -36,5 +36,5 @@ interface VlogRepository {
 
     fun unlike(vlogId: UUID): Completable
 
-    fun update(updatedVlog: Vlog): Completable
+    fun update(vlog: Vlog): Completable
 }

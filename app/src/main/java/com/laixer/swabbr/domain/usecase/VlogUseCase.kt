@@ -1,5 +1,6 @@
 package com.laixer.swabbr.domain.usecase
 
+import com.laixer.swabbr.domain.model.Reaction
 import com.laixer.swabbr.domain.model.UploadWrapper
 import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.model.VlogLikeSummary
@@ -110,6 +111,15 @@ class VlogUseCase constructor(
      *  @param vlogId The vlog to like.
      */
     fun like(vlogId: UUID): Completable = vlogRepository.like(vlogId)
+
+    /**
+     *  Posts a new vlog to the backend. The vlog should already
+     *  be uploaded to the blob storage along with its thumbnail
+     *  when calling this function.
+     *
+     *  @param vlog The vlog we wish to post.
+     */
+    fun postVlog(vlog: Vlog): Completable = vlogRepository.post(vlog)
 
     /**
      *  Unlike a given vlog as the authenticated user.

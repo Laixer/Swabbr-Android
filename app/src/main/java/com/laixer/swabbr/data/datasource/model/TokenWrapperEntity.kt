@@ -20,7 +20,7 @@ data class TokenWrapperEntity(
  * Map a token wrapper from data to domain.
  */
 fun TokenWrapperEntity.mapToDomain(): TokenWrapper = TokenWrapper(
-    jwtToken?.let { JWT(it) },
+    JWT(jwtToken),
     dateCreated,
     Duration.ZERO
 )
