@@ -21,18 +21,14 @@ import com.laixer.swabbr.presentation.auth.UserManager
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.profile.settings.SettingsViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
-import com.laixer.swabbr.presentation.streaming.StreamViewModel
-import com.laixer.swabbr.presentation.vlogs.details.ReactionViewModel
+import com.laixer.swabbr.presentation.reaction.ReactionViewModel
 import com.laixer.swabbr.presentation.vlogs.details.VlogDetailsViewModel
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
+import com.laixer.swabbr.presentation.vlogs.recording.VlogRecordingViewModel
 import com.laixer.swabbr.utils.BuildWithCustomAdapters
-import com.laixer.swabbr.utils.UriAdapter
-import com.laixer.swabbr.utils.UuidJsonAdapter
-import com.laixer.swabbr.utils.ZonedDateTimeAdapter
 import com.squareup.moshi.Moshi
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
-import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -43,7 +39,6 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = BuildConfig.API_ENDPOINT
@@ -80,11 +75,11 @@ val authModule: Module = module {
 val viewModelModule: Module = module {
     viewModel { MainActivityViewModel(userManager = get()) }
     viewModel { AuthUserViewModel(userManager = get(), authUserUseCase = get(), followUseCase = get()) }
-    viewModel { StreamViewModel(vlogUseCase = get()) }
     viewModel { AuthViewModel(userManager = get(), authUserUseCase = get(), authUseCase = get(), firebaseMessaging = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), vlogUseCase = get(), followUseCase = get(), authUserUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogUseCase = get()) }
     viewModel { VlogDetailsViewModel(reactionsUseCase = get(), vlogUseCase = get()) }
+    viewModel { VlogRecordingViewModel(mHttpClient = get(), vlogUseCase = get(), context = androidContext()) }
     viewModel { SearchViewModel(usersUseCase = get()) }
     viewModel { SettingsViewModel(settingsUseCase = get()) }
     viewModel { ReactionViewModel(mHttpClient = get(), reactionsUseCase = get(), context = androidContext()) }
