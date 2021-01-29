@@ -48,21 +48,14 @@
             android:name="com.laixer.swabbr.presentation.AuthActivity"
             android:label="@string/login"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.Swabbr.Login"></activity>
+            android:theme="@style/Theme.Swabbr.Login"/>
 
         <activity
-            android:name="com.laixer.swabbr.presentation.reaction.RecordReactionFragment"
-            android:fitsSystemWindows="true"
-            android:label="Reaction"
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.Swabbr.Recording"></activity>
-
-        <activity
-            android:name="com.laixer.swabbr.presentation.streaming.StreamActivity"
+            android:name="com.laixer.swabbr.presentation.vlogs.recording.RecordVlogActivity"
             android:fitsSystemWindows="true"
             android:label="Live"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.Swabbr.Recording"></activity>
+            android:theme="@style/Theme.Swabbr.Recording"/>
 
         <!-- Authenticator service (AccountManager) -->
         <service
