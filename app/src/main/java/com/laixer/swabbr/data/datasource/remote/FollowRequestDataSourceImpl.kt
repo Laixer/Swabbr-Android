@@ -4,6 +4,7 @@ import com.laixer.swabbr.data.datasource.FollowRequestDataSource
 import com.laixer.swabbr.data.datasource.model.mapToDomain
 import com.laixer.swabbr.data.datasource.model.remote.FollowRequestApi
 import com.laixer.swabbr.domain.model.FollowRequest
+import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
@@ -14,11 +15,11 @@ class FollowRequestRemoteDataSourceImpl constructor(
     override fun get(requesterId: UUID, receiverId: UUID): Single<FollowRequest> =
         api.get(requesterId, receiverId).map { it.mapToDomain() }
 
-    override fun getIncomingRequests(): Single<List<FollowRequest>> =
-        api.getIncomingRequests().map { it.mapToDomain() }
+    override fun getIncomingRequests(pagination: Pagination): Single<List<FollowRequest>> =
+        api.getIncomingRequests(pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
-    override fun getOutgoingRequests(): Single<List<FollowRequest>> =
-        api.getOutgoingRequests().map { it.mapToDomain() }
+    override fun getOutgoingRequests(pagination: Pagination): Single<List<FollowRequest>> =
+        api.getOutgoingRequests(pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
     override fun sendFollowRequest(userId: UUID): Completable =
         api.sendFollowRequest(userId)

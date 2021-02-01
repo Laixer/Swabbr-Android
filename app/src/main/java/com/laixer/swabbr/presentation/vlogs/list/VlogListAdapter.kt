@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.item_list_vlog.view.*
  */
 class VlogListAdapter constructor(
     private val vm: VlogListViewModel,
-    private val authUserVm: AuthUserViewModel,
     private val itemClick: (VlogWrapperItem) -> Unit,
     private val profileClick: (VlogWrapperItem) -> Unit // TODO Is this correct?
 ) : ListAdapter<VlogWrapperItem, VlogListAdapter.ViewHolder>(VlogDiffCallback()) {

@@ -6,6 +6,7 @@ import com.laixer.presentation.Resource
 import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
+import com.laixer.swabbr.domain.types.Pagination
 import com.laixer.swabbr.domain.usecase.UsersUseCase
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
@@ -18,9 +19,9 @@ class SearchViewModel constructor(private val usersUseCase: UsersUseCase) : View
     var lastQueryResultCount = 0
     private val compositeDisposable = CompositeDisposable()
 
-    fun search(query: String, offset: Int = 0, limit: Int = 50, refreshList: Boolean = false) =
+    fun search(query: String, pagination: Pagination = Pagination.latest(), refreshList: Boolean = false) =
         compositeDisposable
-            .add(usersUseCase.search(query, offset, limit)
+            .add(usersUseCase.search(query, pagination)
                 .doOnSubscribe { profiles.setLoading() }
                 .subscribeOn(Schedulers.io()).map { it.mapToPresentation() }
                 .subscribe(

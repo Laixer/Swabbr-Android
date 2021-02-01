@@ -15,6 +15,8 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
+import com.laixer.swabbr.domain.types.Pagination
+import com.laixer.swabbr.domain.types.SortingOrder
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.UserItem
@@ -79,14 +81,20 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
 
         // Only search if 3 or more characters are queried
         if (query.length < 3) {
-            Log.e(TAG, "query must consist of 3 characters or more, recieved '$query' (size: ${query.length})")
+            Log.e(TAG, "query must consist of 3 characters or more, received '$query' (size: ${query.length})")
             return false
         }
 
         val limit = 25
         lastQuery = query
         currentPage = page
-        vm.search(query = query, offset = (page - 1) * limit, limit = limit, refreshList = refreshList)
+        vm.search(
+            query = query, pagination = Pagination(
+                sortingOrder = SortingOrder.DESCENDING,
+                limit = limit,
+                offset = (page - 1) * limit
+            ), refreshList = refreshList
+        )
         return true
     }
 

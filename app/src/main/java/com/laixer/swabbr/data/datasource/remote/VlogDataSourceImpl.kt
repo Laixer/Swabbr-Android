@@ -8,6 +8,7 @@ import com.laixer.swabbr.domain.model.UploadWrapper
 import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.model.VlogLike
 import com.laixer.swabbr.domain.model.VlogLikeSummary
+import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
@@ -31,9 +32,11 @@ class VlogDataSourceImpl constructor(
 
     override fun getLikes(vlogId: UUID): Single<List<VlogLike>> = api.getLikes(vlogId).map { it.mapToDomain() }
 
-    override fun getRecommended(): Single<List<Vlog>> = api.getRecommendedVlogs().map { it.mapToDomain() }
+    override fun getRecommended(pagination: Pagination): Single<List<Vlog>> =
+        api.getRecommendedVlogs(pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
-    override fun getForUser(userId: UUID): Single<List<Vlog>> = api.getVlogsForUser(userId).map { it.mapToDomain() }
+    override fun getForUser(userId: UUID, pagination: Pagination): Single<List<Vlog>> =
+        api.getVlogsForUser(userId, pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
     override fun like(vlogId: UUID): Completable = api.like(vlogId)
 

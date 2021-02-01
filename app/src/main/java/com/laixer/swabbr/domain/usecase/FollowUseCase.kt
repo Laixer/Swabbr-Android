@@ -35,9 +35,9 @@ class FollowUseCase constructor(
 
     // TODO Pass force refresh
     fun getFollowers(userId: UUID, refresh: Boolean = false): Single<List<User>> =
-        userRepository.getFollowers(userId, refresh)
+        userRepository.getFollowers(userId, forceRefresh = refresh)
 
     // TODO Pass force refresh
     fun getFollowing(userId: UUID, refresh: Boolean = false): Single<List<User>> =
-        userRepository.getFollowing(userId, refresh)
+        userRepository.getFollowing(userId, forceRefresh = refresh)
 }

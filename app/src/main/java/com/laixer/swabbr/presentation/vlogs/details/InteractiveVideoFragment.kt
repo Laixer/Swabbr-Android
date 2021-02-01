@@ -25,19 +25,22 @@ import java.util.*
 
 // TODO Explain better!
 /**
- *  Fragment for video display with which the user can interact.
+ *  Fragment for vlog display with which the user can interact.
  */
-open class InteractiveVideoFragment(/* enableLikes: Boolean = true, enableReactions: Boolean = true*/) :
-    VideoFragment() {
-
+open class InteractiveVideoFragment : VideoFragment() {
     protected val vlogVm: VlogDetailsViewModel by viewModel()
-
     private lateinit var vlogId: UUID
 
+    /**
+     *  Callback for when we click on a profile.
+     */
     private val onProfileClick: (ReactionWrapperItem) -> Unit = {
         findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
     }
 
+    /**
+     *  Callback for when we click on a given reaction.
+     */
     private val onReactionClick: (ReactionWrapperItem) -> Unit = {
         findNavController().navigate(Uri.parse("https://swabbr.com/watchReaction?reactionId=${it.reaction.id}"))
     }

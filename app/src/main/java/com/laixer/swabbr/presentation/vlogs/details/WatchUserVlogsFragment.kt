@@ -18,7 +18,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 class WatchUserVlogsFragment : AuthFragment() {
-
     private val vm: VlogDetailsViewModel by viewModel()
     private val args by navArgs<WatchUserVlogsFragmentArgs>()
     private val userId by lazy { args.userId }
@@ -34,6 +33,7 @@ class WatchUserVlogsFragment : AuthFragment() {
 
         vlog_viewpager.apply {
             adapter = FragmentAdapter()
+            // TODO Why is this commented out?
 //            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
 //                override fun onPageSelected(position: Int) {
 //                    currentItem = position
@@ -74,8 +74,9 @@ class WatchUserVlogsFragment : AuthFragment() {
         super.onViewStateRestored(savedInstanceState)
     }
 
-    // TODO This crashes after lock and unlock of phone
-    //  java.lang.IllegalStateException: vlog_viewpager must not be null
+    // TODO This crashes java.lang.IllegalStateException: vlog_viewpager must not be null
+    //  - after lock and unlock of phone
+    //  - while recording a reaction, rotating and pressing stop record (? unsure), only sometimes.
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(CURRENT_ITEM_INDEX, vlog_viewpager.currentItem)
         super.onSaveInstanceState(outState)

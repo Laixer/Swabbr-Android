@@ -2,6 +2,7 @@ package com.laixer.swabbr.domain.usecase
 
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.repository.UserRepository
+import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Single
 import java.util.*
 
@@ -21,11 +22,10 @@ class UsersUseCase constructor(private val userRepository: UserRepository) {
      *  Search for users in our data store.
      *
      *  @param query Search query, can't be empty.
-     *  @param offset Offset of the result set.
-     *  @param limit Maximum result set size.
+     *  @param pagination Result set control.
      */
-    fun search(query: String, offset: Int = 0, limit: Int = 25): Single<List<User>> =
-        userRepository.search(query, offset, limit)
+    fun search(query: String, pagination: Pagination = Pagination.latest()): Single<List<User>> =
+        userRepository.search(query, pagination)
 
     /**
      *  Get all users that a user is following itself.
@@ -34,5 +34,5 @@ class UsersUseCase constructor(private val userRepository: UserRepository) {
      *  @param forceRefresh Force a cache update if any caching is used.
      */
     fun getFollowing(userId: UUID, refresh: Boolean): Single<List<User>> =
-        userRepository.getFollowing(userId, refresh)
+        userRepository.getFollowing(userId, forceRefresh = refresh)
 }

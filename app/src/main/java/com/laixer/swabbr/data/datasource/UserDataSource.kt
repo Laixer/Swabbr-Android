@@ -3,6 +3,7 @@ package com.laixer.swabbr.data.datasource
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.model.UserComplete
 import com.laixer.swabbr.domain.model.UserWithStats
+import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
@@ -65,11 +66,11 @@ interface UserDataSource {
 
     fun getSelfWithStats(): Single<UserWithStats>
 
-    fun getFollowing(userId: UUID): Single<List<User>>
+    fun getFollowing(userId: UUID, pagination: Pagination = Pagination.latest()): Single<List<User>>
 
-    fun getFollowers(userId: UUID): Single<List<User>>
+    fun getFollowers(userId: UUID, pagination: Pagination = Pagination.latest()): Single<List<User>>
 
-    fun search(query: String, offset: Int = 1, limit: Int = 50): Single<List<User>>
+    fun search(query: String, pagination: Pagination = Pagination.latest()): Single<List<User>>
 
     fun update(user: UserComplete): Completable
 }

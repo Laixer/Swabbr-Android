@@ -4,6 +4,7 @@ import com.laixer.swabbr.data.datasource.FollowRequestCacheDataSource
 import com.laixer.swabbr.data.datasource.FollowRequestDataSource
 import com.laixer.swabbr.domain.model.FollowRequest
 import com.laixer.swabbr.domain.repository.FollowRequestRepository
+import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
@@ -20,9 +21,11 @@ class FollowRequestRepositoryImpl constructor(
     override fun get(requesterId: UUID, receiverId: UUID): Single<FollowRequest> =
         remoteDataSource.get(requesterId, receiverId)
 
-    override fun getIncomingRequests(): Single<List<FollowRequest>> = remoteDataSource.getIncomingRequests()
+    override fun getIncomingRequests(pagination: Pagination): Single<List<FollowRequest>> =
+        remoteDataSource.getIncomingRequests(pagination)
 
-    override fun getOutgoingRequests(): Single<List<FollowRequest>> = remoteDataSource.getOutgoingRequests()
+    override fun getOutgoingRequests(pagination: Pagination): Single<List<FollowRequest>> =
+        remoteDataSource.getOutgoingRequests(pagination)
 
     override fun sendFollowRequest(userId: UUID): Completable = remoteDataSource.sendFollowRequest(userId)
 

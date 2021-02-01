@@ -42,7 +42,7 @@ class VlogListFragment : AuthFragment() {
 
         injectFeature()
 
-        vlogListAdapter = VlogListAdapter(vm, authUserVm, itemClick, profileClick)
+        vlogListAdapter = VlogListAdapter(vm, itemClick, profileClick)
 
         vm.getRecommendedVlogs(refresh = true)
 

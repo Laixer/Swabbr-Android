@@ -7,6 +7,7 @@ import com.laixer.swabbr.data.datasource.model.remote.ReactionApi
 import com.laixer.swabbr.domain.model.DatasetStats
 import com.laixer.swabbr.domain.model.Reaction
 import com.laixer.swabbr.domain.model.UploadWrapper
+import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
@@ -21,8 +22,8 @@ class ReactionDataSourceImpl constructor(
 
     override fun get(reactionId: UUID): Single<Reaction> = api.getReaction(reactionId).map { it.mapToDomain() }
 
-    override fun getForVlog(vlogId: UUID): Single<List<Reaction>> =
-        api.getReactionsForVlog(vlogId).map { it.mapToDomain() }
+    override fun getForVlog(vlogId: UUID, pagination: Pagination): Single<List<Reaction>> =
+        api.getReactionsForVlog(vlogId, pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
     override fun getCountForVlog(vlogId: UUID): Single<DatasetStats> =
         api.getReactionCountForVlog(vlogId).map { it.mapToDomain() }

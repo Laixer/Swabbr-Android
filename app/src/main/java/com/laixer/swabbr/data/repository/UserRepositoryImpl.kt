@@ -6,6 +6,7 @@ import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.model.UserComplete
 import com.laixer.swabbr.domain.model.UserWithStats
 import com.laixer.swabbr.domain.repository.UserRepository
+import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
@@ -40,14 +41,14 @@ class UserRepositoryImpl constructor(
         false -> cacheDataSource.getSelfWithStats().onErrorResumeNext { getSelfWithStats(true) }
     }
 
-    override fun getFollowing(userId: UUID, forceRefresh: Boolean): Single<List<User>> =
-        remoteDataSource.getFollowing(userId)
+    override fun getFollowing(userId: UUID, pagination: Pagination, forceRefresh: Boolean): Single<List<User>> =
+        remoteDataSource.getFollowing(userId, pagination)
 
-    override fun getFollowers(userId: UUID, forceRefresh: Boolean): Single<List<User>> =
-        remoteDataSource.getFollowers(userId)
+    override fun getFollowers(userId: UUID, pagination: Pagination, forceRefresh: Boolean): Single<List<User>> =
+        remoteDataSource.getFollowers(userId, pagination)
 
-    override fun search(query: String, offset: Int, limit: Int): Single<List<User>> =
-        remoteDataSource.search(query, offset, limit)
+    override fun search(query: String, pagination: Pagination): Single<List<User>> =
+        remoteDataSource.search(query, pagination)
 
     override fun update(user: UserComplete): Completable = remoteDataSource.update(user)
 }

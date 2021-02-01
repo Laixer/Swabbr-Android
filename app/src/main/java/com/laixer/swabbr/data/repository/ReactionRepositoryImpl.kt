@@ -6,6 +6,7 @@ import com.laixer.swabbr.domain.model.DatasetStats
 import com.laixer.swabbr.domain.model.Reaction
 import com.laixer.swabbr.domain.model.UploadWrapper
 import com.laixer.swabbr.domain.repository.ReactionRepository
+import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
@@ -25,7 +26,8 @@ class ReactionRepositoryImpl constructor(
 
     override fun get(reactionId: UUID): Single<Reaction> = remoteDataSource.get(reactionId)
 
-    override fun getForVlog(vlogId: UUID): Single<List<Reaction>> = remoteDataSource.getForVlog(vlogId)
+    override fun getForVlog(vlogId: UUID, pagination: Pagination): Single<List<Reaction>> =
+        remoteDataSource.getForVlog(vlogId, pagination)
 
     // TODO This really benefits from caching.
     override fun getCountForVlog(vlogId: UUID): Single<DatasetStats> = remoteDataSource.getCountForVlog(vlogId)

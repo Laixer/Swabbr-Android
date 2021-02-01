@@ -38,7 +38,9 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 import android.media.ThumbnailUtils
 import android.os.CancellationSignal
+import java.io.Console
 import java.io.FileOutputStream
+import java.time.LocalDateTime
 
 // TODO This currently does not support a min/max record time of 0/inifinite.
 // TODO Question - when do we exit fullscreen explicitly?
@@ -259,6 +261,7 @@ open class RecordVideoFragment : Fragment() {
                     viewFinder.setAspectRatio(previewSize.width, previewSize.height)
 
                     // To ensure that size is set, initialize camera in the view's thread
+                    // TODO This is a race condition. If this isn't called before start(), the app will crash.
                     viewFinder.post { initializeCamera() }
                 }
             })
@@ -377,6 +380,8 @@ open class RecordVideoFragment : Fragment() {
      */
     @SuppressLint("ClickableViewAccessibility")
     private fun initializeCamera() = lifecycleScope.launch(Dispatchers.Main) {
+        // TODO Remove
+        println("Called initializeCamera() at ${LocalDateTime.now()}")
 
         // Open the selected camera
         camera = openCamera(cameraManager, cameraId, cameraHandler)
@@ -403,6 +408,10 @@ open class RecordVideoFragment : Fragment() {
     protected open fun start() {
         // Update IO related objects
         lifecycleScope.launch(Dispatchers.IO) {
+
+            // TODO Remove
+            println("Called start() at ${LocalDateTime.now()}")
+
             // Start recording repeating requests, which will stop the ongoing preview
             //  repeating requests without having to explicitly call `session.stopRepeating`
             session.setRepeatingRequest(recordRequest, null, cameraHandler)

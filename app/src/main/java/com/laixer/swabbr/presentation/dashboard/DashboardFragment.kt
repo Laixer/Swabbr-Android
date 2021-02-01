@@ -56,7 +56,7 @@ class DashboardFragment : AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
-        vlogListAdapter = VlogListAdapter(vm, authUserVm, itemClick, profileClick)
+        vlogListAdapter = VlogListAdapter(vm, itemClick, profileClick)
 
         vlogsRecyclerView.adapter = vlogListAdapter  // MAKE SURE THIS HAPPENS BEFORE ADAPTER INSTANTIATION
 

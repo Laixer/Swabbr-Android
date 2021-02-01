@@ -1,6 +1,7 @@
 package com.laixer.swabbr.data.datasource.model.remote
 
 import com.laixer.swabbr.data.datasource.model.*
+import com.laixer.swabbr.domain.types.SortingOrder
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
@@ -24,14 +25,24 @@ interface AuthApi {
 interface FollowRequestApi {
 
     @GET("followrequest")
-    fun get(@Query("requesterId") requesterId: UUID,
-        @Query("receiverId") receiverId: UUID): Single<FollowRequestEntity>
+    fun get(
+        @Query("requesterId") requesterId: UUID,
+        @Query("receiverId") receiverId: UUID
+    ): Single<FollowRequestEntity>
 
     @GET("followrequest/incoming")
-    fun getIncomingRequests(): Single<List<FollowRequestEntity>>
+    fun getIncomingRequests(
+        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("limit") limit: Int?,
+        @Query("offset") offset: Int?
+    ): Single<List<FollowRequestEntity>>
 
     @GET("followrequest/outgoing")
-    fun getOutgoingRequests(): Single<List<FollowRequestEntity>>
+    fun getOutgoingRequests(
+        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("limit") limit: Int?,
+        @Query("offset") offset: Int?
+    ): Single<List<FollowRequestEntity>>
 
     @POST("followrequest")
     fun sendFollowRequest(@Query("receiverId") userId: UUID): Completable
@@ -65,7 +76,12 @@ interface ReactionApi {
     fun updateReaction(@Body updatedReaction: ReactionEntity): Completable
 
     @GET("reaction/for-vlog/{vlogId}")
-    fun getReactionsForVlog(@Path("vlogId") vlogId: UUID): Single<List<ReactionEntity>>
+    fun getReactionsForVlog(
+        @Path("vlogId") vlogId: UUID,
+        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("limit") limit: Int?,
+        @Query("offset") offset: Int?
+    ): Single<List<ReactionEntity>>
 
     @GET("reaction/for-vlog/{vlogId}/count")
     fun getReactionCountForVlog(@Path("vlogId") vlogId: UUID): Single<DatasetStatsEntity>
@@ -87,16 +103,27 @@ interface UserApi {
     fun getSelfWithStats(): Single<UserWithStatsEntity>
 
     @GET("user/{userId}/following")
-    fun getFollowing(@Path("userId") userId: UUID): Single<List<UserEntity>>
+    fun getFollowing(
+        @Path("userId") userId: UUID,
+        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("limit") limit: Int?,
+        @Query("offset") offset: Int?
+    ): Single<List<UserEntity>>
 
     @GET("user/{userId}/followers")
-    fun getFollowers(@Path("userId") userId: UUID): Single<List<UserEntity>>
+    fun getFollowers(
+        @Path("userId") userId: UUID,
+        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("limit") limit: Int?,
+        @Query("offset") offset: Int?
+    ): Single<List<UserEntity>>
 
     @GET("user/search")
     fun search(
         @Query("query") query: String,
-        @Query("offset") offset: Int = 0,
-        @Query("limit") limit: Int = 50
+        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("limit") limit: Int?,
+        @Query("offset") offset: Int?
     ): Single<List<UserEntity>>
 
     @GET("user/self")
@@ -133,16 +160,22 @@ interface VlogApi {
     fun getLikes(@Path("vlogId") vlogId: UUID): Single<List<VlogLikeEntity>>
 
     @GET("vlog/for-user/{userId}")
-    fun getVlogsForUser(@Path("userId") userId: UUID): Single<List<VlogEntity>>
+    fun getVlogsForUser(
+        @Path("userId") userId: UUID,
+        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("limit") limit: Int?,
+        @Query("offset") offset: Int?
+    ): Single<List<VlogEntity>>
 
     @GET("vlog/recommended")
-    fun getRecommendedVlogs(): Single<List<VlogEntity>>
+    fun getRecommendedVlogs(
+        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("limit") limit: Int?,
+        @Query("offset") offset: Int?
+    ): Single<List<VlogEntity>>
 
     @POST("vlog/{vlogId}/like")
     fun like(@Path("vlogId") vlogId: UUID): Completable
-
-    @GET("vlog/for-user/{userId}")
-    fun getRecommendedVlogs(@Path("userId") userId: UUID): Single<List<VlogEntity>>
 
     @POST("vlog")
     fun postVlog(@Body newVlog: VlogEntity): Completable

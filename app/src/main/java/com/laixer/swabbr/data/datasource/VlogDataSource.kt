@@ -4,6 +4,7 @@ import com.laixer.swabbr.domain.model.UploadWrapper
 import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.model.VlogLike
 import com.laixer.swabbr.domain.model.VlogLikeSummary
+import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
@@ -49,9 +50,9 @@ interface VlogDataSource {
 
     fun getLikes(vlogId: UUID): Single<List<VlogLike>>
 
-    fun getRecommended(): Single<List<Vlog>>
+    fun getRecommended(pagination: Pagination = Pagination.latest()): Single<List<Vlog>>
 
-    fun getForUser(userId: UUID): Single<List<Vlog>>
+    fun getForUser(userId: UUID, pagination: Pagination = Pagination.latest()): Single<List<Vlog>>
 
     fun like(vlogId: UUID): Completable
 

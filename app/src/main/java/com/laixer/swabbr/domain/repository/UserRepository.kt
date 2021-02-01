@@ -3,6 +3,7 @@ package com.laixer.swabbr.domain.repository
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.model.UserComplete
 import com.laixer.swabbr.domain.model.UserWithStats
+import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
@@ -52,26 +53,31 @@ interface UserRepository {
      *  Get all users that a user is following itself.
      *
      *  @param userId The follow request requesting user.
+     *  @param pagination Controls the result set.
      *  @param forceRefresh Force a cache update if any caching is used.
      */
-    fun getFollowing(userId: UUID, forceRefresh: Boolean = false): Single<List<User>>
+    fun getFollowing(userId: UUID,
+                     pagination: Pagination = Pagination.latest(),
+                     forceRefresh: Boolean = false): Single<List<User>>
 
     /**
      *  Get all users that are following a given user.
      *
      *  @param userId The follow request receiving user.
+     *  @param pagination Controls the result set.
      *  @param forceRefresh Force a cache update if any caching is used.
      */
-    fun getFollowers(userId: UUID, forceRefresh: Boolean = false): Single<List<User>>
+    fun getFollowers(userId: UUID,
+                     pagination: Pagination = Pagination.latest(),
+                     forceRefresh: Boolean = false): Single<List<User>>
 
     /**
      *  Search for users in our data store.
      *
      *  @param query Search query, can't be empty.
-     *  @param offset Offset of the result set.
-     *  @param limit Maximum result set size.
+     *  @param pagination Controls the result set.
      */
-    fun search(query: String, offset: Int = 1, limit: Int = 50): Single<List<User>>
+    fun search(query: String, pagination: Pagination = Pagination.latest()): Single<List<User>>
 
     /**
      *  Update the currently authenticated user.

@@ -1,9 +1,9 @@
 package com.laixer.swabbr.data.datasource
 
-import com.laixer.swabbr.data.datasource.model.mapToDomain
 import com.laixer.swabbr.domain.model.DatasetStats
 import com.laixer.swabbr.domain.model.Reaction
 import com.laixer.swabbr.domain.model.UploadWrapper
+import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
@@ -31,7 +31,7 @@ interface ReactionDataSource {
 
     fun get(reactionId: UUID): Single<Reaction>
 
-    fun getForVlog(vlogId: UUID): Single<List<Reaction>>
+    fun getForVlog(vlogId: UUID, pagination: Pagination = Pagination.latest()): Single<List<Reaction>>
 
     fun getCountForVlog(vlogId: UUID): Single<DatasetStats>
 
