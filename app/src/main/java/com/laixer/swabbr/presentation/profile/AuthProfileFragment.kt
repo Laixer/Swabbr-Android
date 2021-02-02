@@ -88,10 +88,10 @@ class AuthProfileFragment : AuthFragment() {
             ResourceState.SUCCESS -> {
                 res.data?.let { user ->
                     user_avatar.loadAvatar(user.profileImage, user.id)
-                    user_nickname.text = requireContext().getString(R.string.nickname, user.nickname)
+                    user_displayed_name.text = requireContext().getString(R.string.nickname, user.nickname)
                     user.firstName?.let {
-                        user_username.text = requireContext().getString(R.string.full_name, it, user.lastName)
-                        user_username.visibility = View.VISIBLE
+                        user_nickname.text = requireContext().getString(R.string.full_name, it, user.lastName)
+                        user_nickname.visibility = View.VISIBLE
                     }
                 }
             }

@@ -17,6 +17,11 @@ import kotlinx.android.synthetic.main.fragment_vlogs_pager.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
+// TODO This currently only shows vlogs for a user, not based on a list. This is incorrect.
+/**
+ *  This fragment is used to watch a vlog and to be able to swipe left
+ *  and right to go to other vlogs.
+ */
 class WatchUserVlogsFragment : AuthFragment() {
     private val vm: VlogDetailsViewModel by viewModel()
     private val args by navArgs<WatchUserVlogsFragmentArgs>()

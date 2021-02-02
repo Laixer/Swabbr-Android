@@ -17,7 +17,7 @@
 
         <include
             android:id="@+id/followrequest_user_info"
-            layout="@layout/include_user_info"
+            layout="@layout/include_user_image_username_large"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/followrequest_action_part"
             app:layout_constraintStart_toStartOf="parent"

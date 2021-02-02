@@ -19,17 +19,16 @@ import org.koin.androidx.viewmodel.getViewModel
 import org.koin.core.qualifier.Qualifier
 import java.util.*
 
-/** Fragment that forces authentication on create, view creation and resume **/
+/**
+ *  Fragment that forces authentication on create,
+ *  view creation and resume.
+ *  TODO Does it really?
+ **/
 abstract class AuthFragment : Fragment() {
-
     protected val authUserVm: AuthUserViewModel by sharedViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectFeature()
         super.onCreate(savedInstanceState)
     }
-
-
 }
-
-

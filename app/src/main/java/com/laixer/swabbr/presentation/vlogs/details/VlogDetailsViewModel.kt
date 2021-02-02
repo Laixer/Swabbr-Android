@@ -14,7 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 /**
- *  Viewmodel which contains details about a vlog. This contains its
+ *  View model which contains details about a vlog. This contains its
  *  [VlogWrapperItem], its [ReactionItem] collection and the summary
  *  [VlogLikeSummaryItem].
  */

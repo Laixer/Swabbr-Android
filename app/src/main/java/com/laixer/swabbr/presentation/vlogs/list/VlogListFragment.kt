@@ -18,6 +18,7 @@ import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+// TODO This will probably not be used anymore. We will only use a swipe viewpager for displaying a "list" of vlogs.
 /**
  * Fragment displaying a list of vlogs using [VlogListAdapter].
  */

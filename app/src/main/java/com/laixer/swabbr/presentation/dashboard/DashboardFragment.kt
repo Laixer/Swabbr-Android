@@ -27,6 +27,7 @@ class DashboardFragment : AuthFragment() {
     private val vm: VlogListViewModel by sharedViewModel()
     private var vlogListAdapter: VlogListAdapter? = null
 
+    // TODO This goes to the user vlogs, should just get a list or something like that.
     /**
      *  Handle for when we click on a vlog.
      */

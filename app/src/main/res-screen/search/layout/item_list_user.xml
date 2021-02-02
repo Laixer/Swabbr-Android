@@ -6,7 +6,7 @@
     android:foreground="?selectableItemBackground">
 
     <include
-        layout="@layout/include_user_info"
+        layout="@layout/include_user_image_username_large"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/content_margin" />

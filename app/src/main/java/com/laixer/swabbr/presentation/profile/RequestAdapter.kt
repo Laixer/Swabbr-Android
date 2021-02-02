@@ -9,11 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowRequestStatus
-import com.laixer.swabbr.utils.loadAvatar
 import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.UserItem
 import kotlinx.android.synthetic.main.include_follow_request.view.*
-import kotlinx.android.synthetic.main.include_user_info.view.*
 
 class RequestAdapter(
     val context: Context,
@@ -33,18 +31,19 @@ class RequestAdapter(
             val request = item.first
             val user = item.second
 
-            itemView.user_avatar.loadAvatar(user.profileImage, user.id)
-            itemView.user_nickname.text = context.getString(R.string.nickname, user.nickname)
-
-            user.firstName?.let {
-                itemView.user_username.text = context.getString(R.string.full_name, it, user.lastName)
-                itemView.user_username.visibility = View.VISIBLE
-            }
+            // TODO Repair
+//            itemView.user_avatar.loadAvatar(user.profileImage, user.id)
+//            itemView.user_nickname.text = context.getString(R.string.nickname, user.nickname)
+//
+//            user.firstName?.let {
+//                itemView.user_username.text = context.getString(R.string.full_name, it, user.lastName)
+//                itemView.user_username.visibility = View.VISIBLE
+//            }
 
             itemView.followrequest_accept.setOnClickListener { onAccept.invoke(item) }
             itemView.followrequest_decline.setOnClickListener { onDecline.invoke(item) }
             itemView.followrequest_user_info.setOnClickListener { onProfileClick.invoke(item) }
-            itemView.visibility = when(item.first.requestStatus) {
+            itemView.visibility = when (item.first.requestStatus) {
                 FollowRequestStatus.PENDING -> View.VISIBLE
                 else -> View.GONE
             }

@@ -13,10 +13,8 @@ import com.laixer.presentation.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.*
 import com.laixer.swabbr.utils.Utils
-import com.laixer.swabbr.utils.loadAvatar
 import com.plattysoft.leonids.ParticleSystem
 import kotlinx.android.synthetic.main.exo_player_view.*
-import kotlinx.android.synthetic.main.include_user_info.*
 import kotlinx.android.synthetic.main.item_vlog.*
 import kotlinx.android.synthetic.main.reactions_sheet.*
 import kotlinx.android.synthetic.main.reactions_sheet.view.*
@@ -158,10 +156,11 @@ open class InteractiveVideoFragment : VideoFragment() {
                     vlogVm.getReactions(vlogId)
                     vlogVm.getVlogLikeSummary(vlogId)
 
-                    user_avatar.loadAvatar(it.user.profileImage, it.user.id)
-                    user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
-                    user_username.text =
-                        requireContext().getString(R.string.full_name, it.user.firstName, it.user.lastName)
+                    // TODO Repair
+//                    user_avatar.loadAvatar(it.user.profileImage, it.user.id)
+//                    user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
+//                    user_username.text =
+//                        requireContext().getString(R.string.full_name, it.user.firstName, it.user.lastName)
 
                     reactions_sheet.visibility = View.VISIBLE
                 }

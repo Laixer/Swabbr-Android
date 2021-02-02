@@ -24,13 +24,13 @@
             android:src="@drawable/ic_person_large_256"
             android:transitionName="userAvatar"
             app:civ_circle_background_color="@color/color_grey_300"
-            app:layout_constraintBottom_toTopOf="@id/user_nickname"
+            app:layout_constraintBottom_toTopOf="@id/user_displayed_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/user_nickname"
+            android:id="@+id/user_displayed_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:autoSizeMaxTextSize="38sp"
@@ -41,13 +41,13 @@
             android:text="@string/nickname"
             android:textColor="@color/colorAccent"
             android:transitionName="userUsername"
-            app:layout_constraintBottom_toTopOf="@id/user_username"
+            app:layout_constraintBottom_toTopOf="@id/user_nickname"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_avatar" />
 
         <TextView
-            android:id="@+id/user_username"
+            android:id="@+id/user_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:autoSizeMaxTextSize="38sp"
@@ -61,7 +61,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_nickname" />
+            app:layout_constraintTop_toBottomOf="@id/user_displayed_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

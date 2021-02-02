@@ -10,10 +10,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
-import com.laixer.swabbr.presentation.auth.AuthUserViewModel
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
-import com.laixer.swabbr.utils.loadAvatar
-import kotlinx.android.synthetic.main.include_user_info.view.*
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
 
 /**
@@ -22,7 +19,7 @@ import kotlinx.android.synthetic.main.item_list_vlog.view.*
 class VlogListAdapter constructor(
     private val vm: VlogListViewModel,
     private val itemClick: (VlogWrapperItem) -> Unit,
-    private val profileClick: (VlogWrapperItem) -> Unit // TODO Is this correct?
+    private val profileClick: (VlogWrapperItem) -> Unit
 ) : ListAdapter<VlogWrapperItem, VlogListAdapter.ViewHolder>(VlogDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
@@ -47,15 +44,16 @@ class VlogListAdapter constructor(
                 .thumbnail(0.1f)
                 .into(thumbnail)
 
+            // TODO Repair
             // Load information about the user.
-            user_avatar.loadAvatar(item.user.profileImage, item.user.id)
-            user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
-            item.user.firstName?.let {
-                user_username.apply {
-                    text = context.getString(R.string.full_name, it, item.user.lastName)
-                    visibility = View.VISIBLE
-                }
-            }
+//            user_profile.loadAvatar(item.user.profileImage, item.user.id)
+//            user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
+//            item.user.firstName?.let {
+//                user_username.apply {
+//                    text = context.getString(R.string.full_name, it, item.user.lastName)
+//                    visibility = View.VISIBLE
+//                }
+//            }
 
             // Load information about the vlog and its metadata.
             vlogPostDate.text =
@@ -82,15 +80,16 @@ class VlogListAdapter constructor(
 
             like_count.text = context.getString(R.string.like_count, item.vlogLikeSummary.totalLikes)
 
-            user_avatar.setOnClickListener { profileClick.invoke(item) }
-            user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
-
-            item.user.firstName?.let {
-                itemView.user_username.apply {
-                    text = context.getString(R.string.full_name, it, item.user.lastName)
-                    visibility = View.VISIBLE
-                }
-            }
+            // TODO Repair
+//            user_avatar.setOnClickListener { profileClick.invoke(item) }
+//            user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
+//
+//            item.user.firstName?.let {
+//                itemView.user_username.apply {
+//                    text = context.getString(R.string.full_name, it, item.user.lastName)
+//                    visibility = View.VISIBLE
+//                }
+//            }
 
             setOnClickListener {
                 itemClick.invoke(item)

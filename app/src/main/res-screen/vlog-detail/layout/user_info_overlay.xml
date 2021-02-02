@@ -6,17 +6,10 @@
     android:layout_margin="@dimen/content_margin"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/logo"
-        android:layout_width="@dimen/medium_icon_size"
-        android:layout_height="@dimen/medium_icon_size"
-        android:contentDescription="@string/logo"
-        android:src="@mipmap/ic_logo" />
-
     <include
-        layout="@layout/include_user_info_reversed"
+        layout="@layout/include_user_image_username_small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="false" />
 
 </RelativeLayout>

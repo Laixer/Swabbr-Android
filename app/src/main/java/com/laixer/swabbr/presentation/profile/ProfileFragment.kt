@@ -20,9 +20,7 @@ import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
-import com.laixer.swabbr.utils.loadAvatar
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.include_user_info.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
 
@@ -104,14 +102,15 @@ class ProfileFragment : AuthFragment() {
     }
 
     private fun updateProfile(res: Resource<UserItem>) = res.run {
-        data?.let { item ->
-            user_avatar.loadAvatar(item.profileImage, item.id)
-            user_nickname.text = requireContext().getString(R.string.nickname, item.nickname)
-            item.firstName?.let {
-                user_username.text = requireContext().getString(R.string.full_name, it, item.lastName)
-                user_username.visibility = View.VISIBLE
-            }
-        }
+        // TODO Repair
+//        data?.let { item ->
+//            user_avatar.loadAvatar(item.profileImage, item.id)
+//            user_nickname.text = requireContext().getString(R.string.nickname, item.nickname)
+//            item.firstName?.let {
+//                user_username.text = requireContext().getString(R.string.full_name, it, item.lastName)
+//                user_username.visibility = View.VISIBLE
+//            }
+//        }
     }
 
     /**

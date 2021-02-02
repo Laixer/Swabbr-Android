@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- The name of this xml file automatically compiles with exoplayer - don't rename. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/progressBar_container"
@@ -23,8 +24,8 @@
         android:id="@id/exo_progress"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:layout_gravity="center"
+        android:layout_weight="1"
         android:text="@string/zero_time" />
 
     <TextView
