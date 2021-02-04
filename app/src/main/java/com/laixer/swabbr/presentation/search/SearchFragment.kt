@@ -39,6 +39,7 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         injectFeature()
 
         userAdapter = UserAdapter(requireContext(), onClick)
+
         searchRecyclerView.apply {
             isNestedScrollingEnabled = false
             adapter = userAdapter
@@ -60,6 +61,14 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
             search(lastQuery, 1, true)
             searchView.setOnQueryTextListener(this@SearchFragment)
             searchView.requestFocus()
+
+            // Clear the results when we click the X in the search bar
+            searchView.findViewById<View>(androidx.appcompat.R.id.search_close_btn)?.setOnClickListener {
+                vm.clearSearchResults()
+                // Also remove the actual search query
+                // TODO Call the existing click listener
+                searchView.setQuery("", false)
+            }
         }
 
         vm.run {
@@ -102,6 +111,10 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.id}"))
     }
 
+    /**
+     *  Called when the observed user search result
+     *  resource in [vm] changes.
+     */
     private fun updateUsers(resource: Resource<List<UserItem>>) {
         resource.run {
             swipeRefreshLayout.run {

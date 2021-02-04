@@ -13,6 +13,9 @@ import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
+/**
+ *  Viewmodel containing user searching functionality.
+ */
 class SearchViewModel constructor(private val usersUseCase: UsersUseCase) : ViewModel() {
 
     val profiles = MutableLiveData<Resource<List<UserItem>>>()
@@ -39,6 +42,11 @@ class SearchViewModel constructor(private val usersUseCase: UsersUseCase) : View
                         profiles.setError(it.message)
                     })
             )
+
+    /**
+     *  Clears the current search results.
+     */
+    fun clearSearchResults() = profiles.setSuccess(emptyList())
 
     override fun onCleared() {
         compositeDisposable.dispose()
