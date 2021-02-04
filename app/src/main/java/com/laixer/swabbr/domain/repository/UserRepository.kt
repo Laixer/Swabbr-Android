@@ -2,6 +2,7 @@ package com.laixer.swabbr.domain.repository
 
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.model.UserComplete
+import com.laixer.swabbr.domain.model.UserUpdatableProperties
 import com.laixer.swabbr.domain.model.UserWithStats
 import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
@@ -84,5 +85,5 @@ interface UserRepository {
      *
      *  @param user The user with updated properties.
      */
-    fun update(user: UserComplete): Completable
+    fun update(user: UserUpdatableProperties): Completable
 }

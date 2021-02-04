@@ -19,9 +19,8 @@ import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.auth.SimpleAuthenticator
 import com.laixer.swabbr.presentation.auth.UserManager
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
-import com.laixer.swabbr.presentation.profile.settings.SettingsViewModel
-import com.laixer.swabbr.presentation.search.SearchViewModel
 import com.laixer.swabbr.presentation.reaction.ReactionViewModel
+import com.laixer.swabbr.presentation.search.SearchViewModel
 import com.laixer.swabbr.presentation.vlogs.details.VlogDetailsViewModel
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import com.laixer.swabbr.presentation.vlogs.recording.VlogRecordingViewModel
@@ -75,13 +74,26 @@ val authModule: Module = module {
 val viewModelModule: Module = module {
     viewModel { MainActivityViewModel(userManager = get()) }
     viewModel { AuthUserViewModel(userManager = get(), authUserUseCase = get(), followUseCase = get()) }
-    viewModel { AuthViewModel(userManager = get(), authUserUseCase = get(), authUseCase = get(), firebaseMessaging = get()) }
-    viewModel { ProfileViewModel(usersUseCase = get(), vlogUseCase = get(), followUseCase = get(), authUserUseCase = get()) }
+    viewModel {
+        AuthViewModel(
+            userManager = get(),
+            authUserUseCase = get(),
+            authUseCase = get(),
+            firebaseMessaging = get()
+        )
+    }
+    viewModel {
+        ProfileViewModel(
+            usersUseCase = get(),
+            vlogUseCase = get(),
+            followUseCase = get(),
+            authUserUseCase = get()
+        )
+    }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogUseCase = get()) }
     viewModel { VlogDetailsViewModel(reactionsUseCase = get(), vlogUseCase = get()) }
     viewModel { VlogRecordingViewModel(mHttpClient = get(), vlogUseCase = get(), context = androidContext()) }
     viewModel { SearchViewModel(usersUseCase = get()) }
-    viewModel { SettingsViewModel(settingsUseCase = get()) }
     viewModel { ReactionViewModel(mHttpClient = get(), reactionsUseCase = get(), context = androidContext()) }
 }
 val useCaseModule: Module = module {
@@ -91,7 +103,6 @@ val useCaseModule: Module = module {
     factory { VlogUseCase(userRepository = get(), vlogRepository = get(), reactionRepository = get()) }
     factory { ReactionUseCase(userRepository = get(), reactionRepository = get()) }
     factory { FollowUseCase(followRequestRepository = get(), userRepository = get()) }
-    factory { SettingsUseCase(userRepository = get()) }
 }
 val repositoryModule: Module = module {
     single<AuthRepository> { AuthRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }

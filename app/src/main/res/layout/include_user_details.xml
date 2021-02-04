@@ -11,11 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginEnd="@dimen/content_margin"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/stats_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginEnd="@dimen/content_margin">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_avatar"
@@ -64,8 +60,6 @@
             app:layout_constraintTop_toBottomOf="@id/user_displayed_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <include layout="@layout/include_user_stats"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

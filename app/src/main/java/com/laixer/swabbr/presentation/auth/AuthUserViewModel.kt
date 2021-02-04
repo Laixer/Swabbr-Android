@@ -43,14 +43,28 @@ open class AuthUserViewModel constructor(
         )
     )
 
-    fun updateSelf(item: UserCompleteItem) {
+    /**
+     *  Updates the user based on [UserUpdatablePropertiesItem]
+     *  and then gets the user from the data store. Note that
+     *  the result is assigned to [user]. Observe this resource
+     *  to be notified of any changes.
+     *
+     *  Leave any properties that should not be modified as null.
+     *
+     *  @param user User with updated properties.
+     */
+    fun updateGetSelf(user: UserUpdatablePropertiesItem) {
         compositeDisposable.add(authUserUseCase
-            .updateSelf(item.mapToDomain())
+            .updateSelf(user.mapToDomain())
+            .andThen(authUserUseCase.getSelf(true)
+                .map { it.mapToPresentation() }
+            )
             .subscribeOn(Schedulers.io())
-            .map { it.mapToPresentation() }
             .subscribe(
-                { user.setSuccess(it) },
-                { user.setError(it.message) }
+                {
+                    this.user.setSuccess(it)
+                },
+                { this.user.setError(it.message) }
             )
         )
     }

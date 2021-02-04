@@ -1,5 +1,6 @@
 package com.laixer.swabbr.presentation.model
 
+import com.laixer.swabbr.domain.model.UserComplete
 import com.laixer.swabbr.domain.model.UserUpdatableProperties
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
@@ -10,28 +11,50 @@ import java.util.*
 
 /**
  *  Item containing all properties of a user that we can update. Each
- *  field is nullable, leaving it as [null] skips updating for that field.
+ *  field is nullable, leaving it as null skips updating for that field.
+ *
+ *  Note that each item has its default set to null so we only have to
+ *  assign the properties we wish to update.
  */
 class UserUpdatablePropertiesItem(
-    var firstName: String?,
-    var lastName: String?,
-    var gender: Gender?,
-    var country: String?,
-    var birthDate: LocalDate?,
-    var timeZone: ZoneOffset?,
-    var nickname: String?,
-    var profileImage: String?,
-    var latitude: Double?,
-    var longitude: Double?,
-    var isPrivate: Boolean?,
-    var dailyVlogRequestLimit: Int?,
-    var followMode: FollowMode?
+    var firstName: String? = null,
+    var lastName: String? = null,
+    var gender: Gender? = null,
+    var country: String? = null,
+    var birthDate: LocalDate? = null,
+    var timeZone: ZoneOffset? = null,
+    var nickname: String? = null,
+    var profileImage: String? = null,
+    var latitude: Double? = null,
+    var longitude: Double? = null,
+    var isPrivate: Boolean? = null,
+    var dailyVlogRequestLimit: Int? = null,
+    var followMode: FollowMode? = null
 )
 
 /**
  *  Copies this into a new object with identical values.
  */
 fun UserUpdatablePropertiesItem.copy(): UserUpdatablePropertiesItem = UserUpdatablePropertiesItem(
+    firstName,
+    lastName,
+    gender,
+    country,
+    birthDate,
+    timeZone,
+    nickname,
+    profileImage,
+    latitude,
+    longitude,
+    isPrivate,
+    dailyVlogRequestLimit,
+    followMode
+)
+
+/**
+ *  Extracts a [UserUpdatablePropertiesItem] object from a [UserCompleteItem] object.
+ */
+fun UserCompleteItem.extractUpdatableProperties(): UserUpdatablePropertiesItem = UserUpdatablePropertiesItem(
     firstName,
     lastName,
     gender,

@@ -1,66 +1,260 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="50dp">
+        android:layout_height="wrap_content">
+
+        <!-- TODO Don't hard code this layout width and height -->
+
+        <!-- Center guideline -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintGuide_percent="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Profile image and edit button -->
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/content_margin_large"
+            android:layout_marginTop="@dimen/content_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/user_profile_profile_image_insettings"
+                android:layout_width="@dimen/medium_profile_image_size"
+                android:layout_height="@dimen/medium_profile_image_size"
+                android:padding="3dp"
+                android:src="@drawable/ic_person_large_256"
+                android:transitionName="circleImage"
+                app:civ_circle_background_color="@color/color_grey_200" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_set_profile_image"
+                style="@style/FabStyle"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                app:fabSize="mini" />
+
+        </RelativeLayout>
+
+
+        <!-- Birth date -->
+        <TextView
+            android:id="@+id/textViewBirthDate"
+            style="@style/TextProfileSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register_dateofbirth"
+            app:layout_constraintBottom_toTopOf="@+id/inputBirthDate"
+            app:layout_constraintStart_toStartOf="@+id/inputBirthDate" />
 
         <EditText
-            android:id="@+id/nicknameInput"
-            android:layout_width="match_parent"
+            android:id="@+id/inputBirthDate"
+            style="@style/TextInput"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:ems="10"
+            android:inputType="date"
+            app:layout_constraintBottom_toTopOf="@+id/inputNickname"
+            app:layout_constraintEnd_toEndOf="@+id/inputNickname"
+            app:layout_constraintStart_toStartOf="@+id/inputNickname"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.8" />
 
+
+        <!-- Nickname -->
+        <TextView
+            android:id="@+id/textViewNickname"
+            style="@style/TextProfileSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/register_nickname_hint"
+            app:layout_constraintEnd_toStartOf="@+id/inputNickname"
+            app:layout_constraintHorizontal_bias="0.34"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+
+        <EditText
+            android:id="@+id/inputNickname"
+            style="@style/TextInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="@dimen/profile_settings_side_margin"
             android:ems="10"
             android:hint="@string/register_nickname_hint"
             android:inputType="textPersonName"
-            android:text="" />
+            android:text=""
+            app:layout_constraintBaseline_toBaselineOf="@+id/textViewNickname"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline4" />
 
+
+        <!-- First name -->
+        <TextView
+            android:id="@+id/textViewFirstName"
+            style="@style/TextProfileSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/register_firstName"
+            app:layout_constraintStart_toStartOf="@+id/textViewNickname"
+            app:layout_constraintTop_toBottomOf="@+id/textViewNickname" />
 
         <EditText
-            android:id="@+id/firstNameInput"
-            android:layout_width="match_parent"
+            android:id="@+id/inputFirstName"
+            style="@style/TextInput"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:drawablePadding="5dp"
             android:drawableTint="@color/colorPrimary"
             android:ems="10"
             android:hint="@string/register_firstName"
             android:inputType="textPersonName"
-            android:text="" />
+            android:text=""
+            app:layout_constraintBaseline_toBaselineOf="@+id/textViewFirstName"
+            app:layout_constraintEnd_toEndOf="@+id/inputNickname"
+            app:layout_constraintStart_toStartOf="@+id/inputNickname" />
+
+
+        <!-- Last name -->
+        <TextView
+            android:id="@+id/textViewLastName"
+            style="@style/TextProfileSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/register_lastName"
+            app:layout_constraintStart_toStartOf="@+id/textViewFirstName"
+            app:layout_constraintTop_toBottomOf="@+id/textViewFirstName" />
 
         <EditText
-            android:id="@+id/lastNameInput"
-            android:layout_width="match_parent"
+            android:id="@+id/inputLastName"
+            style="@style/TextInput"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/register_lastName"
             android:inputType="textPersonName"
-            android:text="" />
+            android:text=""
+            app:layout_constraintBaseline_toBaselineOf="@+id/textViewLastName"
+            app:layout_constraintEnd_toEndOf="@+id/inputFirstName"
+            app:layout_constraintStart_toStartOf="@+id/inputFirstName" />
+
+
+        <!-- Gender -->
+        <TextView
+            android:id="@+id/textViewGender"
+            style="@style/TextProfileSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/register_gender"
+            app:layout_constraintStart_toStartOf="@+id/textViewLastName"
+            app:layout_constraintTop_toBottomOf="@+id/textViewLastName" />
+
+        <Spinner
+            android:id="@+id/spinnerGender"
+            style="@style/TextProfileSettings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/inputLastName"
+            app:layout_constraintStart_toStartOf="@+id/inputLastName"
+            app:layout_constraintTop_toTopOf="@+id/textViewGender" />
+
+
+        <!-- Is profile private or not -->
+        <TextView
+            android:id="@+id/textViewPrivate"
+            style="@style/TextProfileItalicSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/profileIsPrivate"
+            app:layout_constraintStart_toStartOf="@+id/textViewGender"
+            app:layout_constraintTop_toBottomOf="@+id/textViewGender" />
 
         <Switch
-            android:id="@+id/privateSwitch"
-            android:layout_width="match_parent"
+            android:id="@+id/switchIsPrivate"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Is profile private?" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/textViewPrivate"
+            app:layout_constraintStart_toStartOf="@+id/spinnerGender" />
 
-        <Button
-            android:id="@+id/applyButton"
-            android:layout_width="match_parent"
+
+        <!-- Vlog request limit -->
+        <TextView
+            android:id="@+id/textViewVlogRequests"
+            style="@style/TextProfileItalicSettings"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/content_margin"
+            android:layout_marginTop="8dp"
+            android:text="@string/dailyVlogRequestLimit"
+            app:layout_constraintStart_toStartOf="@+id/textViewPrivate"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPrivate" />
+
+        <Spinner
+            android:id="@+id/spinnerDailyVlogRequestLimit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Apply" />
+            app:layout_constraintEnd_toEndOf="@+id/spinnerGender"
+            app:layout_constraintStart_toStartOf="@+id/switchIsPrivate"
+            app:layout_constraintTop_toTopOf="@+id/textViewVlogRequests" />
 
+        <!-- Logs the user out. -->
+        <Button
+            android:id="@+id/buttonLogout"
+            style="@style/SwabbrButton"
+            android:layout_width="0dp"
+            android:layout_marginStart="@dimen/profile_settings_side_margin"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/logout"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewVlogRequests" />
+
+        <!-- Saves all modified properties. -->
+        <Button
+            android:id="@+id/buttonConfirm"
+            style="@style/SwabbrButton"
+            android:layout_width="0dp"
+            android:layout_marginStart="8dp"
+            android:text="@string/save"
+            app:layout_constraintEnd_toEndOf="@+id/spinnerDailyVlogRequestLimit"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toTopOf="@+id/buttonLogout" />
+
+
+        <!-- Hidden by default, until everything hasb een loaded. -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </ScrollView>

@@ -13,8 +13,11 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
 
+// TODO This is messy.
 /**
  *  Re-usable adapter for displaying a list of [VlogWrapperItem]s.
+ *  This inflates the full-screen vlog playback fragment, see
+ *  [R.layout.item_list_vlog].
  */
 class VlogListAdapter constructor(
     private val vm: VlogListViewModel,

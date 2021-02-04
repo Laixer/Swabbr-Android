@@ -1,15 +1,282 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/include_user_details" />
+    <!-- Layout displaying user information. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/content_margin"
+        android:orientation="horizontal">
+
+        <!-- Layout displaying profile image, nickname and (optional) follow button. -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/user_profile_profile_image_insettings"
+                android:layout_width="@dimen/large_profile_image_size"
+                android:layout_height="@dimen/large_profile_image_size"
+                android:padding="3dp"
+                android:src="@drawable/ic_person_large_256"
+                android:transitionName="circleImage"
+                app:civ_circle_background_color="@color/color_grey_200" />
+
+            <TextView
+                android:id="@+id/user_profile_displayed_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:autoSizeMaxTextSize="38sp"
+                android:autoSizeMinTextSize="@dimen/user_displayed_name_size"
+                android:autoSizeTextType="uniform"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/placeholder_text"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:transitionName="userUsername"
+                app:layout_constraintBottom_toTopOf="@id/user_nickname"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_avatar" />
+
+            <TextView
+                android:id="@+id/user_profile_nickname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:autoSizeMaxTextSize="38sp"
+                android:autoSizeMinTextSize="@dimen/user_nickname_size"
+                android:autoSizeTextType="uniform"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/placeholder_nickname"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimaryLight"
+                android:transitionName="userName"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/user_displayed_name" />
+
+            <!-- TODO Don't hardcode these dimensions-->
+            <Button
+                android:id="@+id/profile_follow_button"
+                style="@style/SwabbrButton"
+                android:layout_width="@dimen/button_width"
+                android:layout_gravity="center"
+                android:text="@string/follow"
+                android:visibility="gone"/>
+
+            <!-- The follow button isn't visible by default. -->
+            <!-- TODO Fix. -->
+
+        </LinearLayout>
+
+        <!-- Layout displaying statistics. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/content_margin"
+            android:orientation="vertical">
+
+            <!-- Followers and following. -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/tableLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- Followers. -->
+                <TextView
+                    android:id="@+id/user_profile_followers_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:autoSizeMaxTextSize="16sp"
+                    android:autoSizeMinTextSize="6sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="@string/placeholder_number"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textStyle="bold"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView"
+                    app:layout_constraintEnd_toStartOf="@+id/textView" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeMaxTextSize="16sp"
+                    android:autoSizeMinTextSize="6sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="@string/followers_count"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- Following -->
+                <TextView
+                    android:id="@+id/user_profile_following_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeMaxTextSize="16sp"
+                    android:autoSizeMinTextSize="6sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="@string/placeholder_number"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textStyle="bold"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView2"
+                    app:layout_constraintStart_toStartOf="@+id/user_profile_followers_count" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:autoSizeMaxTextSize="16sp"
+                    android:autoSizeMinTextSize="6sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="@string/following_count"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- All other statistics -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/content_margin"
+                tools:layout_editor_absoluteY="51dp"
+                tools:visibility="visible">
+
+                <!-- Reactions. -->
+                <TextView
+                    android:id="@+id/user_profile_reactions_received"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:autoSizeMaxTextSize="16sp"
+                    android:autoSizeMinTextSize="6sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="@string/placeholder_number"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimaryLight"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView"
+                    app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_eye"
+                    app:layout_constraintBottom_toTopOf="@+id/imageView2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- Love-its received. -->
+                <TextView
+                    android:id="@+id/user_profile_likes_received"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeMaxTextSize="16sp"
+                    android:autoSizeMinTextSize="6sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="@string/placeholder_number"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimaryLight"
+                    app:layout_constraintEnd_toEndOf="@+id/user_profile_reactions_received"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_eye"
+                    app:layout_constraintBottom_toTopOf="@+id/imageView3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+                <!-- Views. -->
+                <TextView
+                    android:id="@+id/user_profile_views"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeMaxTextSize="16sp"
+                    android:autoSizeMinTextSize="6sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="@string/placeholder_number"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimaryLight"
+                    app:layout_constraintEnd_toEndOf="@+id/user_profile_likes_received"
+                    app:layout_constraintTop_toTopOf="@+id/imageView3" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_eye"
+                    app:layout_constraintBottom_toTopOf="@+id/imageView4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+                <!-- Reactions received.-->
+                <TextView
+                    android:id="@+id/user_profile_vlog_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeMaxTextSize="16sp"
+                    android:autoSizeMinTextSize="6sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="@string/placeholder_number"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimaryLight"
+                    app:layout_constraintEnd_toEndOf="@+id/user_profile_views"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_eye"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
+        style="@style/SwabbrTabLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/divider_large_margin"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"

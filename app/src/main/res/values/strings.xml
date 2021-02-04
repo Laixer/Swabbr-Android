@@ -3,6 +3,13 @@
     <string name="error">Error</string>
     <string name="retry">Retry</string>
 
+    <!-- Tab names -->
+    <!-- TODO Should this be responsible for caps? -->
+    <string name="tab_vlogs">VLOGS</string>
+    <string name="tab_profile">PROFILE</string>
+    <string name="tab_following">FOLLOWING</string>
+    <string name="tab_followers">FOLLOWERS</string>
+
     <string name="nickname"><i>\@%1$s</i></string>
     <string name="full_name">%1$s %2$s</string>
 
@@ -31,9 +38,10 @@
     <string name="react">React</string>
 
     <string name="google_play_unsupported_device">This device is not supported by Google Play Services.</string>
-    <string name="followers_count"><b>%1$d</b> Followers</string>
-    <string name="following_count"><b>%1$d</b> Following</string>
-    <string name="count"><b>%1$d</b></string>
+    <string name="followers_count">Followers</string>
+    <string name="following_count">Following</string>
+    <string name="count">%1$d</string>
+    <string name="count_bold"><b>%1$d</b></string>
     <string name="vlog_count"><b>%1$d</b> Vlogs</string>
     <string name="view_count"><b>%1$d</b>  Views</string>
 
@@ -74,5 +82,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- Design placeholders -->
+    <string name="placeholder_number">0</string>
+    <string name="placeholder_text">sometext</string>
+    <string name="placeholder_nickname">\@sometext</string>
 
 </resources>

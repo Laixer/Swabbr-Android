@@ -1,11 +1,9 @@
 package com.laixer.swabbr.presentation.auth.registration
 
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -29,17 +27,16 @@ import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.model.RegistrationItem
 import com.laixer.swabbr.presentation.model.UserCompleteItem
-import com.laixer.swabbr.utils.convertBitmapToByteArray
-import com.laixer.swabbr.utils.encodeImageToBase64
+import com.laixer.swabbr.presentation.utils.onActivityResult
+import com.laixer.swabbr.presentation.utils.selectProfileImage
+import com.laixer.swabbr.utils.encodeToBase64
 import kotlinx.android.synthetic.main.fragment_registration.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
 import java.util.*
 
 class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private val vm: AuthViewModel by sharedViewModel()
-    private var selectedBitmap: Bitmap? = null
+    private var selectedProfileImage: Bitmap? = null
     private val firebaseInstanceId by lazy { FirebaseInstanceId.getInstance().id }
 
     //    private val date = LocalDate.now()
@@ -54,8 +51,9 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
         injectFeature()
 
+        // TODO Look into this
         savedInstanceState?.getParcelable<Bitmap?>("BitmapImage")?.let {
-            selectedBitmap = it
+            selectedProfileImage = it
             avatarPicker::setImageBitmap
         }
 
@@ -78,7 +76,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                 RegistrationItem(
                     email = emailInput.text.toString(),
                     password = passwordInput.text.toString(),
-                    nickname = nicknameInput.text.toString(),
+                    nickname = inputNickname.text.toString(),
                     firstName = null,
                     lastName = null,
                     gender = null,
@@ -87,9 +85,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                     // timeZone = //ZonedDateTime.now().offset, // TODO Is this correct?
                     // TODO This doesn't work
                     timeZone = null, // TODO Is this correct?
-                    profileImage = selectedBitmap?.let {
-                        encodeImageToBase64(convertBitmapToByteArray(it))
-                    },
+                    profileImage = selectedProfileImage?.encodeToBase64(),
                     latitude = null,
                     longitude = null,
                     isPrivate = null,
@@ -142,28 +138,35 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     private fun prepareUI() {
         prepareTextInputs()
+
 //        prepareSpinners()
 //        prepareDatepicker()
 //        prepareSwitch()
-        fab_add_photo.setOnClickListener { selectProfileImage() }
+
+        fab_set_profile_image.setOnClickListener { ImagePicker.selectProfileImage(this) }
     }
 
+    /**
+     *  Called by the [ImagePicker] activity. The result data contains the selected bitmap.
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (resultCode) {
-            Activity.RESULT_OK -> {
-                data?.let {
-                    selectedBitmap = BitmapFactory.decodeFile(ImagePicker.getFilePath(it))
-                    avatarPicker.setImageBitmap(selectedBitmap)
-                }
-            }
-            ImagePicker.RESULT_ERROR -> {
-                Toast.makeText(requireContext(), ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
-            }
-            Activity.RESULT_CANCELED -> {
-                return
-            }
-        }
+        ImagePicker.onActivityResult(
+            context = this.requireContext(),
+            resultCode = resultCode,
+            data = data,
+            successCallback = this::onBitmapSelected
+        )
+    }
+
+    /**
+     *  Function that stores and sets our profile image if we select one.
+     *
+     *  @param selectedBitmap The selected profile image.
+     */
+    private fun onBitmapSelected(selectedBitmap: Bitmap) {
+        this.selectedProfileImage = selectedBitmap
+        avatarPicker.setImageBitmap(selectedBitmap)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -177,20 +180,6 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             ).show()
         }
     }
-
-    fun selectProfileImage() = ImagePicker
-        .with(this)
-        .cropSquare()
-        .compress(1024)
-        .maxResultSize(512, 512)
-        .galleryMimeTypes(  //Exclude gif images
-            mimeTypes = arrayOf(
-                "image/png",
-                "image/jpg",
-                "image/jpeg"
-            )
-        )
-        .start()
 
     private fun prepareTextInputs() {
         val textInputWatcher: TextWatcher = object : TextWatcher {
@@ -209,7 +198,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 //        firstNameInput.addTextChangedListener(textInputWatcher)
 //        lastNameInput.addTextChangedListener(textInputWatcher)
 //        phoneNumberInput.addTextChangedListener(textInputWatcher)
-        nicknameInput.addTextChangedListener(textInputWatcher)
+        inputNickname.addTextChangedListener(textInputWatcher)
         emailInput.addTextChangedListener(textInputWatcher)
         passwordInput.addTextChangedListener(textInputWatcher)
         confirmPasswordInput.addTextChangedListener(textInputWatcher)
@@ -279,7 +268,7 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 //                firstNameInput.text.isNullOrEmpty() ||
 //                lastNameInput.text.isNullOrEmpty() ||
 //                phoneNumberInput.text.isNullOrEmpty() ||
-                nicknameInput.text.isNullOrEmpty() ||
+                inputNickname.text.isNullOrEmpty() ||
                     emailInput.text.isNullOrEmpty() ||
                     passwordInput.text.isNullOrEmpty() ||
                     confirmPasswordInput.text.isNullOrEmpty()) &&

@@ -26,14 +26,14 @@
                 app:civ_circle_background_color="@color/color_grey_200" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_add_photo"
+                android:id="@+id/fab_set_profile_image"
                 style="@style/FabStyle"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true" />
         </RelativeLayout>
 
         <EditText
-            android:id="@+id/nicknameInput"
+            android:id="@+id/inputNickname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"

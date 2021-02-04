@@ -17,7 +17,7 @@
         <include layout="@layout/include_user_image_username_large" />
 
         <Button
-            android:id="@+id/followButton"
+            android:id="@+id/profile_follow_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"

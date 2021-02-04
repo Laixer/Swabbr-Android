@@ -1,6 +1,7 @@
 package com.laixer.swabbr.data.datasource.model
 
 import com.laixer.swabbr.domain.model.UserComplete
+import com.laixer.swabbr.domain.model.UserUpdatableProperties
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
 import com.squareup.moshi.Json
@@ -31,12 +32,12 @@ data class UserUpdateEntity(
 )
 
 /**
- *  Map a user domain object to a user update object.
+ *  Map a user update domain object to a user update data object.
  */
-fun UserComplete.mapToUpdateData(): UserUpdateEntity = UserUpdateEntity(
+fun UserUpdatableProperties.mapToData(): UserUpdateEntity = UserUpdateEntity(
     firstName,
     lastName,
-    gender.ordinal,
+    gender?.ordinal,
     country,
     birthDate,
     timeZone,
@@ -46,5 +47,5 @@ fun UserComplete.mapToUpdateData(): UserUpdateEntity = UserUpdateEntity(
     longitude,
     isPrivate,
     dailyVlogRequestLimit,
-    followMode.ordinal
+    followMode?.ordinal
 )

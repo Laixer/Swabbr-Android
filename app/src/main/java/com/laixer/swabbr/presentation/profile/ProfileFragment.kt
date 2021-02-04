@@ -24,6 +24,10 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
 
+/**
+ *  Fragment representing a profile for any user other than
+ *  the currently logged in user.
+ */
 class ProfileFragment : AuthFragment() {
 
     private val args by navArgs<ProfileFragmentArgs>()
@@ -78,7 +82,7 @@ class ProfileFragment : AuthFragment() {
                 getFollowRequest(receiverId)
             }
 
-            followButton.setOnClickListener {
+            profile_follow_button.setOnClickListener {
                 when (followStatus.value?.data?.requestStatus) {
                     FollowRequestStatus.ACCEPTED -> unfollow(receiverId)
                     FollowRequestStatus.PENDING -> cancelFollowRequest(receiverId)
@@ -141,12 +145,12 @@ class ProfileFragment : AuthFragment() {
         swipeRefreshLayout.run {
             when (state) {
                 ResourceState.LOADING -> {
-                    followButton.isEnabled = false
+                    profile_follow_button.isEnabled = false
                     startRefreshing()
                 }
                 ResourceState.SUCCESS -> {
                     stopRefreshing()
-                    followButton.run {
+                    profile_follow_button.run {
                         text = when (data?.requestStatus) {
                             FollowRequestStatus.PENDING -> getString(R.string.requested)
                             FollowRequestStatus.ACCEPTED -> getString(R.string.following)
@@ -159,9 +163,9 @@ class ProfileFragment : AuthFragment() {
                 }
                 ResourceState.ERROR -> {
                     stopRefreshing()
-                    followButton.text = getString(R.string.followStatusError)
+                    profile_follow_button.text = getString(R.string.followStatusError)
                     // Toast.makeText(activity, res.message, Toast.LENGTH_SHORT).show()
-                    followButton.isEnabled = false
+                    profile_follow_button.isEnabled = false
                 }
             }
         }

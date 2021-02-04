@@ -1,11 +1,9 @@
 package com.laixer.swabbr.domain.usecase
 
-import com.laixer.swabbr.domain.model.FollowRequest
-import com.laixer.swabbr.domain.model.User
-import com.laixer.swabbr.domain.model.UserComplete
-import com.laixer.swabbr.domain.model.UserWithStats
+import com.laixer.swabbr.domain.model.*
 import com.laixer.swabbr.domain.repository.FollowRequestRepository
 import com.laixer.swabbr.domain.repository.UserRepository
+import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
 
@@ -18,7 +16,6 @@ class AuthUserUseCase constructor(
     private val userRepository: UserRepository,
     private val followRequestRepository: FollowRequestRepository
 ) {
-
     // TODO This seems suboptimal
     /**
      *  Gets the id of the currently authenticated user.
@@ -62,7 +59,27 @@ class AuthUserUseCase constructor(
      *
      *  @param user User with updated properties.
      */
-    fun updateSelf(user: UserComplete): Single<UserComplete> = userRepository
-        .update(user)
-        .andThen(userRepository.getSelf(true))
+    fun updateSelf(user: UserUpdatableProperties): Completable = userRepository.update(user)
+
+    // TODO Do we need this?
+    /**
+     *  Converts a [UserUpdatableProperties] object to a [UserComplete] object.
+     *  All properties which are left as [null] will not be assigned.
+     */
+    private fun UserUpdatableProperties.convertToUser(current: UserComplete): UserComplete = UserComplete(
+        current.id,
+        this.firstName ?: current.firstName,
+        this.lastName ?: current.lastName,
+        this.gender ?: current.gender,
+        this.country ?: current.country,
+        this.birthDate ?: current.birthDate,
+        this.timeZone ?: current.timeZone,
+        this.nickname ?: current.nickname,
+        this.profileImage ?: current.profileImage,
+        this.latitude ?: current.latitude,
+        this.longitude ?: current.longitude,
+        this.isPrivate ?: current.isPrivate,
+        this.dailyVlogRequestLimit ?: current.dailyVlogRequestLimit,
+        this.followMode ?: current.followMode
+    )
 }

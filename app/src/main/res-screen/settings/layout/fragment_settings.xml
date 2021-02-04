@@ -6,7 +6,7 @@
     android:padding="50dp">
 
     <Switch
-        android:id="@+id/privateSwitch"
+        android:id="@+id/switchIsPrivate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:enabled="false"
@@ -19,7 +19,7 @@
         android:text="@string/dailyVlogRequestLimit" />
 
     <Spinner
-        android:id="@+id/dailyVlogRequestLimitSpinner"
+        android:id="@+id/spinnerDailyVlogRequestLimit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:enabled="false" />

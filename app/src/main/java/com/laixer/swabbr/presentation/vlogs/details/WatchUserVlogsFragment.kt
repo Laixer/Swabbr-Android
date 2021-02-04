@@ -33,6 +33,9 @@ class WatchUserVlogsFragment : AuthFragment() {
         return inflater.inflate(R.layout.fragment_vlogs_pager, container, false)
     }
 
+    /**
+     *  This applies a [FragmentAdapter] to the [vlog_viewpager].
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -87,6 +90,10 @@ class WatchUserVlogsFragment : AuthFragment() {
         super.onSaveInstanceState(outState)
     }
 
+    /**
+     *  Adapter that creates a [WatchVlogFragment] for a vlog
+     *  so the vlog can be played back in full screen.
+     */
     internal inner class FragmentAdapter : FragmentStateAdapter(this@WatchUserVlogsFragment) {
         override fun createFragment(position: Int): Fragment =
             getVlogAtIndex(position).vlog.id.let { WatchVlogFragment.create(it.toString()) }

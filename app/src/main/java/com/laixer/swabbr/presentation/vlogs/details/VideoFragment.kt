@@ -16,7 +16,8 @@ import kotlinx.android.synthetic.main.item_vlog.*
 import kotlinx.android.synthetic.main.item_vlog.view.*
 
 /**
- *  Fragment for video playback.
+ *  Fragment for video playback. This is used both for vlog
+ *  playback and for reaction playback.
  */
 open class VideoFragment : AuthFragment() {
     private val exoPlayer: ExoPlayer by lazy { ExoPlayerFactory.newSimpleInstance(requireContext()) }

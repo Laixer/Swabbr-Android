@@ -1,5 +1,7 @@
 package com.laixer.swabbr.presentation.profile
 
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -7,17 +9,20 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.tabs.TabLayoutMediator
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.UserCompleteItem
+import com.laixer.swabbr.presentation.model.UserUpdatablePropertiesItem
 import com.laixer.swabbr.presentation.model.UserWithStatsItem
+import com.laixer.swabbr.presentation.utils.onActivityResult
+import com.laixer.swabbr.utils.encodeToBase64
+import com.laixer.swabbr.utils.formatNumber
 import com.laixer.swabbr.utils.loadAvatar
 import kotlinx.android.synthetic.main.fragment_auth_profile.*
-import kotlinx.android.synthetic.main.include_user_details.*
-import kotlinx.android.synthetic.main.include_user_stats.*
 
 /**
  *  Fragment for displaying generic user profile information.
@@ -56,18 +61,41 @@ class AuthProfileFragment : AuthFragment() {
         pager.adapter = profileTabAdapter
         pager.offscreenPageLimit = 4
 
-        authUserVm.getSelf(refresh = true) // TODO Was false, look at this
-        authUserVm.getStatistics(refresh = true) // TODO Was false, look at this
+        authUserVm.getSelf(refresh = false)
+        authUserVm.getStatistics(refresh = false)
 
         TabLayoutMediator(tab_layout, pager) { tab, position ->
             tab.text = when (position) {
-                0 -> "Vlogs"
-                1 -> "Profile"
-                2 -> "Following"
-                3 -> "Invites"
-                else -> "Profile?"
+                0 -> requireContext().getString(R.string.tab_vlogs)
+                1 -> requireContext().getString(R.string.tab_profile)
+                2 -> requireContext().getString(R.string.tab_following)
+                3 -> requireContext().getString(R.string.tab_followers)
+                else -> requireContext().getString(R.string.tab_profile) // TODO Look into this
             }
         }.attach()
+    }
+
+    /**
+     *  Called by the [ImagePicker] activity. The result data contains the selected bitmap.
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        ImagePicker.onActivityResult(
+            context = this.requireContext(),
+            resultCode = resultCode,
+            data = data,
+            successCallback = this::updateProfileImage
+        )
+    }
+
+    /**
+     *  Called when we have selected a new profile image.
+     *
+     *  @param bitmapSelected The new profile image.
+     */
+    private fun updateProfileImage(bitmapSelected: Bitmap) {
+        user_profile_profile_image_insettings.setImageBitmap(bitmapSelected)
+        authUserVm.updateGetSelf(UserUpdatablePropertiesItem(profileImage = bitmapSelected.encodeToBase64()))
     }
 
     /**
@@ -87,12 +115,12 @@ class AuthProfileFragment : AuthFragment() {
             }
             ResourceState.SUCCESS -> {
                 res.data?.let { user ->
-                    user_avatar.loadAvatar(user.profileImage, user.id)
-                    user_displayed_name.text = requireContext().getString(R.string.nickname, user.nickname)
-                    user.firstName?.let {
-                        user_nickname.text = requireContext().getString(R.string.full_name, it, user.lastName)
-                        user_nickname.visibility = View.VISIBLE
-                    }
+                    user_profile_profile_image_insettings.loadAvatar(user.profileImage, user.id)
+                    user_profile_displayed_name.text = requireContext().getString(
+                        R.string.nickname,
+                        user.nickname
+                    ) // TODO Extend to get name in whatever format is present
+                    user_profile_nickname.text = requireContext().getString(R.string.nickname, user.nickname)
                 }
             }
             ResourceState.ERROR -> {
@@ -115,12 +143,12 @@ class AuthProfileFragment : AuthFragment() {
             }
             ResourceState.SUCCESS -> {
                 res.data?.let { stats ->
-                    following_count.text = requireContext().getString(R.string.following_count, stats.totalFollowing)
-                    followers_count.text = requireContext().getString(R.string.followers_count, stats.totalFollowers)
-                    vlog_count.text = requireContext().getString(R.string.count, stats.totalVlogs)
-                    view_count.text = requireContext().getString(R.string.count, stats.totalViews)
-                    like_count.text = requireContext().getString(R.string.count, stats.totalLikes)
-                    reaction_count.text = requireContext().getString(R.string.count, stats.totalReactionsReceived)
+                    user_profile_followers_count.text = requireContext().formatNumber(stats.totalFollowing)
+                    user_profile_following_count.text = requireContext().formatNumber(stats.totalFollowers)
+                    user_profile_vlog_count.text = requireContext().formatNumber(stats.totalVlogs)
+                    user_profile_views.text = requireContext().formatNumber(stats.totalViews)
+                    user_profile_likes_received.text = requireContext().formatNumber(stats.totalLikes)
+                    user_profile_reactions_received.text = requireContext().formatNumber(stats.totalReactionsReceived)
                 }
             }
             ResourceState.ERROR -> {

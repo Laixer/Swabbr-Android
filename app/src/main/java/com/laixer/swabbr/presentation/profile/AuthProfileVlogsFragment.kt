@@ -20,6 +20,10 @@ import kotlinx.android.synthetic.main.fragment_profile.no_vlogs_text
 import kotlinx.android.synthetic.main.fragment_profile.swipeRefreshLayout
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+/**
+ *  Fragment displaying the vlogs of the currently authenticated
+ *  user. This should be inflated as a tab in [AuthProfileFragment].
+ */
 class AuthProfileVlogsFragment : AuthFragment() {
 
     private val profileVm: ProfileViewModel by sharedViewModel()

@@ -24,7 +24,50 @@
         <item name="android:textColor">@color/color_subtitle</item>
     </style>
 
-    <style name="Theme.Swabbr" parent="Base.Theme.Swabbr"/>
+    <!-- Used to display regular settings. -->
+    <style name="TextProfileSettings">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_settings</item>
+    </style>
+
+    <!-- Used to display italic settings. -->
+    <style name="TextProfileItalicSettings" parent="Base.Theme.Swabbr">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:textSize">@dimen/text_size_settings</item>
+    </style>
+
+    <!-- Used for input fields. -->
+    <style name="TextInput" parent="Base.Theme.Swabbr">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/text_size_settings</item>
+    </style>
+
+    <!-- Used to style Swabbr buttons -->
+    <style name="SwabbrButton" parent="Base.Theme.Swabbr">
+        <item name="android:layout_width">@dimen/button_width</item>
+        <item name="android:layout_height">@dimen/button_height</item>
+        <item name="android:backgroundTint">@color/transparent</item>
+        <item name="android:textColor">@color/colorPrimaryLight</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
+        <item name="android:strokeColor">@color/color_black</item> <!-- TODO back to primary light -->
+        <item name="android:strokeWidth">@dimen/button_stroke_width</item>
+        <item name="android:radius">@dimen/button_radius</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+    </style>
+
+    <!-- Used to style tab layouts -->
+    <!-- TODO This doesn't seem to work -->
+    <style name="SwabbrTabLayout" parent="Base.Theme.Swabbr">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_tabs</item>
+    </style>
+
+    <style name="Theme.Swabbr" parent="Base.Theme.Swabbr" />
 
     <style name="Theme.Swabbr.Launcher" parent="Base.Theme.Swabbr">
         <item name="android:windowBackground">@drawable/ic_logo_foreground</item>
