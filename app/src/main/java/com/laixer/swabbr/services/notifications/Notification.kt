@@ -5,7 +5,7 @@ import android.content.Context
 import androidx.navigation.NavDeepLinkBuilder
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.reaction.WatchReactionFragmentArgs
-import com.laixer.swabbr.presentation.vlogs.details.WatchVlogFragmentArgs
+import com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragmentArgs
 import com.laixer.swabbr.presentation.vlogs.recording.RecordVlogActivityArgs
 import com.squareup.moshi.Json
 import java.time.ZonedDateTime

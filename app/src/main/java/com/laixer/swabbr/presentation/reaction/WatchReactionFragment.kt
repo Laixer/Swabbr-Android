@@ -1,7 +1,9 @@
 package com.laixer.swabbr.presentation.reaction
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.laixer.presentation.Resource
@@ -9,29 +11,35 @@ import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
-import com.laixer.swabbr.presentation.vlogs.details.VideoFragment
-import com.laixer.swabbr.presentation.reaction.WatchReactionFragmentArgs
-import kotlinx.android.synthetic.main.item_vlog.*
+import com.laixer.swabbr.presentation.video.VideoFragment
+import com.laixer.swabbr.presentation.vlogs.playback.VlogViewModel
+import kotlinx.android.synthetic.main.fragment_video.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
+// TODO FIX
 /**
- *  Wrapper around [VideoFragment] used for [ReactionItem] playback.
+ *  Wrapper around a single [VideoFragment] used for [ReactionItem] playback.
  */
 class WatchReactionFragment(id: String? = null) : VideoFragment() {
     private val args by navArgs<WatchReactionFragmentArgs>()
 
+    // TODO Correct vm?
     private val reactionVm: ReactionViewModel by viewModel()
     private val reactionId by lazy { UUID.fromString(id ?: args.reactionId) }
 
+    /**
+     *  Assign observers to [reactionVm].
+     */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        reactionVm.watchReactionResponse.observe(viewLifecycleOwner, Observer { start(it) })
-        return layoutInflater.inflate(R.layout.item_vlog, container, false)
+        //reactionVm.reactions.observe(viewLifecycleOwner, Observer { onReactionLoaded(it) })
+        return layoutInflater.inflate(R.layout.fragment_video, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        reactionVm.watch(reactionId)
+
+        //reactionVm.getReactions(reactionId)
     }
 
     /**
@@ -39,7 +47,7 @@ class WatchReactionFragment(id: String? = null) : VideoFragment() {
      *
      *  @param res Reaction resource item containing [ReactionItem.videoUri].
      */
-    private fun start(res: Resource<ReactionWrapperItem>) = with(res) {
+    private fun onReactionLoaded(res: Resource<ReactionWrapperItem>) = with(res) {
         when (state) {
             ResourceState.LOADING -> {
                 content_loading_progressbar.visibility = View.VISIBLE

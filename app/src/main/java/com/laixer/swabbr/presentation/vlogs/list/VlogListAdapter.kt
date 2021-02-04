@@ -73,11 +73,12 @@ class VlogListAdapter constructor(
                 item.vlog.length?.rem(60) ?: 0
             )
 
-            reaction_count.text = context.getString(
-                R.string.reaction_count, vm
-                    .getReactionCount(item.vlog.id)
-                    .blockingGet()
-            ) // TODO Blocking get
+            // TODO Repair
+//            reaction_count.text = context.getString(
+//                R.string.reaction_count, vm
+//                    .getReactionCount(item.vlog.id)
+//                    .blockingGet()
+//            ) // TODO Blocking get
 
             view_count.text = context.getString(R.string.view_count, item.vlog.views)
 

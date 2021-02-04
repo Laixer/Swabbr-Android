@@ -21,7 +21,7 @@ import com.laixer.swabbr.presentation.auth.UserManager
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.reaction.ReactionViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
-import com.laixer.swabbr.presentation.vlogs.details.VlogDetailsViewModel
+import com.laixer.swabbr.presentation.vlogs.playback.VlogViewModel
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import com.laixer.swabbr.presentation.vlogs.recording.VlogRecordingViewModel
 import com.laixer.swabbr.utils.BuildWithCustomAdapters
@@ -91,7 +91,7 @@ val viewModelModule: Module = module {
         )
     }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogUseCase = get()) }
-    viewModel { VlogDetailsViewModel(reactionsUseCase = get(), vlogUseCase = get()) }
+    viewModel { VlogViewModel(reactionsUseCase = get(), vlogUseCase = get()) }
     viewModel { VlogRecordingViewModel(mHttpClient = get(), vlogUseCase = get(), context = androidContext()) }
     viewModel { SearchViewModel(usersUseCase = get()) }
     viewModel { ReactionViewModel(mHttpClient = get(), reactionsUseCase = get(), context = androidContext()) }

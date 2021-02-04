@@ -22,7 +22,12 @@ import kotlinx.android.synthetic.main.item_list_vlog.view.processing_cover
 import kotlinx.android.synthetic.main.item_list_vlog.view.reaction_count
 import kotlinx.android.synthetic.main.item_list_vlog.view.view_count
 
-/** TODO Duplicate functionality with [com.laixer.swabbr.presentation.vlogs.list.VlogListAdapter]*/
+/**
+ *  TODO Duplicate functionality with [com.laixer.swabbr.presentation.vlogs.list.VlogListAdapter]
+ *   This should become a generic vlog list adapter, even though it will only be used on the profile
+ *   vlogs tab of all users (including current). All other vlog display will be done in fullscreen.
+ */
+
 /**
  *  Adapter for vlogs on the users profile.
  */
@@ -30,7 +35,16 @@ class ProfileVlogsAdapter(
     private val context: Context,
     private val vm: ProfileViewModel,
     private val authUserVm: AuthUserViewModel,
+    /**
+     *  Called when we click an item in the list that this
+     *  serves as an adapter for.
+     */
     private val onClick: (VlogWrapperItem) -> Unit,
+    /**
+     *  TODO Keep this?
+     *  Called when the user clicks the delete icon in the
+     *  list that this serves as an adapter for.
+     */
     private val onDelete: ((VlogWrapperItem) -> Unit)? = null
 ) : ListAdapter<VlogWrapperItem, ProfileVlogsAdapter.ViewHolder>(ProfileDiffCallback()) {
 

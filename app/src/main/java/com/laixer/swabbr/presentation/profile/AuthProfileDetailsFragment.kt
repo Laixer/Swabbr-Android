@@ -16,7 +16,6 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
 import com.laixer.swabbr.presentation.AuthFragment
-import com.laixer.swabbr.presentation.auth.AuthUserViewModel
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.model.UserCompleteItem
 import com.laixer.swabbr.presentation.model.UserUpdatablePropertiesItem
@@ -150,7 +149,7 @@ class AuthProfileDetailsFragment: AuthFragment() {
         }
 
         ArrayAdapter.createFromResource(
-            requireContext(), R.array.dailyvlogrequestlimit_array, android.R.layout.simple_spinner_item
+            requireContext(), R.array.daily_vlog_request_limit_array, android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerDailyVlogRequestLimit.adapter = adapter

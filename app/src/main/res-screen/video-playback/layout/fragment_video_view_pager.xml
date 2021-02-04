@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Used to allow us to swipe left and right to switch videos. This
+    acts as the swiping container to view vlogs or reactions in. Any
+    playback functionality exists in the adapter used to fill this
+    video_viewpager, see any fragment implementing this xml for details.
+
+    Note that this entire fragment/xml is filled with the viewpager.
+-->
+<androidx.viewpager2.widget.ViewPager2 xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/video_viewpager"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_grey_900" />

@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.vlogs.details
+package com.laixer.swabbr.presentation.video
 
 import android.net.Uri
 import android.os.Bundle
@@ -8,12 +8,10 @@ import android.view.ViewGroup
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.AuthFragment
-import kotlinx.android.synthetic.main.item_vlog.*
-import kotlinx.android.synthetic.main.item_vlog.view.*
+import kotlinx.android.synthetic.main.fragment_video.*
 
 /**
  *  Fragment for video playback. This is used both for vlog
@@ -23,7 +21,7 @@ open class VideoFragment : AuthFragment() {
     private val exoPlayer: ExoPlayer by lazy { ExoPlayerFactory.newSimpleInstance(requireContext()) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return layoutInflater.inflate(R.layout.item_vlog, container, false)
+        return layoutInflater.inflate(R.layout.fragment_video, container, false)
     }
 
     /**
@@ -45,7 +43,7 @@ open class VideoFragment : AuthFragment() {
             setForegroundMode(false)
         }
 
-        player.apply {
+        video_player.apply {
             controllerShowTimeoutMs = -1
             controllerHideOnTouch = false
             player = exoPlayer
@@ -60,7 +58,7 @@ open class VideoFragment : AuthFragment() {
 
     override fun onPause() {
         super.onPause()
-        view?.player?.overlayFrameLayout?.removeAllViews()
+        video_player?.overlayFrameLayout?.removeAllViews()
         exoPlayer.seekTo(0)
         exoPlayer.playWhenReady = false
     }

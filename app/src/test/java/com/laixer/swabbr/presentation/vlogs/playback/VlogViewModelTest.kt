@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.vlogs.details
+package com.laixer.swabbr.presentation.vlogs.playback
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.laixer.presentation.Resource
@@ -19,9 +19,9 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import java.util.UUID
 
-class VlogDetailsViewModelTest {
+class VlogViewModelTest {
 
-    private lateinit var viewModel: VlogDetailsViewModel
+    private lateinit var viewModel: VlogViewModel
     private val mockVlogUseCase: VlogUseCase = mock()
     private val mockReactionUseCase: ReactionUseCase = mock()
 
@@ -54,7 +54,7 @@ class VlogDetailsViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = VlogDetailsViewModel(mockVlogUseCase, mockReactionUseCase)
+        viewModel = VlogViewModel(mockVlogUseCase, mockReactionUseCase)
     }
 
     @Test

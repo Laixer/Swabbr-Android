@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.vlogs.details
+package com.laixer.swabbr.presentation.vlogs.playback
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil

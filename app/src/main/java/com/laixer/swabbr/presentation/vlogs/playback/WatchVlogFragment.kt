@@ -1,33 +1,39 @@
-package com.laixer.swabbr.presentation.vlogs.details
+package com.laixer.swabbr.presentation.vlogs.playback
 
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
-import com.laixer.swabbr.presentation.model.*
-import com.laixer.swabbr.utils.Utils
+import com.laixer.swabbr.presentation.model.ReactionWrapperItem
+import com.laixer.swabbr.presentation.model.VlogLikeSummaryItem
+import com.laixer.swabbr.presentation.model.VlogWrapperItem
+import com.laixer.swabbr.presentation.video.VideoFragment
 import com.plattysoft.leonids.ParticleSystem
 import kotlinx.android.synthetic.main.exo_player_view.*
-import kotlinx.android.synthetic.main.item_vlog.*
+import kotlinx.android.synthetic.main.fragment_video.*
 import kotlinx.android.synthetic.main.reactions_sheet.*
 import kotlinx.android.synthetic.main.reactions_sheet.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.*
+import java.util.UUID
 
-// TODO Explain better!
 /**
- *  Fragment for vlog display with which the user can interact.
+ *  Fragment for watching a single vlog. This extends [VideoFragment]
+ *  which contains the core playback functionality. This class manages
+ *  the displaying of likes, reactions and other data about the vlog.
+ *  Note that the playback of reactions is managed by TODO [].
  */
-open class InteractiveVideoFragment : VideoFragment() {
-    protected val vlogVm: VlogDetailsViewModel by viewModel()
-    private lateinit var vlogId: UUID
+class WatchVlogFragment(id: String? = null) : VideoFragment() {
+    private val vlogVm: VlogViewModel by viewModel()
+    private val args by navArgs<WatchVlogFragmentArgs>()
+    private val vlogId: UUID by lazy { UUID.fromString(id ?: args.vlogId) }
 
     /**
      *  Callback for when we click on a profile.
@@ -38,28 +44,34 @@ open class InteractiveVideoFragment : VideoFragment() {
 
     /**
      *  Callback for when we click on a given reaction.
+     *  This takes us to a []
      */
     private val onReactionClick: (ReactionWrapperItem) -> Unit = {
         findNavController().navigate(Uri.parse("https://swabbr.com/watchReaction?reactionId=${it.reaction.id}"))
     }
 
-    fun isVlogLiked(): Boolean =
-        vlogVm.likes.value?.data?.users?.any { it.id == authUserVm.getAuthUserId() } ?: false
+    // TODO
+    fun isVlogLiked(): Boolean = vlogVm.likes.value?.data?.users?.any { it.id == authUserVm.getAuthUserId() } ?: false
 
+    /**
+     *  Attaches observers to the [vlogVm] resources.
+     */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         vlogVm.apply {
-            vlogs.observe(viewLifecycleOwner, Observer(this@InteractiveVideoFragment::updateVlog))
-            reactions.observe(viewLifecycleOwner, Observer(this@InteractiveVideoFragment::updateReactions))
-            likes.observe(viewLifecycleOwner, Observer(this@InteractiveVideoFragment::updateLikes))
+            vlog.observe(viewLifecycleOwner, Observer { onVlogLoaded(it) })
+            reactions.observe(viewLifecycleOwner, Observer { onReactionsUpdated(it) })
+            likes.observe(viewLifecycleOwner, Observer { onLikesUpdated(it) })
         }
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-
+    /**
+     *  Binds all UI event listeners, then fetches the vlog
+     *  with id [vlogId] including its reactions and likes.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Utils.enterFullscreen(requireActivity())
 
         reactions_sheet.run {
             reactionsRecyclerView.run {
@@ -68,12 +80,14 @@ open class InteractiveVideoFragment : VideoFragment() {
             }
         }
 
-        react_button.setOnClickListener {
-            if (!::vlogId.isInitialized) return@setOnClickListener
+        button_post_reaction.setOnClickListener {
+            // if (!::vlogId.isInitialized) return@setOnClickListener TODO
             findNavController().navigate(WatchVlogFragmentDirections.actionRecordReaction("1", vlogId.toString()))
         }
 
-        player.setOnTouchListener { v, event ->
+        // Implement double tapping to like a vlog.
+        // TODO Doesn't work
+        video_player.setOnTouchListener { v, event ->
             GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
                 override fun onDoubleTap(e: MotionEvent?): Boolean {
                     toggleLike(isVlogLiked())
@@ -111,20 +125,25 @@ open class InteractiveVideoFragment : VideoFragment() {
             // Because of this we have to interpret it in reverse.
             toggleLike(isVlogLiked())
         }
+
+        /**
+         *  Retrieve the actual vlog using the view model. When the
+         *  vlog has been retrieved, [onVlogLoaded] will be called.
+         *  A similar structure exists for the reactions and likes.
+         */
+        vlogVm.getVlog(vlogId)
+        vlogVm.getReactions(vlogId)
+        vlogVm.getVlogLikeSummary(vlogId)
     }
 
-    override fun onResume() {
-        super.onResume()
-        Utils.enterFullscreen(requireActivity())
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Utils.exitFullscreen(requireActivity())
-    }
-
+    /**
+     *  If the current user has liked the vlog, unlike it
+     *  and vice versa.
+     *
+     *  @param like True if we wish to like this, false for unliking.
+     */
     private fun toggleLike(like: Boolean) {
-        if (!::vlogId.isInitialized) return
+        // if (!::vlogId.isInitialized) { return } TODO
 
         if (vlogVm.vlogs.value!!.data!!.first().user.id == authUserVm.getAuthUserId()) {
             like_button.isChecked = !like_button.isChecked
@@ -137,6 +156,8 @@ open class InteractiveVideoFragment : VideoFragment() {
         } else {
             vlogVm.like(vlogId)
 
+            // Display the like icon.
+            // TODO Move to helper.
             ParticleSystem(requireActivity(), 20, R.drawable.love_it_red, 1000)
                 .setSpeedModuleAndAngleRange(0.1F, 0.2F, 240, 300)
                 .setRotationSpeedRange(20F, 360F)
@@ -146,32 +167,64 @@ open class InteractiveVideoFragment : VideoFragment() {
         }
     }
 
-    private fun updateVlog(res: Resource<List<VlogWrapperItem>>) {
-        when (res.state) {
+    /**
+     *  Observes the [vlogVm] vog resource and starts playback
+     *  when it loads. This also updates the UI.
+     */
+    private fun onVlogLoaded(res: Resource<VlogWrapperItem>) = with(res) {
+        when (state) {
             ResourceState.LOADING -> {
+                content_loading_progressbar.visibility = View.VISIBLE
             }
             ResourceState.SUCCESS -> {
-                res.data?.first()?.let {
-                    vlogId = it.vlog.id
-                    vlogVm.getReactions(vlogId)
-                    vlogVm.getVlogLikeSummary(vlogId)
+                // TODO Repair
+//                user_avatar.loadAvatar(it.user.profileImage, it.user.id)
+//                user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
+//                user_username.text = requireContext().getString(R.string.full_name, it.user.firstName, it.user.lastName)
 
-                    // TODO Repair
-//                    user_avatar.loadAvatar(it.user.profileImage, it.user.id)
-//                    user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
-//                    user_username.text =
-//                        requireContext().getString(R.string.full_name, it.user.firstName, it.user.lastName)
-
-                    reactions_sheet.visibility = View.VISIBLE
+                data?.let {
+                    stream(it.vlog.videoUri!!)
                 }
-
             }
             ResourceState.ERROR -> {
+                // TODO
             }
         }
     }
 
-    private fun updateLikes(resource: Resource<VlogLikeSummaryItem>) = with(resource) {
+    /**
+     *  Called when the [vlogVm] reactions resource changes.
+     */
+    private fun onReactionsUpdated(resource: Resource<List<ReactionWrapperItem>>) {
+        with(resource) {
+            when (state) {
+                ResourceState.LOADING -> {
+                    reactions_sheet.progressBar.visible()
+                }
+                ResourceState.SUCCESS -> {
+                    reactions_sheet.progressBar.gone()
+                    data?.let {
+                        (reactionsRecyclerView?.adapter as ReactionsAdapter?)?.submitList(it)
+                        reaction_count.text = "${it.count()}"
+                    }
+
+                    reactions_sheet.visibility = View.VISIBLE
+                }
+                ResourceState.ERROR -> {
+                    reactions_sheet.progressBar.gone()
+                }
+            }
+        }.also {
+            val hasReactions = vlogVm.reactions.value?.data?.isNullOrEmpty() == false
+            no_reactions.visibility = if (hasReactions) View.GONE else View.VISIBLE
+            reaction_scroll_view.visibility = if (hasReactions) View.VISIBLE else View.GONE
+        }
+    }
+
+    /**
+     *  Called when the [vlogVm] likes resource changes.
+     */
+    private fun onLikesUpdated(resource: Resource<VlogLikeSummaryItem>) = with(resource) {
         when (state) {
             ResourceState.LOADING -> {
                 like_button.isEnabled = false
@@ -191,32 +244,9 @@ open class InteractiveVideoFragment : VideoFragment() {
         }
     }
 
-    private fun updateReactions(resource: Resource<List<ReactionWrapperItem>>) {
-        with(resource) {
-            when (state) {
-                ResourceState.LOADING -> {
-                    reactions_sheet.progressBar.visible()
-                }
-                ResourceState.SUCCESS -> {
-                    reactions_sheet.progressBar.gone()
-                    data?.let {
-                        (reactionsRecyclerView?.adapter as ReactionsAdapter?)?.submitList(it)
-                        reaction_count.text = "${it.count()}"
-                    }
-                }
-                ResourceState.ERROR -> {
-                    reactions_sheet.progressBar.gone()
-                }
-            }
-        }.also {
-            val hasReactions = vlogVm.reactions.value?.data?.isNullOrEmpty() == false
-            no_reactions.visibility = if (hasReactions) View.GONE else View.VISIBLE
-            reaction_scroll_view.visibility = if (hasReactions) View.VISIBLE else View.GONE
+    companion object {
+        fun create(vlogId: String): WatchVlogFragment {
+            return WatchVlogFragment(vlogId)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        reactionsRecyclerView?.adapter = null
     }
 }

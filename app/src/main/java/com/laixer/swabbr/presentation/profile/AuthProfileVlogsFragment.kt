@@ -25,7 +25,6 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  *  user. This should be inflated as a tab in [AuthProfileFragment].
  */
 class AuthProfileVlogsFragment : AuthFragment() {
-
     private val profileVm: ProfileViewModel by sharedViewModel()
     private val snackBar by lazy {
         Snackbar.make(swipeRefreshLayout, getString(R.string.error), Snackbar.LENGTH_INDEFINITE)
@@ -40,6 +39,8 @@ class AuthProfileVlogsFragment : AuthFragment() {
             }
             .setDuration(Snackbar.LENGTH_LONG)
     }
+
+    /** Adapter for [profileVlogsRecyclerView] - NOT the fullscreen playback adapter. */
     private var profileVlogsAdapter: ProfileVlogsAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -53,7 +54,7 @@ class AuthProfileVlogsFragment : AuthFragment() {
             profileVlogs.observe(viewLifecycleOwner, Observer { updateProfileVlogs(it) })
         }
 
-        profileVlogsAdapter = ProfileVlogsAdapter(requireContext(), profileVm, authUserVm, onClick, onDelete)
+        profileVlogsAdapter = ProfileVlogsAdapter(requireContext(), profileVm, authUserVm, onClickVlog, onDelete)
 
         profileVlogsRecyclerView.apply {
             isNestedScrollingEnabled = false
@@ -71,7 +72,10 @@ class AuthProfileVlogsFragment : AuthFragment() {
         }
     }
 
-    private val onClick: (VlogWrapperItem) -> Unit = { item ->
+    /**
+     *  Called when we click on a vlog item in the [profileVlogsAdapter].
+     */
+    private val onClickVlog: (VlogWrapperItem) -> Unit = { item ->
         findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${item.user.id}&vlogId=${item.vlog.id}"))
     }
 

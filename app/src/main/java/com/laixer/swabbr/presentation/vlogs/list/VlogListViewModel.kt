@@ -20,12 +20,17 @@ class VlogListViewModel constructor(
     private val usersVlogsUseCase: VlogUseCase,
     private val vlogUseCase: VlogUseCase
 ) : ViewModel() {
-
+    /**
+     *  Used to store the result of any vlog list retrieval. Note
+     *  that all list retrieval functions store their vlogs here.
+     *  TODO That might be bad design.
+     */
     val vlogs = MutableLiveData<Resource<List<VlogWrapperItem>>>()
+
     private val compositeDisposable = CompositeDisposable()
 
     /**
-     *  Gets the reccomended vlogs from the data store.
+     *  Gets the recommended vlogs and stores them in [vlogs].
      *
      *  @param refresh Force a data refresh.
      */
@@ -45,11 +50,25 @@ class VlogListViewModel constructor(
         )
 
     /**
-     *  Get the amount of reactions that belong to a vlog.
+     *  Gets vlogs for a user and stores them in [vlogs].
      *
-     *  @param vlogId The vlog to get the count for.
+     *  @param userId The user to get the vlogs for.
+     *  @param refresh Force a data refresh.
      */
-    fun getReactionCount(vlogId: UUID) = vlogUseCase.getReactionCount(vlogId)
+    fun getVlogsForUser(userId: UUID, refresh: Boolean = false) =
+        compositeDisposable.add(
+            vlogUseCase.getAllForUser(userId, refresh)
+                .doOnSubscribe { vlogs.setLoading() }
+                .subscribeOn(Schedulers.io())
+                .map { list ->
+                    list.sortedByDescending { it.vlog.dateStarted }
+                        .mapToPresentation()
+                }
+                .subscribe(
+                    { vlogs.setSuccess(it) },
+                    { vlogs.setError(it.message) }
+                )
+        )
 
     override fun onCleared() {
         compositeDisposable.dispose()

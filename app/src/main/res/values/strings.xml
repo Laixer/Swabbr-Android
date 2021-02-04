@@ -87,4 +87,16 @@
     <string name="placeholder_text">sometext</string>
     <string name="placeholder_nickname">\@sometext</string>
 
+    <!-- Profile settings texts -->
+    <string name="profileIsPrivate">Is profile private?</string>
+    <string name="dailyVlogRequestLimit">Daily vlog request limit</string>
+    <string name="followMode">Follow mode</string>
+    <string name="save">Save</string>
+    <string name="logout">Logout</string>
+
+    <!-- Follow mode spinner options -->
+    <string name="manual">Manual</string>
+    <string name="acceptAll">Accept all</string>
+    <string name="declineAll">Deny all</string>
+
 </resources>

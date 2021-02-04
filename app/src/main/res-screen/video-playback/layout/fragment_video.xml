@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Single video playback. This contains an ExoPlayer
+    viewer and a progress bar. This contains no other
+    display functionality such as likes and reactions.
+-->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
@@ -6,7 +11,7 @@
     android:layout_width="match_parent">
 
     <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/player"
+        android:id="@+id/video_player"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"

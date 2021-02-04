@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Used to allow us to swipe left and right to switch vlogs. -->
-<!-- This acts as the main container for all vlog playback functionality. -->
-<androidx.viewpager2.widget.ViewPager2 xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/vlog_viewpager"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_grey_900" />

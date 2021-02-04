@@ -86,8 +86,6 @@ class AuthProfileFollowingFragment : AuthFragment() {
      *  @param refresh Force a data refresh.
      */
     private fun getFollowingUsers(refresh: Boolean = false) {
-        var id = authUserVm.getAuthUserId()
-
         authUserVm.getAuthUserId()?.let {
             profileVm.getFollowing(it, refresh)
         }

@@ -55,7 +55,7 @@
                     android:textColor="@color/color_white" />
 
                 <ImageButton
-                    android:id="@+id/react_button"
+                    android:id="@+id/button_post_reaction"
                     android:layout_width="@dimen/small_icon_size"
                     android:layout_height="@dimen/small_icon_size"
                     android:layout_gravity="center"
