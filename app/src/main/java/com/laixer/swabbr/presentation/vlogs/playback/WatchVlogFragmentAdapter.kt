@@ -1,7 +1,7 @@
 package com.laixer.swabbr.presentation.vlogs.playback
 
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 
 // TODO Bad design, dependency on the vm with this positioning.
@@ -12,7 +12,7 @@ import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 internal class WatchVlogFragmentAdapter(
     fragment: Fragment,
     private val vlogListVm: VlogListViewModel
-) : FragmentStateAdapter(fragment) {
+) : WatchVideoFragmentAdapter(fragment) {
     /**
      *  Creates a new [WatchVlogFragment] for a vlog to watch.
      */

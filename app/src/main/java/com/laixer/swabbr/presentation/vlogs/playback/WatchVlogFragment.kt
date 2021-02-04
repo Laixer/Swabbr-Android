@@ -28,7 +28,7 @@ import java.util.UUID
  *  Fragment for watching a single vlog. This extends [VideoFragment]
  *  which contains the core playback functionality. This class manages
  *  the displaying of likes, reactions and other data about the vlog.
- *  Note that the playback of reactions is managed by TODO [].
+ *  Note that the playback of reactions is managed by [].
  */
 class WatchVlogFragment(id: String? = null) : VideoFragment() {
     private val vlogVm: VlogViewModel by viewModel()

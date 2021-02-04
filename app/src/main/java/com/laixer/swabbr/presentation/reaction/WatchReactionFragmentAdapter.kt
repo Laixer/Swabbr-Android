@@ -1,7 +1,7 @@
 package com.laixer.swabbr.presentation.reaction
 
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
 import com.laixer.swabbr.presentation.vlogs.playback.VlogViewModel
 import com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragment
 
@@ -15,7 +15,7 @@ internal class WatchReactionFragmentAdapter(
     fragment: Fragment,
     // TODO Maybe separate VM?
     private val vlogVm: VlogViewModel
-) : FragmentStateAdapter(fragment) {
+) : WatchVideoFragmentAdapter(fragment) {
     /**
      *  Creates a new [WatchVlogFragment] for a vlog to watch.
      */
