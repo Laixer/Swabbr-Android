@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="content_margin">8dp</dimen>
+    <dimen name="content_margin_small">8dp</dimen>
+    <dimen name="content_margin_medium">16dp</dimen>
     <dimen name="content_margin_large">32dp</dimen>
     <dimen name="item_margin">8dp</dimen>
     <dimen name="image_text_horizontal_margin">8dp</dimen>
@@ -11,11 +12,17 @@
     <dimen name="medium_icon_size">48dp</dimen>
     <dimen name="large_icon_size">64dp</dimen>
 
-    <dimen name="small_profile_image_size">32dp</dimen>
+    <dimen name="small_profile_image_size">40dp</dimen>
     <dimen name="medium_profile_image_size">84dp</dimen>
     <dimen name="large_profile_image_size">150dp</dimen>
 
+    <!-- Used for the reaction sheets. -->
+    <!-- TODO Suboptimal -->
+    <dimen name="medium_profile_image_size_half">42dp</dimen>
+
     <dimen name="profile_settings_side_margin">16dp</dimen>
+
+    <dimen name="vlog_stats_icon_margin">64dp</dimen>
 
     <dimen name="button_width">100dp</dimen>
     <dimen name="button_height">48dp</dimen>
@@ -24,6 +31,11 @@
 
     <dimen name="user_displayed_name_size">14sp</dimen>
     <dimen name="user_nickname_size">10sp</dimen>
+
+    <!-- TODO This is a beun fix. -->
+    <!-- Reaction sheet peek height. -->
+    <dimen name="reaction_sheet_peek_height">400dp</dimen>
+    <dimen name="reaction_sheet_peek_height_negative">-400dp</dimen>
 
     <!-- TODO Maybe move to separate file? -->
     <!-- All text sizes -->

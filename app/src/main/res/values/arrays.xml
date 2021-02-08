@@ -9,7 +9,7 @@
 
     <string-array name="follow_mode_array">
         <item>@string/manual</item>
-        <item>@string/acceptAll</item>
-        <item>@string/declineAll</item>
+        <item>@string/accept_all</item>
+        <item>@string/decline_all</item>
     </string-array>
 </resources>

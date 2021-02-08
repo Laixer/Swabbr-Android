@@ -8,20 +8,21 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
+import com.laixer.presentation.gone
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
-import com.laixer.swabbr.presentation.video.VideoFragment
-import com.laixer.swabbr.presentation.vlogs.playback.VlogViewModel
+import com.laixer.swabbr.presentation.video.WatchVideoFragment
+import kotlinx.android.synthetic.main.exo_player_view.*
 import kotlinx.android.synthetic.main.fragment_video.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 // TODO FIX
 /**
- *  Wrapper around a single [VideoFragment] used for [ReactionItem] playback.
+ *  Wrapper around a single [WatchVideoFragment] used for [ReactionItem] playback.
  */
-class WatchReactionFragment(id: String? = null) : VideoFragment() {
+class WatchReactionFragment(id: String? = null) : WatchVideoFragment() {
     private val args by navArgs<WatchReactionFragmentArgs>()
 
     // TODO Correct vm?
@@ -32,32 +33,40 @@ class WatchReactionFragment(id: String? = null) : VideoFragment() {
      *  Assign observers to [reactionVm].
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        //reactionVm.reactions.observe(viewLifecycleOwner, Observer { onReactionLoaded(it) })
+        reactionVm.reaction.observe(viewLifecycleOwner, Observer { onReactionLoaded(it) })
+
         return layoutInflater.inflate(R.layout.fragment_video, container, false)
     }
 
+    /**
+     *  Gets the actual reaction.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //reactionVm.getReactions(reactionId)
+        // Hide the vlog stats overlay.
+        vlog_info_overlay.gone()
+
+        reactionVm.getReaction(reactionId)
     }
 
+    // TODO Should this be responsible for the loading icon?
     /**
-     *  Attempts to start video playback.
-     *
-     *  @param res Reaction resource item containing [ReactionItem.videoUri].
+     *  Callback function for when our [reactionVm] reaction resource updates.
      */
     private fun onReactionLoaded(res: Resource<ReactionWrapperItem>) = with(res) {
         when (state) {
             ResourceState.LOADING -> {
-                content_loading_progressbar.visibility = View.VISIBLE
+                video_content_loading_icon.visibility = View.VISIBLE
             }
             ResourceState.SUCCESS -> {
+                video_content_loading_icon.visibility = View.GONE
                 data?.let {
                     stream(it.reaction.videoUri!!)
                 }
             }
             ResourceState.ERROR -> {
+                video_content_loading_icon.visibility = View.GONE
             }
         }
     }

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -22,8 +23,10 @@ import com.laixer.swabbr.presentation.utils.onActivityResult
 import com.laixer.swabbr.utils.encodeToBase64
 import com.laixer.swabbr.utils.formatNumber
 import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.reduceDragSensitivity
 import kotlinx.android.synthetic.main.fragment_auth_profile.*
 
+// TODO Make generic for any user.
 /**
  *  Fragment for displaying generic user profile information.
  *  This fragment contains tabs for more specific user details
@@ -57,14 +60,21 @@ class AuthProfileFragment : AuthFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // TODO Is this the way to go? I think not
+        // Show the top action bar displaying the application name.
+        (requireActivity() as AppCompatActivity).supportActionBar?.show()
+
+        // Reduce swiping sensitivity for tabs
+        viewpager_user_profile.reduceDragSensitivity()
+
         profileTabAdapter = ProfileTabAdapter(this)
-        pager.adapter = profileTabAdapter
-        pager.offscreenPageLimit = 4
+        viewpager_user_profile.adapter = profileTabAdapter
+        viewpager_user_profile.offscreenPageLimit = 4
 
         authUserVm.getSelf(refresh = false)
         authUserVm.getStatistics(refresh = false)
 
-        TabLayoutMediator(tab_layout, pager) { tab, position ->
+        TabLayoutMediator(tab_layout, viewpager_user_profile) { tab, position ->
             tab.text = when (position) {
                 0 -> requireContext().getString(R.string.tab_vlogs)
                 1 -> requireContext().getString(R.string.tab_profile)
@@ -139,7 +149,7 @@ class AuthProfileFragment : AuthFragment() {
     private fun updateStatsFromViewModel(res: Resource<UserWithStatsItem>) {
         when (res.state) {
             ResourceState.LOADING -> {
-                // TODO: Loading state
+                // loading_icon_profile_details.
             }
             ResourceState.SUCCESS -> {
                 res.data?.let { stats ->
@@ -186,7 +196,7 @@ class AuthProfileFragment : AuthFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         profileTabAdapter = null
-        pager.adapter = null
+        viewpager_user_profile.adapter = null
     }
 
     internal companion object {

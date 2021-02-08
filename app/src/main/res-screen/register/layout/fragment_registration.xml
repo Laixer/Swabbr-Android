@@ -90,12 +90,13 @@
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/content_margin"
+            android:layout_margin="@dimen/content_margin_small"
             android:enabled="false"
             android:text="@string/register_registerText" />
 
+        <!-- Loading icon. -->
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/loading_icon_registration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

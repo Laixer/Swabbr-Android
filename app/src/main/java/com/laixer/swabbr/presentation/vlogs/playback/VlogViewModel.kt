@@ -39,9 +39,20 @@ class VlogViewModel constructor(
     val reactions = MutableLiveData<Resource<List<ReactionWrapperItem>>>()
 
     /**
+     *  Used to store the amount of reactions for the [vlog] resource.
+     */
+    val reactionCount = MutableLiveData<Resource<Int>>()
+
+    /**
      *  Used to store likes for the [vlog] resource.
      */
     val likes = MutableLiveData<Resource<VlogLikeSummaryItem>>()
+
+    /**
+     *  Used to store whether or not the current user has
+     *  liked the [vlog] resource.
+     */
+    val likedByCurrentUser = MutableLiveData<Resource<Boolean>>()
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -76,20 +87,26 @@ class VlogViewModel constructor(
                 .subscribeOn(Schedulers.io())
                 .map { it.mapToPresentation() }
                 .subscribe(
-                    {
-                        reactions.setSuccess(it)
-                    },
+                    { reactions.setSuccess(it) },
                     { reactions.setError(it.message) }
                 )
         )
 
-    // TODO Should this be placed here?
     /**
      *  Get the amount of reactions that belong to a vlog.
      *
      *  @param vlogId The vlog to get the count for.
      */
-    fun getReactionCount(vlogId: UUID) = vlogUseCase.getReactionCount(vlogId)
+    fun getReactionCount(vlogId: UUID, refresh: Boolean = false) =
+        compositeDisposable.add(
+            vlogUseCase.getReactionCount(vlogId, refresh)
+                .doOnSubscribe { reactions.setLoading() }
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    { reactionCount.setSuccess(it) },
+                    { reactionCount.setError(it.message) }
+                )
+        )
 
     /**
      *  Like a vlog, then call [getVlogLikeSummary] to update
@@ -120,6 +137,7 @@ class VlogViewModel constructor(
         )
 
     // TODO This should be a list of likes. The summary already exists in the vlog itself.
+    //  I think we can simply remove this for now, or move it to the likes tab?
     /**
      *  Gets a vlog like summary for a vlog. This is  also called after
      *  [like] and [unlike] to keep the displayed information up
@@ -137,6 +155,21 @@ class VlogViewModel constructor(
                 .subscribe(
                     { likes.setSuccess(it) },
                     { likes.setError(it.message) }
+                )
+        )
+
+    // TODO Move to vlog like use case in the future
+    /**
+     *  Checks if a given vlog is liked by the current user.
+     */
+    fun isVlogLikedByCurrentUser(vlogId: UUID) =
+        compositeDisposable.add(
+            vlogUseCase.isVlogLikedByUser(vlogId)
+                .doOnSubscribe { likedByCurrentUser.setLoading() }
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    { likedByCurrentUser.setSuccess(it) },
+                    { likedByCurrentUser.setError(it.message) }
                 )
         )
 

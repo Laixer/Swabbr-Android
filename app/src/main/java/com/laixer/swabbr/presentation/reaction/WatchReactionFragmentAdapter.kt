@@ -1,28 +1,33 @@
 package com.laixer.swabbr.presentation.reaction
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import com.laixer.presentation.Resource
+import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
-import com.laixer.swabbr.presentation.vlogs.playback.VlogViewModel
-import com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragment
 
 // TODO Use
-// TODO Bad design, dependency on the vm with this positioning.
+// TODO Dependent on mutable live data, is this desired? Maybe too coupled...
 /**
  *  Adapter that creates a [WatchReactionFragment] for each reaction
  *  so the reaction can be played back using this fragment.
  */
 internal class WatchReactionFragmentAdapter(
     fragment: Fragment,
-    // TODO Maybe separate VM?
-    private val vlogVm: VlogViewModel
+    /** The resource that will be observed. */
+    private val reactionListResource: MutableLiveData<Resource<List<ReactionWrapperItem>>>
 ) : WatchVideoFragmentAdapter(fragment) {
     /**
-     *  Creates a new [WatchVlogFragment] for a vlog to watch.
+     *  Creates a new [WatchReactionFragment] for reaction playback.
      */
     override fun createFragment(position: Int): Fragment =
-        vlogVm.reactions.value!!.data!![position].reaction.id.let {
+        reactionListResource.value!!.data!![position].reaction.id.let {
             WatchReactionFragment.create(reactionId = it.toString())
         }
 
-    override fun getItemCount(): Int = vlogVm.reactions.value?.data?.size ?: 0
+    /**
+     *  Gets the total count in the [reactionListResource] or 0 if
+     *  no reactions are present.
+     */
+    override fun getItemCount(): Int = reactionListResource.value?.data?.size ?: 0
 }

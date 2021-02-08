@@ -19,8 +19,12 @@ import io.reactivex.plugins.RxJavaPlugins
 import kotlinx.android.synthetic.main.activity_app.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+/**
+ *  Main activity in which everything is displayed using fragments,
+ *  apart from logging in ([AuthActivity]) and recording a vlog from
+ *  a notification ([RecordVlogActivity]).
+ */
 class MainActivity : AppCompatActivity() {
-
     private val vm: MainActivityViewModel by viewModel()
 
     private val navHostFragment by lazy { supportFragmentManager.findFragmentById(R.id.nav_host_container_app) as NavHostFragment }
@@ -36,8 +40,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // We set launch screen theme from manifest, we need to get back to our Theme to remove
-        // launch screen.
+        // Set the top toolbar as the action bar and hide it immediately.
+        setSupportActionBar(toolbar)
+        supportActionBar?.hide()
+
+        // We set the launch screen theme from manifest. After this we
+        // need to get back to our Theme to remove the launch screen.
         setTheme(R.style.Theme_Swabbr)
 
         injectFeature()
@@ -47,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         vm.authToken.observe(this, Observer(this@MainActivity::updateAppState))
 
         setContentView(R.layout.activity_app)
-        setSupportActionBar(toolbar)
 
         // Setup the bottom navigation view with a list of navigation graphs
         nav_host_container_app.post {
@@ -60,17 +67,25 @@ class MainActivity : AppCompatActivity() {
         vm.probeAuthToken()
     }
 
+    // TODO Here lies the bug that doesn't take us to the recording screen after a
+    //      notification takes us to the login screen because we aren't logged in yet
+    //      or don't have a valid jwt token anymore.
+    // TODO This shouldn't handle our styling...
+    /**
+     *  Determines where we will go based on having/getting our
+     *  access token after app entry of after login.
+     */
     private fun updateAppState(res: Resource<JWT>) {
         when (res.state) {
             ResourceState.LOADING -> run {
                 /* App auth is loading */
                 navHostState = navHostFragment.navController.saveState() ?: navHostState
-                setTheme(R.style.Theme_Swabbr_Launcher)
+                // setTheme(R.style.Theme_Swabbr_Launcher) TODO
             }
             ResourceState.SUCCESS -> run {
 
                 /* We can load the app */
-                setTheme(R.style.Theme_Swabbr)
+                // setTheme(R.style.Theme_Swabbr) TODO
 
                 if (!navHostFragment.navController.popBackStack(R.id.dashboard_dest, false)) {
                     // Force the user back to the login screen
@@ -98,7 +113,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If
@@ -129,7 +143,4 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
         private const val PLAY_SERVICES_RESOLUTION_REQUEST = 9000
     }
-
-
 }
-

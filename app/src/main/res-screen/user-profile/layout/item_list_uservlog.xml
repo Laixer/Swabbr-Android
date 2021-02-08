@@ -34,7 +34,7 @@
                 <include layout="@layout/include_vlog_stats"
                     android:layout_width="300dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="@dimen/content_margin"/>
+                    android:layout_margin="@dimen/content_margin_small"/>
 
                 <ImageButton
                     android:id="@+id/delete_button"
@@ -42,7 +42,7 @@
                     android:layout_height="@dimen/medium_icon_size"
                     android:background="@color/transparent"
                     android:src="@drawable/ic_baseline_delete"
-                    android:layout_margin="@dimen/content_margin"
+                    android:layout_margin="@dimen/content_margin_small"
                     android:layout_gravity="center"
                     android:visibility="gone" />
 

@@ -25,13 +25,13 @@ class NotificationJsonAdapterFactory : JsonAdapter.Factory {
              *
              *  @param reader The reader to parse from.
              */
-            override fun fromJson(reader: JsonReader): V1.Notification? {
+            override fun fromJson(reader: JsonReader): V1.Notification {
                 val jsonValue = reader.readJsonValue()
 
                 // First explicitly extract the data object.
                 @Suppress("UNCHECKED_CAST")
                 val value = jsonValue as Map<String, Any>
-                val notificationAction = NotificationAction.values()[(value["NotificationAction"] as Double).toInt()]!!
+                val notificationAction = NotificationAction.values()[(value["NotificationAction"] as Double).toInt()]
                 val data = moshi.adapter(notificationAction.getDerivedDataClass())
                     .fromJsonValue(value["Data"])
                     ?: throw JsonDataException()

@@ -27,7 +27,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/preview_ok"
             android:layout_width="wrap_content"
-            android:layout_margin="@dimen/content_margin"
+            android:layout_margin="@dimen/content_margin_small"
             android:layout_height="wrap_content"
             android:text="Ok"
             />
@@ -36,7 +36,7 @@
             android:id="@+id/preview_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/content_margin"
+            android:layout_margin="@dimen/content_margin_small"
             android:text="Cancel"
             />
 

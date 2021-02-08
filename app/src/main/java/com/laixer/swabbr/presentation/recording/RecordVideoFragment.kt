@@ -345,8 +345,8 @@ open class RecordVideoFragment : Fragment() {
             stream_max_duration.text =
                 getString(
                     R.string.timer_value,
-                    maximumRecordTime.minutes() as Long,
-                    maximumRecordTime.lastMinuteSeconds() as Long
+                    maximumRecordTime.minutes(),
+                    maximumRecordTime.lastMinuteSeconds()
                 )
         }
     }

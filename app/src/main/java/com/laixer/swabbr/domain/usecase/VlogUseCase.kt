@@ -1,9 +1,6 @@
 package com.laixer.swabbr.domain.usecase
 
-import com.laixer.swabbr.domain.model.Reaction
-import com.laixer.swabbr.domain.model.UploadWrapper
-import com.laixer.swabbr.domain.model.Vlog
-import com.laixer.swabbr.domain.model.VlogLikeSummary
+import com.laixer.swabbr.domain.model.*
 import com.laixer.swabbr.domain.repository.ReactionRepository
 import com.laixer.swabbr.domain.repository.UserRepository
 import com.laixer.swabbr.domain.repository.VlogRepository
@@ -82,13 +79,13 @@ class VlogUseCase constructor(
 
     // FUTURE: Use dataset stats object to handle these kind of set statistics.
     // TODO Backend This can also become part of a summary of some kind.
-    // TODO Shouldn't this be in @see ReactionUseCase?
     /**
      *  Get the total amount of reactions for a vlog.
      *
      * @param vlogId The vlog id.
+     * @param refresh Force a data refresh.
      */
-    fun getReactionCount(vlogId: UUID): Single<Int> = reactionRepository.getCountForVlog(vlogId).map { it.count }
+    fun getReactionCount(vlogId: UUID, refresh: Boolean = false): Single<Int> = reactionRepository.getCountForVlog(vlogId).map { it.count }
 
     /**
      *  Gets a vlog like summary for a vlog.
@@ -97,6 +94,9 @@ class VlogUseCase constructor(
      */
     fun getVlogLikeSummary(vlogId: UUID): Single<VlogLikeSummary> =
         vlogRepository.getVlogLikeSummary(vlogId)
+
+    // TODO Implement
+    fun isVlogLikedByUser(vlogId: UUID): Single<Boolean> = Single.fromCallable { true }
 
     /**
      *  Generates a new upload wrapper for a vlog.

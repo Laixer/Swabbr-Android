@@ -69,13 +69,14 @@ class LoginFragment : Fragment() {
     private fun login(res: Resource<UserCompleteItem?>) {
         when (res.state) {
             ResourceState.LOADING -> {
-                progressBar.visible()
+                loading_icon_login.visible()
             }
             ResourceState.SUCCESS -> {
-                progressBar.gone()
+                loading_icon_login.gone()
             }
             ResourceState.ERROR -> {
-                progressBar.run { progressBar.gone() }
+                loading_icon_login.gone()
+
                 passwordInput.text.clear()
                 Log.e(TAG, res.message!!)
                 Toast.makeText(requireActivity().applicationContext, res.message, Toast.LENGTH_SHORT).show()

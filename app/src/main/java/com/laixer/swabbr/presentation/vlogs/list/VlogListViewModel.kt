@@ -21,9 +21,9 @@ class VlogListViewModel constructor(
     private val vlogUseCase: VlogUseCase
 ) : ViewModel() {
     /**
-     *  Used to store the result of any vlog list retrieval. Note
-     *  that all list retrieval functions store their vlogs here.
-     *  TODO That might be bad design.
+     *  Used as resource to store vlogs. Note that all get list
+     *  functions use this as their storage target.
+     *  TODO Bad design?
      */
     val vlogs = MutableLiveData<Resource<List<VlogWrapperItem>>>()
 

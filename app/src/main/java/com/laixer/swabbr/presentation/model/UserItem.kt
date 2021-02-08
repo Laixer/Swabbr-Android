@@ -13,6 +13,26 @@ data class UserItem(
     val nickname: String,
     val profileImage: String?
 ) {
+    /**
+     *  Gets the user display name. When no first name and
+     *  last name are present, this returns the nickname.
+     */
+    fun getDisplayName(): String {
+        if (!firstName.isNullOrBlank() && !lastName.isNullOrBlank()) {
+            return "$firstName $lastName"
+        }
+
+        if (!firstName.isNullOrBlank()) {
+            return firstName
+        }
+
+        if (!lastName.isNullOrBlank()) {
+            return lastName
+        }
+
+        return nickname
+    }
+
     // TODO Do we need more?
     fun equals(compare: UserItem): Boolean = this.id == compare.id
 //        firstName == compare.firstName

@@ -2,11 +2,16 @@ package com.laixer.swabbr.presentation.vlogs.playback
 
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
@@ -15,22 +20,29 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.VlogLikeSummaryItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
-import com.laixer.swabbr.presentation.video.VideoFragment
+import com.laixer.swabbr.presentation.reaction.ReactionsAdapter
+import com.laixer.swabbr.presentation.video.WatchVideoFragment
+import com.laixer.swabbr.utils.formatNumber
+import com.laixer.swabbr.utils.loadAvatar
 import com.plattysoft.leonids.ParticleSystem
 import kotlinx.android.synthetic.main.exo_player_view.*
 import kotlinx.android.synthetic.main.fragment_video.*
 import kotlinx.android.synthetic.main.reactions_sheet.*
-import kotlinx.android.synthetic.main.reactions_sheet.view.*
+import kotlinx.android.synthetic.main.video_info_overlay.*
+import kotlinx.android.synthetic.main.vlog_info_overlay.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.UUID
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.*
 
+// TODO BUG java.lang.IllegalStateException: Fragment WatchVlogFragment{5c199a7} (3adedb84-c7a9-45ac-bf25-9df53bf0f9ee) f0} has null arguments
 /**
- *  Fragment for watching a single vlog. This extends [VideoFragment]
+ *  Fragment for watching a single vlog. This extends [WatchVideoFragment]
  *  which contains the core playback functionality. This class manages
  *  the displaying of likes, reactions and other data about the vlog.
  *  Note that the playback of reactions is managed by [].
  */
-class WatchVlogFragment(id: String? = null) : VideoFragment() {
+class WatchVlogFragment(id: String) : WatchVideoFragment() {
     private val vlogVm: VlogViewModel by viewModel()
     private val args by navArgs<WatchVlogFragmentArgs>()
     private val vlogId: UUID by lazy { UUID.fromString(id ?: args.vlogId) }
@@ -50,9 +62,6 @@ class WatchVlogFragment(id: String? = null) : VideoFragment() {
         findNavController().navigate(Uri.parse("https://swabbr.com/watchReaction?reactionId=${it.reaction.id}"))
     }
 
-    // TODO
-    fun isVlogLiked(): Boolean = vlogVm.likes.value?.data?.users?.any { it.id == authUserVm.getAuthUserId() } ?: false
-
     /**
      *  Attaches observers to the [vlogVm] resources.
      */
@@ -60,7 +69,9 @@ class WatchVlogFragment(id: String? = null) : VideoFragment() {
         vlogVm.apply {
             vlog.observe(viewLifecycleOwner, Observer { onVlogLoaded(it) })
             reactions.observe(viewLifecycleOwner, Observer { onReactionsUpdated(it) })
+            reactionCount.observe(viewLifecycleOwner, Observer { onReactionCountUpdated(it) })
             likes.observe(viewLifecycleOwner, Observer { onLikesUpdated(it) })
+            likedByCurrentUser.observe(viewLifecycleOwner, Observer { onLikedByCurrentUserUpdated(it) })
         }
 
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -73,6 +84,11 @@ class WatchVlogFragment(id: String? = null) : VideoFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // TODO
+        val bottomSheetBehavior = BottomSheetBehavior.from(constraint_layout_reactions_sheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+
+        // Apply the reaction sheet adapter to the swipeable overlay.
         reactions_sheet.run {
             reactionsRecyclerView.run {
                 isNestedScrollingEnabled = false
@@ -80,51 +96,65 @@ class WatchVlogFragment(id: String? = null) : VideoFragment() {
             }
         }
 
-        button_post_reaction.setOnClickListener {
-            // if (!::vlogId.isInitialized) return@setOnClickListener TODO
-            findNavController().navigate(WatchVlogFragmentDirections.actionRecordReaction("1", vlogId.toString()))
-        }
-
-        // Implement double tapping to like a vlog.
-        // TODO Doesn't work
-        video_player.setOnTouchListener { v, event ->
-            GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
-                override fun onDoubleTap(e: MotionEvent?): Boolean {
-                    toggleLike(isVlogLiked())
-                    return true
-                }
-            }).onTouchEvent(event)
-            v.performClick()
-        }
-
-        val bottomSheet = BottomSheetBehavior.from(reactions_sheet).apply {
+        /**
+         *  TODO This is a mess. The bottom sheet currently has a peek height to allow us
+         *       swipe up for reaction display. The layout in which it exists extends the
+         *       main layout by this peek height, so we can see the full "hidden" part of
+         *       the [BottomSheetBehavior]. This is an absolute beunfix which existed in
+         *       the original design and has been copied to "make it work". This has to be
+         *       cleaned up, because this behavior is not maintainable and is not the
+         *       intended use for such a sheet. Should we use gestures instead?
+         *       See https://github.com/Laixer/Swabbr-Android/issues/135
+         *
+         *  When we try to hide the bottom sheet, set it back to collapsed again so we can
+         *  swipe up to view the reactions.
+         */
+        bottomSheetBehavior.apply {
             addBottomSheetCallback(object :
                 BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    return
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (newState == STATE_HIDDEN) {
+                        bottomSheetBehavior.state = STATE_COLLAPSED
+                    }
                 }
 
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    toggleButton.isChecked = newState != BottomSheetBehavior.STATE_COLLAPSED
+                // Does nothing, required for this callback.
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    return
                 }
             })
         }
 
-        toggleButton.apply {
-            setOnClickListener {
-                bottomSheet.state = when (bottomSheet.state) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> BottomSheetBehavior.STATE_EXPANDED
-                    else -> BottomSheetBehavior.STATE_COLLAPSED
-                }
-            }
+        // TODO Bug
+        //      java.lang.IllegalStateException: Page(s) contain a ViewGroup with a LayoutTransition
+        //      (or animateLayoutChanges="true"), which interferes with the scrolling animation. Make
+        //      sure to call getLayoutTransition().setAnimateParentHierarchy(false) on all ViewGroups
+        //      with a LayoutTransition before an animation is started.
+
+        // Takes us to a reaction recording fragment.
+        button_post_reaction.setOnClickListener {
+            // TODO Hard coded camera id.
+            // TODO Remove call, was debug purpose
+            val nc = findNavController()
+
+            findNavController().navigate(WatchVlogFragmentDirections.actionRecordReaction("1", vlogId.toString()))
         }
 
-        like_button.setOnClickListener {
-            // This might seem wrong, but because the checked state has priority over the click listener the
-            // checked state is already flipped before we can check the state when the user initially clicked.
-            // Because of this we have to interpret it in reverse.
-            toggleLike(isVlogLiked())
-        }
+        // Implement double tapping to like a vlog.
+        // TODO Doesn't work, fix
+//        video_player.setOnTouchListener { v, event ->
+//            GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
+//                override fun onDoubleTap(e: MotionEvent?): Boolean {
+//                    toggleLike()
+//                    return true
+//                }
+//            }) // TODO Probably incorrect     .onTouchEvent(event)
+//
+//            // TODO What does this do?
+//            v.performClick()
+//        }
+
+        button_vlog_like.setOnClickListener { toggleLike() }
 
         /**
          *  Retrieve the actual vlog using the view model. When the
@@ -133,37 +163,43 @@ class WatchVlogFragment(id: String? = null) : VideoFragment() {
          */
         vlogVm.getVlog(vlogId)
         vlogVm.getReactions(vlogId)
+        vlogVm.getReactionCount(vlogId)
         vlogVm.getVlogLikeSummary(vlogId)
+        vlogVm.isVlogLikedByCurrentUser(vlogId)
     }
 
     /**
-     *  If the current user has liked the vlog, unlike it
-     *  and vice versa.
-     *
-     *  @param like True if we wish to like this, false for unliking.
+     *  If the current user has liked the vlog, unlike it and vice versa.
      */
-    private fun toggleLike(like: Boolean) {
-        // if (!::vlogId.isInitialized) { return } TODO
-
-        if (vlogVm.vlogs.value!!.data!!.first().user.id == authUserVm.getAuthUserId()) {
-            like_button.isChecked = !like_button.isChecked
+    private fun toggleLike() {
+        // If the vlog like resource wasn't loaded in the vlogVm, return.
+        // Note that this function should never be called in this case,
+        // the vlog like button should be disabled. Currently we have no
+        // way of disabling the double tap functionality, hence this check.
+        // TODO Remove this in the future.
+        // TODO Is this the correct way of checking this?
+        if (vlogVm.likedByCurrentUser.value?.data == null) {
             return
         }
-        like_button.isEnabled = false
 
-        if (like) {
+        // TODO Check for liking your own vlog here
+
+        // Perform the backend calls for the liking operation
+        if (vlogVm.likedByCurrentUser.value?.data == true) {
+            button_vlog_like.isChecked = false
             vlogVm.unlike(vlogId)
         } else {
+            button_vlog_like.isChecked = true
             vlogVm.like(vlogId)
 
-            // Display the like icon.
+            // Display the like animation.
             // TODO Move to helper.
-            ParticleSystem(requireActivity(), 20, R.drawable.love_it_red, 1000)
+            ParticleSystem(requireActivity(), 20, R.drawable.ic_love_it_red, 1000)
                 .setSpeedModuleAndAngleRange(0.1F, 0.2F, 240, 300)
                 .setRotationSpeedRange(20F, 360F)
                 .setScaleRange(1.5F, 1.6F)
                 .setFadeOut(500)
-                .oneShot(like_button, 1)
+                .oneShot(button_vlog_like, 1)
         }
     }
 
@@ -171,27 +207,47 @@ class WatchVlogFragment(id: String? = null) : VideoFragment() {
      *  Observes the [vlogVm] vog resource and starts playback
      *  when it loads. This also updates the UI.
      */
-    private fun onVlogLoaded(res: Resource<VlogWrapperItem>) = with(res) {
+    private fun onVlogLoaded(resource: Resource<VlogWrapperItem>) = with(resource) {
         when (state) {
             ResourceState.LOADING -> {
-                content_loading_progressbar.visibility = View.VISIBLE
+                video_content_loading_icon.visible()
             }
             ResourceState.SUCCESS -> {
-                // TODO Repair
-//                user_avatar.loadAvatar(it.user.profileImage, it.user.id)
-//                user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
-//                user_username.text = requireContext().getString(R.string.full_name, it.user.firstName, it.user.lastName)
+                video_content_loading_icon.gone()
 
                 data?.let {
-                    stream(it.vlog.videoUri!!)
+                    // Display the user info
+                    it.user.let { user ->
+                        reaction_user_profile_image.loadAvatar(user.profileImage, user.id)
+                        // TODO Make extension function for this, we don't always have the first and last name.
+                        reaction_user_displayed_name.text =
+                            requireContext().getString(R.string.full_name, user.firstName, user.lastName)
+                        reaction_user_nickname.text = requireContext().getString(R.string.nickname, user.nickname)
+                    }
+
+                    // Display the vlog info and start playback
+                    it.vlog.let { vlog ->
+                        // TODO Proper resource usage?
+                        // TODO Put in helper or something, not here
+                        textview_date_created.text =
+                            vlog.dateCreated.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
+
+                        vlog_like_count.text = requireContext().formatNumber(vlog.vlogLikeSummary?.totalLikes ?: 0)
+                        vlog_view_count.text = requireContext().formatNumber(vlog.views)
+
+                        stream(vlog.videoUri!!)
+                    }
                 }
             }
             ResourceState.ERROR -> {
-                // TODO
+                video_content_loading_icon.gone()
+
+                Toast.makeText(requireContext(), "Error loading vlog - ${resource.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+// TODO Restore
     /**
      *  Called when the [vlogVm] reactions resource changes.
      */
@@ -199,19 +255,23 @@ class WatchVlogFragment(id: String? = null) : VideoFragment() {
         with(resource) {
             when (state) {
                 ResourceState.LOADING -> {
-                    reactions_sheet.progressBar.visible()
                 }
                 ResourceState.SUCCESS -> {
-                    reactions_sheet.progressBar.gone()
                     data?.let {
+                        // Push the new reactions to the reaction adapter
                         (reactionsRecyclerView?.adapter as ReactionsAdapter?)?.submitList(it)
-                        reaction_count.text = "${it.count()}"
                     }
 
-                    reactions_sheet.visibility = View.VISIBLE
+                    // TODO This should only be swipable, not modified in visibility.
+                    // reactions_sheet.visibility = View.VISIBLE
                 }
                 ResourceState.ERROR -> {
-                    reactions_sheet.progressBar.gone()
+                    Toast.makeText(
+                        requireContext(),
+                        "Error loading reactions - ${resource.message}",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
                 }
             }
         }.also {
@@ -222,24 +282,74 @@ class WatchVlogFragment(id: String? = null) : VideoFragment() {
     }
 
     /**
+     *  Called when the [vlogVm] reactions count resource changes.
+     */
+    private fun onReactionCountUpdated(resource: Resource<Int>) {
+        with(resource) {
+            when (state) {
+                ResourceState.LOADING -> {
+                }
+                ResourceState.SUCCESS -> {
+                    data?.let {
+                        // TODO Use string resource like all other places?
+                        //  Or make this the standard?
+                        // Push the statistics to the statistics bar
+                        vlog_reaction_count.text = "$it"
+                    }
+                }
+                ResourceState.ERROR -> {
+                    Toast.makeText(
+                        requireContext(),
+                        "Error loading reaction count - ${resource.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+// TODO Do we even need this? Currently we only use the vlog like summary in the vlogwrapper itself.
+    /**
      *  Called when the [vlogVm] likes resource changes.
      */
     private fun onLikesUpdated(resource: Resource<VlogLikeSummaryItem>) = with(resource) {
         when (state) {
             ResourceState.LOADING -> {
-                like_button.isEnabled = false
+                // TODO
             }
             ResourceState.SUCCESS -> {
-                val isLiked = data?.users?.any { it.id == authUserVm.getAuthUserId() } ?: false
-                like_button.isChecked = isLiked
-                like_button.isEnabled = !isLiked
-
-                like_button.isEnabled = true
-                like_count.text = "${data?.totalLikes ?: 0}"
+                // TODO Assign somewhere
             }
             ResourceState.ERROR -> {
-                like_button.isEnabled = true
-                like_button.isChecked = !like_button.isChecked
+                Toast.makeText(requireContext(), "Error loading likes - ${resource.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+// TODO Merge this with whether or not we own the vlog.
+    /**
+     *  Called when the [vlogVm] likedByCurrentUser resource changes.
+     *  This will indicate whether or not the current user has liked
+     *  the vlog we are watching. Note that the vlog like button will
+     *  remain disabled if we own the vlog.
+     */
+    private fun onLikedByCurrentUserUpdated(resource: Resource<Boolean>) = with(resource) {
+        when (state) {
+            ResourceState.LOADING -> {
+                button_vlog_like.isEnabled = false
+            }
+            ResourceState.SUCCESS -> {
+                button_vlog_like.isEnabled = true
+                button_vlog_like.isChecked = data!!
+            }
+            ResourceState.ERROR -> {
+                button_vlog_like.isEnabled = false
+
+                Toast.makeText(
+                    requireContext(),
+                    "Error loading liked by current user - ${resource.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

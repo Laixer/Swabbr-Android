@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/content_margin"
+        android:layout_margin="@dimen/content_margin_small"
         android:orientation="vertical">
 
         <include layout="@layout/include_user_image_username_large" />

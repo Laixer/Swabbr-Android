@@ -1,97 +1,89 @@
 package com.laixer.swabbr.presentation.dashboard
 
-import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
-import com.laixer.presentation.startRefreshing
-import com.laixer.presentation.stopRefreshing
-import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
-import com.laixer.swabbr.presentation.vlogs.list.VlogListAdapter
+import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
+import com.laixer.swabbr.presentation.video.WatchVideoListFragment
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
+import com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragmentAdapter
+import com.laixer.swabbr.utils.reduceDragSensitivity
+import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+
 /**
  *  Fragment representing the user dashboard, displaying vlogs.
+ *  This uses the [WatchVideoListFragment] to display swipeable
+ *  vlogs in fullscreen.
  */
-class DashboardFragment : AuthFragment() {
-    private val vm: VlogListViewModel by sharedViewModel()
-    private var vlogListAdapter: VlogListAdapter? = null
+class DashboardFragment : WatchVideoListFragment() {
+    private val vlogListVm: VlogListViewModel by sharedViewModel()
 
-    // TODO This goes to the user vlogs, should just get a list or something like that.
     /**
-     *  Handle for when we click on a vlog.
+     *  Gets the recommended vlogs from the [vlogListVm] right away.
      */
-    private val itemClick: (VlogWrapperItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${it.user.id}&initialVlogId=${it.vlog.id}"))
-    }
-
-    // TODO Is this correct?
-    /**
-     *  Handle for when we click on a profile.
-     */
-    private val profileClick: (VlogWrapperItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            vm.getRecommendedVlogs(refresh = false)
+            vlogListVm.getRecommendedVlogs(refresh = false)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.fragment_dashboard, container, false)
+    /** TODO I believe we don't need this anymore since we use the [WatchVideoListFragment].
+     *   We might want to use additional functionality to the dashboard, then we will need this. */
+    // override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    //     inflater.inflate(R.layout.fragment_dashboard, container, false)
 
+    /**
+     *  Attaches the observers to the [vlogListVm] vlogs resource,
+     *  then gets calls a get for the resource itself.
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
-        vlogListAdapter = VlogListAdapter(vm, itemClick, profileClick)
+        // Reduce swipe sensitivity
+        video_viewpager.reduceDragSensitivity()
 
-        vlogsRecyclerView.adapter = vlogListAdapter  // MAKE SURE THIS HAPPENS BEFORE ADAPTER INSTANTIATION
-
-        swipeRefreshLayout.setOnRefreshListener { vm.getRecommendedVlogs(refresh = true) }
-
-        vm.run {
-            vlogs.observe(viewLifecycleOwner, Observer(this@DashboardFragment::updateVlogsFromViewModel))
+        vlogListVm.run {
+            vlogs.observe(viewLifecycleOwner, Observer { updateVlogsFromViewModel(it) })
             getRecommendedVlogs(refresh = false)
         }
     }
 
     /**
-     *  Called when the observed vlog collection resource is updated.
-     *
-     *  @param res The observed vlog collection resource
+     *  Use the [WatchVlogFragmentAdapter] as adapter for vlog playback.
      */
-    private fun updateVlogsFromViewModel(res: Resource<List<VlogWrapperItem>>) {
-        when (res.state) {
-            ResourceState.LOADING ->
-                swipeRefreshLayout.startRefreshing()
+    override fun getWatchVideoFragmentAdapter(): WatchVideoFragmentAdapter = WatchVlogFragmentAdapter(
+        fragment = this@DashboardFragment,
+        vlogListResource = vlogListVm.vlogs
+    )
+
+    /**
+     *  Called when the observed vlog collection resource is updated.
+     */
+    private fun updateVlogsFromViewModel(res: Resource<List<VlogWrapperItem>>) = with(res) {
+        when (state) {
+            ResourceState.LOADING -> {
+                // TODO
+            }
             ResourceState.SUCCESS -> {
-                swipeRefreshLayout.stopRefreshing()
-                vlogListAdapter?.submitList(res.data)
-                vlogListAdapter?.notifyDataSetChanged()
+                //swipeRefreshLayout.stopRefreshing()
+                video_viewpager.adapter?.notifyDataSetChanged()
             }
             ResourceState.ERROR -> {
-                swipeRefreshLayout.stopRefreshing()
+                // TODO Clean up, don't hard code, what to do here?
+                Toast.makeText(requireContext(), "Error loading recommended vlogs", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        vlogListAdapter = null
-        vlogsRecyclerView?.adapter = null
     }
 }

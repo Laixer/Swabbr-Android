@@ -44,12 +44,14 @@
             </intent-filter>
         </activity>
 
+        <!-- Activity used for logging us in. -->
         <activity
             android:name="com.laixer.swabbr.presentation.AuthActivity"
             android:label="@string/login"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.Swabbr.Login"/>
 
+        <!-- Activity for recording a vlog, which can be entered from a notification. -->
         <activity
             android:name="com.laixer.swabbr.presentation.vlogs.recording.RecordVlogActivity"
             android:fitsSystemWindows="true"

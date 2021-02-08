@@ -1,5 +1,6 @@
 package com.laixer.swabbr.domain.types
 
+// TODO This doesn't translate to the actual enum.
 /**
  *  Enum representing the sorting order of some data set.
  */

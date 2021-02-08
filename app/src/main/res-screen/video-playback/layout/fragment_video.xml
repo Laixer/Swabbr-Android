@@ -21,7 +21,7 @@
         app:surface_type="surface_view" />
 
     <androidx.core.widget.ContentLoadingProgressBar
-        android:id="@+id/content_loading_progressbar"
+        android:id="@+id/video_content_loading_icon"
         android:layout_width="@dimen/large_icon_size"
         android:layout_height="@dimen/large_icon_size"
         style="@style/Widget.AppCompat.ProgressBar"

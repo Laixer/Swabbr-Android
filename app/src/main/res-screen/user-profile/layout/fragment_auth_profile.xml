@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/content_margin"
+        android:layout_margin="@dimen/content_margin_small"
         android:orientation="horizontal">
 
         <!-- Layout displaying profile image, nickname and (optional) follow button. -->
@@ -42,10 +42,10 @@
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
                 android:transitionName="userUsername"
-                app:layout_constraintBottom_toTopOf="@id/user_nickname"
+                app:layout_constraintBottom_toTopOf="@id/reaction_user_nickname"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/user_avatar" />
+                app:layout_constraintTop_toBottomOf="@id/reaction_user_profile_image" />
 
             <TextView
                 android:id="@+id/user_profile_nickname"
@@ -64,7 +64,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/user_displayed_name" />
+                app:layout_constraintTop_toBottomOf="@id/reaction_user_displayed_name" />
 
             <!-- TODO Don't hardcode these dimensions-->
             <Button
@@ -84,7 +84,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/content_margin"
+            android:layout_marginTop="@dimen/content_margin_small"
             android:orientation="vertical">
 
             <!-- Followers and following. -->
@@ -164,7 +164,7 @@
                 android:id="@+id/tableLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/content_margin"
+                android:layout_marginTop="@dimen/content_margin_small"
                 tools:layout_editor_absoluteY="51dp"
                 tools:visibility="visible">
 
@@ -189,6 +189,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_eye"
+                    android:tint="@color/colorPrimaryLight"
                     app:layout_constraintBottom_toTopOf="@+id/imageView2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -213,6 +214,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_eye"
+                    android:tint="@color/colorPrimaryLight"
                     app:layout_constraintBottom_toTopOf="@+id/imageView3"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageView" />
@@ -237,6 +239,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_eye"
+                    android:tint="@color/colorPrimaryLight"
                     app:layout_constraintBottom_toTopOf="@+id/imageView4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageView2" />
@@ -261,6 +264,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_eye"
+                    android:tint="@color/colorPrimaryLight"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageView3" />
@@ -279,7 +283,7 @@
         android:layout_marginTop="@dimen/divider_large_margin"/>
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/pager"
+        android:id="@+id/viewpager_user_profile"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />

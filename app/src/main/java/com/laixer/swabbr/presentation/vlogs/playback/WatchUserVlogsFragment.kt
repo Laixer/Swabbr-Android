@@ -53,14 +53,14 @@ class WatchUserVlogsFragment : WatchVideoListFragment() {
      */
     override fun getWatchVideoFragmentAdapter(): WatchVideoFragmentAdapter = WatchVlogFragmentAdapter(
         fragment = this@WatchUserVlogsFragment,
-        vlogListVm = vlogListVm
+        vlogListResource = vlogListVm.vlogs
     )
 
     /**
      *  Called when the observed vlog list resource in [vlogListVm] changes.
      *  If we fail to load the vlogs, a back press is simulated.
      */
-    private fun onVlogsUpdated(resource: Resource<List<VlogWrapperItem>>) = with(resource) {
+    private fun onVlogsUpdated(res: Resource<List<VlogWrapperItem>>) = with(res) {
         when (state) {
             ResourceState.LOADING -> {
                 // TODO

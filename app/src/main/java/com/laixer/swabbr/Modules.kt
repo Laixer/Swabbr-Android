@@ -138,7 +138,7 @@ val networkModule: Module = module {
             .addInterceptor(get<AuthInterceptor>())
             .addInterceptor(get<com.laixer.swabbr.CacheInterceptor>())
             .addNetworkInterceptor(HttpLoggingInterceptor().apply {
-                this.level = HttpLoggingInterceptor.Level.BODY
+                this.level = HttpLoggingInterceptor.Level.BASIC // TODO Put back
             })
             .cache(okhttp3.Cache(File(androidContext().cacheDir, "http-cache"), 10 * 1024 * 1024)) // 10Mb cache
             .connectTimeout(30, TimeUnit.SECONDS)

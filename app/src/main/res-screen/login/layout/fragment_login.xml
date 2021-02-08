@@ -9,7 +9,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/content_margin">
+        android:layout_margin="@dimen/content_margin_small">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/logo"
@@ -24,7 +24,7 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/content_margin"
+        android:layout_margin="@dimen/content_margin_small"
         android:orientation="vertical">
 
         <EditText
@@ -61,7 +61,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/content_margin"
+        android:layout_margin="@dimen/content_margin_small"
         android:orientation="vertical">
 
         <Button
@@ -91,8 +91,9 @@
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         android:visibility="gone" />
 
+    <!-- Circular loading icon. -->
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/loading_icon_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

@@ -28,7 +28,7 @@
             android:layout_height="95dp"
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/content_margin_large"
-            android:layout_marginTop="@dimen/content_margin"
+            android:layout_marginTop="@dimen/content_margin_small"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -185,7 +185,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/profileIsPrivate"
+            android:text="@string/is_profile_private"
             app:layout_constraintStart_toStartOf="@+id/textViewGender"
             app:layout_constraintTop_toBottomOf="@+id/textViewGender" />
 
@@ -204,7 +204,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/dailyVlogRequestLimit"
+            android:text="@string/daily_vlog_request_limit"
             app:layout_constraintStart_toStartOf="@+id/textViewPrivate"
             app:layout_constraintTop_toBottomOf="@+id/textViewPrivate" />
 
@@ -242,9 +242,9 @@
             app:layout_constraintTop_toTopOf="@+id/buttonLogout" />
 
 
-        <!-- Hidden by default, until everything hasb een loaded. -->
+        <!-- Hidden by default, until everything has been loaded. -->
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/loading_icon_profile_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

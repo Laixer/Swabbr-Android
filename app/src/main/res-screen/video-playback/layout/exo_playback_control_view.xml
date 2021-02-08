@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The name of this xml file automatically compiles with exoplayer - don't rename. -->
+<!--
+    View which displays the video progress bar for the ExoPlayer UI.
+    The name of this xml file automatically compiles with exoplayer so
+     don't rename this.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/progressBar_container"
@@ -13,8 +17,8 @@
         android:id="@id/exo_position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/content_margin"
-        android:layout_marginVertical="@dimen/content_margin"
+        android:layout_marginHorizontal="@dimen/content_margin_small"
+        android:layout_marginVertical="@dimen/content_margin_small"
         android:fontFamily="sans-serif-light"
         android:includeFontPadding="false"
         android:text="00:00"
@@ -32,8 +36,8 @@
         android:id="@id/exo_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/content_margin"
-        android:layout_marginVertical="@dimen/content_margin"
+        android:layout_marginHorizontal="@dimen/content_margin_small"
+        android:layout_marginVertical="@dimen/content_margin_small"
         android:fontFamily="sans-serif-light"
         android:includeFontPadding="false"
         android:text="@string/zero_time"

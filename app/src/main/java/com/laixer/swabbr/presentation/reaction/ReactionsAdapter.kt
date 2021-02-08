@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.vlogs.playback
+package com.laixer.swabbr.presentation.reaction
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -7,8 +7,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
+import com.laixer.swabbr.utils.loadAvatar
 import kotlinx.android.synthetic.main.item_list_reaction.view.*
 
+/**
+ *  Adapter for reaction display.
+ *
+ *  @param onProfileClick Callback for when we click [reaction_user_profile_image].
+ *  @param onReactionClick Callback for when we click the [ReactionWrapperItem] item.
+ */
 class ReactionsAdapter(
     val onProfileClick: (ReactionWrapperItem) -> Unit,
     val onReactionClick: (ReactionWrapperItem) -> Unit
@@ -21,25 +28,18 @@ class ReactionsAdapter(
 
     inner class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_reaction)) {
 
-        // TODO Repair
+        /**
+         *  Binds a single [ReactionWrapperItem] to the UI.
+         */
         fun bind(item: ReactionWrapperItem) = with(itemView) {
-            //user_avatar.loadAvatar(item.user.profileImage, item.user.id)
+            reaction_user_profile_image.loadAvatar(item.user.profileImage, item.user.id)
+            reaction_user_displayed_name.text = item.user.getDisplayName()
+            reaction_user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
 
-            item.user.firstName?.let {
-//                user_username.apply {
-//                    text = context.getString(R.string.full_name, it, item.user.lastName)
-//                    visibility = View.VISIBLE
-//                }
-            }
-            //user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
-            reactionPostDate.text = context.getString(
-                R.string.date,
-                item.reaction.dateCreated.dayOfMonth,
-                item.reaction.dateCreated.monthValue,
-                item.reaction.dateCreated.year
-            )
+            // Take us to the user if we click the profile image.
+            reaction_user_profile_image.setOnClickListener { onProfileClick.invoke(item) }
 
-            //user_avatar.setOnClickListener { onProfileClick.invoke(item) }
+            // Take us to the reaction if we click the item.
             itemView.setOnClickListener { onReactionClick.invoke(item) }
         }
     }

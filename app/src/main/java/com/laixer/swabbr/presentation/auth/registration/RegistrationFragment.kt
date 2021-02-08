@@ -107,11 +107,11 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private fun register(res: Resource<UserCompleteItem?>) {
         when (res.state) {
             ResourceState.LOADING -> {
-                progressBar.visible()
+                loading_icon_registration.visible()
             }
             ResourceState.SUCCESS -> {
                 res.data?.let {
-                    progressBar.gone()
+                    loading_icon_registration.gone()
                     // Nav to main app is handled by our parent activity (AuthActivity)
                 } ?: run {
                     Toast.makeText(
@@ -127,9 +127,9 @@ class RegistrationFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                 }
             }
             ResourceState.ERROR -> {
+                loading_icon_registration.gone()
                 passwordInput.text.clear()
                 confirmPasswordInput.text.clear()
-                progressBar.gone()
                 Log.e(TAG, res.message!!)
                 Toast.makeText(requireActivity().applicationContext, res.message, Toast.LENGTH_SHORT).show()
             }

@@ -9,6 +9,8 @@ import com.laixer.swabbr.presentation.AuthFragment
 import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 
 // TODO What to display if we have no content?
+// TODO Swipe refresh layout?
+// TODO Loading icon?
 // TODO Fix position storing, not sure this works correctly.
 /**
  *  This fragment is used to watch a video and to be able to swipe left
@@ -18,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_video_view_pager.*
  *  Note that each video in the [video_viewpager] is inflated using a
  *  [WatchVideoFragmentAdapter] implementation.
  */
-open abstract class WatchVideoListFragment : AuthFragment() {
+abstract class WatchVideoListFragment : AuthFragment() {
     /**
      *  Inflates the view pager.
      */
@@ -38,6 +40,7 @@ open abstract class WatchVideoListFragment : AuthFragment() {
         }
     }
 
+    // TODO Can we do this more elegantly?
     /**
      *  Override this function to clarify which implementation
      *  of [WatchVideoFragmentAdapter] should be used an how

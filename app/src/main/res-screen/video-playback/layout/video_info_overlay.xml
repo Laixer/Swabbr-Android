@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Overlay containing basic information about a video.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/top_overlay"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/content_margin_small">
+
+    <!--
+        TODO This was an include, but we couldn't pass variables. The text color
+         had to be controlled, so that's why this is copy-pasted here.
+    -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- The users (full) name, or username if none is present. -->
+
+        <!-- The @nickname tag. -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/reaction_user_profile_image"
+            android:layout_width="@dimen/small_profile_image_size"
+            android:layout_height="@dimen/small_profile_image_size"
+            android:src="@drawable/ic_person_large_256"
+            android:transitionName="userAvatar"
+            app:civ_circle_background_color="@color/color_grey_300"
+            app:layout_constraintEnd_toStartOf="@+id/reaction_user_displayed_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/reaction_user_displayed_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/content_margin_small"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/color_white"
+            android:textSize="14sp"
+            android:transitionName="userUsername"
+            app:layout_constraintStart_toEndOf="@+id/reaction_user_profile_image"
+            app:layout_constraintTop_toTopOf="@+id/reaction_user_profile_image"
+            tools:text="@string/placeholder_display_name" />
+
+        <TextView
+            android:id="@+id/reaction_user_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textAppearance="@style/SmallTextAppearance"
+            android:textColor="@color/color_white"
+            android:textSize="12sp"
+            android:transitionName="userName"
+            app:layout_constraintStart_toStartOf="@+id/reaction_user_displayed_name"
+            app:layout_constraintTop_toBottomOf="@+id/reaction_user_displayed_name"
+            tools:text="@string/placeholder_nickname" />
+
+        <TextView
+            android:id="@+id/textview_date_created"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/placeholder_date"
+            android:textColor="@color/color_white"
+            app:layout_constraintBaseline_toBaselineOf="@+id/reaction_user_displayed_name"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

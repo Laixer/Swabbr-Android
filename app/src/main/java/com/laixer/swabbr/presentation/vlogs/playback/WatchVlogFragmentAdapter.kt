@@ -1,25 +1,32 @@
 package com.laixer.swabbr.presentation.vlogs.playback
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import com.laixer.presentation.Resource
+import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
-import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 
-// TODO Bad design, dependency on the vm with this positioning.
+// TODO Dependent on mutable live data, is this desired? Maybe too coupled...
 /**
  *  Adapter that creates a [WatchVlogFragment] for each vlog
  *  so the vlog can be played back using this fragment.
  */
 internal class WatchVlogFragmentAdapter(
     fragment: Fragment,
-    private val vlogListVm: VlogListViewModel
+    /** The resource that will be observed. */
+    private val vlogListResource: MutableLiveData<Resource<List<VlogWrapperItem>>>
 ) : WatchVideoFragmentAdapter(fragment) {
     /**
-     *  Creates a new [WatchVlogFragment] for a vlog to watch.
+     *  Creates a new [WatchVlogFragment] for vlog playback.
      */
     override fun createFragment(position: Int): Fragment =
-        vlogListVm.vlogs.value!!.data!![position].vlog.id.let {
+        vlogListResource.value!!.data!![position].vlog.id.let {
             WatchVlogFragment.create(vlogId = it.toString())
         }
 
-    override fun getItemCount(): Int = vlogListVm.vlogs.value?.data?.size ?: 0
+    /**
+     *  Gets the total count in the [vlogListResource] or 0 if
+     *  no vlogs are present.
+     */
+    override fun getItemCount(): Int = vlogListResource.value?.data?.size ?: 0
 }

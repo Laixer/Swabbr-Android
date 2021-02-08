@@ -11,11 +11,14 @@
 
     <color name="color_divider">#1F000000</color>
 
+    <!-- Used to display transparent white overlays. -->
+    <color name="color_transparent_overlay">#41FFFFFF</color>
+
     <color name="color_title">@color/color_black</color>
     <color name="color_subtitle">@color/color_grey_900</color>
     <color name="color_body">@color/color_grey_700</color>
 
-    <color name="color_window_background">@color/color_grey_50</color>
+    <color name="color_window_background">@color/color_white</color>
     <color name="color_window_background_transparent">#C3FAFAFA</color>
     <color name="transparent">#0000</color>
 

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    View in which the actual video playback will take place.
+    Note that some we have a reaction sheet in here, which
+    is only relevant for displaying vlogs. It is invisible
+    by default. TODO Use some form of extension instead.
+
+    The name of this xml file automatically compiles with
+    exoplayer - don't rename this.
+ -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:animateLayoutChanges="true"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <!-- Video goes here -->
+    <com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+        android:id="@id/exo_content_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/color_black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Overlay displaying some information about the video. -->
+    <include
+        android:id="@+id/include"
+        layout="@layout/video_info_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_margin_small"
+        android:layout_marginTop="@dimen/content_margin_small"
+        android:layout_marginEnd="@dimen/content_margin_small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--
+        ExoPlayer placeholder for the progress bar. This is required
+        for ExoPlayer in order to function properly, do not remove.
+        The id itself must be exo_controller_placeholder for ExoPlayer
+        to function properly, do not modify this id.re
+    -->
+    <include
+        android:id="@id/exo_controller_placeholder"
+        layout="@layout/exo_playback_control_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/content_margin_small"
+        android:layout_marginStart="@dimen/content_margin_small"
+        android:layout_marginEnd="@dimen/content_margin_small"
+        android:layout_marginBottom="@dimen/content_margin_medium"
+        app:layout_constraintBottom_toTopOf="@+id/vlog_info_overlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <!-- Vlog stats, see vlog-playback. -->
+    <include
+        android:id="@+id/vlog_info_overlay"
+        layout="@layout/vlog_info_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_margin_small"
+        android:layout_marginEnd="@dimen/content_margin_small"
+        android:layout_marginBottom="@dimen/content_margin_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <!--
+        TODO This is an mess. See [WatchVlogFragment] for explanation.
+        Hidden reaction sheet inside coordinator layout, see vlog-playback.
+        The coordinator layout is required for the swiping interaction.
+    -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout_reactions_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="-400dp"
+        app:layout_constraintBottom_toTopOf="@+id/exo_controller_placeholder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include">
+
+        <!--
+            Controls the margins in which the reactions will be displayed.
+            This functions as the bottom sheet behavior component.
+        -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_layout_reactions_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/content_margin_large"
+            android:layout_marginTop="@dimen/content_margin_large"
+            android:layout_marginEnd="@dimen/content_margin_large"
+            android:layout_marginBottom="@dimen/content_margin_large"
+            app:behavior_hideable="true"
+            app:behavior_peekHeight="@dimen/reaction_sheet_peek_height"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Displays all reactions. -->
+            <include
+                android:id="@+id/reactions_sheet"
+                layout="@layout/reactions_sheet"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/reaction_sheet_peek_height"
+                android:layout_marginBottom="100dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

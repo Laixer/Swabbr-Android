@@ -38,19 +38,20 @@ class AuthActivity : AppCompatActivity() {
         setContentView(R.layout.activity_auth)
     }
 
+    // TODO Fix loading icon?
     private fun login(res: Resource<TokenWrapper?>) {
         when (res.state) {
             ResourceState.LOADING -> {
-                progressBar.visible()
+                // video_playback_loading_icon.visible()
             }
             ResourceState.SUCCESS -> {
-                progressBar.gone()
+                // video_playback_loading_icon.gone()
                 res.data?.jwtToken?.let {
                     navHostFragment.navController.navigate(R.id.mainActivity)
                 }
             }
             ResourceState.ERROR -> {
-                progressBar.gone()
+                // video_playback_loading_icon.gone()
                 passwordInput.text.clear()
                 Log.e(TAG, res.message!!)
                 Toast.makeText(applicationContext, res.message, Toast.LENGTH_SHORT).show()

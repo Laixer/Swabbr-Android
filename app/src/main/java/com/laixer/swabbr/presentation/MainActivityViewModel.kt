@@ -1,8 +1,5 @@
 package com.laixer.swabbr.presentation
 
-import android.accounts.AccountManagerCallback
-import android.app.Activity
-import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.auth0.android.jwt.JWT
@@ -14,6 +11,10 @@ import com.laixer.swabbr.presentation.auth.UserManager
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
+/**
+ *  View model used by [MainActivity] to manage our basic auth
+ *  functionality. Note that this does not login but only checks.
+ */
 open class MainActivityViewModel constructor(
     private val userManager: UserManager
 ) : ViewModel() {
@@ -28,8 +29,9 @@ open class MainActivityViewModel constructor(
                 .doOnSubscribe { authToken.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .subscribe(
-                    { userManager.token?.let { authToken.setSuccess(it) }
-                        ?: authToken.setError("Auth token was null")
+                    {
+                        userManager.token?.let { authToken.setSuccess(it) }
+                            ?: authToken.setError("Auth token was null")
                     },
                     { authToken.setError(it.message) }
                 )

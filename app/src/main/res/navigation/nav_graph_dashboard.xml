@@ -10,4 +10,26 @@
         android:name="com.laixer.swabbr.presentation.dashboard.DashboardFragment"
         android:label="@string/dashboard"
         tools:layout="@layout/fragment_dashboard" />
+
+    <!-- TODO Copied from nav_graph_vlogs for the quick win. Fix this. -->
+    <action
+        android:id="@+id/action_record_reaction"
+        app:destination="@id/record_reaction_dest" />
+
+    <fragment
+        android:id="@+id/record_reaction_dest"
+        android:name="com.laixer.swabbr.presentation.reaction.RecordReactionFragment"
+        android:label="Reaction"
+        tools:layout="@layout/fragment_record_video">
+
+        <argument
+            android:name="cameraId"
+            app:argType="string"
+            app:nullable="false"/>
+
+        <argument
+            android:name="vlogId"
+            app:argType="string"
+            app:nullable="false"/>
+    </fragment>
 </navigation>

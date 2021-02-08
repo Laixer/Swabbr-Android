@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:clickable="true"
-    android:layout_margin="@dimen/content_margin"
+    android:layout_margin="@dimen/content_margin_small"
     app:cardElevation="0dp"
     app:cardCornerRadius="12dp"
     android:foreground="?selectableItemBackground">
@@ -12,7 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/content_margin"
+        android:layout_margin="@dimen/content_margin_small"
         android:foreground="?selectableItemBackground">
 
         <include
@@ -37,7 +37,7 @@
                 style="@style/TextAppearance.MaterialComponents.Button"
                 android:layout_width="@dimen/medium_icon_size"
                 android:layout_height="@dimen/medium_icon_size"
-                android:layout_marginHorizontal="@dimen/content_margin"
+                android:layout_marginHorizontal="@dimen/content_margin_small"
                 android:background="@color/transparent"
                 android:contentDescription="@string/accept"
                 android:src="@drawable/ic_baseline_check_circle_outline_24"
@@ -48,7 +48,7 @@
                 style="@style/TextAppearance.MaterialComponents.Button"
                 android:layout_width="@dimen/medium_icon_size"
                 android:layout_height="@dimen/medium_icon_size"
-                android:layout_marginEnd="@dimen/content_margin"
+                android:layout_marginEnd="@dimen/content_margin_small"
                 android:background="?android:attr/selectableItemBackground"
                 android:contentDescription="@string/decline"
                 android:src="@drawable/ic_baseline_not_interested_24"

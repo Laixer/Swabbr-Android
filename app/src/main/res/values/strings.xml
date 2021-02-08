@@ -1,4 +1,5 @@
 <resources>
+    <!-- TODO This is a complete mess. Split up / clean up / etc. -->
     <string name="app_name">Swabbr</string>
     <string name="error">Error</string>
     <string name="retry">Retry</string>
@@ -58,7 +59,6 @@
     <string name="default_notification_title">New Swabbr Notification</string>
     <string name="default_notification_message">Click here!</string>
 
-
     <string name="status_error">An error occurred.</string>
     <string name="timer_value">%1$02d:%2$02d</string>
 
@@ -85,18 +85,27 @@
     <!-- Design placeholders -->
     <string name="placeholder_number">0</string>
     <string name="placeholder_text">sometext</string>
-    <string name="placeholder_nickname">\@sometext</string>
+    <string name="placeholder_date">9 january 1995 13:37</string>
+    <string name="placeholder_display_name">Displayed Name</string>
+    <string name="placeholder_nickname">\@nickname</string>
 
     <!-- Profile settings texts -->
-    <string name="profileIsPrivate">Is profile private?</string>
-    <string name="dailyVlogRequestLimit">Daily vlog request limit</string>
-    <string name="followMode">Follow mode</string>
+    <string name="is_profile_private">Is profile private?</string>
+    <string name="daily_vlog_request_limit">Daily vlog request limit</string>
+    <string name="follow_mode">Follow mode</string>
     <string name="save">Save</string>
     <string name="logout">Logout</string>
 
     <!-- Follow mode spinner options -->
     <string name="manual">Manual</string>
-    <string name="acceptAll">Accept all</string>
-    <string name="declineAll">Deny all</string>
+    <string name="accept_all">Accept all</string>
+    <string name="decline_all">Deny all</string>
+
+    <!-- Empty collections -->
+    <string name="empty_vlog_collection">No vlogs to display</string>
+    <string name="empty_reaction_collection">No reactions yet</string>
+
+    <!-- Vlog playback overlays. -->
+    <!-- TODO <string name="date_created"></string> -->
 
 </resources>
