@@ -5,9 +5,9 @@ import com.laixer.swabbr.Entities
 import com.laixer.swabbr.Models
 import com.laixer.swabbr.data.datasource.FollowRequestCacheDataSource
 import com.laixer.swabbr.data.datasource.FollowRequestDataSource
-import com.laixer.swabbr.data.datasource.cache.FollowRequestCacheDataSourceImpl
-import com.laixer.swabbr.data.datasource.remote.FollowRequestRemoteDataSourceImpl
-import com.laixer.swabbr.data.datasource.model.remote.FollowRequestApi
+import com.laixer.swabbr.data.cache.FollowRequestCacheDataSourceImpl
+import com.laixer.swabbr.data.datasource.FollowRequestRemoteDataSourceImpl
+import com.laixer.swabbr.data.api.FollowRequestApi
 import com.laixer.swabbr.domain.model.User
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify

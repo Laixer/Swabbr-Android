@@ -1,7 +1,7 @@
 package com.laixer.swabbr.domain.usecase
 
 import com.laixer.swabbr.domain.model.User
-import com.laixer.swabbr.domain.repository.UserRepository
+import com.laixer.swabbr.domain.interfaces.UserRepository
 import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Single
 import java.util.*

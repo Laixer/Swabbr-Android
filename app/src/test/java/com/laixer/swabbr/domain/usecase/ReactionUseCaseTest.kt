@@ -1,8 +1,8 @@
 package com.laixer.swabbr.domain.usecase
 
 import com.laixer.swabbr.Models
-import com.laixer.swabbr.domain.repository.ReactionRepository
-import com.laixer.swabbr.domain.repository.UserRepository
+import com.laixer.swabbr.domain.interfaces.ReactionRepository
+import com.laixer.swabbr.domain.interfaces.UserRepository
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever

@@ -1,6 +1,6 @@
 package com.laixer.swabbr
 
-import com.laixer.swabbr.data.datasource.model.*
+import com.laixer.swabbr.data.model.*
 import com.laixer.swabbr.domain.model.*
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.domain.types.Gender

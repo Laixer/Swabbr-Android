@@ -6,6 +6,7 @@ import com.laixer.presentation.Resource
 import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
+import com.laixer.swabbr.domain.usecase.AuthUserUseCase
 import com.laixer.swabbr.domain.usecase.ReactionUseCase
 import com.laixer.swabbr.domain.usecase.VlogUseCase
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
@@ -20,6 +21,7 @@ import java.util.*
  *  View model which contains details about a single vlog.
  */
 class VlogViewModel constructor(
+    private val authUserUseCase: AuthUserUseCase,
     private val reactionsUseCase: ReactionUseCase,
     private val vlogUseCase: VlogUseCase
 ) : ViewModel() {
@@ -164,7 +166,7 @@ class VlogViewModel constructor(
      */
     fun isVlogLikedByCurrentUser(vlogId: UUID) =
         compositeDisposable.add(
-            vlogUseCase.isVlogLikedByUser(vlogId)
+            vlogUseCase.isVlogLikedByUser(vlogId, authUserUseCase.getSelfId())
                 .doOnSubscribe { likedByCurrentUser.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .subscribe(

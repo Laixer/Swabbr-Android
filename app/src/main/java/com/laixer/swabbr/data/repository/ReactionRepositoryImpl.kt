@@ -1,11 +1,11 @@
 package com.laixer.swabbr.data.repository
 
-import com.laixer.swabbr.data.datasource.ReactionCacheDataSource
-import com.laixer.swabbr.data.datasource.ReactionDataSource
+import com.laixer.swabbr.data.interfaces.ReactionCacheDataSource
+import com.laixer.swabbr.data.interfaces.ReactionDataSource
+import com.laixer.swabbr.domain.interfaces.ReactionRepository
 import com.laixer.swabbr.domain.model.DatasetStats
 import com.laixer.swabbr.domain.model.Reaction
 import com.laixer.swabbr.domain.model.UploadWrapper
-import com.laixer.swabbr.domain.repository.ReactionRepository
 import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single

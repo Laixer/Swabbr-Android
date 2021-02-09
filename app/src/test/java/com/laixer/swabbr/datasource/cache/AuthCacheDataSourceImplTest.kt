@@ -3,7 +3,7 @@ package com.laixer.swabbr.datasource.cache
 import com.laixer.cache.MemoryCache
 import com.laixer.cache.ReactiveCache
 import com.laixer.swabbr.Models
-import com.laixer.swabbr.data.datasource.cache.AuthCacheDataSourceImpl
+import com.laixer.swabbr.data.cache.AuthCacheDataSourceImpl
 import com.laixer.swabbr.domain.model.TokenWrapper
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify

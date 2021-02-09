@@ -2,8 +2,8 @@ package com.laixer.swabbr.domain.usecase
 
 import com.laixer.swabbr.domain.model.Reaction
 import com.laixer.swabbr.domain.model.UploadWrapper
-import com.laixer.swabbr.domain.repository.ReactionRepository
-import com.laixer.swabbr.domain.repository.UserRepository
+import com.laixer.swabbr.domain.interfaces.ReactionRepository
+import com.laixer.swabbr.domain.interfaces.UserRepository
 import com.laixer.swabbr.domain.types.ReactionWrapper
 import io.reactivex.Completable
 import io.reactivex.Single

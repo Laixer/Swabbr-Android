@@ -1,8 +1,8 @@
 package com.laixer.swabbr.domain.usecase
 
 import com.laixer.swabbr.domain.model.*
-import com.laixer.swabbr.domain.repository.FollowRequestRepository
-import com.laixer.swabbr.domain.repository.UserRepository
+import com.laixer.swabbr.domain.interfaces.FollowRequestRepository
+import com.laixer.swabbr.domain.interfaces.UserRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*

@@ -2,9 +2,9 @@ package com.laixer.swabbr.datasource.remote
 
 import com.laixer.swabbr.Entities
 import com.laixer.swabbr.Models
-import com.laixer.swabbr.data.datasource.remote.VlogDataSourceImpl
-import com.laixer.swabbr.data.datasource.model.VlogListResponse
-import com.laixer.swabbr.data.datasource.model.remote.VlogApi
+import com.laixer.swabbr.data.datasource.VlogDataSourceImpl
+import com.laixer.swabbr.data.model.VlogListResponse
+import com.laixer.swabbr.data.api.VlogApi
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever

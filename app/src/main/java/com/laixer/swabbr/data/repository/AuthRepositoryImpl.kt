@@ -1,9 +1,11 @@
 package com.laixer.swabbr.data.repository
 
-import com.laixer.swabbr.data.datasource.AuthCacheDataSource
-import com.laixer.swabbr.data.datasource.AuthDataSource
-import com.laixer.swabbr.domain.model.*
-import com.laixer.swabbr.domain.repository.AuthRepository
+import com.laixer.swabbr.data.interfaces.AuthCacheDataSource
+import com.laixer.swabbr.data.interfaces.AuthDataSource
+import com.laixer.swabbr.domain.interfaces.AuthRepository
+import com.laixer.swabbr.domain.model.Login
+import com.laixer.swabbr.domain.model.Registration
+import com.laixer.swabbr.domain.model.TokenWrapper
 import io.reactivex.Completable
 import io.reactivex.Single
 

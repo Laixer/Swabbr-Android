@@ -1,9 +1,10 @@
 package com.laixer.swabbr.domain.usecase
 
 import com.laixer.swabbr.domain.model.*
-import com.laixer.swabbr.domain.repository.ReactionRepository
-import com.laixer.swabbr.domain.repository.UserRepository
-import com.laixer.swabbr.domain.repository.VlogRepository
+import com.laixer.swabbr.domain.interfaces.ReactionRepository
+import com.laixer.swabbr.domain.interfaces.UserRepository
+import com.laixer.swabbr.domain.interfaces.VlogLikeRepository
+import com.laixer.swabbr.domain.interfaces.VlogRepository
 import com.laixer.swabbr.domain.types.VlogWrapper
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -15,12 +16,11 @@ import java.util.*
 /**
  *  Use case which handles vlog related requests. This bundles vlogs
  *  with the user that owns the vlog as a [Pair].
- *
- *  Note: This does NOT handle vlog recording, @see TODO
  */
 class VlogUseCase constructor(
     private val userRepository: UserRepository,
     private val vlogRepository: VlogRepository,
+    private val vlogLikeRepository: VlogLikeRepository,
     private val reactionRepository: ReactionRepository
 ) {
     /**
@@ -31,20 +31,6 @@ class VlogUseCase constructor(
      */
     fun getRecommendedVlogs(refresh: Boolean): Single<List<VlogWrapper>> = vlogRepository
         .getRecommended()
-        .toCompleteVlogWrapper(refresh)
-        .toList()
-
-    /**
-     *  For a list of vlog ids, return those vlogs paired with the
-     *  user who posted them.
-     *
-     *  @param idList All vlog ids to retrieve.
-     *  @param refresh Force a refresh of the data.
-     */
-    fun getFromIdList(idList: List<UUID>, refresh: Boolean): Single<List<VlogWrapper>> = Observable
-        .just(idList)
-        .flatMapIterable { ids -> ids }
-        .flatMapSingle { id -> vlogRepository.get(id) }
         .toCompleteVlogWrapper(refresh)
         .toList()
 
@@ -90,13 +76,19 @@ class VlogUseCase constructor(
     /**
      *  Gets a vlog like summary for a vlog.
      *
-     *  @param Vlog id to get a summary for.
+     *  @param vlogId Vlog id to get a summary for.
      */
     fun getVlogLikeSummary(vlogId: UUID): Single<VlogLikeSummary> =
-        vlogRepository.getVlogLikeSummary(vlogId)
+        vlogLikeRepository.getVlogLikeSummary(vlogId)
 
-    // TODO Implement
-    fun isVlogLikedByUser(vlogId: UUID): Single<Boolean> = Single.fromCallable { true }
+    /**
+     *  Checks if a vlog is liked by a user.
+     *
+     *  @param vlogId The vlog.
+     *  @param userId The user.
+     */
+    fun isVlogLikedByUser(vlogId: UUID, userId: UUID): Single<Boolean> =
+        vlogLikeRepository.exists(vlogId, userId)
 
     /**
      *  Generates a new upload wrapper for a vlog.
@@ -110,7 +102,7 @@ class VlogUseCase constructor(
      *
      *  @param vlogId The vlog to like.
      */
-    fun like(vlogId: UUID): Completable = vlogRepository.like(vlogId)
+    fun like(vlogId: UUID): Completable = vlogLikeRepository.like(vlogId)
 
     /**
      *  Posts a new vlog to the backend. The vlog should already
@@ -126,7 +118,7 @@ class VlogUseCase constructor(
      *
      *  @param vlogId The vlog to like.
      */
-    fun unlike(vlogId: UUID): Completable = vlogRepository.unlike(vlogId)
+    fun unlike(vlogId: UUID): Completable = vlogLikeRepository.unlike(vlogId)
 
     /**
      *  Extension functionality to convert an observable vlog
@@ -141,7 +133,7 @@ class VlogUseCase constructor(
                 .map { user -> Pair(user, vlog) }
         }
         .flatMapSingle { pair ->
-            vlogRepository
+            vlogLikeRepository
                 .getVlogLikeSummary(pair.second.id)
                 .map { summary ->
                     VlogWrapper(
@@ -176,7 +168,7 @@ class VlogUseCase constructor(
                 .map { user -> Pair(user, vlog) }
         }
         .flatMap { pair ->
-            vlogRepository
+            vlogLikeRepository
                 .getVlogLikeSummary(pair.second.id)
                 .map { summary ->
                     VlogWrapper(

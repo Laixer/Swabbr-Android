@@ -1,9 +1,9 @@
 package com.laixer.swabbr.data.repository
 
-import com.laixer.swabbr.data.datasource.FollowRequestCacheDataSource
-import com.laixer.swabbr.data.datasource.FollowRequestDataSource
+import com.laixer.swabbr.data.interfaces.FollowRequestCacheDataSource
+import com.laixer.swabbr.data.interfaces.FollowRequestDataSource
+import com.laixer.swabbr.domain.interfaces.FollowRequestRepository
 import com.laixer.swabbr.domain.model.FollowRequest
-import com.laixer.swabbr.domain.repository.FollowRequestRepository
 import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
