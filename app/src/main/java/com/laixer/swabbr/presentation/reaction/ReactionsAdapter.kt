@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_list_reaction.view.*
 /**
  *  Adapter for reaction display.
  *
- *  @param onProfileClick Callback for when we click [reaction_user_profile_image].
+ *  @param onProfileClick Callback for when we click [video_user_profile_image].
  *  @param onReactionClick Callback for when we click the [ReactionWrapperItem] item.
  */
 class ReactionsAdapter(
@@ -32,12 +32,12 @@ class ReactionsAdapter(
          *  Binds a single [ReactionWrapperItem] to the UI.
          */
         fun bind(item: ReactionWrapperItem) = with(itemView) {
-            reaction_user_profile_image.loadAvatar(item.user.profileImage, item.user.id)
-            reaction_user_displayed_name.text = item.user.getDisplayName()
-            reaction_user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
+            video_user_profile_image.loadAvatar(item.user.profileImage, item.user.id)
+            video_user_displayed_name.text = item.user.getDisplayName()
+            video_user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
 
             // Take us to the user if we click the profile image.
-            reaction_user_profile_image.setOnClickListener { onProfileClick.invoke(item) }
+            video_user_profile_image.setOnClickListener { onProfileClick.invoke(item) }
 
             // Take us to the reaction if we click the item.
             itemView.setOnClickListener { onReactionClick.invoke(item) }

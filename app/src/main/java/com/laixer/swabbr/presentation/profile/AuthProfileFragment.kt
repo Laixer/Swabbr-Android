@@ -33,7 +33,6 @@ import kotlinx.android.synthetic.main.fragment_auth_profile.*
  *  and information display.
  */
 class AuthProfileFragment : AuthFragment() {
-
     private var profileTabAdapter: ProfileTabAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,10 +125,7 @@ class AuthProfileFragment : AuthFragment() {
             ResourceState.SUCCESS -> {
                 res.data?.let { user ->
                     user_profile_profile_image_insettings.loadAvatar(user.profileImage, user.id)
-                    user_profile_displayed_name.text = requireContext().getString(
-                        R.string.nickname,
-                        user.nickname
-                    ) // TODO Extend to get name in whatever format is present
+                    user_profile_displayed_name.text = user.getDisplayName()
                     user_profile_nickname.text = requireContext().getString(R.string.nickname, user.nickname)
                 }
             }

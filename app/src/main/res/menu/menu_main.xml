@@ -11,9 +11,9 @@
         android:title="@string/search" />
 
     <item
-        android:id="@+id/nav_graph_vlogs"
-        android:icon="@drawable/ic_personal_video_24dp"
-        android:title="@string/vlogs" />
+        android:id="@+id/nav_graph_like_overview"
+        android:icon="@drawable/ic_tb_love_it"
+        android:title="@string/like_overview" />
 
     <item
         android:id="@+id/nav_graph_profile"

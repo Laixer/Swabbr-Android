@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Nav graph for displaying the dashboard, which is the main
+    vlog display layout for the app. This can take us to the
+    nav_graph_vlog_playback when we start watching vlogs.
+-->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@id/nav_graph_dashboard"
     app:startDestination="@id/dashboard_dest">
+
+    <!-- Include single vlog playback navigation. -->
+    <include app:graph="@navigation/nav_graph_vlog_playback" />
 
     <fragment
         android:id="@+id/dashboard_dest"
@@ -11,11 +19,11 @@
         android:label="@string/dashboard"
         tools:layout="@layout/fragment_dashboard" />
 
-    <!-- TODO Copied from nav_graph_vlogs for the quick win. Fix this. -->
+    <!-- TODO This shouldn't be required? -->
     <action
         android:id="@+id/action_record_reaction"
         app:destination="@id/record_reaction_dest" />
-
+    <!-- Allows us to record a reaction. -->
     <fragment
         android:id="@+id/record_reaction_dest"
         android:name="com.laixer.swabbr.presentation.reaction.RecordReactionFragment"
@@ -32,4 +40,5 @@
             app:argType="string"
             app:nullable="false"/>
     </fragment>
+
 </navigation>

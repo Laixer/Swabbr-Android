@@ -10,7 +10,7 @@
 
     <!-- The users (full) name, or username if none is present. -->
     <TextView
-        android:id="@+id/reaction_user_displayed_name"
+        android:id="@+id/user_displayed_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -23,7 +23,7 @@
 
     <!-- The @nickname tag. -->
     <TextView
-        android:id="@+id/reaction_user_nickname"
+        android:id="@+id/user_nickname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

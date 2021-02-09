@@ -20,8 +20,18 @@ import java.net.URL
 import java.time.Duration
 import java.util.UUID
 
+// TODO This throws if we have an invalid base64 in the database.
+//      Can we handle this cleaner than try/catching it?
+/**
+ *  Decodes and applies the user avatar to a profile image holder.
+ */
 fun ImageView.loadAvatar(profileImage: String?, userId: UUID) = profileImage?.let {
-    this.setImageBitmap(convertBase64ToBitmap(it))
+    try {
+        this.setImageBitmap(convertBase64ToBitmap(it))
+    }
+    catch (e: Exception){
+        println("Exception in decoding profile image")
+    }
 } ?: loadImageUrl(URL("https://api.hello-avatar.com/adorables/285/${userId}"))
 
 /**

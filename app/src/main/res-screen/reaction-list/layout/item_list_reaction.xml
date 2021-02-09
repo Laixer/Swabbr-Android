@@ -16,16 +16,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@id/reaction_user_profile_image"
+        app:layout_constraintBottom_toBottomOf="@id/video_user_profile_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintGuide_percent="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/reaction_user_profile_image" />
+        app:layout_constraintTop_toTopOf="@id/video_user_profile_image" />
 
     <!-- User profile image -->
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/reaction_user_profile_image"
+        android:id="@+id/video_user_profile_image"
         android:layout_width="@dimen/medium_profile_image_size"
         android:layout_height="@dimen/medium_profile_image_size"
         android:layout_gravity="center"
@@ -38,7 +38,7 @@
 
     <!-- The users (full) name, or username if none is present. -->
     <TextView
-        android:id="@+id/reaction_user_displayed_name"
+        android:id="@+id/video_user_displayed_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -50,14 +50,14 @@
         android:textSize="14sp"
         android:transitionName="userUsername"
         app:layout_constraintBottom_toTopOf="@+id/guideline_reaction_item"
-        app:layout_constraintStart_toEndOf="@+id/reaction_user_profile_image"
+        app:layout_constraintStart_toEndOf="@+id/video_user_profile_image"
         tools:text="@string/placeholder_display_name"
         tools:visibility="visible" />
 
 
     <!-- The @nickname tag. -->
     <TextView
-        android:id="@+id/reaction_user_nickname"
+        android:id="@+id/video_user_nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -67,8 +67,8 @@
         android:textColor="@color/color_white"
         android:textSize="12sp"
         android:transitionName="userName"
-        app:layout_constraintStart_toStartOf="@+id/reaction_user_displayed_name"
-        app:layout_constraintTop_toBottomOf="@+id/reaction_user_displayed_name"
+        app:layout_constraintStart_toStartOf="@+id/video_user_displayed_name"
+        app:layout_constraintTop_toBottomOf="@+id/video_user_displayed_name"
         tools:text="@string/placeholder_nickname"
         tools:visibility="visible" />
 
@@ -81,10 +81,10 @@
         android:background="@color/color_transparent_overlay"
         android:translationZ="-1dp"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/reaction_user_profile_image"
+        app:layout_constraintBottom_toBottomOf="@+id/video_user_profile_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/reaction_user_profile_image"
+        app:layout_constraintTop_toTopOf="@+id/video_user_profile_image"
         app:layout_constraintVertical_bias="0.51" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

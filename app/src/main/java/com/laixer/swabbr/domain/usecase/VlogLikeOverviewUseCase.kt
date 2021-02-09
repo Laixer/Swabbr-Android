@@ -1,6 +1,6 @@
 package com.laixer.swabbr.domain.usecase
 
-import com.laixer.swabbr.domain.model.VlogLikingUserWrapper
+import com.laixer.swabbr.domain.model.LikingUserWrapper
 import com.laixer.swabbr.domain.interfaces.VlogLikeRepository
 import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Single
@@ -19,6 +19,6 @@ class VlogLikeOverviewUseCase constructor(
      *  Gets an overview of all vlog liking users for
      *  the currently authenticated user.
      */
-    fun getVlogLikingUsers(vlogId: UUID, refresh: Boolean): Single<List<VlogLikingUserWrapper>> = vlogLikeRepository
-        .getVlogLikingUsers(vlogId, Pagination.latest())
+    fun getVlogLikingUsers(refresh: Boolean): Single<List<LikingUserWrapper>> = vlogLikeRepository
+        .getVlogLikingUsers(Pagination.latest())
 }

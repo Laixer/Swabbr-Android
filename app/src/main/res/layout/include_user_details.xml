@@ -15,19 +15,19 @@
         android:layout_marginEnd="@dimen/content_margin_small">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/reaction_user_profile_image"
+            android:id="@+id/video_user_profile_image"
             android:layout_width="84dp"
             android:layout_height="84dp"
             android:src="@drawable/ic_person_large_256"
             android:transitionName="userAvatar"
             app:civ_circle_background_color="@color/color_grey_300"
-            app:layout_constraintBottom_toTopOf="@id/reaction_user_displayed_name"
+            app:layout_constraintBottom_toTopOf="@id/video_user_displayed_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/reaction_user_displayed_name"
+            android:id="@+id/video_user_displayed_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:autoSizeMaxTextSize="38sp"
@@ -38,13 +38,13 @@
             android:text="@string/nickname"
             android:textColor="@color/colorAccent"
             android:transitionName="userUsername"
-            app:layout_constraintBottom_toTopOf="@id/reaction_user_nickname"
+            app:layout_constraintBottom_toTopOf="@id/video_user_nickname"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/reaction_user_profile_image" />
+            app:layout_constraintTop_toBottomOf="@id/video_user_profile_image" />
 
         <TextView
-            android:id="@+id/reaction_user_nickname"
+            android:id="@+id/video_user_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:autoSizeMaxTextSize="38sp"
@@ -58,7 +58,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/reaction_user_displayed_name" />
+            app:layout_constraintTop_toBottomOf="@id/video_user_displayed_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

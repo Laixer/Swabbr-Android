@@ -78,7 +78,7 @@ class V1 {
 
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
-                    .setGraph(R.navigation.nav_graph_vlogs)
+                    .setGraph(R.navigation.nav_graph_vlog_playback)
                     .setDestination(R.id.watch_vlog_dest)
                     .setArguments(WatchVlogFragmentArgs(vlogId).toBundle())
                     .createPendingIntent()
@@ -97,7 +97,7 @@ class V1 {
 
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
-                    .setGraph(R.navigation.nav_graph_vlogs)
+                    .setGraph(R.navigation.nav_graph_vlog_playback)
                     .setDestination(R.id.watch_vlog_dest)
                     .setArguments(WatchVlogFragmentArgs(vlogId).toBundle())
                     .createPendingIntent()
@@ -117,7 +117,7 @@ class V1 {
             // TODO: Actually direct to the specified reaction
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
-                    .setGraph(R.navigation.nav_graph_vlogs)
+                    .setGraph(R.navigation.nav_graph_vlog_playback)
                     .setDestination(R.id.watch_reaction_dest)
                     .setArguments(WatchReactionFragmentArgs(reactionId).toBundle())
                     .createPendingIntent()

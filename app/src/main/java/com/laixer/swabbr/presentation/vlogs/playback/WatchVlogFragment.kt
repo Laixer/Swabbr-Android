@@ -46,10 +46,19 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
     private val args by navArgs<WatchVlogFragmentArgs>()
     private val vlogId: UUID by lazy { UUID.fromString(id ?: args.vlogId) }
 
+    // TODO This shouldn't be placed here.
     /**
-     *  Callback for when we click on a profile.
+     *  Callback for when we click on a reaction profile.
      */
-    private val onProfileClick: (ReactionWrapperItem) -> Unit = {
+    private val onVlogProfileClick: (userId: UUID) -> Unit = {
+        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it}"))
+    }
+
+    // TODO This shouldn't be placed here.
+    /**
+     *  Callback for when we click on a reaction profile.
+     */
+    private val onReactionProfileClick: (ReactionWrapperItem) -> Unit = {
         findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
     }
 
@@ -83,6 +92,13 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Setup callback for the profile icon click.
+        view_clickable_video_user.setOnClickListener {
+            vlogVm.vlog.value?.data?.user?.let {
+                    onVlogProfileClick.invoke(it.id)
+            }
+        }
+
         // TODO
         val bottomSheetBehavior = BottomSheetBehavior.from(constraint_layout_reactions_sheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -91,7 +107,7 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
         reactions_sheet.run {
             reactionsRecyclerView.run {
                 isNestedScrollingEnabled = false
-                adapter = ReactionsAdapter(onProfileClick, onReactionClick)
+                adapter = ReactionsAdapter(onReactionProfileClick, onReactionClick)
             }
         }
 
@@ -218,18 +234,18 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                 data?.let {
                     // Display the user info
                     it.user.let { user ->
-                        reaction_user_profile_image.loadAvatar(user.profileImage, user.id)
+                        video_user_profile_image.loadAvatar(user.profileImage, user.id)
                         // TODO Make extension function for this, we don't always have the first and last name.
-                        reaction_user_displayed_name.text =
+                        video_user_displayed_name.text =
                             requireContext().getString(R.string.full_name, user.firstName, user.lastName)
-                        reaction_user_nickname.text = requireContext().getString(R.string.nickname, user.nickname)
+                        video_user_nickname.text = requireContext().getString(R.string.nickname, user.nickname)
                     }
 
                     // Display the vlog info and start playback
                     it.vlog.let { vlog ->
                         // TODO Proper resource usage?
                         // TODO Put in helper or something, not here
-                        textview_date_created.text =
+                        text_view_video_date_created.text =
                             vlog.dateCreated.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
                         vlog_view_count.text = requireContext().formatNumber(vlog.views)
 

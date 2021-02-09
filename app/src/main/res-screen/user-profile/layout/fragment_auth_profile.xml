@@ -42,10 +42,10 @@
                 android:textAlignment="center"
                 android:textColor="@color/colorPrimary"
                 android:transitionName="userUsername"
-                app:layout_constraintBottom_toTopOf="@id/reaction_user_nickname"
+                app:layout_constraintBottom_toTopOf="@id/video_user_nickname"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/reaction_user_profile_image" />
+                app:layout_constraintTop_toBottomOf="@id/video_user_profile_image" />
 
             <TextView
                 android:id="@+id/user_profile_nickname"
@@ -64,7 +64,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/reaction_user_displayed_name" />
+                app:layout_constraintTop_toBottomOf="@id/video_user_displayed_name" />
 
             <!-- TODO Don't hardcode these dimensions-->
             <Button

@@ -18,6 +18,7 @@ import com.laixer.swabbr.presentation.auth.AuthUserViewModel
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.auth.SimpleAuthenticator
 import com.laixer.swabbr.presentation.auth.UserManager
+import com.laixer.swabbr.presentation.likeoverview.LikeOverviewViewModel
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.reaction.ReactionViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
@@ -74,44 +75,26 @@ val authModule: Module = module {
 val viewModelModule: Module = module {
     viewModel { MainActivityViewModel(userManager = get()) }
     viewModel { AuthUserViewModel(userManager = get(), authUserUseCase = get(), followUseCase = get()) }
-    viewModel {
-        AuthViewModel(
-            userManager = get(),
-            authUserUseCase = get(),
-            authUseCase = get(),
-            firebaseMessaging = get()
-        )
-    }
-    viewModel {
-        ProfileViewModel(
-            usersUseCase = get(),
-            vlogUseCase = get(),
-            followUseCase = get(),
-            authUserUseCase = get()
-        )
-    }
+    viewModel { LikeOverviewViewModel(authUserUseCase = get(), vlogLikeOverviewUseCase = get(), followUseCase = get()) }
+    viewModel { AuthViewModel(userManager = get(), authUserUseCase = get(), authUseCase = get(), firebaseMessaging = get()) }
+    viewModel { ProfileViewModel(usersUseCase = get(), vlogUseCase = get(), followUseCase = get(), authUserUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogUseCase = get()) }
     viewModel { VlogViewModel(authUserUseCase = get(), reactionsUseCase = get(), vlogUseCase = get()) }
     viewModel { VlogRecordingViewModel(mHttpClient = get(), vlogUseCase = get(), context = androidContext()) }
     viewModel { SearchViewModel(usersUseCase = get()) }
     viewModel { ReactionViewModel(mHttpClient = get(), reactionsUseCase = get(), context = androidContext()) }
 }
+
 val useCaseModule: Module = module {
     factory { AuthUserUseCase(userRepository = get(), followRequestRepository = get()) }
     factory { AuthUseCase(authRepository = get()) }
     factory { UsersUseCase(userRepository = get()) }
-    factory {
-        VlogUseCase(
-            userRepository = get(),
-            vlogRepository = get(),
-            vlogLikeRepository = get(),
-            reactionRepository = get()
-        )
-    }
+    factory { VlogUseCase(userRepository = get(), vlogRepository = get(), vlogLikeRepository = get(), reactionRepository = get()) }
     factory { VlogLikeOverviewUseCase(vlogLikeRepository = get()) }
     factory { ReactionUseCase(userRepository = get(), reactionRepository = get()) }
     factory { FollowUseCase(followRequestRepository = get(), userRepository = get()) }
 }
+
 val repositoryModule: Module = module {
     single<AuthRepository> { AuthRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
     single<UserRepository> { UserRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
@@ -120,6 +103,7 @@ val repositoryModule: Module = module {
     single<ReactionRepository> { ReactionRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
     single<FollowRequestRepository> { FollowRequestRepositoryImpl(cacheDataSource = get(), remoteDataSource = get()) }
 }
+
 val dataSourceModule: Module = module {
     single<AuthCacheDataSource> { AuthCacheDataSourceImpl(get()) }
     single<AuthDataSource> { AuthRemoteDataSourceImpl(authApi = get()) }
@@ -134,6 +118,7 @@ val dataSourceModule: Module = module {
     single<FollowRequestDataSource> { FollowRequestRemoteDataSourceImpl(api = get()) }
     single<FollowRequestCacheDataSource> { FollowRequestCacheDataSourceImpl(cache = get()) }
 }
+
 val networkModule: Module = module {
     single {
         Retrofit.Builder()
@@ -168,6 +153,7 @@ val networkModule: Module = module {
     single<ReactionApi> { get<Retrofit>().create(ReactionApi::class.java) }
     single<FollowRequestApi> { get<Retrofit>().create(FollowRequestApi::class.java) }
 }
+
 val cacheModule: Module = module {
     single { Cache() }
 }

@@ -18,14 +18,12 @@ import kotlinx.android.synthetic.main.fragment_video.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
-// TODO FIX
+// TODO Profile image click
 /**
  *  Wrapper around a single [WatchVideoFragment] used for [ReactionItem] playback.
  */
 class WatchReactionFragment(id: String? = null) : WatchVideoFragment() {
     private val args by navArgs<WatchReactionFragmentArgs>()
-
-    // TODO Correct vm?
     private val reactionVm: ReactionViewModel by viewModel()
     private val reactionId by lazy { UUID.fromString(id ?: args.reactionId) }
 

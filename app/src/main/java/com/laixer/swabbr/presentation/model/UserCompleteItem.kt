@@ -27,7 +27,28 @@ data class UserCompleteItem(
     var isPrivate: Boolean,
     val dailyVlogRequestLimit: Int,
     val followMode: FollowMode
-)
+) {
+    /** TODO Duplicate functionality with [UserItem]. */
+    /**
+     *  Gets the user display name. When no first name and
+     *  last name are present, this returns the nickname.
+     */
+    fun getDisplayName(): String {
+        if (!firstName.isNullOrBlank() && !lastName.isNullOrBlank()) {
+            return "$firstName $lastName"
+        }
+
+        if (!firstName.isNullOrBlank()) {
+            return firstName as String
+        }
+
+        if (!lastName.isNullOrBlank()) {
+            return lastName as String
+        }
+
+        return nickname
+    }
+}
 
 /**
  *  Map a user complete object from domain to presentation.

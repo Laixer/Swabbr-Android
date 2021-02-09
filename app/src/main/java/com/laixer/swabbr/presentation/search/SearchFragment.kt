@@ -23,12 +23,21 @@ import com.laixer.swabbr.presentation.model.UserItem
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+/**
+ *  Fragment that handles our user searching.
+ */
 class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
-
     private val vm: SearchViewModel by sharedViewModel()
     private var userAdapter: UserAdapter? = null
     private var currentPage: Int = 1
     private var lastQuery: String = ""
+
+    /**
+     *  Callback for when we click a user item.
+     */
+    private val onClickUser: (UserItem) -> Unit = {
+        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.id}"))
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_search, container, false)
@@ -38,7 +47,7 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
-        userAdapter = UserAdapter(requireContext(), onClick)
+        userAdapter = UserAdapter(requireContext(), onClickUser)
 
         searchRecyclerView.apply {
             isNestedScrollingEnabled = false
@@ -105,10 +114,6 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
             ), refreshList = refreshList
         )
         return true
-    }
-
-    private val onClick: (UserItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.id}"))
     }
 
     /**

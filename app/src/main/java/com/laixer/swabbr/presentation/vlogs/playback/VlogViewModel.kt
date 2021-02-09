@@ -17,7 +17,8 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 /**
- *  View model which contains details about a single vlog.
+ *  View model which contains details about a single vlog. If
+ *  a list of vlogs is desired, use [VlogListViewModel].
  */
 class VlogViewModel constructor(
     private val authUserUseCase: AuthUserUseCase,
@@ -28,11 +29,6 @@ class VlogViewModel constructor(
      *  Used to store a vlog when we watch a single item.
      */
     val vlog = MutableLiveData<Resource<VlogWrapperItem>>()
-
-    /**
-     *  Used to store the result of any vlog list retrieval.
-     */
-    val vlogs = MutableLiveData<Resource<List<VlogWrapperItem>>>()
 
     /**
      *  Used to store reactions for the [vlog] resource.

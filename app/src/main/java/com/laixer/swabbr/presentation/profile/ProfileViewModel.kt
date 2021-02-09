@@ -18,7 +18,7 @@ import java.util.*
 
 // TODO Simply save the user id once
 /**
- *  Viewmodel for a user profile of any user.
+ *  View model for a user profile of any user.
  */
 class ProfileViewModel constructor(
     private val authUserUseCase: AuthUserUseCase,
@@ -26,7 +26,6 @@ class ProfileViewModel constructor(
     private val vlogUseCase: VlogUseCase,
     private val followUseCase: FollowUseCase
 ) : ViewModel() {
-
     val followingUsers = MutableLiveData<Resource<List<UserItem>>>()
     val profile = MutableLiveData<Resource<UserItem>>()
     val profileVlogs = MutableLiveData<Resource<List<VlogWrapperItem>>>()

@@ -5,7 +5,7 @@ import com.laixer.swabbr.data.model.mapToDomain
 import com.laixer.swabbr.data.interfaces.VlogLikeDataSource
 import com.laixer.swabbr.domain.model.VlogLike
 import com.laixer.swabbr.domain.model.VlogLikeSummary
-import com.laixer.swabbr.domain.model.VlogLikingUserWrapper
+import com.laixer.swabbr.domain.model.LikingUserWrapper
 import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -28,7 +28,7 @@ class VlogLikeDataSourceImpl constructor(
     override fun getLikes(vlogId: UUID, pagination: Pagination): Single<List<VlogLike>> =
         api.getVlogLikes(vlogId, pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
-    override fun getVlogLikingUsers(vlogId: UUID, pagination: Pagination): Single<List<VlogLikingUserWrapper>> =
+    override fun getVlogLikingUsers(pagination: Pagination): Single<List<LikingUserWrapper>> =
         api.getVlogLikingUsers(pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
     override fun like(vlogId: UUID): Completable = api.like(vlogId)

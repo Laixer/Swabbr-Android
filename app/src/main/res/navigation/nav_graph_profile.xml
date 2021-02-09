@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Nav graph for displaying the profile. This can take us
+    to the nav_graph_vlog_playback when we start watching
+    the users vlogs. Note that this graph can correspond to
+    the current user as well as any other user.
+-->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@id/nav_graph_profile"
     app:startDestination="@id/auth_profile_dest">
 
+    <!-- Actual user profile fragment. -->
     <fragment
         android:id="@+id/auth_profile_dest"
         android:name="com.laixer.swabbr.presentation.profile.AuthProfileFragment"
@@ -15,11 +22,26 @@
             app:destination="@id/settings_dest"/>
     </fragment>
 
+    <!-- Include single vlog playback navigation. -->
+    <include app:graph="@navigation/nav_graph_vlog_playback" />
+
+    <!-- Fullscreen watching of user vlogs with swipe interface. -->
     <fragment
-        android:id="@+id/settings_dest"
-        android:name="com.laixer.swabbr.presentation.profile.settings.SettingsFragment"
-        android:label="@string/settings"
-        tools:layout="@layout/fragment_settings">
+        android:id="@+id/watch_user_vlogs_dest"
+        android:name="com.laixer.swabbr.presentation.vlogs.playback.WatchUserVlogsFragment"
+        android:label="Vlog"
+        tools:layout="@layout/fragment_video_view_pager">
+        <argument
+            android:name="initialVlogId"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="userId"
+            app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLink"
+            android:autoVerify="true"
+            app:uri="https://swabbr.com/profileWatchVlog?userId={userId}&amp;initialVlogId={initialVlogId}" />
     </fragment>
 
 </navigation>

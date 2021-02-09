@@ -5,7 +5,7 @@ import com.laixer.swabbr.data.interfaces.VlogLikeDataSource
 import com.laixer.swabbr.domain.interfaces.VlogLikeRepository
 import com.laixer.swabbr.domain.model.VlogLike
 import com.laixer.swabbr.domain.model.VlogLikeSummary
-import com.laixer.swabbr.domain.model.VlogLikingUserWrapper
+import com.laixer.swabbr.domain.model.LikingUserWrapper
 import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -29,8 +29,8 @@ class VlogLikeRepositoryImpl constructor(
     override fun getLikes(vlogId: UUID, pagination: Pagination): Single<List<VlogLike>> =
         remoteDataSource.getLikes(vlogId, pagination)
 
-    override fun getVlogLikingUsers(vlogId: UUID, pagination: Pagination): Single<List<VlogLikingUserWrapper>> =
-        remoteDataSource.getVlogLikingUsers(vlogId, pagination)
+    override fun getVlogLikingUsers(pagination: Pagination): Single<List<LikingUserWrapper>> =
+        remoteDataSource.getVlogLikingUsers(pagination)
 
     override fun like(vlogId: UUID): Completable = remoteDataSource.like(vlogId)
 

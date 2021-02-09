@@ -20,16 +20,19 @@ import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
+import com.laixer.swabbr.utils.loadAvatar
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.include_user_image_username_large.*
+import kotlinx.android.synthetic.main.include_user_username.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
 
+// TODO Make generic for any user.
 /**
  *  Fragment representing a profile for any user other than
  *  the currently logged in user.
  */
 class ProfileFragment : AuthFragment() {
-
     private val args by navArgs<ProfileFragmentArgs>()
     private val profileVm: ProfileViewModel by sharedViewModel()
     private val receiverId by lazy { UUID.fromString(args.userId) }
@@ -97,7 +100,6 @@ class ProfileFragment : AuthFragment() {
         }
     }
 
-
     /**
      *  Click handler for when we click on a vlog.
      */
@@ -105,16 +107,15 @@ class ProfileFragment : AuthFragment() {
         findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${it.user.id}&vlogId=${it.vlog.id}"))
     }
 
+    /**
+     *  Resource observor for when a user item changes.
+     */
     private fun updateProfile(res: Resource<UserItem>) = res.run {
-        // TODO Repair
-//        data?.let { item ->
-//            user_avatar.loadAvatar(item.profileImage, item.id)
-//            user_nickname.text = requireContext().getString(R.string.nickname, item.nickname)
-//            item.firstName?.let {
-//                user_username.text = requireContext().getString(R.string.full_name, it, item.lastName)
-//                user_username.visibility = View.VISIBLE
-//            }
-//        }
+        data?.let { item ->
+            user_profile_image.loadAvatar(item.profileImage, item.id)
+            user_displayed_name.text = item.getDisplayName()
+            user_nickname.text = requireContext().getString(R.string.nickname, item.nickname)
+        }
     }
 
     /**
