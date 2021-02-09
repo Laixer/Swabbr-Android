@@ -18,7 +18,6 @@ import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
-import com.laixer.swabbr.presentation.model.VlogLikeSummaryItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.reaction.ReactionsAdapter
 import com.laixer.swabbr.presentation.video.WatchVideoFragment
@@ -70,8 +69,8 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
             vlog.observe(viewLifecycleOwner, Observer { onVlogLoaded(it) })
             reactions.observe(viewLifecycleOwner, Observer { onReactionsUpdated(it) })
             reactionCount.observe(viewLifecycleOwner, Observer { onReactionCountUpdated(it) })
-            likes.observe(viewLifecycleOwner, Observer { onLikesUpdated(it) })
-            likedByCurrentUser.observe(viewLifecycleOwner, Observer { onLikedByCurrentUserUpdated(it) })
+            vlogLikeCount.observe(viewLifecycleOwner, Observer { onVlogLikeCountUpdated(it) })
+            vlogLikedByCurrentUser.observe(viewLifecycleOwner, Observer { onLikedByCurrentUserUpdated(it) })
         }
 
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -154,7 +153,15 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
 //            v.performClick()
 //        }
 
+        /**
+         *  Disable the button until we have the vlog and the vlogLikedByUser
+         *  resource. This is restored by the [tryEnableLikeButton] method.
+         */
+        button_vlog_like.isEnabled = false
         button_vlog_like.setOnClickListener { toggleLike() }
+
+        // Prevent previous vlog data from being loaded
+        vlogVm.clearVlogResources()
 
         /**
          *  Retrieve the actual vlog using the view model. When the
@@ -164,28 +171,21 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
         vlogVm.getVlog(vlogId)
         vlogVm.getReactions(vlogId)
         vlogVm.getReactionCount(vlogId)
-        vlogVm.getVlogLikeSummary(vlogId)
         vlogVm.isVlogLikedByCurrentUser(vlogId)
     }
 
     /**
      *  If the current user has liked the vlog, unlike it and vice versa.
+     *  This should only be called when we [canToggleLike], even though
+     *  this checks itself as well.
      */
     private fun toggleLike() {
-        // If the vlog like resource wasn't loaded in the vlogVm, return.
-        // Note that this function should never be called in this case,
-        // the vlog like button should be disabled. Currently we have no
-        // way of disabling the double tap functionality, hence this check.
-        // TODO Remove this in the future.
-        // TODO Is this the correct way of checking this?
-        if (vlogVm.likedByCurrentUser.value?.data == null) {
+        if (!canToggleLike()) {
             return
         }
 
-        // TODO Check for liking your own vlog here
-
         // Perform the backend calls for the liking operation
-        if (vlogVm.likedByCurrentUser.value?.data == true) {
+        if (vlogVm.vlogLikedByCurrentUser.value?.data == true) {
             button_vlog_like.isChecked = false
             vlogVm.unlike(vlogId)
         } else {
@@ -231,13 +231,14 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                         // TODO Put in helper or something, not here
                         textview_date_created.text =
                             vlog.dateCreated.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
-
-                        vlog_like_count.text = requireContext().formatNumber(vlog.vlogLikeSummary?.totalLikes ?: 0)
                         vlog_view_count.text = requireContext().formatNumber(vlog.views)
 
                         stream(vlog.videoUri!!)
                     }
                 }
+
+                // Enable the like button if we have the vlog and vlogLikedByUser resource.
+                tryEnableLikeButton()
             }
             ResourceState.ERROR -> {
                 video_content_loading_icon.gone()
@@ -247,7 +248,6 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
         }
     }
 
-// TODO Restore
     /**
      *  Called when the [vlogVm] reactions resource changes.
      */
@@ -261,17 +261,13 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                         // Push the new reactions to the reaction adapter
                         (reactionsRecyclerView?.adapter as ReactionsAdapter?)?.submitList(it)
                     }
-
-                    // TODO This should only be swipable, not modified in visibility.
-                    // reactions_sheet.visibility = View.VISIBLE
                 }
                 ResourceState.ERROR -> {
                     Toast.makeText(
                         requireContext(),
                         "Error loading reactions - ${resource.message}",
                         Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    ).show()
                 }
             }
         }.also {
@@ -291,8 +287,7 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                 }
                 ResourceState.SUCCESS -> {
                     data?.let {
-                        // TODO Use string resource like all other places?
-                        //  Or make this the standard?
+                        // TODO Use string resource like all other places or make this the standard?
                         // Push the statistics to the statistics bar
                         vlog_reaction_count.text = "$it"
                     }
@@ -308,25 +303,25 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
         }
     }
 
-// TODO Do we even need this? Currently we only use the vlog like summary in the vlogwrapper itself.
     /**
-     *  Called when the [vlogVm] likes resource changes.
+     *  Called when the [vlogVm] like count resource changes.
      */
-    private fun onLikesUpdated(resource: Resource<VlogLikeSummaryItem>) = with(resource) {
+    private fun onVlogLikeCountUpdated(resource: Resource<Int>) = with(resource) {
         when (state) {
             ResourceState.LOADING -> {
-                // TODO
+                // TODO Trying this out, should we always do this empty and - format for numbers?
+                vlog_like_count.text = ""
             }
             ResourceState.SUCCESS -> {
-                // TODO Assign somewhere
+                vlog_like_count.text = requireContext().formatNumber(resource.data ?: 0)
             }
             ResourceState.ERROR -> {
+                vlog_like_count.text = "-"
                 Toast.makeText(requireContext(), "Error loading likes - ${resource.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-// TODO Merge this with whether or not we own the vlog.
     /**
      *  Called when the [vlogVm] likedByCurrentUser resource changes.
      *  This will indicate whether or not the current user has liked
@@ -339,7 +334,11 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                 button_vlog_like.isEnabled = false
             }
             ResourceState.SUCCESS -> {
-                button_vlog_like.isEnabled = true
+                // Enable the like button if we have the vlog and vlogLikedByUser resource.
+                if (!button_vlog_like.isEnabled) {
+                    tryEnableLikeButton()
+                }
+
                 button_vlog_like.isChecked = data!!
             }
             ResourceState.ERROR -> {
@@ -353,6 +352,25 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
             }
         }
     }
+
+    /**
+     *  If we [canToggleLike], the [button_vlog_like] will be enabled.
+     */
+    private fun tryEnableLikeButton() {
+        if (canToggleLike()) {
+            button_vlog_like.isEnabled = true
+        }
+    }
+
+    /**
+     *  Returns true only if we have the [onVlogLoaded] and
+     *  [onLikedByCurrentUserUpdated] resources, and if we
+     *  don't own the current [onVlogLoaded] resource.
+     */
+    private fun canToggleLike(): Boolean =
+        !(vlogVm.vlog.value?.data == null
+            || vlogVm.vlogLikedByCurrentUser.value?.data == null
+            || vlogVm.vlog.value!!.data!!.vlog.userId == authUserVm.getAuthUserId())
 
     companion object {
         fun create(vlogId: String): WatchVlogFragment {

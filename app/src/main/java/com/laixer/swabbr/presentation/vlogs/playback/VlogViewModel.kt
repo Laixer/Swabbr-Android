@@ -10,7 +10,6 @@ import com.laixer.swabbr.domain.usecase.AuthUserUseCase
 import com.laixer.swabbr.domain.usecase.ReactionUseCase
 import com.laixer.swabbr.domain.usecase.VlogUseCase
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
-import com.laixer.swabbr.presentation.model.VlogLikeSummaryItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.disposables.CompositeDisposable
@@ -46,20 +45,36 @@ class VlogViewModel constructor(
     val reactionCount = MutableLiveData<Resource<Int>>()
 
     /**
-     *  Used to store likes for the [vlog] resource.
+     *  Used to store the amount of likes for the [vlog] resource.
+     *  Not that this also gets updated after we get the [vlog]
+     *  itself.
      */
-    val likes = MutableLiveData<Resource<VlogLikeSummaryItem>>()
+    val vlogLikeCount = MutableLiveData<Resource<Int>>()
 
     /**
      *  Used to store whether or not the current user has
      *  liked the [vlog] resource.
      */
-    val likedByCurrentUser = MutableLiveData<Resource<Boolean>>()
+    val vlogLikedByCurrentUser = MutableLiveData<Resource<Boolean>>()
 
     private val compositeDisposable = CompositeDisposable()
 
+    // TODO Is this the way to go?
     /**
-     *  Gets a vlog and stores it in [vlogs].
+     *  Sets all the single vlog resources to the loading state.
+     */
+    fun clearVlogResources() {
+        vlog.setLoading()
+        reactions.setLoading()
+        reactionCount.setLoading()
+        vlogLikeCount.setLoading()
+        vlogLikedByCurrentUser.setLoading()
+    }
+
+    /**
+     *  Gets a vlog and stores it in [vlogs]. Also store the
+     *  vlog like count in [vlogLikeCount] based on the summary
+     *  contained in the [VlogWrapperItem].
      *
      *  @param vlogId The vlog to get.
      *  @param refresh Force a data refresh.
@@ -70,7 +85,10 @@ class VlogViewModel constructor(
                 .doOnSubscribe { vlog.setLoading() }
                 .subscribeOn(Schedulers.io()).map { it.mapToPresentation() }
                 .subscribe(
-                    { vlog.setSuccess(it) },
+                    {
+                        vlog.setSuccess(it)
+                        vlogLikeCount.setSuccess(it.vlogLikeSummary.totalLikes)
+                    },
                     { vlog.setError(it.message) }
                 )
         )
@@ -111,54 +129,45 @@ class VlogViewModel constructor(
         )
 
     /**
-     *  Like a vlog, then call [getVlogLikeSummary] to update
-     *  the displayed information.
+     *  Like a vlog as the current user.
+     *
+     *  Note that this also increases the [vlogLikeCount] by one
+     *  and modifies the [vlogLikedByCurrentUser] resource. This
+     *  is both done locally, not using the backend.
      *
      *  @param vlogId The vlog to like.
      */
-    fun like(vlogId: UUID) = vlogUseCase.like(vlogId)
-        .doOnSubscribe { likes.setLoading() }
-        .subscribeOn(Schedulers.io())
-        .subscribe(
-            { getVlogLikeSummary(vlogId) },
-            { likes.setError(it.message) }
-        )
+    fun like(vlogId: UUID) = compositeDisposable.add(
+        vlogUseCase.like(vlogId)
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                {
+                    modifyVlogLikeCount(+1)
+                    vlogLikedByCurrentUser.setSuccess(true)
+                },
+                { /* TODO What to do here? */ }
+            ))
 
     /**
-     *  Unlike a vlog, then call [getVlogLikeSummary] to update
-     *  the displayed information.
+     *  Unlike a vlog as the current user.
+     *
+     *  Note that this also increases the [vlogLikeCount] by one
+     *  and modifies the [vlogLikedByCurrentUser] resource. This
+     *  is both done locally, not using the backend.
      *
      *  @param vlogId The vlog to unlike.
      */
-    fun unlike(vlogId: UUID) = vlogUseCase.unlike(vlogId)
-        .doOnSubscribe { likes.setLoading() }
-        .subscribeOn(Schedulers.io())
-        .subscribe(
-            { getVlogLikeSummary(vlogId) },
-            { likes.setError(it.message) }
-        )
-
-    // TODO This should be a list of likes. The summary already exists in the vlog itself.
-    //  I think we can simply remove this for now, or move it to the likes tab?
-    /**
-     *  Gets a vlog like summary for a vlog. This is  also called after
-     *  [like] and [unlike] to keep the displayed information up
-     *  to date. Note that the likes are expected to belong to the
-     *  [vlog] resource.
-     *
-     *  @param vlogId The vlog to get the summary for.
-     */
-    fun getVlogLikeSummary(vlogId: UUID) =
-        compositeDisposable.add(
-            vlogUseCase.getVlogLikeSummary(vlogId)
-                .doOnSubscribe { likes.setLoading() }
-                .subscribeOn(Schedulers.io())
-                .map { it.mapToPresentation() }
-                .subscribe(
-                    { likes.setSuccess(it) },
-                    { likes.setError(it.message) }
-                )
-        )
+    fun unlike(vlogId: UUID) = compositeDisposable.add(
+        vlogUseCase.unlike(vlogId)
+            .doOnSubscribe { vlogLikedByCurrentUser.setSuccess(false) }
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                {
+                    modifyVlogLikeCount(-1)
+                    vlogLikedByCurrentUser.setSuccess(false)
+                },
+                { /* TODO What to do here? */ }
+            ))
 
     // TODO Move to vlog like use case in the future
     /**
@@ -167,13 +176,35 @@ class VlogViewModel constructor(
     fun isVlogLikedByCurrentUser(vlogId: UUID) =
         compositeDisposable.add(
             vlogUseCase.isVlogLikedByUser(vlogId, authUserUseCase.getSelfId())
-                .doOnSubscribe { likedByCurrentUser.setLoading() }
+                .doOnSubscribe { vlogLikedByCurrentUser.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .subscribe(
-                    { likedByCurrentUser.setSuccess(it) },
-                    { likedByCurrentUser.setError(it.message) }
+                    { vlogLikedByCurrentUser.setSuccess(it) },
+                    { vlogLikedByCurrentUser.setError(it.message) }
                 )
         )
+
+    // FUTURE Fix this race condition
+    /**
+     *  Used to modify the [vlogLikeCount] resource. This will
+     *  add the [amount] to the resource if data is present. If
+     *  no data is present, this operation will be ignored. Note
+     *  that this introduces a race condition where the [vlog]
+     *  resource can be loading, this function can be called,
+     *  and then the [vlog] resource returns. The [getVlog] will
+     *  also set the [vlogLikeCount] resource, which means this
+     *  addition or subtraction will get lost. This is not a
+     *  problem.
+     *
+     *  @param amount Added to the [vlogLikeCount], negative for subtraction.
+     */
+    private fun modifyVlogLikeCount(amount: Int) {
+        if (vlogLikeCount.value?.data == null) {
+            return
+        }
+
+        vlogLikeCount.setSuccess(vlogLikeCount.value!!.data!! + amount)
+    }
 
     /**
      *  Called on graceful disposal. This will dispose the [compositeDisposable]
