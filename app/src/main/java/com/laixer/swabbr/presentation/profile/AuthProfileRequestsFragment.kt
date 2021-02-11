@@ -11,16 +11,17 @@ import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.AuthFragment
+import com.laixer.swabbr.presentation.auth.AuthUserViewModel
 import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.UserItem
 import kotlinx.android.synthetic.main.fragment_auth_profile_following.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /**
  *  Fragment displaying incoming follow requests which
  *  can either be accepted or declined.
  */
 class AuthProfileRequestsFragment : AuthFragment() {
-
     private var requestAdapter: RequestAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

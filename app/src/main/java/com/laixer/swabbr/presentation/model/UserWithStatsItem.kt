@@ -15,7 +15,7 @@ data class UserWithStatsItem(
     val country: String?,
     val nickname: String,
     val profileImage: String?,
-    val totalLikes: Int,
+    val totalLikesReceived: Int,
     val totalFollowers: Int,
     val totalFollowing: Int,
     val totalReactionsGiven: Int,
@@ -28,18 +28,18 @@ data class UserWithStatsItem(
  * Map a user with stats from domain to presentation.
  */
 fun UserWithStats.mapToPresentation(): UserWithStatsItem = UserWithStatsItem(
-    id,
-    firstName,
-    lastName,
-    gender,
-    country,
-    nickname,
-    profileImage,
-    totalLikes,
-    totalFollowers,
-    totalFollowing,
-    totalReactionsGiven,
-    totalReactionsReceived,
-    totalVlogs,
-    totalViews
+    id = id,
+    firstName = firstName,
+    lastName = lastName,
+    gender = gender,
+    country = country,
+    nickname = nickname,
+    profileImage = profileImage,
+    totalLikesReceived = totalLikesReceived,
+    totalFollowers = totalFollowers,
+    totalFollowing = totalFollowing,
+    totalReactionsGiven = totalReactionsGiven,
+    totalReactionsReceived = totalReactionsReceived,
+    totalVlogs = totalVlogs,
+    totalViews = totalViews
 )

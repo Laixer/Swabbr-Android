@@ -46,30 +46,6 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
     private val args by navArgs<WatchVlogFragmentArgs>()
     private val vlogId: UUID by lazy { UUID.fromString(id ?: args.vlogId) }
 
-    // TODO This shouldn't be placed here.
-    /**
-     *  Callback for when we click on a reaction profile.
-     */
-    private val onVlogProfileClick: (userId: UUID) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it}"))
-    }
-
-    // TODO This shouldn't be placed here.
-    /**
-     *  Callback for when we click on a reaction profile.
-     */
-    private val onReactionProfileClick: (ReactionWrapperItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
-    }
-
-    /**
-     *  Callback for when we click on a given reaction.
-     *  This takes us to a []
-     */
-    private val onReactionClick: (ReactionWrapperItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/watchReaction?reactionId=${it.reaction.id}"))
-    }
-
     /**
      *  Attaches observers to the [vlogVm] resources.
      */
@@ -95,19 +71,21 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
         // Setup callback for the profile icon click.
         view_clickable_video_user.setOnClickListener {
             vlogVm.vlog.value?.data?.user?.let {
-                    onVlogProfileClick.invoke(it.id)
+                onVlogProfileClick.invoke(it.id)
             }
         }
 
-        // TODO
-        val bottomSheetBehavior = BottomSheetBehavior.from(constraint_layout_reactions_sheet)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
         // Apply the reaction sheet adapter to the swipeable overlay.
         reactions_sheet.run {
             reactionsRecyclerView.run {
                 isNestedScrollingEnabled = false
-                adapter = ReactionsAdapter(onReactionProfileClick, onReactionClick)
+                adapter = ReactionsAdapter(
+                    currentUserId = authUserVm.getAuthUserId(), // TODO Should be refactored
+                    onProfileClick = onReactionProfileClick,
+                    onReactionClick = onReactionClick,
+                    onDeleteClick = onReactionDeleteClick
+                )
             }
         }
 
@@ -124,6 +102,9 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
          *  When we try to hide the bottom sheet, set it back to collapsed again so we can
          *  swipe up to view the reactions.
          */
+        val bottomSheetBehavior = BottomSheetBehavior.from(constraint_layout_reactions_sheet)
+        bottomSheetBehavior.state = STATE_COLLAPSED
+
         bottomSheetBehavior.apply {
             addBottomSheetCallback(object :
                 BottomSheetBehavior.BottomSheetCallback() {
@@ -148,10 +129,6 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
 
         // Takes us to a reaction recording fragment.
         button_post_reaction.setOnClickListener {
-            // TODO Hard coded camera id.
-            // TODO Remove call, was debug purpose
-            val nc = findNavController()
-
             findNavController().navigate(WatchVlogFragmentDirections.actionRecordReaction("1", vlogId.toString()))
         }
 
@@ -176,8 +153,21 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
         button_vlog_like.isEnabled = false
         button_vlog_like.setOnClickListener { toggleLike() }
 
+        getResourcesIfRequired()
+    }
+
+    /**
+     *  If the [vlogVm] still contains a vlog with id [vlogId],
+     *  we don't need to refresh the resources. Otherwise, clear
+     *  and call a full refresh.
+     */
+    private fun getResourcesIfRequired() {
+        if (vlogId == vlogVm.vlog.value?.data?.vlog?.id) {
+            return
+        }
+
         // Prevent previous vlog data from being loaded
-        vlogVm.clearVlogResources()
+        vlogVm.clearResources()
 
         /**
          *  Retrieve the actual vlog using the view model. When the
@@ -188,6 +178,50 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
         vlogVm.getReactions(vlogId)
         vlogVm.getReactionCount(vlogId)
         vlogVm.isVlogLikedByCurrentUser(vlogId)
+    }
+
+    // FUTURE Trigger only when we finish watching a vlog?
+    /**
+     *  Called each time we enter this fragment. This adds a
+     *  view to the corresponding vlog with id [vlogId].
+     */
+    override fun onResume() {
+        super.onResume()
+
+        vlogVm.addView(vlogId)
+    }
+
+    // TODO This shouldn't be placed here?
+    /**
+     *  Callback for when we click on a reaction profile.
+     */
+    private val onVlogProfileClick: (userId: UUID) -> Unit = {
+        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it}"))
+    }
+
+    // TODO This shouldn't be placed here.
+    /**
+     *  Callback for when we click on a reaction profile.
+     */
+    private val onReactionProfileClick: (ReactionWrapperItem) -> Unit = {
+        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
+    }
+
+    /**
+     *  Callback for when we click on a given reaction.
+     */
+    private val onReactionClick: (ReactionWrapperItem) -> Unit = {
+        findNavController().navigate(Uri.parse("https://swabbr.com/watchReaction?reactionId=${it.reaction.id}"))
+    }
+
+    /**
+     *  Callback for when we click the delete icon of a reaction.
+     *  Note that this will only work if we own the reaction. This
+     *  check is performed by the [vlogVm] so this can always be
+     *  called safely.
+     */
+    private val onReactionDeleteClick: (ReactionWrapperItem) -> Unit = {
+        vlogVm.deleteReaction(it.reaction)
     }
 
     /**
@@ -235,9 +269,7 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                     // Display the user info
                     it.user.let { user ->
                         video_user_profile_image.loadAvatar(user.profileImage, user.id)
-                        // TODO Make extension function for this, we don't always have the first and last name.
-                        video_user_displayed_name.text =
-                            requireContext().getString(R.string.full_name, user.firstName, user.lastName)
+                        video_user_displayed_name.text = user.getDisplayName()
                         video_user_nickname.text = requireContext().getString(R.string.nickname, user.nickname)
                     }
 

@@ -70,8 +70,9 @@ class AuthProfileFragment : AuthFragment() {
         viewpager_user_profile.adapter = profileTabAdapter
         viewpager_user_profile.offscreenPageLimit = 4
 
-        authUserVm.getSelf(refresh = false)
-        authUserVm.getStatistics(refresh = false)
+        // Always refresh all data about the user for correct display.
+        authUserVm.getSelf(refresh = true)
+        authUserVm.getStatistics(refresh = true)
 
         TabLayoutMediator(tab_layout, viewpager_user_profile) { tab, position ->
             tab.text = when (position) {
@@ -149,11 +150,11 @@ class AuthProfileFragment : AuthFragment() {
             }
             ResourceState.SUCCESS -> {
                 res.data?.let { stats ->
-                    user_profile_followers_count.text = requireContext().formatNumber(stats.totalFollowing)
-                    user_profile_following_count.text = requireContext().formatNumber(stats.totalFollowers)
+                    user_profile_followers_count.text = requireContext().formatNumber(stats.totalFollowers)
+                    user_profile_following_count.text = requireContext().formatNumber(stats.totalFollowing)
                     user_profile_vlog_count.text = requireContext().formatNumber(stats.totalVlogs)
                     user_profile_views.text = requireContext().formatNumber(stats.totalViews)
-                    user_profile_likes_received.text = requireContext().formatNumber(stats.totalLikes)
+                    user_profile_likes_received.text = requireContext().formatNumber(stats.totalLikesReceived)
                     user_profile_reactions_received.text = requireContext().formatNumber(stats.totalReactionsReceived)
                 }
             }

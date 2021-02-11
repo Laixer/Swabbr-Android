@@ -1,3 +1,4 @@
+
 package com.laixer.swabbr.domain.model
 
 import com.laixer.swabbr.domain.types.Gender

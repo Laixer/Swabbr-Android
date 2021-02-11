@@ -2,13 +2,12 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/item_margin"
     android:foreground="?selectableItemBackground">
 
     <include
         layout="@layout/include_user_image_username_large"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/content_margin_small" />
+        android:layout_marginBottom="@dimen/divider_margin"/>
 
 </com.google.android.material.card.MaterialCardView>

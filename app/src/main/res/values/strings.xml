@@ -11,6 +11,10 @@
     <string name="tab_following">FOLLOWING</string>
     <string name="tab_followers">FOLLOWERS</string>
 
+    <!-- Tab top text -->
+    <string name="info_love_its">LOVE ITS!</string>
+    <string name="info_search">Search</string>
+
     <string name="nickname"><i>\@%1$s</i></string>
     <string name="full_name">%1$s %2$s</string>
 

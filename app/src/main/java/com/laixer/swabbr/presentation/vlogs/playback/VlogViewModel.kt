@@ -9,6 +9,7 @@ import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.usecase.AuthUserUseCase
 import com.laixer.swabbr.domain.usecase.ReactionUseCase
 import com.laixer.swabbr.domain.usecase.VlogUseCase
+import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
@@ -18,7 +19,10 @@ import java.util.*
 
 /**
  *  View model which contains details about a single vlog. If
- *  a list of vlogs is desired, use [VlogListViewModel].
+ *  a list of vlogs is desired, use [VlogListViewModel]. This
+ *  also contains functionality for the reactions that belong
+ *  to the [vlog] resource. Watching vlogs is done using the
+ *  [ReactionViewModel].
  */
 class VlogViewModel constructor(
     private val authUserUseCase: AuthUserUseCase,
@@ -55,16 +59,50 @@ class VlogViewModel constructor(
 
     private val compositeDisposable = CompositeDisposable()
 
-    // TODO Is this the way to go?
+    /**
+     *  Adds a single vlog view to a vlog.
+     *
+     *  @param vlogId The vlog we watched.
+     */
+    fun addView(vlogId: UUID) = compositeDisposable.add(
+        vlogUseCase.addView(vlogId)
+            .subscribeOn(Schedulers.io())
+            .subscribe()
+    )
+
+    // TODO Is this the way to go? I do think so.
     /**
      *  Sets all the single vlog resources to the loading state.
      */
-    fun clearVlogResources() {
+    fun clearResources() {
         vlog.setLoading()
         reactions.setLoading()
         reactionCount.setLoading()
         vlogLikeCount.setLoading()
         vlogLikedByCurrentUser.setLoading()
+    }
+
+    /**
+     *  Deletes a reaction. Note that this will also remove
+     *  the reaction from the [reactions] resource. This will
+     *  only proceed if we own the reaction.
+     */
+    fun deleteReaction(reaction: ReactionItem) {
+        if (reaction.userId != authUserUseCase.getSelfId()) {
+            return
+        }
+
+        // First remove the reaction locally.
+        reactions.value?.data?.let { list ->
+            reactions.setSuccess(list.filter { it.reaction.id != reaction.id })
+        }
+
+        // Then call the API
+        compositeDisposable.add(
+            reactionsUseCase.deleteReaction(reaction.id)
+                .subscribeOn(Schedulers.io())
+                .subscribe()
+        )
     }
 
     /**

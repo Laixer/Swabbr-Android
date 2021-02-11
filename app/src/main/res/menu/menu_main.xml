@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/nav_graph_like_overview"
-        android:icon="@drawable/ic_tb_love_it"
+        android:icon="@drawable/ic_love_it_outline"
         android:title="@string/like_overview" />
 
     <item

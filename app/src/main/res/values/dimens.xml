@@ -5,7 +5,7 @@
     <dimen name="content_margin_large">32dp</dimen>
     <dimen name="item_margin">8dp</dimen>
     <dimen name="image_text_horizontal_margin">8dp</dimen>
-    <dimen name="divider_margin">8dp</dimen>
+    <dimen name="divider_margin">16dp</dimen>
     <dimen name="divider_large_margin">32dp</dimen>
 
     <dimen name="small_icon_size">32dp</dimen>

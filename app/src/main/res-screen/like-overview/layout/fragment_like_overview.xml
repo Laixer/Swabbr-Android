@@ -10,20 +10,33 @@
     android:layout_height="match_parent"
     tools:context=".presentation.likeoverview.LikeOverviewFragment">
 
+    <!-- Top display text. -->
+
+
     <!-- Allows us to swipe down for refreshing calls. -->
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_margin_medium"
+        android:layout_marginTop="@dimen/content_margin_small"
+        android:text="@string/info_love_its"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout_liking_users"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/content_margin_small"
-        android:layout_marginEnd="@dimen/content_margin_small"
-        android:layout_marginTop="@dimen/content_margin_small"
+        android:layout_height="0dp"
         android:layout_marginBottom="@dimen/content_margin_small"
+        android:layout_marginTop="@dimen/content_margin_medium"
+        android:layout_marginStart="@dimen/content_margin_large"
+        android:layout_marginEnd="@dimen/content_margin_medium"
         android:animateLayoutChanges="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/textView3">
 
         <!-- Contains the actual liking users. -->
         <androidx.recyclerview.widget.RecyclerView

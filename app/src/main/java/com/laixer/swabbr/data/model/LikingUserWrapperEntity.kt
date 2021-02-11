@@ -1,15 +1,21 @@
 package com.laixer.swabbr.data.model
 
 import com.laixer.swabbr.domain.model.LikingUserWrapper
+import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.squareup.moshi.Json
 import java.util.*
 
 /**
- * Entity representing a wrapper around a user that liked a vlog.
+ *  Entity representing a wrapper around a user that liked a vlog.
+ *  Note that the follow request status property is nullable. The
+ *  [FollowRequestStatus.NONEXISTENT] enum flag only exists in this
+ *  app, not in the API. Having a status as null indicates no follow
+ *  request exists, hence we explicitly map this when going from data
+ *  to domain.
  */
 class VlogLikingUserWrapperEntity(
     @field:Json(name = "vlogOwnerId") val vlogOwnerId: UUID,
-    @field:Json(name = "isVlogOwnerFollowingVlogLikingUser") val isVlogOwnerFollowingVlogLikingUser: Boolean,
+    @field:Json(name = "followRequestStatus") val followRequestStatus: Int?,
     @field:Json(name = "vlogLike") val vlogLikeEntity: VlogLikeEntity,
     @field:Json(name = "vlogLikingUser") val vlogLikingUser: UserEntity
 )
@@ -19,7 +25,7 @@ class VlogLikingUserWrapperEntity(
  */
 fun VlogLikingUserWrapperEntity.mapToDomain(): LikingUserWrapper = LikingUserWrapper(
     vlogOwnerId = vlogOwnerId,
-    isVlogOwnerFollowingVlogLikingUser = isVlogOwnerFollowingVlogLikingUser,
+    followRequestStatus = if (followRequestStatus == null) FollowRequestStatus.NONEXISTENT else FollowRequestStatus.values()[followRequestStatus],
     vlogLikeEntity = vlogLikeEntity.mapToDomain(),
     vlogLikingUser = vlogLikingUser.mapToDomain()
 )

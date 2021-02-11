@@ -2,12 +2,15 @@ package com.laixer.swabbr.presentation.likeoverview
 
 import android.content.Context
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.model.LikingUserWrapper
+import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.presentation.model.LikingUserWrapperItem
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.utils.loadAvatar
@@ -25,7 +28,7 @@ import kotlinx.android.synthetic.main.liking_user_list_item.view.*
 class LikingUserAdapter(
     val context: Context,
     val onProfileClick: (LikingUserWrapperItem) -> Unit,
-    val onFollowClick: (LikingUserWrapperItem) -> Unit
+    val onFollowClick: (LikingUserWrapperItem, Button) -> Unit
 ) :
     ListAdapter<LikingUserWrapperItem, LikingUserAdapter.ViewHolder>(LikingUserDiffCallback()) {
 
@@ -46,7 +49,15 @@ class LikingUserAdapter(
             itemView.user_nickname.text = context.getString(R.string.nickname, item.vlogLikingUser.nickname)
 
             itemView.include_user_profile.setOnClickListener { onProfileClick.invoke(item) }
-            itemView.user_follow_button.setOnClickListener { onFollowClick.invoke(item) }
+            itemView.user_follow_button.setOnClickListener { onFollowClick.invoke(item, itemView.user_follow_button) }
+
+            // Control the follow button according to the follow request status.
+            when (item.followRequestStatus) {
+                FollowRequestStatus.ACCEPTED -> itemView.user_follow_button.isVisible = false
+                FollowRequestStatus.DECLINED -> itemView.user_follow_button.isVisible = true
+                FollowRequestStatus.PENDING -> itemView.user_follow_button.isVisible = false
+                FollowRequestStatus.NONEXISTENT -> itemView.user_follow_button.isVisible = true
+            }
         }
     }
 }

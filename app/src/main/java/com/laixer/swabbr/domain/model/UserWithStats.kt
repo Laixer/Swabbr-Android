@@ -15,7 +15,7 @@ data class UserWithStats(
     val country: String?,
     val nickname: String,
     val profileImage: String?,
-    val totalLikes: Int,
+    val totalLikesReceived: Int,
     val totalFollowers: Int,
     val totalFollowing: Int,
     val totalReactionsGiven: Int,

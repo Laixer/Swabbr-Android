@@ -72,6 +72,21 @@
         tools:text="@string/placeholder_nickname"
         tools:visibility="visible" />
 
+
+    <!-- Delete button, only shows for your own reactions. -->
+    <ImageButton
+        android:id="@+id/button_reaction_delete"
+        android:layout_width="@dimen/medium_icon_size"
+        android:layout_height="@dimen/medium_icon_size"
+        android:layout_gravity="center"
+        android:layout_marginEnd="@dimen/content_margin_small"
+        android:background="@color/transparent"
+        android:src="@drawable/ic_baseline_delete"
+        app:layout_constraintBottom_toBottomOf="@+id/video_user_profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/video_user_profile_image" />
+
+
     <!-- Background fill, pushed to the background using translationZ. -->
     <View
         android:id="@+id/reaction_overlay"
@@ -86,5 +101,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/video_user_profile_image"
         app:layout_constraintVertical_bias="0.51" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

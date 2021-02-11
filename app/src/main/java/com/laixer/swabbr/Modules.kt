@@ -75,7 +75,7 @@ val authModule: Module = module {
 val viewModelModule: Module = module {
     viewModel { MainActivityViewModel(userManager = get()) }
     viewModel { AuthUserViewModel(userManager = get(), authUserUseCase = get(), followUseCase = get()) }
-    viewModel { LikeOverviewViewModel(authUserUseCase = get(), vlogLikeOverviewUseCase = get(), followUseCase = get()) }
+    viewModel { LikeOverviewViewModel(vlogLikeOverviewUseCase = get(), followUseCase = get()) }
     viewModel { AuthViewModel(userManager = get(), authUserUseCase = get(), authUseCase = get(), firebaseMessaging = get()) }
     viewModel { ProfileViewModel(usersUseCase = get(), vlogUseCase = get(), followUseCase = get(), authUserUseCase = get()) }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogUseCase = get()) }

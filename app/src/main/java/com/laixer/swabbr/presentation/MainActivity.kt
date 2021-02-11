@@ -67,9 +67,14 @@ class MainActivity : AppCompatActivity() {
         vm.probeAuthToken()
     }
 
+    // TODO This is an absolute mess. A lot of this code has been commented out
+    //      because it introduced major navigation bugs, having two dashboards on
+    //      top of each other. The entire auth functionality must be refactored.
+
     // TODO Here lies the bug that doesn't take us to the recording screen after a
     //      notification takes us to the login screen because we aren't logged in yet
     //      or don't have a valid jwt token anymore.
+
     // TODO This shouldn't handle our styling...
     /**
      *  Determines where we will go based on having/getting our
@@ -87,18 +92,18 @@ class MainActivity : AppCompatActivity() {
                 /* We can load the app */
                 // setTheme(R.style.Theme_Swabbr) TODO
 
-                if (!navHostFragment.navController.popBackStack(R.id.dashboard_dest, false)) {
-                    // Force the user back to the login screen
-                    navHostFragment.navController.navigate(
-                        R.id.dashboard_dest,
-                        null,
-                        NavOptions.Builder().build()
-                    )
-                }
-
-                if (navHostState !== null) {
-                    navHostFragment.navController.restoreState(navHostState)
-                }
+//                if (!navHostFragment.navController.popBackStack(R.id.dashboard_dest, false)) {
+//                    // Force the user back to the login screen
+//                    navHostFragment.navController.navigate(
+//                        R.id.dashboard_dest,
+//                        null,
+//                        NavOptions.Builder().build()
+//                    )
+//                }
+//
+//                if (navHostState !== null) {
+//                    navHostFragment.navController.restoreState(navHostState)
+//                }
 
             }
             ResourceState.ERROR -> {

@@ -7,21 +7,38 @@
     android:orientation="vertical"
     tools:context=".presentation.search.SearchFragment">
 
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_margin_medium"
+        android:layout_marginTop="@dimen/content_margin_small"
+        android:text="@string/info_search"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_margin_medium"
+        android:layout_marginTop="@dimen/content_margin_medium"
         app:iconifiedByDefault="false"
-        app:queryHint="@string/search_hint"
         app:layout_constraintBottom_toTopOf="@id/swipeRefreshLayout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:queryHint="@string/search_hint" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/content_margin_small"
+        android:layout_marginTop="@dimen/content_margin_medium"
+        android:layout_marginStart="@dimen/content_margin_large"
+        android:layout_marginEnd="@dimen/content_margin_medium"
         android:animateLayoutChanges="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

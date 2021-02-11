@@ -8,6 +8,7 @@ import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.usecase.ReactionUseCase
+import com.laixer.swabbr.domain.usecase.VlogUseCase
 import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.mapToDomain

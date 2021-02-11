@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.laixer.presentation.Resource
@@ -16,7 +18,6 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.LikingUserWrapperItem
 import kotlinx.android.synthetic.main.fragment_like_overview.*
-import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -25,20 +26,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class LikeOverviewFragment : AuthFragment() {
     private val likeOverviewVm: LikeOverviewViewModel by viewModel()
     private lateinit var likingUserAdapter: LikingUserAdapter
-
-    /**
-     *  Callback for when we click a user.
-     */
-    private val onProfileClick: (LikingUserWrapperItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.vlogLikingUser.id}"))
-    }
-
-    /**
-     *  Callback for when we click a follow button.
-     */
-    private val onFollowClick: (LikingUserWrapperItem) -> Unit = {
-        // TODO
-    }
 
     /**
      *  Sets up observers.
@@ -76,6 +63,28 @@ class LikeOverviewFragment : AuthFragment() {
     }
 
     /**
+     *  Callback for when we click a user. This will take
+     *  user to the profile of the clicked user.
+     */
+    private val onProfileClick: (LikingUserWrapperItem) -> Unit = {
+        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.vlogLikingUser.id}"))
+    }
+
+    /**
+     *  Callback for when we click a follow button. This
+     *  will follow said user and trigger the button UI
+     *  update process.
+     */
+    private val onFollowClick: (LikingUserWrapperItem, Button) -> Unit =
+        { wrapper: LikingUserWrapperItem, button: Button ->
+            likeOverviewVm.follow(wrapper.vlogLikingUser.id)
+
+            // TODO This should respond to the result of the actual follow()
+            //  method using some resource in the view model. For now this is fine.
+            button.isVisible = false
+        }
+
+    /**
      *  Called when the [likeOverviewVm] vlog liking users resource changes.
      */
     private fun onVlogLikingUsersLoaded(resource: Resource<List<LikingUserWrapperItem>>) = with(resource) {
@@ -86,7 +95,10 @@ class LikeOverviewFragment : AuthFragment() {
             ResourceState.SUCCESS -> {
                 swipe_refresh_layout_liking_users.stopRefreshing()
 
-                data?.let { likingUserAdapter.submitList(it) }
+                data?.let {
+                    likingUserAdapter.submitList(it)
+                    likingUserAdapter.notifyDataSetChanged()
+                }
             }
             ResourceState.ERROR -> {
                 swipe_refresh_layout_liking_users.stopRefreshing()

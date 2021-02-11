@@ -1,5 +1,6 @@
 package com.laixer.swabbr.domain.model
 
+import com.laixer.swabbr.domain.types.FollowRequestStatus
 import java.util.*
 
 /**
@@ -7,7 +8,7 @@ import java.util.*
  */
 data class LikingUserWrapper(
     val vlogOwnerId: UUID,
-    val isVlogOwnerFollowingVlogLikingUser: Boolean,
+    val followRequestStatus: FollowRequestStatus,
     val vlogLikeEntity: VlogLike,
     val vlogLikingUser: User
 )

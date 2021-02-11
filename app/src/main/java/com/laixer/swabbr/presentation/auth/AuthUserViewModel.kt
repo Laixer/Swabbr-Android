@@ -91,31 +91,47 @@ open class AuthUserViewModel constructor(
             )
         )
 
-    fun acceptRequest(requesterId: UUID) = compositeDisposable.add(
-        followUseCase
-            .acceptRequest(requesterId)
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    followRequests.value?.data?.let { list ->
-                        followRequests.setSuccess(list.toMutableList().apply {
-                            find { it.first.requesterId == requesterId }?.let { pair ->
-                                remove(pair)
-                                add(
-                                    Pair(
-                                        pair.first.apply { requestStatus = FollowRequestStatus.ACCEPTED },
-                                        pair.second
+    /**
+     *  Accepts an incoming follow request for the current user.
+     *  Note that this also bumps the follower count by one. This
+     *  is done locally, no data is fetched.
+     *
+     *  @param requesterId The user that wants to follow us.
+     */
+    fun acceptRequest(requesterId: UUID) {
+        // First bump for instant UI update
+        if (statistics.value?.data != null) {
+            val newTotalFollowers = statistics.value!!.data!!.totalFollowers + 1
+            statistics.setSuccess(statistics.value!!.data!!.copy(totalFollowers = newTotalFollowers))
+        }
+
+        // Then send
+        compositeDisposable.add(
+            followUseCase
+                .acceptRequest(requesterId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        followRequests.value?.data?.let { list ->
+                            followRequests.setSuccess(list.toMutableList().apply {
+                                find { it.first.requesterId == requesterId }?.let { pair ->
+                                    remove(pair)
+                                    add(
+                                        Pair(
+                                            pair.first.apply { requestStatus = FollowRequestStatus.ACCEPTED },
+                                            pair.second
+                                        )
                                     )
-                                )
-                            }
-                        })
+                                }
+                            })
+                        }
+                    },
+                    {
+                        followRequests.setError(it.message)
                     }
-                },
-                {
-                    followRequests.setError(it.message)
-                }
-            )
-    )
+                )
+        )
+    }
 
     fun declineRequest(requesterId: UUID) = compositeDisposable.add(
         followUseCase
@@ -152,7 +168,7 @@ open class AuthUserViewModel constructor(
     /**
      *  Get the id of the current user.
      */
-    fun getAuthUserId(): UUID? = this.authUserUseCase.getSelfId()
+    fun getAuthUserId(): UUID = this.authUserUseCase.getSelfId()
 
     override fun onCleared() {
         compositeDisposable.dispose()

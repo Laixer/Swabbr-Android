@@ -23,6 +23,14 @@ class VlogUseCase constructor(
     private val vlogLikeRepository: VlogLikeRepository,
     private val reactionRepository: ReactionRepository
 ) {
+    // FUTURE Do this smarter, the backend allows us to do so.
+    /**
+     *  Adds a single view to the vlog with id [vlogId].
+     *
+     *  @param vlogId The vlog we watched.
+     */
+    fun addView(vlogId: UUID): Completable = vlogRepository.addView(VlogViews(vlogId))
+
     /**
      *  Gets all recommended vlogs for the currently authenticated
      *  user. The result is returned as vlog wrapper objects.
@@ -137,8 +145,8 @@ class VlogUseCase constructor(
                 .getVlogLikeSummary(pair.second.id)
                 .map { summary ->
                     VlogWrapper(
-                        pair.first,
-                        pair.second,
+                        pair.first, // The user
+                        pair.second, // The vlog
                         summary
                     )
                 }
@@ -172,8 +180,8 @@ class VlogUseCase constructor(
                 .getVlogLikeSummary(pair.second.id)
                 .map { summary ->
                     VlogWrapper(
-                        pair.first,
-                        pair.second,
+                        pair.first, // The user
+                        pair.second, // The vlog
                         summary
                     )
                 }

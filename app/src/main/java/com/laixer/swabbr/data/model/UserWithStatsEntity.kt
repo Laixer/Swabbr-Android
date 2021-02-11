@@ -16,7 +16,7 @@ data class UserWithStatsEntity(
     @field:Json(name = "country") val country: String?,
     @field:Json(name = "nickname") val nickname: String,
     @field:Json(name = "profileImageBase64Encoded") val profileImage: String?,
-    @field:Json(name = "totalLikes") val totalLikes: Int,
+    @field:Json(name = "totalLikesReceived") val totalLikesReceived: Int,
     @field:Json(name = "totalFollowers") val totalFollowers: Int,
     @field:Json(name = "totalFollowing") val totalFollowing: Int,
     @field:Json(name = "totalReactionsGiven") val totalReactionsGiven: Int,
@@ -29,18 +29,18 @@ data class UserWithStatsEntity(
  * Map a user with stats from data to domain.
  */
 fun UserWithStatsEntity.mapToDomain(): UserWithStats = UserWithStats(
-    id,
-    firstName,
-    lastName,
-    Gender.values()[gender],
-    country,
-    nickname,
-    profileImage,
-    totalLikes,
-    totalFollowers,
-    totalFollowing,
-    totalReactionsGiven,
-    totalReactionsReceived,
-    totalVlogs,
-    totalViews
+    id = id,
+    firstName = firstName,
+    lastName = lastName,
+    gender = Gender.values()[gender],
+    country = country,
+    nickname = nickname,
+    profileImage = profileImage,
+    totalLikesReceived = totalLikesReceived,
+    totalFollowers = totalFollowers,
+    totalFollowing = totalFollowing,
+    totalReactionsGiven = totalReactionsGiven,
+    totalReactionsReceived = totalReactionsReceived,
+    totalVlogs = totalVlogs,
+    totalViews = totalViews
 )

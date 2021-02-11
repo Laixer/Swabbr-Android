@@ -7,20 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.AuthFragment
-import kotlinx.android.synthetic.main.exo_player_view.*
 import kotlinx.android.synthetic.main.fragment_video.*
 
 // TODO Orientation is wrong sometimes.
 // TODO Swipe refresh layout?
 /**
  *  Fragment for video playback. This is used both for vlog
- *  playback and for reaction playback.
+ *  playback and for reaction playback. This implements the
+ *  [Player.EventListener] interface to allow us to observe
+ *  [video_player] events.
  */
-open class WatchVideoFragment : AuthFragment() {
+open class WatchVideoFragment : Player.EventListener, AuthFragment() {
     private val exoPlayer: ExoPlayer by lazy { ExoPlayerFactory.newSimpleInstance(requireContext()) }
 
     /**
@@ -36,7 +38,8 @@ open class WatchVideoFragment : AuthFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO video_playback_loading_icon.visibility = View.VISIBLE
+        // Add this object as an event listener to the player.
+        exoPlayer.addListener(this)
     }
 
     /**
@@ -67,12 +70,14 @@ open class WatchVideoFragment : AuthFragment() {
         }
     }
 
+    // TODO This is fragment.onResume(). Correct? I think not.
     override fun onResume() {
         super.onResume()
         exoPlayer.playWhenReady = true
         exoPlayer.seekTo(0)
     }
 
+    // TODO This is fragment.onPause(). Correct? I Think not.
     override fun onPause() {
         super.onPause()
         video_player?.overlayFrameLayout?.removeAllViews()

@@ -1,7 +1,9 @@
 package com.laixer.swabbr.domain.model
 
-// TODO
+import java.util.*
+
+// FUTURE This doesn't utilize the full dictionary potential which the backend allows.
 /**
  *  Data class for adding vlog views.
  */
-class VlogViews()
+class VlogViews(val vlogId: UUID)

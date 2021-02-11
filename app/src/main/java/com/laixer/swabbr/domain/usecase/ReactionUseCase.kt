@@ -20,6 +20,13 @@ class ReactionUseCase constructor(
     private val reactionRepository: ReactionRepository
 ) {
     /**
+     *  Deletes a reaction. This will only work if we own the reaction.
+     *
+     *  @param reactionId The reaction to delete.
+     */
+    fun deleteReaction(reactionId: UUID) : Completable = reactionRepository.delete(reactionId)
+
+    /**
      *  Gets a single reaction wrapper.
      *
      *  @param reactionId The id of the reaction.

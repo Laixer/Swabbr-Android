@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.injectFeature
@@ -19,7 +17,9 @@ import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-
+// TODO Question: this gets the vlog user and vlog like summary as well
+//      for each vlog. We never display this information in this fragment
+//      thus we make a lot of unnecessary backend calls. Change this?
 /**
  *  Fragment representing the user dashboard, displaying vlogs.
  *  This uses the [WatchVideoListFragment] to display swipeable
@@ -33,15 +33,13 @@ class DashboardFragment : WatchVideoListFragment() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        var act = requireActivity()
+
         if (savedInstanceState == null) {
             vlogListVm.getRecommendedVlogs(refresh = false)
         }
     }
-
-    /** TODO I believe we don't need this anymore since we use the [WatchVideoListFragment].
-     *   We might want to use additional functionality to the dashboard, then we will need this. */
-    // override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-    //     inflater.inflate(R.layout.fragment_dashboard, container, false)
 
     /**
      *  Attaches the observers to the [vlogListVm] vlogs resource,
@@ -49,6 +47,11 @@ class DashboardFragment : WatchVideoListFragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        var act = requireActivity()
+
+        val index = savedInstanceState?.getInt("CURRENT_ITEM_INDEX")
+
         injectFeature()
 
         // Reduce swipe sensitivity
@@ -74,14 +77,11 @@ class DashboardFragment : WatchVideoListFragment() {
     private fun updateVlogsFromViewModel(res: Resource<List<VlogWrapperItem>>) = with(res) {
         when (state) {
             ResourceState.LOADING -> {
-                // TODO
             }
             ResourceState.SUCCESS -> {
-                //swipeRefreshLayout.stopRefreshing()
                 video_viewpager.adapter?.notifyDataSetChanged()
             }
             ResourceState.ERROR -> {
-                // TODO Clean up, don't hard code, what to do here?
                 Toast.makeText(requireContext(), "Error loading recommended vlogs", Toast.LENGTH_SHORT).show()
             }
         }
