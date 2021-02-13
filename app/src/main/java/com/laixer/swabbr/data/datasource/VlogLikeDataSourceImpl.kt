@@ -28,9 +28,6 @@ class VlogLikeDataSourceImpl constructor(
     override fun getLikes(vlogId: UUID, pagination: Pagination): Single<List<VlogLike>> =
         api.getVlogLikes(vlogId, pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
-    override fun getVlogLikingUsers(pagination: Pagination): Single<List<LikingUserWrapper>> =
-        api.getVlogLikingUsers(pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
-
     override fun like(vlogId: UUID): Completable = api.like(vlogId)
 
     override fun unlike(vlogId: UUID): Completable = api.unlike(vlogId)

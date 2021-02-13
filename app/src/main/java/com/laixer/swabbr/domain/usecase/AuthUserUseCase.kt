@@ -16,7 +16,7 @@ class AuthUserUseCase constructor(
     private val userRepository: UserRepository,
     private val followRequestRepository: FollowRequestRepository
 ) {
-    // TODO This seems suboptimal
+    // TODO This can be improved, don't do this.
     /**
      *  Gets the id of the currently authenticated user.
      */

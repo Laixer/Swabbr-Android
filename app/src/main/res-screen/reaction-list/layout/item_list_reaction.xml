@@ -16,16 +16,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@id/video_user_profile_image"
+        app:layout_constraintBottom_toBottomOf="@id/user_profile_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintGuide_percent="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/video_user_profile_image" />
+        app:layout_constraintTop_toTopOf="@id/user_profile_image" />
 
     <!-- User profile image -->
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/video_user_profile_image"
+        android:id="@+id/user_profile_image"
         android:layout_width="@dimen/medium_profile_image_size"
         android:layout_height="@dimen/medium_profile_image_size"
         android:layout_gravity="center"
@@ -50,7 +50,7 @@
         android:textSize="14sp"
         android:transitionName="userUsername"
         app:layout_constraintBottom_toTopOf="@+id/guideline_reaction_item"
-        app:layout_constraintStart_toEndOf="@+id/video_user_profile_image"
+        app:layout_constraintStart_toEndOf="@+id/user_profile_image"
         tools:text="@string/placeholder_display_name"
         tools:visibility="visible" />
 
@@ -82,9 +82,9 @@
         android:layout_marginEnd="@dimen/content_margin_small"
         android:background="@color/transparent"
         android:src="@drawable/ic_baseline_delete"
-        app:layout_constraintBottom_toBottomOf="@+id/video_user_profile_image"
+        app:layout_constraintBottom_toBottomOf="@+id/user_profile_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/video_user_profile_image" />
+        app:layout_constraintTop_toTopOf="@+id/user_profile_image" />
 
 
     <!-- Background fill, pushed to the background using translationZ. -->
@@ -96,10 +96,10 @@
         android:background="@color/color_transparent_overlay"
         android:translationZ="-1dp"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/video_user_profile_image"
+        app:layout_constraintBottom_toBottomOf="@+id/user_profile_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/video_user_profile_image"
+        app:layout_constraintTop_toTopOf="@+id/user_profile_image"
         app:layout_constraintVertical_bias="0.51" />
 
 

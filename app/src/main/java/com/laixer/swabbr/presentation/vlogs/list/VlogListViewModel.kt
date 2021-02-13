@@ -23,7 +23,6 @@ class VlogListViewModel constructor(
     /**
      *  Used as resource to store vlogs. Note that all get list
      *  functions use this as their storage target.
-     *  TODO Bad design?
      */
     val vlogs = MutableLiveData<Resource<List<VlogWrapperItem>>>()
 

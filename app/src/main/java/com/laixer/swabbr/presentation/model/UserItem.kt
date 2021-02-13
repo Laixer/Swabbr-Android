@@ -1,10 +1,12 @@
 package com.laixer.swabbr.presentation.model
 
 import com.laixer.swabbr.domain.model.User
+import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.domain.types.Gender
 import java.util.*
 
-data class UserItem(
+// TODO Look at inheritance
+open class UserItem(
     val id: UUID,
     val firstName: String?,
     val lastName: String?,
@@ -32,30 +34,55 @@ data class UserItem(
 
         return nickname
     }
-
-    // TODO Do we need more?
-    fun equals(compare: UserItem): Boolean = this.id == compare.id
-//        firstName == compare.firstName
-//            && lastName == compare.lastName
-//            && gender == compare.gender
-//            && country == compare.country
-//            && birthdate == compare.birthdate
-//            && nickname == compare.nickname
-//            && profileImage == compare.profileImage
-//            && isPrivate == compare.isPrivate
 }
+
+/**
+ *  Maps a single [UserItem] to a [UserWithRelationItem] based on a
+ *  specified [requestingUserId] and [followRequestStatus].
+ *
+ *  @param requestingUserId The user on which the relation is based.
+ *  @param followRequestStatus The follow request status of the relation.
+ */
+fun UserItem.mapToUserWithRelationItem(
+    requestingUserId: UUID,
+    followRequestStatus: FollowRequestStatus
+): UserWithRelationItem = UserWithRelationItem(
+    requestingUserId = requestingUserId,
+    followRequestStatus = followRequestStatus,
+    user = UserItem(
+        id = id,
+        firstName = firstName,
+        lastName = lastName,
+        gender = gender,
+        country = country,
+        nickname = nickname,
+        profileImage = profileImage
+    )
+)
+
+/**
+ *  Maps a single [UserItem] to a [UserWithRelationItem] based on a
+ *  specified [requestingUserId] and [followRequestStatus].
+ *
+ *  @param requestingUserId The user on which the relation is based for each item.
+ *  @param followRequestStatus The follow request status of the relation for each item.
+ */
+fun List<UserItem>.mapToUserWithRelationItem(
+    requestingUserId: UUID,
+    followRequestStatus: FollowRequestStatus
+): List<UserWithRelationItem> = map { it.mapToUserWithRelationItem(requestingUserId, followRequestStatus) }
 
 /**
  * Map a user from presentation to domain.
  */
 fun UserItem.mapToDomain(): User = User(
-    id,
-    firstName,
-    lastName,
-    gender,
-    country,
-    nickname,
-    profileImage
+    id = id,
+    firstName = firstName,
+    lastName = lastName,
+    gender = gender,
+    country = country,
+    nickname = nickname,
+    profileImage = profileImage
 )
 
 /**

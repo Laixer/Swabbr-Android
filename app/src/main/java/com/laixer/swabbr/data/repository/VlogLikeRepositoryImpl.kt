@@ -29,9 +29,6 @@ class VlogLikeRepositoryImpl constructor(
     override fun getLikes(vlogId: UUID, pagination: Pagination): Single<List<VlogLike>> =
         remoteDataSource.getLikes(vlogId, pagination)
 
-    override fun getVlogLikingUsers(pagination: Pagination): Single<List<LikingUserWrapper>> =
-        remoteDataSource.getVlogLikingUsers(pagination)
-
     override fun like(vlogId: UUID): Completable = remoteDataSource.like(vlogId)
 
     override fun unlike(vlogId: UUID): Completable = remoteDataSource.unlike(vlogId)

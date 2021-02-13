@@ -24,12 +24,13 @@ import com.laixer.swabbr.presentation.utils.onActivityResult
 import com.laixer.swabbr.presentation.utils.selectProfileImage
 import com.laixer.swabbr.utils.encodeToBase64
 import com.laixer.swabbr.utils.loadAvatar
-import kotlinx.android.synthetic.main.fragment_auth_profile_details.*
-import kotlinx.android.synthetic.main.fragment_auth_profile_details.fab_set_profile_image
-import kotlinx.android.synthetic.main.fragment_auth_profile_details.inputNickname
+import kotlinx.android.synthetic.main.fragment_profile_details.*
 import kotlinx.android.synthetic.main.fragment_registration.*
+import kotlinx.android.synthetic.main.fragment_registration.fab_set_profile_image
+import kotlinx.android.synthetic.main.fragment_registration.inputNickname
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.time.LocalDate
+import java.util.*
 
 // TODO This doesn't allow us to set any properties to null. Maybe we want this for first name and last name?
 /**
@@ -39,9 +40,13 @@ import java.time.LocalDate
  *  Note that this makes an API call each time we modify a value.
  *  This might be suboptimal TODO Fix.
  *
- *  Note that the follow mode is controller by [switchIsPrivate].
+ *  Note that the follow mode is controlled by [switchIsPrivate].
+ *
+ *  @param userId The id of the profile we are looking at. Note that at
+ *                the moment this will always be the current user. This
+ *                might change in the future.
  */
-class AuthProfileDetailsFragment: AuthFragment() {
+class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
     private val authVm: AuthViewModel by sharedViewModel()
 
     /**
@@ -50,6 +55,7 @@ class AuthProfileDetailsFragment: AuthFragment() {
      */
     private lateinit var userOriginal: UserCompleteItem
 
+    // TODO CRASH kotlin.UninitializedPropertyAccessException: lateinit property userUpdatableProperties has not been initialized
     /**
      *  Object which we modify. If we confirm, this object will
      *  be sent to the backend for the user update procedure.
@@ -62,7 +68,7 @@ class AuthProfileDetailsFragment: AuthFragment() {
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         authUserVm.user.observe(viewLifecycleOwner, Observer { updatePropertiesFromViewModel(it) })
-        return inflater.inflate(R.layout.fragment_auth_profile_details, container, false)
+        return inflater.inflate(R.layout.fragment_profile_details, container, false)
     }
 
     /**
@@ -112,6 +118,8 @@ class AuthProfileDetailsFragment: AuthFragment() {
                 }
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    if (!::userOriginal.isInitialized) { return }
+
                     // TODO This is bad design, no guarantee of position matching desired value.
                     userUpdatableProperties.gender = Gender.values().first { it.ordinal == position }
                 }
@@ -132,6 +140,8 @@ class AuthProfileDetailsFragment: AuthFragment() {
                 }
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    if (!::userOriginal.isInitialized) { return }
+
                     // TODO This is bad design, no guarantee of position matching desired value.
                     userUpdatableProperties.dailyVlogRequestLimit = position
                 }
@@ -187,7 +197,7 @@ class AuthProfileDetailsFragment: AuthFragment() {
      */
     private fun setFormValues(user: UserCompleteItem) {
         user_profile_profile_image_insettings.loadAvatar(user.profileImage, user.id)
-        //inputBirthDate.set TODO
+        //inputBirthDate.set TODO Fix birth date
         inputNickname.setText(user.nickname)
         inputFirstName.setText(user.firstName)
         inputLastName.setText(user.lastName)
@@ -201,6 +211,8 @@ class AuthProfileDetailsFragment: AuthFragment() {
      */
     private fun confirmChanges() {
         authUserVm.updateGetSelf(userUpdatableProperties)
+
+        // TODO Move functionality to profile vm and update locally as well.
     }
 
     /**
@@ -220,8 +232,10 @@ class AuthProfileDetailsFragment: AuthFragment() {
             }
             ResourceState.SUCCESS -> {
                 res.data?.let { user ->
-                    userOriginal = user.copy()
+                    /** First the updatable properties, then the other. This is because
+                    we check the userOriginal during calls in [onViewCreated]. */
                     userUpdatableProperties = user.extractUpdatableProperties() // TODO Not null assignment?
+                    userOriginal = user.copy()
                     setFormValues(user)
                 }
             }

@@ -81,7 +81,7 @@ val viewModelModule: Module = module {
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogUseCase = get()) }
     viewModel { VlogViewModel(authUserUseCase = get(), reactionsUseCase = get(), vlogUseCase = get()) }
     viewModel { VlogRecordingViewModel(mHttpClient = get(), vlogUseCase = get(), context = androidContext()) }
-    viewModel { SearchViewModel(usersUseCase = get()) }
+    viewModel { SearchViewModel(usersUseCase = get(), followUseCase = get()) }
     viewModel { ReactionViewModel(mHttpClient = get(), reactionsUseCase = get(), context = androidContext()) }
 }
 
@@ -90,7 +90,7 @@ val useCaseModule: Module = module {
     factory { AuthUseCase(authRepository = get()) }
     factory { UsersUseCase(userRepository = get()) }
     factory { VlogUseCase(userRepository = get(), vlogRepository = get(), vlogLikeRepository = get(), reactionRepository = get()) }
-    factory { VlogLikeOverviewUseCase(vlogLikeRepository = get()) }
+    factory { VlogLikeOverviewUseCase(vlogLikeRepository = get(), userRepository = get()) }
     factory { ReactionUseCase(userRepository = get(), reactionRepository = get()) }
     factory { FollowUseCase(followRequestRepository = get(), userRepository = get()) }
 }

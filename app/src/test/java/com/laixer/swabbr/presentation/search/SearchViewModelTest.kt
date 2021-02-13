@@ -55,7 +55,7 @@ class SearchViewModelTest {
         verify(mockUsersUseCase).search(query)
         assertEquals(
             Resource(ResourceState.SUCCESS, itemList, null),
-            viewModel.profiles.value
+            viewModel.users.value
         )
     }
 
@@ -69,7 +69,7 @@ class SearchViewModelTest {
         verify(mockUsersUseCase).search(query)
         assertEquals(
             Resource(state = ResourceState.ERROR, data = null, message = throwable.message),
-            viewModel.profiles.value
+            viewModel.users.value
         )
     }
 }

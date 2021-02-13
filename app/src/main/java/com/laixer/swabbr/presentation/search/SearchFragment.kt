@@ -17,9 +17,11 @@ import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.Pagination
 import com.laixer.swabbr.domain.types.SortingOrder
+import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
-import com.laixer.swabbr.presentation.model.UserItem
+import com.laixer.swabbr.presentation.model.UserWithRelationItem
+import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -28,15 +30,22 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  */
 class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
     private val vm: SearchViewModel by sharedViewModel()
-    private var userAdapter: UserAdapter? = null
+    private var userAdapter: UserWithRelationAdapter? = null
     private var currentPage: Int = 1
     private var lastQuery: String = ""
 
     /**
      *  Callback for when we click a user item.
      */
-    private val onClickUser: (UserItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.id}"))
+    private val onClickProfile: (UserWithRelationItem) -> Unit = {
+        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
+    }
+
+    /**
+     *  Callback for when we click a follow button.
+     */
+    private val onClickFollow: (UserWithRelationItem) -> Unit = {
+        vm.follow(it.user.id)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -47,7 +56,11 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
-        userAdapter = UserAdapter(requireContext(), onClickUser)
+        userAdapter = UserWithRelationAdapter(
+            context = requireContext(),
+            onClickProfile = onClickProfile,
+            onClickFollow = onClickFollow
+        )
 
         searchRecyclerView.apply {
             isNestedScrollingEnabled = false
@@ -64,7 +77,7 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
             })
         }
 
-        swipeRefreshLayout.setOnRefreshListener { search(lastQuery) }
+        swipe_refresh_layout_search.setOnRefreshListener { search(lastQuery) }
 
         searchView.run {
             search(lastQuery, 1, true)
@@ -81,7 +94,7 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         }
 
         vm.run {
-            profiles.observe(viewLifecycleOwner, Observer(this@SearchFragment::updateUsers))
+            users.observe(viewLifecycleOwner, Observer(this@SearchFragment::updateUsers))
         }
     }
 
@@ -120,18 +133,22 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
      *  Called when the observed user search result
      *  resource in [vm] changes.
      */
-    private fun updateUsers(resource: Resource<List<UserItem>>) {
+    private fun updateUsers(resource: Resource<List<UserWithRelationItem>>) {
         resource.run {
-            swipeRefreshLayout.run {
-                when (state) {
-                    ResourceState.LOADING -> startRefreshing()
-                    ResourceState.SUCCESS -> {
-                        stopRefreshing()
-                        data?.let { userAdapter?.submitList(it) }
+            when (state) {
+                ResourceState.LOADING -> swipe_refresh_layout_search.startRefreshing()
+                ResourceState.SUCCESS -> {
+                    swipe_refresh_layout_search.stopRefreshing()
+
+                    data?.let {
+                        userAdapter?.submitList(it)
+                        userAdapter?.notifyDataSetChanged() // TODO Do we have to call this at all?
                     }
-                    ResourceState.ERROR -> {
-                        stopRefreshing()
-                    }
+                }
+                ResourceState.ERROR -> {
+                    swipe_refresh_layout_search.stopRefreshing()
+
+                    showMessage("Error searching users")
                 }
             }
         }

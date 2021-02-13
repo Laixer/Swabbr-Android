@@ -66,10 +66,10 @@ class ProfileViewModelTest {
         whenever(mockUsersUseCase.get(userId, false))
             .thenReturn(Single.just(model))
         // when
-        viewModel.getProfile(userId, false)
+        viewModel.getUser(userId, false)
         // then
         verify(mockUsersUseCase).get(userId, false)
-        assertTrue(ReflectionEquals(item).matches(viewModel.profile.value))
+        assertTrue(ReflectionEquals(item).matches(viewModel.user.value))
     }
 
     @Test
@@ -77,7 +77,7 @@ class ProfileViewModelTest {
         // given
         whenever(mockUserVlogsUseCase.getAllFromUser(userId, false)).thenReturn(Single.just(profileVlogs.second))
         // when
-        viewModel.getProfileVlogs(userId, false)
+        viewModel.getVlogsByUser(userId, false)
         // then
         verify(mockUserVlogsUseCase).getAllFromUser(userId, false)
         assertEquals(
@@ -85,7 +85,7 @@ class ProfileViewModelTest {
                 state = ResourceState.SUCCESS,
                 data = vlogItemList,
                 message = null
-            ), viewModel.profileVlogs.value
+            ), viewModel.userVlogs.value
         )
     }
 
@@ -94,12 +94,12 @@ class ProfileViewModelTest {
         // given
         whenever(mockUserVlogsUseCase.getAllFromUser(userId, true)).thenReturn(Single.error(throwable))
         // when
-        viewModel.getProfileVlogs(userId, true)
+        viewModel.getVlogsByUser(userId, true)
         // then
         verify(mockUserVlogsUseCase).getAllFromUser(userId, true)
         assertEquals(
             Resource(state = ResourceState.ERROR, data = null, message = throwable.message),
-            viewModel.profileVlogs.value
+            viewModel.userVlogs.value
         )
     }
 
@@ -118,7 +118,7 @@ class ProfileViewModelTest {
                 state = ResourceState.SUCCESS,
                 data = followRequestItem,
                 message = null
-            ), viewModel.followStatus.value
+            ), viewModel.followRequestAsCurrentUser.value
         )
     }
 
@@ -132,7 +132,7 @@ class ProfileViewModelTest {
         verify(mockFollowUseCase).getFollowStatus(userId)
         assertEquals(
             Resource(state = ResourceState.ERROR, data = null, message = throwable.message),
-            viewModel.followStatus.value
+            viewModel.followRequestAsCurrentUser.value
         )
     }
 }

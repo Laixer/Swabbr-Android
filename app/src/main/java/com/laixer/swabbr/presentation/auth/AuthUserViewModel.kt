@@ -102,7 +102,8 @@ open class AuthUserViewModel constructor(
         // First bump for instant UI update
         if (statistics.value?.data != null) {
             val newTotalFollowers = statistics.value!!.data!!.totalFollowers + 1
-            statistics.setSuccess(statistics.value!!.data!!.copy(totalFollowers = newTotalFollowers))
+            statistics.value!!.data!!.totalFollowers = newTotalFollowers
+            statistics.setSuccess(statistics.value!!.data!!)
         }
 
         // Then send
@@ -168,7 +169,7 @@ open class AuthUserViewModel constructor(
     /**
      *  Get the id of the current user.
      */
-    fun getAuthUserId(): UUID = this.authUserUseCase.getSelfId()
+    fun getSelfId(): UUID = this.authUserUseCase.getSelfId()
 
     override fun onCleared() {
         compositeDisposable.dispose()

@@ -9,7 +9,8 @@ import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.domain.usecase.FollowUseCase
 import com.laixer.swabbr.domain.usecase.VlogLikeOverviewUseCase
-import com.laixer.swabbr.presentation.model.LikingUserWrapperItem
+import com.laixer.swabbr.extensions.cascadeFollowAction
+import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -25,7 +26,7 @@ class LikeOverviewViewModel constructor(
     /**
      *  Resource in which we store the vlog liking user wrapper list.
      */
-    val likingUserWrappers = MutableLiveData<Resource<List<LikingUserWrapperItem>>>()
+    val likingUserWrappers = MutableLiveData<Resource<List<UserWithRelationItem>>>()
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -46,43 +47,22 @@ class LikeOverviewViewModel constructor(
     )
 
     /**
-     *  Sends a follow request from the current user to
-     *  a given user id.
+     *  Sends a follow request from the current user to a given user
+     *  id. The follow request is then cascaded into [likingUserWrappers].
      *
      *  @param userId The user to follow.
      */
     fun follow(userId: UUID) {
-        cascadeFollowAction(userId)
+        // First update locally, then perform the action.
+        likingUserWrappers.cascadeFollowAction(userId, FollowRequestStatus.PENDING)
+
         compositeDisposable.add(
             followUseCase.sendFollowRequest(userId)
                 .subscribeOn(Schedulers.io())
-                .subscribe(
-                    { /* TODO */ },
-                    { /* TODO */ }
-                )
+                .subscribe()
         )
     }
 
-    /**
-     *  TODO This is a fix for a design flaw in the application design by the client.
-     *       The same user can exist multiple times in the [likingUserWrappers] so we
-     *       can have multiple follow buttons for the same user. The current fix is
-     *       that all buttons disappear once we click one of them. See the issue at
-     *       https://github.com/Laixer/Swabbr-Android/issues/141
-     *  When we follow a user, update the
-     */
-    private fun cascadeFollowAction(userId: UUID) {
-        likingUserWrappers.value?.data?.forEach {
-            if (it.vlogLikingUser.id == userId) {
-                it.followRequestStatus = FollowRequestStatus.PENDING
-            }
-        }
-
-        // Trigger a data set update
-        likingUserWrappers.value?.data?.let {
-            likingUserWrappers.setSuccess(it)
-        }
-    }
 
     /**
      *  Called on graceful disposal. This will dispose the [compositeDisposable]

@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.exoplayer2.Player
 import com.laixer.presentation.Resource
@@ -83,7 +80,7 @@ class WatchReactionFragment(id: String? = null) : WatchVideoFragment() {
             ResourceState.SUCCESS -> {
                 video_content_loading_icon.visibility = View.GONE
                 data?.let {
-                    video_user_profile_image.loadAvatar(it.user.profileImage, it.user.id)
+                    user_profile_image.loadAvatar(it.user.profileImage, it.user.id)
                     video_user_displayed_name.text = it.user.getDisplayName()
                     video_user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
 

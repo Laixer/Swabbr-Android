@@ -14,9 +14,9 @@
     <!-- Actual user profile fragment. -->
     <fragment
         android:id="@+id/auth_profile_dest"
-        android:name="com.laixer.swabbr.presentation.profile.AuthProfileFragment"
+        android:name="com.laixer.swabbr.presentation.profile.ProfileFragment"
         android:label="@string/myProfile"
-        tools:layout="@layout/fragment_auth_profile_vlogs">
+        tools:layout="@layout/fragment_profile_vlogs">
         <action
             android:id="@+id/action_view_settings"
             app:destination="@id/settings_dest"/>

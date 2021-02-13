@@ -1,9 +1,6 @@
 package com.laixer.swabbr.data.interfaces
 
-import com.laixer.swabbr.domain.model.User
-import com.laixer.swabbr.domain.model.UserComplete
-import com.laixer.swabbr.domain.model.UserUpdatableProperties
-import com.laixer.swabbr.domain.model.UserWithStats
+import com.laixer.swabbr.domain.model.*
 import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -13,7 +10,6 @@ import java.util.*
  *  Caching for user data.
  */
 interface UserCacheDataSource {
-
     val key: String get() = "USERS"
     val keyWithStats: String get() = "USERS_WITH_STATS"
     val keySelf: String get() = "USER_SELF"
@@ -71,7 +67,9 @@ interface UserDataSource {
 
     fun getFollowers(userId: UUID, pagination: Pagination = Pagination.latest()): Single<List<User>>
 
-    fun search(query: String, pagination: Pagination = Pagination.latest()): Single<List<User>>
+    fun getVlogLikingUsers(pagination: Pagination): Single<List<LikingUserWrapper>>
+
+    fun search(query: String, pagination: Pagination = Pagination.latest()): Single<List<UserWithRelation>>
 
     fun update(user: UserUpdatableProperties): Completable
 }

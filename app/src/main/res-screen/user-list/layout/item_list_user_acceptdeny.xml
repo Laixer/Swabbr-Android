@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/materialCardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/divider_margin_small"
+    android:foreground="?selectableItemBackground">
+
+
+    <!-- Large user display. -->
+    <include
+        android:id="@+id/include2"
+        layout="@layout/include_user_large"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/content_margin_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/linear_layout_accept_deny"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_conversion_absoluteHeight="84dp"
+        tools:layout_conversion_absoluteWidth="203dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linear_layout_accept_deny"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/follow_request_accept"
+            android:layout_width="@dimen/medium_icon_size"
+            android:layout_height="@dimen/medium_icon_size"
+            android:layout_marginEnd="@dimen/content_margin_small"
+            android:background="@color/transparent"
+            android:contentDescription="@string/accept"
+            android:src="@drawable/ic_baseline_check_circle_outline_24"
+            android:tint="@color/colorAccept"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/follow_request_decline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/follow_request_decline"
+            android:layout_width="@dimen/medium_icon_size"
+            android:layout_height="@dimen/medium_icon_size"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/decline"
+            android:src="@drawable/ic_baseline_not_interested_24"
+            android:tint="@color/colorDecline"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!-- Divider guideline -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

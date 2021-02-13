@@ -34,10 +34,8 @@ class DashboardFragment : WatchVideoListFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var act = requireActivity()
-
         if (savedInstanceState == null) {
-            vlogListVm.getRecommendedVlogs(refresh = false)
+            vlogListVm.getRecommendedVlogs(refresh = true)
         }
     }
 
@@ -47,10 +45,6 @@ class DashboardFragment : WatchVideoListFragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        var act = requireActivity()
-
-        val index = savedInstanceState?.getInt("CURRENT_ITEM_INDEX")
 
         injectFeature()
 

@@ -3,10 +3,7 @@ package com.laixer.swabbr.data.repository
 import com.laixer.swabbr.data.interfaces.UserCacheDataSource
 import com.laixer.swabbr.data.interfaces.UserDataSource
 import com.laixer.swabbr.domain.interfaces.UserRepository
-import com.laixer.swabbr.domain.model.User
-import com.laixer.swabbr.domain.model.UserComplete
-import com.laixer.swabbr.domain.model.UserUpdatableProperties
-import com.laixer.swabbr.domain.model.UserWithStats
+import com.laixer.swabbr.domain.model.*
 import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -48,7 +45,10 @@ class UserRepositoryImpl constructor(
     override fun getFollowers(userId: UUID, pagination: Pagination, forceRefresh: Boolean): Single<List<User>> =
         remoteDataSource.getFollowers(userId, pagination)
 
-    override fun search(query: String, pagination: Pagination): Single<List<User>> =
+    override fun getVlogLikingUsers(pagination: Pagination): Single<List<LikingUserWrapper>> =
+        remoteDataSource.getVlogLikingUsers(pagination)
+
+    override fun search(query: String, pagination: Pagination): Single<List<UserWithRelation>> =
         remoteDataSource.search(query, pagination)
 
     override fun update(user: UserUpdatableProperties): Completable = remoteDataSource.update(user)

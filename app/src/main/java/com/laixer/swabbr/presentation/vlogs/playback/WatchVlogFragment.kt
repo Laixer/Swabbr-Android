@@ -43,8 +43,7 @@ import java.util.*
  */
 class WatchVlogFragment(id: String) : WatchVideoFragment() {
     private val vlogVm: VlogViewModel by viewModel()
-    private val args by navArgs<WatchVlogFragmentArgs>()
-    private val vlogId: UUID by lazy { UUID.fromString(id ?: args.vlogId) }
+    private val vlogId: UUID by lazy { UUID.fromString(id) }
 
     /**
      *  Attaches observers to the [vlogVm] resources.
@@ -81,7 +80,7 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
             reactionsRecyclerView.run {
                 isNestedScrollingEnabled = false
                 adapter = ReactionsAdapter(
-                    currentUserId = authUserVm.getAuthUserId(), // TODO Should be refactored
+                    currentUserId = authUserVm.getSelfId(), // TODO Should be refactored
                     onProfileClick = onReactionProfileClick,
                     onReactionClick = onReactionClick,
                     onDeleteClick = onReactionDeleteClick
@@ -268,7 +267,7 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                 data?.let {
                     // Display the user info
                     it.user.let { user ->
-                        video_user_profile_image.loadAvatar(user.profileImage, user.id)
+                        user_profile_image.loadAvatar(user.profileImage, user.id)
                         video_user_displayed_name.text = user.getDisplayName()
                         video_user_nickname.text = requireContext().getString(R.string.nickname, user.nickname)
                     }
@@ -418,7 +417,7 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
     private fun canToggleLike(): Boolean =
         !(vlogVm.vlog.value?.data == null
             || vlogVm.vlogLikedByCurrentUser.value?.data == null
-            || vlogVm.vlog.value!!.data!!.vlog.userId == authUserVm.getAuthUserId())
+            || vlogVm.vlog.value!!.data!!.vlog.userId == authUserVm.getSelfId())
 
     companion object {
         fun create(vlogId: String): WatchVlogFragment {

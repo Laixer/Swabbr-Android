@@ -1,9 +1,6 @@
 package com.laixer.swabbr.domain.interfaces
 
-import com.laixer.swabbr.domain.model.User
-import com.laixer.swabbr.domain.model.UserComplete
-import com.laixer.swabbr.domain.model.UserUpdatableProperties
-import com.laixer.swabbr.domain.model.UserWithStats
+import com.laixer.swabbr.domain.model.*
 import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -19,7 +16,6 @@ import java.util.*
  *  information.
  */
 interface UserRepository {
-
     /**
      *  Gets a user from our data store.
      *
@@ -73,12 +69,20 @@ interface UserRepository {
                      forceRefresh: Boolean = false): Single<List<User>>
 
     /**
+     *  Gets users that liked vlogs which belong to the current user.
+     *  Note that each item is wrapped in a [LikingUserWrapper].
+     *
+     *  @param pagination Controls the result set.
+     */
+    fun getVlogLikingUsers(pagination: Pagination): Single<List<LikingUserWrapper>>
+
+    /**
      *  Search for users in our data store.
      *
      *  @param query Search query, can't be empty.
      *  @param pagination Controls the result set.
      */
-    fun search(query: String, pagination: Pagination = Pagination.latest()): Single<List<User>>
+    fun search(query: String, pagination: Pagination = Pagination.latest()): Single<List<UserWithRelation>>
 
     /**
      *  Update the currently authenticated user.

@@ -27,8 +27,6 @@ interface VlogLikeDataSource {
 
     fun getLikes(vlogId: UUID, pagination: Pagination): Single<List<VlogLike>>
 
-    fun getVlogLikingUsers(pagination: Pagination): Single<List<LikingUserWrapper>>
-
     fun like(vlogId: UUID): Completable
 
     fun unlike(vlogId: UUID): Completable

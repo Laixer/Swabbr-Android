@@ -7,8 +7,11 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/followingRecyclerView"
-        tools:listitem="@layout/include_follow_request"
+        android:id="@+id/recycler_view_profile_followers"
+        tools:listitem="@layout/item_list_user_acceptdeny"
+        android:paddingTop="@dimen/content_margin_medium"
+        android:paddingStart="@dimen/content_margin_medium"
+        android:paddingEnd="@dimen/content_margin_medium"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"

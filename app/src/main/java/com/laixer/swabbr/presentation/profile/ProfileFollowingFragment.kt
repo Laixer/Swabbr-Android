@@ -12,26 +12,27 @@ import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.UserItem
-import com.laixer.swabbr.presentation.search.UserAdapter
-import kotlinx.android.synthetic.main.fragment_auth_profile_following.*
+import com.laixer.swabbr.presentation.user.list.UserAdapter
+import kotlinx.android.synthetic.main.fragment_profile_following.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.util.*
 
 /**
- *  Fragment displaying all users that the currently
- *  authenticated user is following.
+ *  Fragment displaying all users that the displayed user is following himself.
+ *
+ *  @param userId The user id of the profile we are looking at.
  */
-class AuthProfileFollowingFragment : AuthFragment() {
-
+class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
     private val profileVm: ProfileViewModel by sharedViewModel()
     private var userAdapter: UserAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_auth_profile_following, container, false)
+        return inflater.inflate(R.layout.fragment_profile_following, container, false)
     }
 
     /**
      *  Setup UI, attach observers to observable [profileVm] vars.
-     *  This will trigger [getFollowingUsers] to display up to date
+     *  This will trigger [getData] to display up to date
      *  information about who the current user is following.
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,20 +43,26 @@ class AuthProfileFollowingFragment : AuthFragment() {
         }
 
         userAdapter = UserAdapter(requireContext(), onClick)
-        followingRecyclerView.apply {
+        recycler_view_profile_following.apply {
             isNestedScrollingEnabled = false
             adapter = userAdapter
         }
 
-        swipeRefreshLayout.setOnRefreshListener { getFollowingUsers(true) }
+        swipeRefreshLayout.setOnRefreshListener { getData(true) }
 
-        getFollowingUsers(true)
+        getData(true)
     }
 
     private val onClick: (UserItem) -> Unit = {
         findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.id}"))
     }
 
+    /**
+     *  Triggers a get for the following users.
+     *
+     *  @param refresh Force a data refresh.
+     */
+    private fun getData(refresh: Boolean = false) = profileVm.getFollowing(userId, refresh)
 
     /**
      *  Called when the observed resource of [UserItem]s changes.
@@ -80,21 +87,10 @@ class AuthProfileFollowingFragment : AuthFragment() {
         }
     }
 
-    /**
-     *  Triggers a get for the following users.
-     *
-     *  @param refresh Force a data refresh.
-     */
-    private fun getFollowingUsers(refresh: Boolean = false) {
-        authUserVm.getAuthUserId()?.let {
-            profileVm.getFollowing(it, refresh)
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         userAdapter = null
-        followingRecyclerView?.adapter = null
+        recycler_view_profile_following?.adapter = null
     }
 
     internal companion object {

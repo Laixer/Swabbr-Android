@@ -17,15 +17,18 @@ import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.LikingUserWrapperItem
+import com.laixer.swabbr.presentation.model.UserWithRelationItem
+import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
 import kotlinx.android.synthetic.main.fragment_like_overview.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+// TODO Implement vlog like properties here? Or only for the diff callback thingy?
 /**
  *  Fragment representing the vlog liking users overview tab.
  */
 class LikeOverviewFragment : AuthFragment() {
     private val likeOverviewVm: LikeOverviewViewModel by viewModel()
-    private lateinit var likingUserAdapter: LikingUserAdapter
+    private lateinit var likingUserAdapter: UserWithRelationAdapter
 
     /**
      *  Sets up observers.
@@ -42,10 +45,10 @@ class LikeOverviewFragment : AuthFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        likingUserAdapter = LikingUserAdapter(
+        likingUserAdapter = UserWithRelationAdapter(
             context = requireContext(),
-            onProfileClick = onProfileClick,
-            onFollowClick = onFollowClick
+            onClickProfile = onProfileClick,
+            onClickFollow = onFollowClick
         )
 
         recycler_view_liking_users.apply {
@@ -66,28 +69,21 @@ class LikeOverviewFragment : AuthFragment() {
      *  Callback for when we click a user. This will take
      *  user to the profile of the clicked user.
      */
-    private val onProfileClick: (LikingUserWrapperItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.vlogLikingUser.id}"))
+    private val onProfileClick: (UserWithRelationItem) -> Unit = {
+        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
     }
 
     /**
-     *  Callback for when we click a follow button. This
-     *  will follow said user and trigger the button UI
-     *  update process.
+     *  Callback for when we click a follow button.
      */
-    private val onFollowClick: (LikingUserWrapperItem, Button) -> Unit =
-        { wrapper: LikingUserWrapperItem, button: Button ->
-            likeOverviewVm.follow(wrapper.vlogLikingUser.id)
-
-            // TODO This should respond to the result of the actual follow()
-            //  method using some resource in the view model. For now this is fine.
-            button.isVisible = false
+    private val onFollowClick: (UserWithRelationItem) -> Unit = {
+            likeOverviewVm.follow(it.user.id)
         }
 
     /**
      *  Called when the [likeOverviewVm] vlog liking users resource changes.
      */
-    private fun onVlogLikingUsersLoaded(resource: Resource<List<LikingUserWrapperItem>>) = with(resource) {
+    private fun onVlogLikingUsersLoaded(resource: Resource<List<UserWithRelationItem>>) = with(resource) {
         when (state) {
             ResourceState.LOADING -> {
                 swipe_refresh_layout_liking_users.startRefreshing()

@@ -7,14 +7,15 @@ import java.util.*
 
 /**
  *  Entity representing a wrapper around a user that liked a vlog.
+ *
  *  Note that the follow request status property is nullable. The
  *  [FollowRequestStatus.NONEXISTENT] enum flag only exists in this
  *  app, not in the API. Having a status as null indicates no follow
  *  request exists, hence we explicitly map this when going from data
  *  to domain.
  */
-class VlogLikingUserWrapperEntity(
-    @field:Json(name = "vlogOwnerId") val vlogOwnerId: UUID,
+data class VlogLikingUserWrapperEntity(
+    @field:Json(name = "requestingUserId") val vlogOwnerId: UUID,
     @field:Json(name = "followRequestStatus") val followRequestStatus: Int?,
     @field:Json(name = "vlogLike") val vlogLikeEntity: VlogLikeEntity,
     @field:Json(name = "vlogLikingUser") val vlogLikingUser: UserEntity

@@ -11,9 +11,6 @@
     tools:context=".presentation.likeoverview.LikeOverviewFragment">
 
     <!-- Top display text. -->
-
-
-    <!-- Allows us to swipe down for refreshing calls. -->
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -24,6 +21,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <!-- Allows us to swipe down for refreshing calls. -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout_liking_users"
         android:layout_width="match_parent"
@@ -45,7 +44,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/liking_user_list_item" />
+            tools:listitem="@layout/item_list_user_followable" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

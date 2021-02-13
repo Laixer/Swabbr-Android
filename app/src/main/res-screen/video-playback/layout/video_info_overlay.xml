@@ -27,15 +27,15 @@
             android:id="@+id/view_clickable_video_user"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@+id/video_user_profile_image"
+            app:layout_constraintBottom_toBottomOf="@+id/user_profile_image"
             app:layout_constraintEnd_toEndOf="@+id/video_user_displayed_name"
-            app:layout_constraintStart_toStartOf="@+id/video_user_profile_image"
-            app:layout_constraintTop_toTopOf="@+id/video_user_profile_image" />
+            app:layout_constraintStart_toStartOf="@+id/user_profile_image"
+            app:layout_constraintTop_toTopOf="@+id/user_profile_image" />
 
 
         <!-- The @nickname tag. -->
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/video_user_profile_image"
+            android:id="@+id/user_profile_image"
             android:layout_width="@dimen/small_profile_image_size"
             android:layout_height="@dimen/small_profile_image_size"
             android:src="@drawable/ic_person_large_256"
@@ -57,8 +57,8 @@
             android:textColor="@color/color_white"
             android:textSize="14sp"
             android:transitionName="userUsername"
-            app:layout_constraintStart_toEndOf="@+id/video_user_profile_image"
-            app:layout_constraintTop_toTopOf="@+id/video_user_profile_image"
+            app:layout_constraintStart_toEndOf="@+id/user_profile_image"
+            app:layout_constraintTop_toTopOf="@+id/user_profile_image"
             tools:text="@string/placeholder_display_name" />
 
 

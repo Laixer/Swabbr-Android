@@ -7,22 +7,22 @@ import java.util.*
 /**
  *  Item representing a user with statistics.
  */
-data class UserWithStatsItem(
-    val id: UUID,
-    val firstName: String?,
-    val lastName: String?,
-    val gender: Gender,
-    val country: String?,
-    val nickname: String,
-    val profileImage: String?,
+class UserWithStatsItem(
+    id: UUID,
+    firstName: String?,
+    lastName: String?,
+    gender: Gender,
+    country: String?,
+    nickname: String,
+    profileImage: String?,
     val totalLikesReceived: Int,
-    val totalFollowers: Int,
+    var totalFollowers: Int, // TODO Modified for auth user view model, suboptimal. Can't use copy anymore due to non-data classes and polymorphism...
     val totalFollowing: Int,
     val totalReactionsGiven: Int,
     val totalReactionsReceived: Int,
     val totalVlogs: Int,
     val totalViews: Int
-)
+) : UserItem (id, firstName, lastName, gender, country, nickname, profileImage)
 
 /**
  * Map a user with stats from domain to presentation.

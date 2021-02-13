@@ -4,10 +4,7 @@ import com.laixer.swabbr.data.api.UserApi
 import com.laixer.swabbr.data.model.mapToData
 import com.laixer.swabbr.data.model.mapToDomain
 import com.laixer.swabbr.data.interfaces.UserDataSource
-import com.laixer.swabbr.domain.model.User
-import com.laixer.swabbr.domain.model.UserComplete
-import com.laixer.swabbr.domain.model.UserUpdatableProperties
-import com.laixer.swabbr.domain.model.UserWithStats
+import com.laixer.swabbr.domain.model.*
 import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -24,14 +21,17 @@ class UserDataSourceImpl constructor(
 
     override fun getSelfWithStats(): Single<UserWithStats> = api.getSelfWithStats().map { it.mapToDomain() }
 
-    override fun search(query: String, pagination: Pagination): Single<List<User>> =
-        api.search(query, pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
-
-    override fun update(user: UserUpdatableProperties): Completable = api.update(user.mapToData())
-
     override fun getFollowing(userId: UUID, pagination: Pagination): Single<List<User>> =
         api.getFollowing(userId, pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
     override fun getFollowers(userId: UUID, pagination: Pagination): Single<List<User>> =
         api.getFollowers(userId, pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
+
+    override fun getVlogLikingUsers(pagination: Pagination): Single<List<LikingUserWrapper>> =
+        api.getVlogLikingUsers(pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
+
+    override fun search(query: String, pagination: Pagination): Single<List<UserWithRelation>> =
+        api.search(query, pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
+
+    override fun update(user: UserUpdatableProperties): Completable = api.update(user.mapToData())
 }

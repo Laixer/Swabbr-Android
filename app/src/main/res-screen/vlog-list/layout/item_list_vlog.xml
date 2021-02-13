@@ -1,166 +1,69 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--
+    Displays a single vlog item with basic information. This is
+    intended to be used in a list using an adapter.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/item_margin"
-    android:foreground="?selectableItemBackground">
+    android:foreground="?selectableItemBackground"
+    android:paddingBottom="@dimen/divider_margin_small">
 
-    <LinearLayout
+    <!-- Displays basic user information. -->
+    <include
+        android:id="@+id/include_user_info"
+        layout="@layout/include_user_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:transitionName="userInfo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- Displays the upload date of the vlog. -->
+    <TextView
+        android:id="@+id/text_view_vlog_date_created"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAlignment="textStart"
+        android:textAppearance="@style/SmallTextAppearance"
+        app:layout_constraintBottom_toBottomOf="@+id/include_user_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/include_user_info"
+        tools:text="@string/placeholder_date" />
+
+
+    <!-- Displays the thumbnail of the vlog. -->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_view_vlog_thumbnail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="200dp">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/thumbnail"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/thumbnail_placeholder" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/color_window_background_transparent"
-                android:orientation="horizontal"
-                android:padding="@dimen/content_margin_small">
-
-                <include
-                    android:id="@+id/userInfo"
-                    layout="@layout/include_user_image_username_large"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:transitionName="userInfo" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/view_count"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_eye"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:textAlignment="textStart"
-                            android:textAppearance="@style/SmallTextAppearance"
-                            tools:text="@string/view_count" />
-
-                        <TextView
-                            android:id="@+id/like_count"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_thumb_up"
-                            android:ellipsize="end"
-                            android:maxLines="2"
-                            android:textAlignment="textStart"
-                            android:textAppearance="@style/SmallTextAppearance"
-                            tools:text="@string/like_count" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/content_margin_small"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/vlogPostDate"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_date_range"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:textAlignment="textStart"
-                            android:textAppearance="@style/SmallTextAppearance"
-                            tools:text="@string/date" />
-
-                        <TextView
-                            android:id="@+id/vlogDuration"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_access_time"
-                            android:ellipsize="end"
-                            android:maxLines="2"
-                            android:textAlignment="textStart"
-                            android:textAppearance="@style/SmallTextAppearance"
-                            tools:text="@string/duration" />
-                    </LinearLayout>
-                </LinearLayout>
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/thumbnail_placeholder"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include_user_info" />
 
 
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end">
-
-                <TextView
-                    android:id="@+id/reaction_count"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="3dp"
-                    android:drawableEnd="@drawable/ic_message"
-                    android:drawableTint="@color/colorPrimary"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorPrimary"
-                    tools:text="Reaction Count" />
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-    </LinearLayout>
+    <!-- Vlog delete icon, should only be displayed if we own the vlog. -->
+    <ImageButton
+        android:id="@+id/button_delete_vlog"
+        android:layout_width="@dimen/medium_icon_size"
+        android:layout_height="@dimen/medium_icon_size"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/content_margin_small"
+        android:layout_marginEnd="@dimen/content_margin_small"
+        android:background="@color/transparent"
+        android:src="@drawable/ic_baseline_delete"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/image_view_vlog_thumbnail" />
 
 
-    <FrameLayout
-        android:id="@+id/processing_cover"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_window_background_transparent"
-        android:visibility="visible">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <androidx.core.widget.ContentLoadingProgressBar
-                android:id="@+id/processing_indicator"
-                style="@style/Widget.AppCompat.ProgressBar"
-                android:layout_width="@dimen/large_icon_size"
-                android:layout_height="@dimen/large_icon_size"
-                android:layout_gravity="center"
-                android:indeterminate="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/processing"
-                android:textSize="20dp"
-                app:layout_anchor="@id/processing_indicator"
-                app:layout_anchorGravity="bottom|center" />
-        </LinearLayout>
-    </FrameLayout>
-
-
-</com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

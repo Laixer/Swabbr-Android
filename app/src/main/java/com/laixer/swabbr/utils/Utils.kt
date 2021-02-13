@@ -10,6 +10,7 @@ import android.view.WindowManager
 import androidx.core.os.HandlerCompat.postDelayed
 import kotlinx.android.synthetic.main.activity_app.*
 
+// TODO Move to class that means something, not "Utils"
 object Utils {
     private const val IMMERSIVE_FLAG_TIMEOUT = 500L
 
