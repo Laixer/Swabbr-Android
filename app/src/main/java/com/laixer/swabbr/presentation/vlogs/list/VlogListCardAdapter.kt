@@ -53,7 +53,7 @@ class VlogListCardAdapter(
                 item.vlog.dateCreated.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
 
             // Click listeners
-            image_view_vlog_thumbnail.setOnClickListener { onClickVlog.invoke(item) }
+            include_user_info.setOnClickListener { onClickVlog.invoke(item) }
 
             // Conditional delete button binding
             if (selfId == item.vlog.userId) {

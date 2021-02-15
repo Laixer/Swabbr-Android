@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.system.exitProcess
 
+// TODO This explanation is incorrect
 /**
  *  Activity for authenticating the user, meaning login,
  *  registration and logout.

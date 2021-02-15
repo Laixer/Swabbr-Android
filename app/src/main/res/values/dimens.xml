@@ -9,6 +9,7 @@
     <dimen name="divider_margin_medium">24dp</dimen>
     <dimen name="divider_margin_large">32dp</dimen>
 
+    <dimen name="mini_icon_size">24dp</dimen>
     <dimen name="small_icon_size">32dp</dimen>
     <dimen name="medium_icon_size">48dp</dimen>
     <dimen name="large_icon_size">64dp</dimen>

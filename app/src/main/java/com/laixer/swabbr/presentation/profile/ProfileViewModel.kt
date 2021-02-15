@@ -18,6 +18,9 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 /**
+ *  TODO This uses both [user] and [selfComplete] when we are
+ *       looking at out own profile. This is rather bug sensitive.
+ *
  *  View model for a user profile of any user.
  */
 class ProfileViewModel constructor(
@@ -31,6 +34,14 @@ class ProfileViewModel constructor(
      *  with statistics about the user.
      */
     val user = MutableLiveData<Resource<UserWithStatsItem>>()
+
+    /**
+     *  Resource which stores the current user along with its
+     *  non-public properties. Note that this is not relevant
+     *  if we are looking at a user profile that is not the
+     *  currently authenticated user.
+     */
+    val selfComplete = MutableLiveData<Resource<UserCompleteItem>>()
 
     /**
      *  Resource which stores vlogs owned by [user].
@@ -68,14 +79,81 @@ class ProfileViewModel constructor(
     private val compositeDisposable = CompositeDisposable()
 
     /**
+     *  Accepts an incoming follow request for the current user.
+     *  Note that this also bumps the follower count by one. This
+     *  is done locally, no data is fetched.
+     *
+     *  @param requesterId The user that wants to follow us.
+     */
+    fun acceptRequest(requesterId: UUID) {
+        // First bump for instant UI update, but only if we have said resource.
+        if (user.value?.data != null && user.value!!.data!!.id == requesterId) {
+            val newTotalFollowers = user.value!!.data!!.totalFollowers + 1
+            user.value!!.data!!.totalFollowers = newTotalFollowers
+            user.setSuccess(user.value!!.data!!)
+        }
+
+        // Then send
+        compositeDisposable.add(
+            followUseCase
+                .acceptRequest(requesterId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        // TODO
+                    },
+                    {
+                        // TODO
+                    }
+                )
+        )
+    }
+
+    /**
+     *  Cancels a running follow request between the current user
+     *  and [receiverId].
+     *
+     *  @param receiverId The follow request receiving user.
+     */
+    fun cancelFollowRequest(receiverId: UUID) = compositeDisposable.add(followUseCase
+        .cancelFollowRequest(receiverId)
+        .doOnSubscribe { followRequestAsCurrentUser.setLoading() }
+        .subscribeOn(Schedulers.io())
+        .subscribe(
+            { setFollowRequestAsNonExistent(receiverId) },
+            { followRequestAsCurrentUser.setError(it.message) }
+        )
+    )
+
+    /**
      *  Sets all used resources to loading.
      */
     fun clearResources() {
         user.setLoading()
+        selfComplete.setLoading()
         userVlogs.setLoading()
         followingUsers.setLoading()
         followersAndFollowRequestingUsers.setLoading()
     }
+
+    /**
+     *  Declines an incoming follow request for the current user.
+     *
+     *  @param requesterId The user that wants to follow us.
+     */
+    fun declineRequest(requesterId: UUID) = compositeDisposable.add(
+        followUseCase
+            .declineRequest(requesterId)
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                {
+                    // TODO
+                },
+                {
+                    // TODO
+                }
+            )
+    )
 
     /**
      *  Deletes a vlog. This is only callable on vlogs
@@ -114,8 +192,29 @@ class ProfileViewModel constructor(
         .subscribeOn(Schedulers.io())
         .map { it.mapToPresentation() }
         .subscribe(
-            { user.setSuccess(it) },
+            {
+                user.setSuccess(it)
+            },
             { user.setError(it.message) }
+        )
+    )
+
+    /**
+     *  Gets the current user with non-public properties.
+     *  The result is stored in [selfComplete].
+     *
+     *  @param refresh Force a data refresh.
+     */
+    fun getSelfComplete(refresh: Boolean = false) = compositeDisposable.add(authUserUseCase
+        .getSelf(refresh)
+        .subscribeOn(Schedulers.io())
+        .map { it.mapToPresentation() }
+        .subscribe(
+            // TODO Maybe have this cascade to the userWithStats resource as well?
+            {
+                selfComplete.setSuccess(it)
+            },
+            { selfComplete.setError(it.message) }
         )
     )
 
@@ -171,10 +270,12 @@ class ProfileViewModel constructor(
         .subscribe(
             {
                 followersAndFollowRequestingUsers
-                .setSuccess(it.mapToUserWithRelationItem(
-                    requestingUserId = userId,
-                    followRequestStatus = FollowRequestStatus.ACCEPTED
-                ))
+                    .setSuccess(
+                        it.mapToUserWithRelationItem(
+                            requestingUserId = userId,
+                            followRequestStatus = FollowRequestStatus.ACCEPTED
+                        )
+                    )
             },
             { followingUsers.setError(it.message) }
         )
@@ -201,18 +302,15 @@ class ProfileViewModel constructor(
             .subscribe(
                 {
                     // TODO Fix.
-//                    // If we get the followers, now get the incoming requests.
-//                    followUseCase.getIncomingRequests()
-//                        .mapSingle {
-//
-//                        }
-
+                    // If we get the followers, now get the incoming requests.
 
                     followersAndFollowRequestingUsers
-                        .setSuccess(it.mapToUserWithRelationItem(
-                            requestingUserId = selfId,
-                            followRequestStatus = FollowRequestStatus.ACCEPTED
-                        ))
+                        .setSuccess(
+                            it.mapToUserWithRelationItem(
+                                requestingUserId = selfId,
+                                followRequestStatus = FollowRequestStatus.ACCEPTED
+                            )
+                        )
                 },
                 { followingUsers.setError(it.message) }
             )
@@ -225,7 +323,7 @@ class ProfileViewModel constructor(
      *
      *  @param receiverId The receiving user id.
      */
-    fun getFollowRequest(receiverId: UUID) = compositeDisposable.add(followUseCase
+    fun getFollowRequestAsCurrentUser(receiverId: UUID) = compositeDisposable.add(followUseCase
         .get(authUserUseCase.getSelfId(), receiverId)
         .doOnSubscribe { followRequestAsCurrentUser.setLoading() }
         .subscribeOn(Schedulers.io())
@@ -276,21 +374,30 @@ class ProfileViewModel constructor(
         )
     )
 
+    // TODO Double user get operation, this is suboptimal.
     /**
-     *  Cancels a running follow request between the current user
-     *  and [receiverId].
+     *  Updates the user based on [UserUpdatablePropertiesItem].
+     *  Leave any properties that should not be modified as null.
      *
-     *  @param receiverId The follow request receiving user.
+     *  After this call both [getUser] and [getSelfComplete] are
+     *  called with the refresh option set to true. Observe these
+     *  resources to be notified of any changes made.
+     *
+     *  @param user User with updated properties.
      */
-    fun cancelFollowRequest(receiverId: UUID) = compositeDisposable.add(followUseCase
-        .cancelFollowRequest(receiverId)
-        .doOnSubscribe { followRequestAsCurrentUser.setLoading() }
-        .subscribeOn(Schedulers.io())
-        .subscribe(
-            { setFollowRequestAsNonExistent(receiverId) },
-            { followRequestAsCurrentUser.setError(it.message) }
+    fun updateGetSelf(user: UserUpdatablePropertiesItem) {
+        compositeDisposable.add(authUserUseCase
+            .updateSelf(user.mapToDomain())
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                {
+                    getSelfComplete(true)
+                    getUser(authUserUseCase.getSelfId(), true)
+                },
+                { this.selfComplete.setError(it.message) }
+            )
         )
-    )
+    }
 
     /**
      *  Graceful shutdown to dispose all resources.

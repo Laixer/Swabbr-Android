@@ -109,7 +109,7 @@ class ProfileViewModelTest {
         whenever(mockFollowUseCase.getFollowStatus(userId))
             .thenReturn(Single.just(followStatusModel))
         // when
-        viewModel.getFollowRequest(userId)
+        viewModel.getFollowRequestAsCurrentUser(userId)
 
         // then
         verify(mockFollowUseCase).getFollowStatus(userId)
@@ -127,7 +127,7 @@ class ProfileViewModelTest {
         // given
         whenever(mockFollowUseCase.getFollowStatus(userId)).thenReturn(Single.error(throwable))
         // when
-        viewModel.getFollowRequest(userId)
+        viewModel.getFollowRequestAsCurrentUser(userId)
         // then
         verify(mockFollowUseCase).getFollowStatus(userId)
         assertEquals(

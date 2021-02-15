@@ -56,7 +56,9 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_app)
 
-        // Setup the bottom navigation view with a list of navigation graphs
+        val nc = navHostFragment.navController
+
+        // Have the main app container be controlled by the bottom navigation bar.
         nav_host_container_app.post {
             NavigationUI.setupWithNavController(bottom_nav, navHostFragment.navController)
         }

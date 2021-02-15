@@ -5,12 +5,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import java.util.*
 
 /**
- *  Adapter for the tabs of a profile for a generic user.
- *  When displaying self, use [ProfileTabSelfAdapter].
+ *  Adapter for the tabs of the current user profile. When
+ *  displaying a generic user, use [ProfileTabAdapter].
  *
  *  @param fragment The fragment in which this will exist.
  */
-internal class ProfileTabAdapter(
+internal class ProfileTabSelfAdapter(
     fragment: Fragment,
     private val userId: UUID
 ) : FragmentStateAdapter(fragment) {
@@ -28,11 +28,11 @@ internal class ProfileTabAdapter(
     }
 
     /**
-     *  We always have 3 tabs.
+     *  We always have 4 tabs.
      */
     override fun getItemCount(): Int = ITEM_COUNT
 
     internal companion object {
-        const val ITEM_COUNT = 3
+        const val ITEM_COUNT = 4
     }
 }

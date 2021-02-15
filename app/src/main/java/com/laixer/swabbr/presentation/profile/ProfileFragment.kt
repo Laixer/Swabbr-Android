@@ -1,42 +1,43 @@
 package com.laixer.swabbr.presentation.profile
 
-import android.content.Intent
-import android.graphics.Bitmap
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.tabs.TabLayoutMediator
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
+import com.laixer.presentation.startRefreshing
+import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
+import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.AuthFragment
-import com.laixer.swabbr.presentation.model.UserCompleteItem
-import com.laixer.swabbr.presentation.model.UserUpdatablePropertiesItem
+import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.UserWithStatsItem
-import com.laixer.swabbr.presentation.utils.onActivityResult
-import com.laixer.swabbr.utils.encodeToBase64
 import com.laixer.swabbr.utils.formatNumber
 import com.laixer.swabbr.utils.loadAvatar
 import com.laixer.swabbr.utils.reduceDragSensitivity
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.include_profile_top_section.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 import kotlin.properties.Delegates
 
-// TODO Swipe refresh listener here as well
 /**
  *  Fragment for displaying generic user profile information.
  *  This fragment contains tabs for more specific user details
- *  and information display. If this profile displays the current
+ *  and information display. If this profile displays the current|
  *  user, additional information is displayed.
  */
 class ProfileFragment : AuthFragment() {
     private val args: ProfileFragmentArgs by navArgs()
-    private val profileVm: ProfileViewModel by viewModel()
+    private val profileVm: ProfileViewModel by sharedViewModel()
 
     // TODO Is this the best solution? Might be...
     /**
@@ -44,7 +45,7 @@ class ProfileFragment : AuthFragment() {
      *  been specified, this is assigned as the current users id.
      */
     private val userId: UUID by lazy {
-        if (args.userId.isBlank()) {
+        if (args.userId == "self") {
             authUserVm.getSelfId()
         } else {
             UUID.fromString(args.userId)
@@ -69,6 +70,8 @@ class ProfileFragment : AuthFragment() {
         setHasOptionsMenu(true)
 
         profileVm.user.observe(viewLifecycleOwner, Observer { onUserUpdated(it) })
+        // TODO Conditional observe? Right now we simply never call the resource if we are self.
+        profileVm.followRequestAsCurrentUser.observe(viewLifecycleOwner, Observer { onFollowRequestUpdated(it) })
 
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
@@ -76,6 +79,7 @@ class ProfileFragment : AuthFragment() {
     /**
      *  Setup for the tabs and viewpager displaying the tabs.
      */
+    @SuppressLint("WrongConstant") // For offscreenPageLimit
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -85,17 +89,21 @@ class ProfileFragment : AuthFragment() {
         // Reduce swiping sensitivity for tabs.
         viewpager_user_profile.reduceDragSensitivity()
 
+        // Set the follow button
+        button_profile_follow.isEnabled = !isSelf
+        button_profile_follow.isVisible = !isSelf
+        button_profile_follow.setOnClickListener { onClickFollowButton() }
+
         // Always refresh all data about the user for correct display.
         profileVm.clearResources()
-        profileVm.getUser(userId)
-
-        /** Setup the tab viewpager based on [isSelf]. */
-        viewpager_user_profile.adapter = ProfileTabAdapter(this, userId, isSelf)
-        viewpager_user_profile.offscreenPageLimit = if (isSelf) 4 else 3 // Don't discard any tabs ever.
+        getData(false)
 
         /** Setup the tab layout based on [isSelf]. */
-        TabLayoutMediator(tab_layout_user_profile, viewpager_user_profile) { tab, position ->
-            if (isSelf) {
+        if (isSelf) {
+            viewpager_user_profile.adapter = ProfileTabSelfAdapter(this, userId)
+            viewpager_user_profile.offscreenPageLimit = ProfileTabSelfAdapter.ITEM_COUNT
+
+            TabLayoutMediator(tab_layout_user_profile, viewpager_user_profile) { tab, position ->
                 tab.text = when (position) {
                     0 -> requireContext().getString(R.string.tab_vlogs)
                     1 -> requireContext().getString(R.string.tab_profile)
@@ -103,40 +111,56 @@ class ProfileFragment : AuthFragment() {
                     3 -> requireContext().getString(R.string.tab_followers)
                     else -> "UNDEFINED"
                 }
-            } else {
+            }.attach()
+        } else {
+            viewpager_user_profile.adapter = ProfileTabAdapter(this, userId)
+            viewpager_user_profile.offscreenPageLimit = ProfileTabAdapter.ITEM_COUNT
+
+            TabLayoutMediator(tab_layout_user_profile, viewpager_user_profile) { tab, position ->
                 tab.text = when (position) {
                     0 -> requireContext().getString(R.string.tab_vlogs)
                     1 -> requireContext().getString(R.string.tab_following)
                     2 -> requireContext().getString(R.string.tab_followers)
                     else -> "UNDEFINED"
                 }
-            }
-        }.attach()
+            }.attach()
+        }
     }
 
-    // TODO Move to details fragment?
     /**
-     *  Called by the [ImagePicker] activity. The result data contains the selected bitmap.
-     */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        ImagePicker.onActivityResult(
-            context = this.requireContext(),
-            resultCode = resultCode,
-            data = data,
-            successCallback = this::updateProfileImage
-        )
-    }
-
-    // TODO Move to details fragment?
-    /**
-     *  Called when we have selected a new profile image.
+     *  Gets the user from the view model.
      *
-     *  @param bitmapSelected The new profile image.
+     *  @param refresh Force a data refresh.
      */
-    private fun updateProfileImage(bitmapSelected: Bitmap) {
-        user_profile_profile_image_insettings.setImageBitmap(bitmapSelected)
-        authUserVm.updateGetSelf(UserUpdatablePropertiesItem(profileImage = bitmapSelected.encodeToBase64()))
+    private fun getData(refresh: Boolean = false) {
+        profileVm.getUser(userId, refresh)
+
+        // Only get the follow request if we are not looking at our own profile
+        if (!isSelf) {
+            profileVm.getFollowRequestAsCurrentUser(userId)
+        }
+    }
+
+    /**
+     *  Conditional behavior when we click the follow button.
+     */
+    private fun onClickFollowButton() {
+        // This shouldn't be enabled when we are looking at our own profile.
+        if (isSelf) {
+            return
+        }
+
+        // This should't be enabled when we don't know the current follow status yet.
+        if (profileVm.followRequestAsCurrentUser.value == null || profileVm.followRequestAsCurrentUser.value!!.data == null) {
+            return
+        }
+
+        when (profileVm.followRequestAsCurrentUser.value!!.data!!.requestStatus) {
+            FollowRequestStatus.PENDING -> profileVm.cancelFollowRequest(userId)
+            FollowRequestStatus.ACCEPTED -> profileVm.unfollow(userId)
+            FollowRequestStatus.DECLINED -> profileVm.sendFollowRequest(userId)
+            FollowRequestStatus.NONEXISTENT -> profileVm.sendFollowRequest(userId)
+        }
     }
 
     /**
@@ -153,7 +177,7 @@ class ProfileFragment : AuthFragment() {
             ResourceState.SUCCESS -> {
                 res.data?.let { user ->
                     // User information
-                    user_profile_profile_image_insettings.loadAvatar(user.profileImage, user.id)
+                    user_profile_profile_image.loadAvatar(user.profileImage, user.id)
                     user_profile_displayed_name.text = user.getDisplayName()
                     user_profile_nickname.text = requireContext().getString(R.string.nickname, user.nickname)
 
@@ -163,27 +187,43 @@ class ProfileFragment : AuthFragment() {
                     user_profile_vlog_count.text = requireContext().formatNumber(user.totalVlogs)
                     user_profile_views.text = requireContext().formatNumber(user.totalViews)
                     user_profile_likes_received.text = requireContext().formatNumber(user.totalLikesReceived)
-                    user_profile_reactions_received.text = requireContext().formatNumber(user.totalReactionsReceived)
+                    user_profile_reactions_received.text =
+                        requireContext().formatNumber(user.totalReactionsReceived)
                 }
             }
             ResourceState.ERROR -> {
-                showMessage(res.message ?: "")
+                showMessage(res.message ?: "Error loading profile information")
             }
         }
     }
 
-    // TODO
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_userprofile, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
+    /**
+     *  Called when the follow request between the current user and the
+     *  displayed user is updated a mutable resource.
+     */
+    private fun onFollowRequestUpdated(res: Resource<FollowRequestItem>) {
+        when (res.state) {
+            ResourceState.LOADING -> {
+                button_profile_follow.isEnabled = false
+            }
+            ResourceState.SUCCESS -> {
+                button_profile_follow.isEnabled = true
 
-    // TODO
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.settings_dest -> findNavController().navigate(ProfileFragmentDirections.actionViewSettings())
+                res.data?.let { item ->
+                    button_profile_follow.text = when (item.requestStatus) {
+                        FollowRequestStatus.PENDING -> requireContext().getString(R.string.follow_request_requested)
+                        FollowRequestStatus.ACCEPTED -> requireContext().getString(R.string.follow_request_accepted)
+                        FollowRequestStatus.DECLINED -> requireContext().getString(R.string.follow_request_follow)
+                        FollowRequestStatus.NONEXISTENT -> requireContext().getString(R.string.follow_request_follow)
+                    }
+                }
+            }
+            ResourceState.ERROR -> {
+                button_profile_follow.isEnabled = true
+
+                showMessage(res.message ?: "Error loading profile follow request status")
+            }
         }
-        return super.onOptionsItemSelected(item)
     }
 
     internal companion object {

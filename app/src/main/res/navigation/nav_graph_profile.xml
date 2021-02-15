@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Nav graph for displaying the profile. This can take us
+    Nav graph for displaying a profile. This can take us
     to the nav_graph_vlog_playback when we start watching
     the users vlogs. Note that this graph can correspond to
     the current user as well as any other user.
@@ -9,17 +9,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@id/nav_graph_profile"
-    app:startDestination="@id/auth_profile_dest">
+    app:startDestination="@id/self_profile_dest">
 
     <!-- Actual user profile fragment. -->
     <fragment
-        android:id="@+id/auth_profile_dest"
+        android:id="@+id/self_profile_dest"
         android:name="com.laixer.swabbr.presentation.profile.ProfileFragment"
         android:label="@string/myProfile"
-        tools:layout="@layout/fragment_profile_vlogs">
-        <action
-            android:id="@+id/action_view_settings"
-            app:destination="@id/settings_dest"/>
+        tools:layout="@layout/fragment_profile">
+        <argument
+            android:name="userId"
+            android:defaultValue="self"
+            app:argType="string" />
     </fragment>
 
     <!-- Include single vlog playback navigation. -->

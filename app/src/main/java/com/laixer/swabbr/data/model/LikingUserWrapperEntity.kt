@@ -18,7 +18,7 @@ data class VlogLikingUserWrapperEntity(
     @field:Json(name = "requestingUserId") val vlogOwnerId: UUID,
     @field:Json(name = "followRequestStatus") val followRequestStatus: Int?,
     @field:Json(name = "vlogLike") val vlogLikeEntity: VlogLikeEntity,
-    @field:Json(name = "vlogLikingUser") val vlogLikingUser: UserEntity
+    @field:Json(name = "user") val vlogLikingUser: UserEntity
 )
 
 /**

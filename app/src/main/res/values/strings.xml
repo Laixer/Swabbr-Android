@@ -27,10 +27,10 @@
     <string name="dashboard">Dashboard</string>
     <string name="settings">Settings</string>
 
-    <string name="followStatusError">…</string>
-    <string name="requested">Requested</string>
-    <string name="following">Following</string>
-    <string name="follow">Follow</string>
+    <!-- Follow request button. -->
+    <string name="follow_request_requested">Requested</string>
+    <string name="follow_request_accepted">Following</string>
+    <string name="follow_request_follow">Follow</string>
 
     <string name="switch_camera">Switch Camera</string>
     <string name="torch">Torch</string>

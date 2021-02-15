@@ -15,6 +15,7 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.LikingUserWrapperItem
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
@@ -98,8 +99,7 @@ class LikeOverviewFragment : AuthFragment() {
             }
             ResourceState.ERROR -> {
                 swipe_refresh_layout_liking_users.stopRefreshing()
-                Toast.makeText(requireContext(), "Error loading vlog likes - ${resource.message}", Toast.LENGTH_SHORT)
-                    .show()
+                showMessage("Error loading vlog likes")
             }
         }
     }

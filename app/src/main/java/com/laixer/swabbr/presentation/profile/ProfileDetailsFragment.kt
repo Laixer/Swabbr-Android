@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -15,6 +14,7 @@ import com.laixer.presentation.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
+import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.model.UserCompleteItem
@@ -29,6 +29,7 @@ import kotlinx.android.synthetic.main.fragment_registration.*
 import kotlinx.android.synthetic.main.fragment_registration.fab_set_profile_image
 import kotlinx.android.synthetic.main.fragment_registration.inputNickname
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.LocalDate
 import java.util.*
 
@@ -37,9 +38,6 @@ import java.util.*
  *  Fragment for displaying profile details of the current user
  *  which includes update functionality for all properties displayed.
  *
- *  Note that this makes an API call each time we modify a value.
- *  This might be suboptimal TODO Fix.
- *
  *  Note that the follow mode is controlled by [switchIsPrivate].
  *
  *  @param userId The id of the profile we are looking at. Note that at
@@ -47,7 +45,15 @@ import java.util.*
  *                might change in the future.
  */
 class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
+    private val profileVm: ProfileViewModel by sharedViewModel()
     private val authVm: AuthViewModel by sharedViewModel()
+
+    /**
+     *  Flag set by [confirmChanges] when we are awaiting a data
+     *  save. When [onUserCompleteUpdated] is called and this flag
+     *  is set to true, a message confirming our changes is displayed.
+     */
+    private var isSaving: Boolean = false
 
     /**
      *  Used as a flag to prevent UI updates before the user has
@@ -55,7 +61,6 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
      */
     private lateinit var userOriginal: UserCompleteItem
 
-    // TODO CRASH kotlin.UninitializedPropertyAccessException: lateinit property userUpdatableProperties has not been initialized
     /**
      *  Object which we modify. If we confirm, this object will
      *  be sent to the backend for the user update procedure.
@@ -63,11 +68,12 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
     private lateinit var userUpdatableProperties: UserUpdatablePropertiesItem
 
     /**
-     *  Attaches [updatePropertiesFromViewModel] to the [authUserVm]
+     *  Attaches [onUserCompleteUpdated] to the [authUserVm]
      *  observable user resource.
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        authUserVm.user.observe(viewLifecycleOwner, Observer { updatePropertiesFromViewModel(it) })
+        profileVm.selfComplete.observe(viewLifecycleOwner, Observer { onUserCompleteUpdated(it) })
+
         return inflater.inflate(R.layout.fragment_profile_details, container, false)
     }
 
@@ -164,6 +170,9 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerDailyVlogRequestLimit.adapter = adapter
         }
+
+        // Finally, get the user complete object itself
+        profileVm.getSelfComplete()
     }
 
     /**
@@ -210,9 +219,9 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
      *  Called when we confirm our changes in the UI.
      */
     private fun confirmChanges() {
-        authUserVm.updateGetSelf(userUpdatableProperties)
+        isSaving = true
 
-        // TODO Move functionality to profile vm and update locally as well.
+        profileVm.updateGetSelf(userUpdatableProperties)
     }
 
     /**
@@ -225,10 +234,9 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
      *
      *  @param res The user resource.
      */
-    private fun updatePropertiesFromViewModel(res: Resource<UserCompleteItem>) {
+    private fun onUserCompleteUpdated(res: Resource<UserCompleteItem>) {
         when (res.state) {
             ResourceState.LOADING -> {
-                // TODO: Loading state
             }
             ResourceState.SUCCESS -> {
                 res.data?.let { user ->
@@ -238,9 +246,14 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
                     userOriginal = user.copy()
                     setFormValues(user)
                 }
+
+                if (isSaving) {
+                    showMessage("Changes saved")
+                    isSaving = false
+                }
             }
             ResourceState.ERROR -> {
-                Toast.makeText(requireActivity(), res.message, Toast.LENGTH_SHORT).show()
+                showMessage("Couldn't get user profile settings")
             }
         }
     }

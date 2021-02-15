@@ -16,6 +16,7 @@ import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
 import kotlinx.android.synthetic.main.fragment_profile_followers.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
@@ -28,8 +29,7 @@ import java.util.*
  *
  */
 class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
-
-    private val profileVm: ProfileViewModel by viewModel()
+    private val profileVm: ProfileViewModel by sharedViewModel()
 
     private lateinit var adapter: UserWithRelationAdapter
 
@@ -88,14 +88,14 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
      *  Callback for when we accept a follow request.
      */
     private val onAccept: (UserWithRelationItem) -> Unit = {
-        authUserVm.acceptRequest(it.user.id)
+        profileVm.acceptRequest(it.user.id)
     }
 
     /**
      *  Callback for when we decline a follow request.
      */
     private val onDecline: (UserWithRelationItem) -> Unit = {
-        authUserVm.declineRequest(it.user.id)
+        profileVm.declineRequest(it.user.id)
     }
 
     /**
