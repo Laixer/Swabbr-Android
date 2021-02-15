@@ -38,3 +38,12 @@ fun MutableLiveData<Resource<List<UserWithRelationItem>>>.cascadeFollowAction(
 
     this.setSuccess(list)
 }
+
+/**
+ *  Call [setSuccess] if we have any data present, else do nothing.
+ */
+fun <T: Any> MutableLiveData<Resource<T>>.setSuccessAgain() {
+    this.value?.data?.let { data ->
+        this.setSuccess(data)
+    }
+}

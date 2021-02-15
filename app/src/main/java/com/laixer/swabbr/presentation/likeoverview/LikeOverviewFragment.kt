@@ -19,6 +19,7 @@ import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.LikingUserWrapperItem
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
+import com.laixer.swabbr.presentation.user.list.UserFollowableAdapter
 import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
 import kotlinx.android.synthetic.main.fragment_like_overview.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -46,7 +47,7 @@ class LikeOverviewFragment : AuthFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        likingUserAdapter = UserWithRelationAdapter(
+        likingUserAdapter = UserFollowableAdapter(
             context = requireContext(),
             onClickProfile = onProfileClick,
             onClickFollow = onFollowClick

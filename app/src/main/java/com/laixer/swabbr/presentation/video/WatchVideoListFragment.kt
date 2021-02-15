@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.laixer.presentation.gone
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.AuthFragment
 import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 
-// TODO What to display if we have no content?
 // TODO Swipe refresh layout?
 // TODO Loading icon?
 /**
@@ -20,12 +20,6 @@ import kotlinx.android.synthetic.main.fragment_video_view_pager.*
  *  [WatchVideoFragmentAdapter] implementation.
  */
 abstract class WatchVideoListFragment : AuthFragment() {
-    /**
-     *  TODO This is a workaround because the fragment lifecycle for Android is idiotic.
-     *  Stores the currently watched item in this viewpager.
-     */
-    //private var currentIndex: Int? = null
-
     /**
      *  Inflates the view pager.
      */
@@ -41,7 +35,10 @@ abstract class WatchVideoListFragment : AuthFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        video_viewpager.offscreenPageLimit = 1
+        // Hide the empty collection message
+        text_display_empty_video_collection.gone()
+
+        video_viewpager.offscreenPageLimit = 3
         video_viewpager.adapter = getWatchVideoFragmentAdapter()
     }
 
@@ -54,21 +51,6 @@ abstract class WatchVideoListFragment : AuthFragment() {
      *  as the adapter for [video_viewpager] yourself.
      */
     protected abstract fun getWatchVideoFragmentAdapter(): WatchVideoFragmentAdapter
-
-    /**
-     *  Called when we re-enter this fragment. This is used to
-     *  store the vlog which we were watching before.
-     */
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        // TODO Beunfix
-//        if (currentIndex != null) {
-//            video_viewpager.currentItem = currentIndex!!
-//        } else {
-//            val i = 0
-//        }
-
-        super.onViewStateRestored(savedInstanceState)
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

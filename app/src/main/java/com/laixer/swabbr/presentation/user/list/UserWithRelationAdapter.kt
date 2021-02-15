@@ -1,6 +1,7 @@
 package com.laixer.swabbr.presentation.user.list
 
 import android.content.Context
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.view.isVisible
@@ -17,16 +18,17 @@ import kotlinx.android.synthetic.main.include_usernames.view.*
 import kotlinx.android.synthetic.main.item_list_user_followable.view.*
 
 /**
- *  Adapter for a [UserWithRelationItem] in a list.
+ *  Adapter for a [UserWithRelationItem] in a list. This can be extended to
+ *  add additional functionality to each item.
  *
  *  @param context The application context.
+ *  @param layout The layout resource for each item, defaults to [R.layout.item_list_user].
  *  @param onClickProfile Callback for when we click the profile of this item.
- *  @param onClickFollow Callback for when we click the follow button.
  */
-class UserWithRelationAdapter(
+open class UserWithRelationAdapter(
     val context: Context,
-    val onClickProfile: (UserWithRelationItem) -> Unit,
-    val onClickFollow: (UserWithRelationItem) -> Unit
+    val layout: Int = R.layout.item_list_user,
+    val onClickProfile: (UserWithRelationItem) -> Unit
 ) : ListAdapter<UserWithRelationItem, UserWithRelationAdapter.ViewHolder>(
     UserWithRelationDiffCallback()
 ) {
@@ -39,7 +41,7 @@ class UserWithRelationAdapter(
      *  Actual binding class for each item.
      */
     inner class ViewHolder(parent: ViewGroup) :
-        RecyclerView.ViewHolder(parent.inflate(R.layout.item_list_user_followable)) {
+        RecyclerView.ViewHolder(parent.inflate(layout)) {
         /**
          *  Binds a single [UserWithRelationItem].
          */
@@ -49,16 +51,18 @@ class UserWithRelationAdapter(
             itemView.user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
 
             itemView.setOnClickListener { onClickProfile.invoke(item) }
-            itemView.user_follow_button.setOnClickListener { onClickFollow.invoke(item) }
 
-            // Control the follow button according to the follow request status.
-            when (item.followRequestStatus) {
-                FollowRequestStatus.ACCEPTED -> itemView.user_follow_button.isVisible = false
-                FollowRequestStatus.DECLINED -> itemView.user_follow_button.isVisible = true
-                FollowRequestStatus.PENDING -> itemView.user_follow_button.isVisible = false
-                FollowRequestStatus.NONEXISTENT -> itemView.user_follow_button.isVisible = true
-            }
+            bindAlso(itemView, item)
         }
     }
+
+    /**
+     *  Override this method to apply additional functionality to each
+     *  item in the list.
+     *
+     *  @param itemView The view in which we are inflating [layout].
+     *  @param item The item which corresponds to this entry.
+     */
+    protected open fun bindAlso(itemView: View, item: UserWithRelationItem) { }
 }
 

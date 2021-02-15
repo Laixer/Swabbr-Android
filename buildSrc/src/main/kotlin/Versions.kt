@@ -84,7 +84,7 @@ object Versions {
 
     const val core_ktx: String = "1.5.0-alpha04"
 
-    const val material: String = "1.2.1"
+    const val material: String = "1.3.0"
 
     const val rxkotlin: String = "2.4.0"
 

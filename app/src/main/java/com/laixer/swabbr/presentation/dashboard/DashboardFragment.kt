@@ -6,6 +6,9 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
+import com.laixer.presentation.gone
+import com.laixer.presentation.visible
+import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
@@ -48,13 +51,10 @@ class DashboardFragment : WatchVideoListFragment() {
 
         injectFeature()
 
+        vlogListVm.vlogs.observe(viewLifecycleOwner, Observer { updateVlogsFromViewModel(it) })
+
         // Reduce swipe sensitivity
         video_viewpager.reduceDragSensitivity()
-
-        vlogListVm.run {
-            vlogs.observe(viewLifecycleOwner, Observer { updateVlogsFromViewModel(it) })
-            getRecommendedVlogs(refresh = false)
-        }
     }
 
     /**
@@ -74,6 +74,15 @@ class DashboardFragment : WatchVideoListFragment() {
             }
             ResourceState.SUCCESS -> {
                 video_viewpager.adapter?.notifyDataSetChanged()
+
+                // Update empty collection text based on the result.
+                if (res.data?.any() == true) {
+                    text_display_empty_video_collection.gone()
+                } else {
+                    text_display_empty_video_collection.visible()
+                    text_display_empty_video_collection.text =
+                        requireContext().getString(R.string.empty_vlog_collection)
+                }
             }
             ResourceState.ERROR -> {
                 Toast.makeText(requireContext(), "Error loading recommended vlogs", Toast.LENGTH_SHORT).show()

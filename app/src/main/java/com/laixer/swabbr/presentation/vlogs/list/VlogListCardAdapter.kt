@@ -12,7 +12,10 @@ import com.laixer.presentation.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.utils.diffcallback.VlogWrapperDiffCallback
+import com.laixer.swabbr.utils.loadAvatar
+import kotlinx.android.synthetic.main.include_user_large.view.*
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
+import kotlinx.android.synthetic.main.video_info_overlay.*
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
@@ -49,6 +52,7 @@ class VlogListCardAdapter(
                 .placeholder(R.drawable.thumbnail_placeholder)
                 .into(image_view_vlog_thumbnail)
 
+            user_profile_image.loadAvatar(item.user.profileImage, item.user.id)
             text_view_vlog_date_created.text =
                 item.vlog.dateCreated.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
 
@@ -57,12 +61,12 @@ class VlogListCardAdapter(
 
             // Conditional delete button binding
             if (selfId == item.vlog.userId) {
+                if (onClickDelete == null) {
+                    throw IllegalArgumentException("Specify onClickDelete when we own the vlog.")
+                }
+
                 button_delete_vlog.visible()
                 button_delete_vlog.isEnabled = true
-
-                if (onClickDelete == null) {
-                    throw IllegalArgumentException("Specifiy onClickDelete when we own the vlog.")
-                }
                 button_delete_vlog.setOnClickListener { onClickDelete.invoke(item) }
             } else {
                 button_delete_vlog.gone()

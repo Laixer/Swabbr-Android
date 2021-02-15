@@ -8,10 +8,13 @@ import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.types.FollowRequestStatus
+import com.laixer.swabbr.domain.types.Pagination
 import com.laixer.swabbr.domain.usecase.AuthUserUseCase
 import com.laixer.swabbr.domain.usecase.FollowUseCase
 import com.laixer.swabbr.domain.usecase.UsersUseCase
 import com.laixer.swabbr.domain.usecase.VlogUseCase
+import com.laixer.swabbr.extensions.cascadeFollowAction
+import com.laixer.swabbr.extensions.setSuccessAgain
 import com.laixer.swabbr.presentation.model.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -90,8 +93,11 @@ class ProfileViewModel constructor(
         if (user.value?.data != null && user.value!!.data!!.id == requesterId) {
             val newTotalFollowers = user.value!!.data!!.totalFollowers + 1
             user.value!!.data!!.totalFollowers = newTotalFollowers
-            user.setSuccess(user.value!!.data!!)
+            user.setSuccessAgain()
         }
+
+        // Update the status in the list.
+        followersAndFollowRequestingUsers.cascadeFollowAction(requesterId, FollowRequestStatus.ACCEPTED)
 
         // Then send
         compositeDisposable.add(
@@ -100,11 +106,10 @@ class ProfileViewModel constructor(
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
-                        // TODO
+                        // Call this to notify all observers
+                        followersAndFollowRequestingUsers.setSuccessAgain()
                     },
-                    {
-                        // TODO
-                    }
+                    { /* TODO Undo what we did */ }
                 )
         )
     }
@@ -141,19 +146,25 @@ class ProfileViewModel constructor(
      *
      *  @param requesterId The user that wants to follow us.
      */
-    fun declineRequest(requesterId: UUID) = compositeDisposable.add(
-        followUseCase
+    fun declineRequest(requesterId: UUID) {
+        // If we decline, first remove the entry from the followers locally.
+        followersAndFollowRequestingUsers.value?.data?.let {
+            followersAndFollowRequestingUsers.setSuccess(it.filter { x -> x.user.id != requesterId })
+        }
+
+        // Then send the request
+        compositeDisposable.add(followUseCase
             .declineRequest(requesterId)
             .subscribeOn(Schedulers.io())
             .subscribe(
                 {
-                    // TODO
+                    // Call this to notify all observers
+                    followersAndFollowRequestingUsers.setSuccessAgain()
                 },
-                {
-                    // TODO
-                }
+                { /* TODO Undo what we did */ }
             )
-    )
+        )
+    }
 
     /**
      *  Deletes a vlog. This is only callable on vlogs
@@ -192,9 +203,7 @@ class ProfileViewModel constructor(
         .subscribeOn(Schedulers.io())
         .map { it.mapToPresentation() }
         .subscribe(
-            {
-                user.setSuccess(it)
-            },
+            { user.setSuccess(it) },
             { user.setError(it.message) }
         )
     )
@@ -210,10 +219,8 @@ class ProfileViewModel constructor(
         .subscribeOn(Schedulers.io())
         .map { it.mapToPresentation() }
         .subscribe(
-            // TODO Maybe have this cascade to the userWithStats resource as well?
-            {
-                selfComplete.setSuccess(it)
-            },
+            // TODO Maybe have this always cascade to the userWithStats resource as well?
+            { selfComplete.setSuccess(it) },
             { selfComplete.setError(it.message) }
         )
     )
@@ -245,7 +252,7 @@ class ProfileViewModel constructor(
      *  @param refresh Force a data refresh.
      */
     fun getFollowing(userId: UUID, refresh: Boolean = false) = compositeDisposable.add(followUseCase
-        .getFollowing(userId, refresh)
+        .getFollowing(userId, refresh = refresh)
         .doOnSubscribe { followingUsers.setLoading() }
         .subscribeOn(Schedulers.io())
         .map { it.mapToPresentation() }
@@ -281,7 +288,6 @@ class ProfileViewModel constructor(
         )
     )
 
-    // TODO This should be a single backend call.
     /**
      *  First does the same as [getFollowers] for the current user, then gets
      *  all pending incoming follow requests. Each request is then mapped to
@@ -298,21 +304,31 @@ class ProfileViewModel constructor(
         compositeDisposable.add(followUseCase
             .getFollowers(selfId, refresh)
             .doOnSubscribe { followingUsers.setLoading() }
-            .map { it.mapToPresentation() }
+            .map {
+                it.mapToPresentation()
+                    .mapToUserWithRelationItem(
+                        requestingUserId = selfId,
+                        followRequestStatus = FollowRequestStatus.ACCEPTED
+                    )
+            }
             .subscribe(
-                {
-                    // TODO Fix.
-                    // If we get the followers, now get the incoming requests.
-
-                    followersAndFollowRequestingUsers
-                        .setSuccess(
-                            it.mapToUserWithRelationItem(
-                                requestingUserId = selfId,
-                                followRequestStatus = FollowRequestStatus.ACCEPTED
-                            )
+                { followers ->
+                    // Now get the incoming requests.
+                    followUseCase.getFollowRequestingUsers(Pagination.latest())
+                        .map { it.mapToPresentation() }
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(
+                            { requesters ->
+                                // Requesting users first, then existing followers.
+                                followersAndFollowRequestingUsers.setSuccess(requesters.plus(followers))
+                            },
+                            {
+                                // Couldn't get incoming requests, just use what we have.
+                                followersAndFollowRequestingUsers.setSuccess(followers)
+                            }
                         )
                 },
-                { followingUsers.setError(it.message) }
+                { followersAndFollowRequestingUsers.setError(it.message) }
             )
         )
     }

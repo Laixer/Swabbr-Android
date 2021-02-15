@@ -45,6 +45,9 @@ class UserRepositoryImpl constructor(
     override fun getFollowers(userId: UUID, pagination: Pagination, forceRefresh: Boolean): Single<List<User>> =
         remoteDataSource.getFollowers(userId, pagination)
 
+    override fun getFollowRequestingUsers(pagination: Pagination): Single<List<UserWithRelation>> =
+        remoteDataSource.getFollowRequestingUsers(pagination)
+
     override fun getVlogLikingUsers(pagination: Pagination): Single<List<LikingUserWrapper>> =
         remoteDataSource.getVlogLikingUsers(pagination)
 

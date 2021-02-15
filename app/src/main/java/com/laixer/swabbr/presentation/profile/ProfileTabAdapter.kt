@@ -20,9 +20,8 @@ internal class ProfileTabAdapter(
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> ProfileVlogsFragment(userId)
-            1 -> ProfileDetailsFragment(userId)
-            2 -> ProfileFollowingFragment(userId)
-            3 -> ProfileFollowersFragment(userId)
+            1 -> ProfileFollowingFragment(userId)
+            2 -> ProfileFollowersFragment(userId)
             else -> ProfileVlogsFragment(userId)
         }
     }

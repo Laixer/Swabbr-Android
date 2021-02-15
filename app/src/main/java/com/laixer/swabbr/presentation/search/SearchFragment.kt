@@ -21,6 +21,7 @@ import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
+import com.laixer.swabbr.presentation.user.list.UserFollowableAdapter
 import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -56,7 +57,7 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         super.onViewCreated(view, savedInstanceState)
         injectFeature()
 
-        userAdapter = UserWithRelationAdapter(
+        userAdapter = UserFollowableAdapter(
             context = requireContext(),
             onClickProfile = onClickProfile,
             onClickFollow = onClickFollow

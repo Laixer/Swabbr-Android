@@ -14,6 +14,7 @@ import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
+import com.laixer.swabbr.presentation.user.list.UserFollowRequestingAdapter
 import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
 import kotlinx.android.synthetic.main.fragment_profile_followers.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -44,10 +45,11 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Setup and store the adapter.
-        adapter = UserWithRelationAdapter(
+        adapter = UserFollowRequestingAdapter(
             context = requireContext(),
             onClickProfile = onProfileClick,
-            onClickFollow = todoFixThisCallback
+            onClickAccept = onAccept,
+            onClickDecline = onDecline
         )
         recycler_view_profile_followers.isNestedScrollingEnabled = false
         recycler_view_profile_followers.adapter = adapter

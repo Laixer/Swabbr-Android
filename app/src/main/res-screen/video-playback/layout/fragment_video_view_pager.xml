@@ -1,14 +1,34 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
     Used to allow us to swipe left and right to switch videos. This
     acts as the swiping container to view vlogs or reactions in. Any
     playback functionality exists in the adapter used to fill this
     video_viewpager, see any fragment implementing this xml for details.
-
-    Note that this entire fragment/xml is filled with the viewpager.
 -->
-<androidx.viewpager2.widget.ViewPager2 xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/video_viewpager"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_grey_900" />
+    android:layout_height="match_parent">
+
+    <!-- Will contain the actual video fragments. -->
+    <androidx.viewpager2.widget.ViewPager2 xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/video_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/color_white"
+        android:background="@color/color_grey_900" />
+
+
+    <!-- Displayed if we have no items in our viewpager. -->
+    <TextView
+        android:id="@+id/text_display_empty_video_collection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/empty_vlog_collection"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

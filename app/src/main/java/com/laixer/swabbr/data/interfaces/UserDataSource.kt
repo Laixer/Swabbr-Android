@@ -67,6 +67,8 @@ interface UserDataSource {
 
     fun getFollowers(userId: UUID, pagination: Pagination = Pagination.latest()): Single<List<User>>
 
+    fun getFollowRequestingUsers(pagination: Pagination): Single<List<UserWithRelation>>
+
     fun getVlogLikingUsers(pagination: Pagination): Single<List<LikingUserWrapper>>
 
     fun search(query: String, pagination: Pagination = Pagination.latest()): Single<List<UserWithRelation>>

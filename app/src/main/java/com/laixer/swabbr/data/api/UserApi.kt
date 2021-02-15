@@ -36,6 +36,13 @@ interface UserApi {
         @Query("offset") offset: Int?
     ): Single<List<UserEntity>>
 
+    @GET("user/follow-requesting-users")
+    fun getFollowRequestingUsers(
+        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("limit") limit: Int?,
+        @Query("offset") offset: Int?
+    ): Single<List<UserWithRelationEntity>>
+
     @GET("user/vlog-liking-users")
     fun getVlogLikingUsers(
         @Query("sortingOrder") sortingOrder: SortingOrder?,

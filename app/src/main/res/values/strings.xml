@@ -109,7 +109,4 @@
     <string name="empty_vlog_collection">No vlogs to display</string>
     <string name="empty_reaction_collection">No reactions yet</string>
 
-    <!-- Vlog playback overlays. -->
-    <!-- TODO <string name="date_created"></string> -->
-
 </resources>

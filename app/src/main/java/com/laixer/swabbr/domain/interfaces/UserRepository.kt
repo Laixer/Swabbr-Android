@@ -69,6 +69,15 @@ interface UserRepository {
                      forceRefresh: Boolean = false): Single<List<User>>
 
     /**
+     *  Gets all users which have have a pending follow request sent
+     *  to our current user. Note that each item is wrapped in a
+     *  [UserWithRelation].
+     *
+     *  @param pagination Controls the result set.
+     */
+    fun getFollowRequestingUsers(pagination: Pagination): Single<List<UserWithRelation>>
+
+    /**
      *  Gets users that liked vlogs which belong to the current user.
      *  Note that each item is wrapped in a [LikingUserWrapper].
      *
