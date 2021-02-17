@@ -2,7 +2,9 @@ package com.laixer.swabbr.presentation.profile
 
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.laixer.presentation.Resource
@@ -10,6 +12,7 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.user.list.UserAdapter
@@ -24,7 +27,7 @@ import java.util.*
  */
 class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
     private val profileVm: ProfileViewModel by sharedViewModel()
-    private var userAdapter: UserAdapter? = null
+    private lateinit var userAdapter: UserAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_profile_following, container, false)
@@ -38,22 +41,20 @@ class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        profileVm.run {
-            followingUsers.observe(viewLifecycleOwner, Observer { updateUsersFromViewModel(it) })
-        }
-
-        userAdapter = UserAdapter(requireContext(), onClick)
+        userAdapter = UserAdapter(requireContext(), onClickProfile)
         recycler_view_profile_following.apply {
             isNestedScrollingEnabled = false
             adapter = userAdapter
         }
 
-        swipeRefreshLayout.setOnRefreshListener { getData(true) }
+        swipe_refresh_layout_profile_following.setOnRefreshListener { getData(true) }
+
+        profileVm.followingUsers.observe(viewLifecycleOwner, Observer { onFollowingUsersUpdated(it) })
 
         getData(true)
     }
 
-    private val onClick: (UserItem) -> Unit = {
+    private val onClickProfile: (UserItem) -> Unit = {
         findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.id}"))
     }
 
@@ -67,33 +68,30 @@ class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
     /**
      *  Called when the observed resource of [UserItem]s changes.
      *
-     *  @param res The observed resource.
+     *  @param resource The observed resource.
      */
-    private fun updateUsersFromViewModel(resource: Resource<List<UserItem>>) {
+    private fun onFollowingUsersUpdated(resource: Resource<List<UserItem>>) {
         resource.run {
-            swipeRefreshLayout.run {
-                when (state) {
-                    ResourceState.LOADING ->
-                        startRefreshing()
-                    ResourceState.SUCCESS -> {
-                        stopRefreshing()
-                        data?.let { userAdapter?.submitList(it) }
+            when (state) {
+                ResourceState.LOADING -> swipe_refresh_layout_profile_following.startRefreshing()
+                ResourceState.SUCCESS -> {
+                    swipe_refresh_layout_profile_following.stopRefreshing()
+
+                    data?.let {
+                        userAdapter.submitList(it)
+                        userAdapter.notifyDataSetChanged()
                     }
-                    ResourceState.ERROR -> {
-                        stopRefreshing()
-                    }
+                }
+                ResourceState.ERROR -> {
+                    swipe_refresh_layout_profile_following.stopRefreshing()
+
+                    showMessage("Could not get following users")
                 }
             }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        userAdapter = null
-        recycler_view_profile_following?.adapter = null
-    }
-
     internal companion object {
-        const val TAG = "AuthProfileFragment"
+        const val TAG = "ProfileFollowingFragment"
     }
 }

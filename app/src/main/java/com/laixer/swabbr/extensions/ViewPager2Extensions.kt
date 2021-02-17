@@ -1,4 +1,4 @@
-package com.laixer.swabbr.utils
+package com.laixer.swabbr.extensions
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2

@@ -1,6 +1,7 @@
 package com.laixer.swabbr.presentation.vlogs.list
 
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -14,6 +15,7 @@ import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.utils.diffcallback.VlogWrapperDiffCallback
 import com.laixer.swabbr.utils.loadAvatar
 import kotlinx.android.synthetic.main.include_user_large.view.*
+import kotlinx.android.synthetic.main.include_usernames.view.*
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
 import kotlinx.android.synthetic.main.video_info_overlay.*
 import java.time.format.DateTimeFormatter
@@ -53,11 +55,13 @@ class VlogListCardAdapter(
                 .into(image_view_vlog_thumbnail)
 
             user_profile_image.loadAvatar(item.user.profileImage, item.user.id)
+            user_displayed_name.text = item.user.getDisplayName()
+            user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
             text_view_vlog_date_created.text =
                 item.vlog.dateCreated.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
 
             // Click listeners
-            include_user_info.setOnClickListener { onClickVlog.invoke(item) }
+            itemView.setOnClickListener { onClickVlog.invoke(item) }
 
             // Conditional delete button binding
             if (selfId == item.vlog.userId) {

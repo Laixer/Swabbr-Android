@@ -2,20 +2,17 @@ package com.laixer.swabbr.presentation.dashboard
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.Observer
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
-import com.laixer.presentation.gone
-import com.laixer.presentation.visible
+import com.laixer.presentation.*
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.reduceDragSensitivity
+import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
 import com.laixer.swabbr.presentation.video.WatchVideoListFragment
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragmentAdapter
-import com.laixer.swabbr.utils.reduceDragSensitivity
 import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -32,17 +29,6 @@ class DashboardFragment : WatchVideoListFragment() {
     private val vlogListVm: VlogListViewModel by sharedViewModel()
 
     /**
-     *  Gets the recommended vlogs from the [vlogListVm] right away.
-     */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        if (savedInstanceState == null) {
-            vlogListVm.getRecommendedVlogs(refresh = true)
-        }
-    }
-
-    /**
      *  Attaches the observers to the [vlogListVm] vlogs resource,
      *  then gets calls a get for the resource itself.
      */
@@ -51,10 +37,19 @@ class DashboardFragment : WatchVideoListFragment() {
 
         injectFeature()
 
-        vlogListVm.vlogs.observe(viewLifecycleOwner, Observer { updateVlogsFromViewModel(it) })
-
         // Reduce swipe sensitivity
         video_viewpager.reduceDragSensitivity()
+
+        // TODO Repair, we don't have refresh abilities now
+        // swipe_refresh_layout_watch_video_list.setOnRefreshListener { getData(true) }
+
+        vlogListVm.vlogs.observe(viewLifecycleOwner, Observer { updateVlogsFromViewModel(it) })
+
+        getData(true)
+    }
+
+    private fun getData(refresh: Boolean = false) {
+        vlogListVm.getRecommendedVlogs(refresh)
     }
 
     /**
@@ -71,9 +66,21 @@ class DashboardFragment : WatchVideoListFragment() {
     private fun updateVlogsFromViewModel(res: Resource<List<VlogWrapperItem>>) = with(res) {
         when (state) {
             ResourceState.LOADING -> {
+                // swipe_refresh_layout_watch_video_list.startRefreshing()
             }
+
             ResourceState.SUCCESS -> {
+                //swipe_refresh_layout_watch_video_list.stopRefreshing()
+
                 video_viewpager.adapter?.notifyDataSetChanged()
+
+//                // TODO Bad solution
+//                // Only enable the swipe refresh layout if we have no vlogs to display.
+//                if (res.data?.any() == true) {
+//                    swipe_refresh_layout_watch_video_list.gone()
+//                } else {
+//                    swipe_refresh_layout_watch_video_list.visible()
+//                }
 
                 // Update empty collection text based on the result.
                 if (res.data?.any() == true) {
@@ -85,7 +92,9 @@ class DashboardFragment : WatchVideoListFragment() {
                 }
             }
             ResourceState.ERROR -> {
-                Toast.makeText(requireContext(), "Error loading recommended vlogs", Toast.LENGTH_SHORT).show()
+                // swipe_refresh_layout_watch_video_list.stopRefreshing()
+
+                showMessage("Error loading recommended vlogs")
             }
         }
     }

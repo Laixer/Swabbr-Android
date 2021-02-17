@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.exoplayer2.Player
 import com.laixer.presentation.Resource
@@ -32,6 +33,8 @@ class WatchReactionFragment(id: String? = null) : WatchVideoFragment() {
     private val reactionVm: ReactionViewModel by viewModel()
     private val reactionId by lazy { UUID.fromString(id ?: args.reactionId) }
 
+    private val myId = UUID.randomUUID()
+
     /**
      *  Assign observers to [reactionVm].
      */
@@ -53,19 +56,13 @@ class WatchReactionFragment(id: String? = null) : WatchVideoFragment() {
         reactionVm.getReaction(reactionId)
     }
 
+    // TODO STATE_ENDED enters twice in the profile vlogs viewpager -> reaction playback. Why?
     /**
      *  Go back to the vlog after playback has finished.
      */
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-        // If we have a back stack in the parent fragment manager,
-        // calling the activity back button will crash the app as
-        // some fragment transactions are still pending.
         if (playbackState == Player.STATE_ENDED) {
-            if (parentFragmentManager.backStackEntryCount > 0) {
-                parentFragmentManager.popBackStack()
-            } else {
-                requireActivity().onBackPressed()
-            }
+            findNavController().popBackStack()
         }
     }
 
@@ -87,7 +84,7 @@ class WatchReactionFragment(id: String? = null) : WatchVideoFragment() {
                     text_view_video_date_created.text =
                         it.reaction.dateCreated.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
 
-                    stream(it.reaction.videoUri!!)
+                    loadMediaSource(it.reaction.videoUri!!)
                 }
             }
             ResourceState.ERROR -> {

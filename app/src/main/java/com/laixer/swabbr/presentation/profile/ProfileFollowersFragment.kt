@@ -12,6 +12,7 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.AuthFragment
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.presentation.user.list.UserFollowRequestingAdapter
@@ -54,7 +55,7 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
         recycler_view_profile_followers.isNestedScrollingEnabled = false
         recycler_view_profile_followers.adapter = adapter
 
-        swipeRefreshLayout.setOnRefreshListener { getData(true) }
+        swipe_refresh_layout_profile_followers.setOnRefreshListener { getData(true) }
 
         profileVm.followersAndFollowRequestingUsers.observe(viewLifecycleOwner, Observer { onFollowersUpdated(it) })
 
@@ -108,11 +109,10 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
      */
     private fun onFollowersUpdated(res: Resource<List<UserWithRelationItem>>) {
         res.run {
-            swipeRefreshLayout.run {
                 when (state) {
-                    ResourceState.LOADING -> startRefreshing()
+                    ResourceState.LOADING -> swipe_refresh_layout_profile_followers.startRefreshing()
                     ResourceState.SUCCESS -> {
-                        stopRefreshing()
+                        swipe_refresh_layout_profile_followers.stopRefreshing()
 
                         data?.let {
                             adapter.submitList(it)
@@ -120,10 +120,11 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
                         }
                     }
                     ResourceState.ERROR -> {
-                        stopRefreshing()
+                        swipe_refresh_layout_profile_followers.stopRefreshing()
+
+                        showMessage("Could not get followers")
                     }
                 }
-            }
         }
     }
 }

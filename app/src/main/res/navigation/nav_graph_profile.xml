@@ -45,4 +45,26 @@
             app:uri="https://swabbr.com/profileWatchVlog?userId={userId}&amp;initialVlogId={initialVlogId}" />
     </fragment>
 
+    <!-- TODO This should't be required -->
+    <action
+        android:id="@+id/action_record_reaction"
+        app:destination="@id/record_reaction_dest" />
+    <!-- Allows us to record a reaction. -->
+    <fragment
+        android:id="@+id/record_reaction_dest"
+        android:name="com.laixer.swabbr.presentation.reaction.RecordReactionFragment"
+        android:label="Reaction"
+        tools:layout="@layout/fragment_record_video">
+
+        <argument
+            android:name="cameraId"
+            app:argType="string"
+            app:nullable="false"/>
+
+        <argument
+            android:name="vlogId"
+            app:argType="string"
+            app:nullable="false"/>
+    </fragment>
+
 </navigation>

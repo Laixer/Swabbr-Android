@@ -54,7 +54,7 @@ class ProfileVlogsFragment(private val userId: UUID) : AuthFragment() {
             onClickDelete = onClickDeleteVlog
         )
 
-        recycler_view_profile_vlogs.isNestedScrollingEnabled = false
+        //recycler_view_profile_vlogs.isNestedScrollingEnabled = false
         recycler_view_profile_vlogs.adapter = profileVlogsAdapter
 
         swipe_refresh_layout_profile_vlogs.setOnRefreshListener { getData(true) }
@@ -98,8 +98,7 @@ class ProfileVlogsFragment(private val userId: UUID) : AuthFragment() {
      */
     private fun updateProfileVlogs(res: Resource<List<VlogWrapperItem>>) = res.run {
         when (state) {
-            ResourceState.LOADING ->
-                swipe_refresh_layout_profile_vlogs.startRefreshing()
+            ResourceState.LOADING -> swipe_refresh_layout_profile_vlogs.startRefreshing()
             ResourceState.SUCCESS -> {
                 swipe_refresh_layout_profile_vlogs.stopRefreshing()
 

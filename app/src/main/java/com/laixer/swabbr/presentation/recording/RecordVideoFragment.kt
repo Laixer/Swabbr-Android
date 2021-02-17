@@ -10,7 +10,9 @@ import android.hardware.camera2.*
 import android.media.MediaCodec
 import android.media.MediaRecorder
 import android.media.MediaScannerConnection
+import android.media.ThumbnailUtils
 import android.os.Bundle
+import android.os.CancellationSignal
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
@@ -21,8 +23,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.MainActivity
 import com.laixer.swabbr.utils.*
@@ -30,19 +34,16 @@ import io.antmedia.android.broadcaster.utils.OrientationLiveData
 import kotlinx.android.synthetic.main.fragment_record_video.*
 import kotlinx.coroutines.*
 import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.time.Duration
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
-import android.media.ThumbnailUtils
-import android.os.CancellationSignal
-import java.io.Console
-import java.io.FileOutputStream
-import java.time.LocalDateTime
 
-// TODO This currently does not support a min/max record time of 0/inifinite.
+// TODO This currently does not support a min/max record time of 0/infinite.
 // TODO Question - when do we exit fullscreen explicitly?
 // TODO Pressing back while recording crashes the app.
 /**
@@ -55,6 +56,9 @@ import java.time.LocalDateTime
  *  is used as the camera preview which limits the code to API 14+.
  *  This can be easily replaced with a [android.view.SurfaceView] to
  *  run on older devices.
+ *
+ *  This expects the required permissions to already be granted. A
+ *  check is done at the [onCreate] method.
  */
 open class RecordVideoFragment : Fragment() {
     private var recording = false
@@ -104,7 +108,6 @@ open class RecordVideoFragment : Fragment() {
      * camera session without preparing the recorder
      */
     private val recorderSurface: Surface by lazy {
-
         // Get a persistent Surface from MediaCodec, don't forget to release when done
         val surface = MediaCodec.createPersistentInputSurface()
 
@@ -166,9 +169,23 @@ open class RecordVideoFragment : Fragment() {
     /** Live data listener for changes in the device orientation relative to the camera */
     private lateinit var relativeOrientation: OrientationLiveData
 
+    /**
+     *  This checks if we have the required permissions. If this
+     *  is not the case, the permissions are requested. If any of
+     *  these are denied, we go back to the previous activity or
+     *  fragment.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         injectFeature()
+
+        askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
+            // Do nothing
+        }.onDeclined {
+            showMessage("Your permissions are required to record videos")
+            findNavController().popBackStack()
+        }
     }
 
     /**
@@ -181,21 +198,13 @@ open class RecordVideoFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.fragment_record_video, container, false)
 
     /**
-     *  Sets up the view. After going fullscreen and asking permission, this
-     *  - Sets up the circular progress bar.
-     *  - Sets up the horizontal progress bar.
-     *  - Implements button click listeners.
-     *  - Calls [initMinMaxVideoTimes] with default values.
-     *
-     *  If any permissions are declined, this will go to the previous activity.
+     *  Sets up our UI.
      */
-    @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         Utils.enterFullscreen(requireActivity())
 
-        // Ask permissions, then continue, else return.
         askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
             // Set some automatic time-based events for our TimerView
             stream_position_timer.apply {
@@ -477,7 +486,7 @@ open class RecordVideoFragment : Fragment() {
 
             // Generates the thumbnail
             val cancellationSignal = CancellationSignal() // TODO Use.
-            val thumbnail = ThumbnailUtils.createVideoThumbnail(videoFile, Size(384,512), cancellationSignal)
+            val thumbnail = ThumbnailUtils.createVideoThumbnail(videoFile, Size(384, 512), cancellationSignal)
 
             // TODO Put in a helper.
             val os = FileOutputStream(thumbnailFile)
@@ -510,7 +519,8 @@ open class RecordVideoFragment : Fragment() {
 
                 override fun onDisconnected(device: CameraDevice) {
                     Log.w(TAG, "Camera $cameraId has been disconnected")
-                    requireActivity().onBackPressed()
+
+                    findNavController().popBackStack()
                 }
 
                 override fun onError(device: CameraDevice, error: Int) {

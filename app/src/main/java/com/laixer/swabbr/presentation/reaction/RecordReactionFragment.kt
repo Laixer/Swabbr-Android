@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.laixer.swabbr.BuildConfig
 import com.laixer.swabbr.R
@@ -74,6 +75,9 @@ class RecordReactionFragment : RecordVideoFragment() {
                 preview_ok.setOnClickListener {
                     dismiss()
                     upload(localVideoUri, localThumbnailUri)
+
+                    // Go back right away.
+                    findNavController().popBackStack()
                 }
             }.show()
         }
@@ -98,7 +102,6 @@ class RecordReactionFragment : RecordVideoFragment() {
                                 "The reaction has been posted!",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            requireActivity().onBackPressed()
                         }
                     },
                     {
@@ -114,7 +117,7 @@ class RecordReactionFragment : RecordVideoFragment() {
     }
 
     companion object {
-        private val TAG = RecordReactionFragment::class.java.simpleName
+        private val TAG = this::class.java.simpleName
 
         private val MINIMUM_RECORD_TIME = Duration.ofSeconds(3)
         private val MAXIMUM_RECORD_TIME = Duration.ofSeconds(10)

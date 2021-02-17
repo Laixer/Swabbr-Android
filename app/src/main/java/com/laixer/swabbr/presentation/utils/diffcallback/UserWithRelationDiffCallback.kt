@@ -12,5 +12,6 @@ internal class UserWithRelationDiffCallback : DiffUtil.ItemCallback<UserWithRela
         oldItem.user.id == newItem.user.id
 
     override fun areContentsTheSame(oldItem: UserWithRelationItem, newItem: UserWithRelationItem): Boolean =
-        oldItem == newItem
+        oldItem.user.id == newItem.user.id &&
+            oldItem.followRequestStatus == newItem.followRequestStatus
 }

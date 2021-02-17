@@ -109,4 +109,19 @@
     <string name="empty_vlog_collection">No vlogs to display</string>
     <string name="empty_reaction_collection">No reactions yet</string>
 
+
+    <!-- Error messages -->
+    <string name="error_playback_video">Could not play video</string>
+    <string name="error_playback_vlog">Could not play vlog</string>
+    <string name="error_playback_reaction">Could not play reaction</string>
+
+    <string name="error_load_video">Could not download video</string>
+    <string name="error_load_vlog">Could not download vlog</string>
+    <string name="error_load_reaction">Could not download reaction</string>
+
+
+    <!-- Dialog popup messages -->
+    <string name="dialog_ok">Post</string>
+    <string name="dialog_cancel">Cancel</string>
+
 </resources>

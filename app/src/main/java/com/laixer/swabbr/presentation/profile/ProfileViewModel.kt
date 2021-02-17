@@ -328,7 +328,9 @@ class ProfileViewModel constructor(
                             }
                         )
                 },
-                { followersAndFollowRequestingUsers.setError(it.message) }
+                {
+                    followersAndFollowRequestingUsers.setError(it.message)
+                }
             )
         )
     }

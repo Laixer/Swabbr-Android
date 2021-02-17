@@ -1,5 +1,6 @@
 package com.laixer.swabbr.presentation.auth.login
 
+import android.Manifest
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.firebase.iid.FirebaseInstanceId
 import com.laixer.cache.Cache
 import com.laixer.presentation.Resource
@@ -19,6 +21,7 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.auth.UserManager.Companion.KEY_ACCOUNT_NAME
@@ -28,6 +31,10 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+/**
+ *  Fragment for logging the user in. This will also ask the required
+ *  permissions to use the app. On decline, we can't log the user in.
+ */
 class LoginFragment : Fragment() {
     private val vm: AuthViewModel by sharedViewModel()
     private val cache: Cache by inject()
@@ -46,7 +53,16 @@ class LoginFragment : Fragment() {
 
         emailInput.setText(cache.get<String>(KEY_ACCOUNT_NAME) ?: "")
 
-        loginButton.setOnClickListener {
+        loginButton.setOnClickListener { onClickLogin() }
+        registerButton.setOnClickListener { onClickRegister() }
+    }
+
+    /**
+     *  Asks for permissions, then logs the user in. Note that if
+     *  any permissions are declined, the user won't be logged in.
+     */
+    private fun onClickLogin() {
+        askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
             FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
                 require(task.isSuccessful) { "Unable to identify this device on Firebase" }
                 vm.login(
@@ -55,15 +71,20 @@ class LoginFragment : Fragment() {
                     task.result!!.token
                 )
             }
+        }.onDeclined {
+            showMessage("Your permissions are required to use the app")
         }
+    }
 
-        registerButton.setOnClickListener {
-            findNavController().navigate(
-                LoginFragmentDirections.actionRegister(), FragmentNavigatorExtras(
-                    emailInput to "emailInput"
-                )
+    /**
+     *  Takes us to the registration fragment.
+     */
+    private fun onClickRegister() {
+        findNavController().navigate(
+            LoginFragmentDirections.actionRegister(), FragmentNavigatorExtras(
+                emailInput to "emailInput"
             )
-        }
+        )
     }
 
     private fun login(res: Resource<UserCompleteItem?>) {

@@ -2,6 +2,7 @@ package com.laixer.swabbr.extensions
 
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 
 /**
  *  Builds a generic toast message and displays it.

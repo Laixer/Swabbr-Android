@@ -26,6 +26,8 @@ class VlogListViewModel constructor(
      */
     val vlogs = MutableLiveData<Resource<List<VlogWrapperItem>>>()
 
+    // TODO Implement optional vlog wrapper? Bind to backend? Probably that last one.
+
     private val compositeDisposable = CompositeDisposable()
 
     /**

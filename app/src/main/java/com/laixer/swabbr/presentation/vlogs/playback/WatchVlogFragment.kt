@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
@@ -35,6 +34,9 @@ import java.time.format.FormatStyle
 import java.util.*
 
 // TODO BUG java.lang.IllegalStateException: Fragment WatchVlogFragment{5c199a7} (3adedb84-c7a9-45ac-bf25-9df53bf0f9ee) f0} has null arguments
+// TODO BUG java.lang.RuntimeException: Unable to start activity ComponentInfo{com.laixer.swabbr/com.laixer.swabbr.presentation.MainActivity}:
+//  androidx.fragment.app.Fragment$InstantiationException: Unable to instantiate fragment com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragment:
+//  could not find Fragment constructor
 /**
  *  Fragment for watching a single vlog. This extends [WatchVideoFragment]
  *  which contains the core playback functionality. This class manages
@@ -73,7 +75,6 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                 onVlogProfileClick.invoke(it.id)
             }
         }
-
 
         // Apply the reaction sheet adapter to the swipeable overlay.
         reactions_sheet.run {
@@ -260,28 +261,25 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
         when (state) {
             ResourceState.LOADING -> {
                 video_content_loading_icon.visible()
+
+                clearErrorIfPresent()
             }
             ResourceState.SUCCESS -> {
                 video_content_loading_icon.gone()
 
                 data?.let {
                     // Display the user info
-                    it.user.let { user ->
-                        user_profile_image.loadAvatar(user.profileImage, user.id)
-                        video_user_displayed_name.text = user.getDisplayName()
-                        video_user_nickname.text = requireContext().getString(R.string.nickname, user.nickname)
-                    }
+                    user_profile_image.loadAvatar(it.user.profileImage, it.user.id)
+                    video_user_displayed_name.text = it.user.getDisplayName()
+                    video_user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
 
                     // Display the vlog info and start playback
-                    it.vlog.let { vlog ->
-                        // TODO Proper resource usage?
-                        // TODO Put in helper or something, not here
-                        text_view_video_date_created.text =
-                            vlog.dateCreated.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
-                        vlog_view_count.text = requireContext().formatNumber(vlog.views)
+                    // TODO Put in helper or something, not here
+                    text_view_video_date_created.text = it.vlog.dateCreated
+                        .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
+                    vlog_view_count.text = requireContext().formatNumber(it.vlog.views)
 
-                        stream(vlog.videoUri!!)
-                    }
+                    loadMediaSource(it.vlog.videoUri!!)
                 }
 
                 // Enable the like button if we have the vlog and vlogLikedByUser resource.
@@ -289,6 +287,9 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
             }
             ResourceState.ERROR -> {
                 video_content_loading_icon.gone()
+
+                // Notify the user that we can't load the vlog.
+                onResourceError(R.string.error_load_vlog)
 
                 Toast.makeText(requireContext(), "Error loading vlog - ${resource.message}", Toast.LENGTH_SHORT).show()
             }

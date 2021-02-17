@@ -5,13 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
+import com.laixer.swabbr.extensions.reduceDragSensitivity
+import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
 import com.laixer.swabbr.presentation.video.WatchVideoListFragment
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
@@ -43,6 +47,8 @@ class WatchUserVlogsFragment : WatchVideoListFragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        video_viewpager.reduceDragSensitivity()
 
         /** Gets the actual vlogs. The result is handled by [onVlogsUpdated]. */
         vlogListVm.getVlogsForUser(UUID.fromString(userId), refresh = true)
@@ -79,7 +85,10 @@ class WatchUserVlogsFragment : WatchVideoListFragment() {
                 }
             }
             ResourceState.ERROR -> {
-                requireActivity().onBackPressed()
+                // TODO When does this trigger
+                showMessage("Error getting user vlogs")
+
+                findNavController().popBackStack()
             }
         }
     }

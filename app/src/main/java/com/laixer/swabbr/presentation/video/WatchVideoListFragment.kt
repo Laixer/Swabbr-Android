@@ -38,7 +38,13 @@ abstract class WatchVideoListFragment : AuthFragment() {
         // Hide the empty collection message
         text_display_empty_video_collection.gone()
 
-        video_viewpager.offscreenPageLimit = 3
+        /**
+         *  Keep one item at either side of each item, no more. This prevents
+         *  us from creating too many [WatchVideoFragment] instances which each
+         *  have their own ExoPlayer instance. Too many player instances will
+         *  make the UI stop behaving properly due to limited encoder resources.
+         */
+        video_viewpager.offscreenPageLimit = 1
         video_viewpager.adapter = getWatchVideoFragmentAdapter()
     }
 
@@ -51,22 +57,6 @@ abstract class WatchVideoListFragment : AuthFragment() {
      *  as the adapter for [video_viewpager] yourself.
      */
     protected abstract fun getWatchVideoFragmentAdapter(): WatchVideoFragmentAdapter
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        video_viewpager.adapter = null
-    }
-
-    override fun onStop() {
-        // TODO Beunfix
-        //currentIndex = video_viewpager.currentItem
-
-        super.onStop()
-    }
-
-    companion object {
-        //protected const val CURRENT_ITEM_INDEX = "CURRENT_ITEM_INDEX"
-    }
 }
 
 

@@ -2,7 +2,9 @@ package com.laixer.swabbr.presentation.user.list
 
 import android.content.Context
 import android.view.View
+import com.laixer.presentation.gone
 import com.laixer.presentation.invisible
+import com.laixer.presentation.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
@@ -33,12 +35,15 @@ class UserFollowRequestingAdapter(
      */
     override fun bindAlso(itemView: View, item: UserWithRelationItem) {
         if (item.followRequestStatus == FollowRequestStatus.PENDING) {
+            itemView.follow_request_accept.visible()
+            itemView.follow_request_decline.visible()
+
             itemView.follow_request_accept.setOnClickListener { onClickAccept.invoke(item) }
             itemView.follow_request_decline.setOnClickListener { onClickDecline.invoke(item) }
         } else {
             // Hide if not required.
-            itemView.follow_request_accept.invisible()
-            itemView.follow_request_decline.invisible()
+            itemView.follow_request_accept.gone()
+            itemView.follow_request_decline.gone()
         }
     }
 }

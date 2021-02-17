@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
+import com.laixer.swabbr.presentation.utils.diffcallback.ReactionWrapperDiffCallback
 import com.laixer.swabbr.utils.loadAvatar
 import kotlinx.android.synthetic.main.item_list_reaction.view.*
 import java.util.*
@@ -27,7 +28,7 @@ class ReactionsAdapter(
     val onReactionClick: (ReactionWrapperItem) -> Unit,
     val onDeleteClick: (ReactionWrapperItem) -> Unit?
 ) :
-    ListAdapter<ReactionWrapperItem, ReactionsAdapter.ViewHolder>(ReactionDiffCallback()) {
+    ListAdapter<ReactionWrapperItem, ReactionsAdapter.ViewHolder>(ReactionWrapperDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
 
@@ -60,13 +61,4 @@ class ReactionsAdapter(
             }
         }
     }
-}
-
-private class ReactionDiffCallback : DiffUtil.ItemCallback<ReactionWrapperItem>() {
-
-    override fun areItemsTheSame(oldItem: ReactionWrapperItem, newItem: ReactionWrapperItem): Boolean =
-        oldItem.reaction.id == newItem.reaction.id
-
-    override fun areContentsTheSame(oldItem: ReactionWrapperItem, newItem: ReactionWrapperItem): Boolean =
-        oldItem == newItem
 }
