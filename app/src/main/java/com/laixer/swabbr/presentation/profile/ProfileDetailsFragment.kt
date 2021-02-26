@@ -8,6 +8,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
@@ -15,8 +16,7 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
 import com.laixer.swabbr.extensions.showMessage
-import com.laixer.swabbr.presentation.AuthFragment
-import com.laixer.swabbr.presentation.auth.AuthViewModel
+import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.model.UserCompleteItem
 import com.laixer.swabbr.presentation.model.UserUpdatablePropertiesItem
 import com.laixer.swabbr.presentation.model.extractUpdatableProperties
@@ -29,7 +29,6 @@ import kotlinx.android.synthetic.main.fragment_registration.*
 import kotlinx.android.synthetic.main.fragment_registration.fab_set_profile_image
 import kotlinx.android.synthetic.main.fragment_registration.inputNickname
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.LocalDate
 import java.util.*
 
@@ -46,7 +45,6 @@ import java.util.*
  */
 class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
     private val profileVm: ProfileViewModel by sharedViewModel()
-    private val authVm: AuthViewModel by sharedViewModel()
 
     /**
      *  Flag set by [confirmChanges] when we are awaiting a data
@@ -68,7 +66,7 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
     private lateinit var userUpdatableProperties: UserUpdatablePropertiesItem
 
     /**
-     *  Attaches [onUserCompleteUpdated] to the [authUserVm]
+     *  Attaches [onUserCompleteUpdated] to the [authVm]
      *  observable user resource.
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -124,7 +122,9 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
                 }
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (!::userOriginal.isInitialized) { return }
+                    if (!::userOriginal.isInitialized) {
+                        return
+                    }
 
                     // TODO This is bad design, no guarantee of position matching desired value.
                     userUpdatableProperties.gender = Gender.values().first { it.ordinal == position }
@@ -146,7 +146,9 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
                 }
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (!::userOriginal.isInitialized) { return }
+                    if (!::userOriginal.isInitialized) {
+                        return
+                    }
 
                     // TODO This is bad design, no guarantee of position matching desired value.
                     userUpdatableProperties.dailyVlogRequestLimit = position
@@ -154,7 +156,10 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
             }
 
         buttonConfirm.setOnClickListener { confirmChanges() }
-        buttonLogout.setOnClickListener { authVm.logout() }
+        buttonLogout.setOnClickListener {
+            // Perform logout operation and take us back to the login screen.
+            authVm.logout()
+        }
 
         // Setup spinner values
         ArrayAdapter.createFromResource(
@@ -226,11 +231,11 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
 
     /**
      *  This function is attached to the observable user object
-     *  in the [authUserVm]. Whenever the current user object in
-     *  [authUserVm] changes, this function gets called.
+     *  in the [authVm]. Whenever the current user object in
+     *  [authVm] changes, this function gets called.
      *
      *  Note that this function does not actually perform any user
-     *  updating operation. It just syncs the UI with [authUserVm].
+     *  updating operation. It just syncs the UI with [authVm].
      *
      *  @param res The user resource.
      */

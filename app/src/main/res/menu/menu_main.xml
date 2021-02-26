@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_graph_dashboard"
+        android:id="@+id/action_global_dashboardFragment"
         android:icon="@drawable/ic_dashboard_24dp"
         android:title="@string/dashboard" />
 
     <item
-        android:id="@+id/nav_graph_search"
+        android:id="@+id/action_global_searchFragment"
         android:icon="@drawable/ic_search_24dp"
         android:title="@string/search" />
 
     <item
-        android:id="@+id/nav_graph_like_overview"
+        android:id="@+id/action_global_likeOverviewFragment"
         android:icon="@drawable/ic_love_it_outline"
         android:title="@string/like_overview" />
 
     <item
-        android:id="@+id/nav_graph_profile"
+        android:id="@+id/action_global_profileFragment"
         android:icon="@drawable/ic_person_24dp"
         android:title="@string/userProfile" />
 </menu>

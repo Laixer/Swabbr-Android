@@ -13,12 +13,13 @@ import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.showMessage
-import com.laixer.swabbr.presentation.AuthFragment
+import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.model.mapToDomain
 import com.laixer.swabbr.presentation.vlogs.list.VlogListCardAdapter
 import kotlinx.android.synthetic.main.fragment_profile_vlogs.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 /**
@@ -28,7 +29,7 @@ import java.util.*
  *  @param userId The user id of the profile we are looking at.
  */
 class ProfileVlogsFragment(private val userId: UUID) : AuthFragment() {
-    private val profileVm: ProfileViewModel by sharedViewModel()
+    private val profileVm: ProfileViewModel by viewModel()
 
     /** Adapter for [recycler_view_profile_vlogs] - NOT the fullscreen playback adapter. */
     private var profileVlogsAdapter: VlogListCardAdapter? = null
@@ -49,7 +50,7 @@ class ProfileVlogsFragment(private val userId: UUID) : AuthFragment() {
         profileVm.userVlogs.observe(viewLifecycleOwner, Observer { updateProfileVlogs(it) })
 
         profileVlogsAdapter = VlogListCardAdapter(
-            selfId = userId,
+            selfId = getSelfId(),
             onClickVlog = onClickVlog,
             onClickDelete = onClickDeleteVlog
         )
@@ -60,7 +61,7 @@ class ProfileVlogsFragment(private val userId: UUID) : AuthFragment() {
         swipe_refresh_layout_profile_vlogs.setOnRefreshListener { getData(true) }
 
         // Set the empty collection text based on who we are looking at
-        text_view_profile_vlogs_none.text = if (userId == authUserVm.getSelfId())
+        text_view_profile_vlogs_none.text = if (userId == getSelfId())
             requireContext().getString(R.string.profile_self_no_vlogs)
         else requireContext().getString(R.string.profile_no_vlogs)
 
@@ -81,7 +82,10 @@ class ProfileVlogsFragment(private val userId: UUID) : AuthFragment() {
      *  Called when we click on a vlog item in the [profileVlogsAdapter].
      */
     private val onClickVlog: (VlogWrapperItem) -> Unit = { item ->
-        findNavController().navigate(Uri.parse("https://swabbr.com/profileWatchVlog?userId=${item.user.id}&vlogId=${item.vlog.id}"))
+        findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToWatchUserVlogsFragment(
+            initialVlogId = item.vlog.id.toString(),
+            userId = item.user.id.toString()
+        ))
     }
 
     /**

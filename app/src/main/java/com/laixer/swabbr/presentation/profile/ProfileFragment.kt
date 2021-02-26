@@ -7,17 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.tabs.TabLayoutMediator
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
-import com.laixer.presentation.startRefreshing
-import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.extensions.reduceDragSensitivity
 import com.laixer.swabbr.extensions.showMessage
-import com.laixer.swabbr.presentation.AuthFragment
+import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.UserWithStatsItem
 import com.laixer.swabbr.utils.formatNumber
@@ -37,7 +36,7 @@ import kotlin.properties.Delegates
  */
 class ProfileFragment : AuthFragment() {
     private val args: ProfileFragmentArgs by navArgs()
-    private val profileVm: ProfileViewModel by sharedViewModel()
+    private val profileVm: ProfileViewModel by viewModel()
 
     // TODO Is this the best solution? Might be...
     /**
@@ -46,7 +45,7 @@ class ProfileFragment : AuthFragment() {
      */
     private val userId: UUID by lazy {
         if (args.userId == "self") {
-            authUserVm.getSelfId()
+            getSelfId()
         } else {
             UUID.fromString(args.userId)
         }
@@ -64,7 +63,7 @@ class ProfileFragment : AuthFragment() {
 
     /**
      *  Binds update functions to observable resources in the
-     *  [authUserVm].
+     *  [authVm].
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Instantly clear resources if they are different than expected
@@ -92,7 +91,7 @@ class ProfileFragment : AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Determine if we are looking at the current user.
-        isSelf = authUserVm.getSelfId() == userId
+        isSelf = authVm.getSelfIdOrNull() == userId
 
         // Reduce swiping sensitivity for tabs.
         viewpager_user_profile.reduceDragSensitivity()
@@ -172,8 +171,8 @@ class ProfileFragment : AuthFragment() {
 
     /**
      *  This function is attached to the observable stats object
-     *  in the [authUserVm]. Whenever the current stats object in
-     *  [authUserVm] changes, this function gets called.
+     *  in the [authVm]. Whenever the current stats object in
+     *  [authVm] changes, this function gets called.
      *
      *  @param res The user resource.
      */

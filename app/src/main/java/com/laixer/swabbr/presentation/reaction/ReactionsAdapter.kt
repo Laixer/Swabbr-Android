@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.laixer.presentation.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
+import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.utils.diffcallback.ReactionWrapperDiffCallback
 import com.laixer.swabbr.utils.loadAvatar
 import kotlinx.android.synthetic.main.item_list_reaction.view.*
@@ -24,7 +25,7 @@ import java.util.*
  */
 class ReactionsAdapter(
     val currentUserId: UUID,
-    val onProfileClick: (ReactionWrapperItem) -> Unit,
+    val onProfileClick: (UserItem) -> Unit,
     val onReactionClick: (ReactionWrapperItem) -> Unit,
     val onDeleteClick: (ReactionWrapperItem) -> Unit?
 ) :
@@ -45,7 +46,7 @@ class ReactionsAdapter(
             video_user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
 
             // Take us to the user if we click the profile image.
-            user_profile_image.setOnClickListener { onProfileClick.invoke(item) }
+            user_profile_image.setOnClickListener { onProfileClick.invoke(item.user) }
 
             // Take us to the reaction if we click the item.
             itemView.setOnClickListener { onReactionClick.invoke(item) }

@@ -3,6 +3,7 @@ package com.laixer.swabbr.domain.usecase
 import com.laixer.swabbr.domain.model.*
 import com.laixer.swabbr.domain.interfaces.FollowRequestRepository
 import com.laixer.swabbr.domain.interfaces.UserRepository
+import com.laixer.swabbr.services.users.UserManager
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
@@ -13,15 +14,13 @@ import java.util.*
  */
 class AuthUserUseCase constructor(
     private val userRepository: UserRepository,
-    private val followRequestRepository: FollowRequestRepository
+    private val userManager: UserManager
 ) {
-    // TODO This can be improved, don't do this.
     /**
-     *  Gets the id of the currently authenticated user.
+     *  Gets the id of the currently authenticated user. Only call this if
+     *  we are authenticated.
      */
-    fun getSelfId(): UUID = getSelf(false)
-        .blockingGet()
-        .id
+    fun getSelfId(): UUID = userManager.getUserIdOrNull() ?: UUID.randomUUID() // TODO Horrible solution
 
     /**
      *  Get the currently authenticated user. This contains

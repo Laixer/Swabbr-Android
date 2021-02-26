@@ -11,19 +11,6 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 /**
- *  Builds a Moshi object with custom adapters. These are required
- *  for proper json parsing throughout the application.
- */
-fun Moshi.Builder.BuildWithCustomAdapters(): Moshi = Moshi
-    .Builder()
-    .add(UuidJsonAdapter())
-    .add(LocalDateAdapter())
-    .add(ZonedDateTimeAdapter())
-    .add(ZoneOffsetAdapter())
-    .add(UriAdapter())
-    .build()
-
-/**
  *  Adapter for [UUID] values.
  */
 class UuidJsonAdapter {

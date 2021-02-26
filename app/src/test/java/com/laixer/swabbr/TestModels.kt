@@ -90,7 +90,7 @@ object Models {
         pushNotificationPlatform = PushNotificationPlatform.FCM
     )
     val authUser = TokenWrapper(
-        jwtToken = "token",
+        token = "token",
         user = user,
         userSettings = settings
     )
@@ -143,7 +143,7 @@ object Items {
         Models.settings.followMode
     )
     val authUser = AuthUserItem(
-        Models.authUser.jwtToken,
+        Models.authUser.token,
         settings,
         user
     )

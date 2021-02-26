@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.laixer.swabbr">
 
     <!-- Permissions -->
@@ -32,50 +31,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Swabbr">
 
-        <!-- Our main entry point -->
+        <!-- Our main entry point. All functionality of the app exists in here using fragments. -->
         <activity
             android:name="com.laixer.swabbr.presentation.MainActivity"
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.Swabbr.Launcher">
-
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- Activity used for logging us in. -->
-        <activity
-            android:name="com.laixer.swabbr.presentation.AuthActivity"
-            android:label="@string/login"
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.Swabbr.Login"/>
-
-        <!-- Activity for recording a vlog, which can be entered from a notification. -->
-        <activity
-            android:name="com.laixer.swabbr.presentation.vlogs.recording.RecordVlogActivity"
-            android:fitsSystemWindows="true"
-            android:label="Live"
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.Swabbr.Recording"/>
-
-        <!-- Authenticator service (AccountManager) -->
-        <service
-            android:name="com.laixer.swabbr.presentation.auth.AuthenticatorService"
-            android:process=":authenticator"
-            tools:ignore="ExportedService">
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator" />
-        </service>
-
         <!-- Firebase service -->
         <service
-            android:name="com.laixer.swabbr.services.FirebaseService"
+            android:name="com.laixer.swabbr.services.notifications.FirebaseService"
             android:exported="false"
             android:stopWithTask="false">
             <intent-filter>

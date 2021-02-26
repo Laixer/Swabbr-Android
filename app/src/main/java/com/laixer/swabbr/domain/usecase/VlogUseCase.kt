@@ -1,10 +1,13 @@
 package com.laixer.swabbr.domain.usecase
 
-import com.laixer.swabbr.domain.model.*
 import com.laixer.swabbr.domain.interfaces.ReactionRepository
 import com.laixer.swabbr.domain.interfaces.UserRepository
 import com.laixer.swabbr.domain.interfaces.VlogLikeRepository
 import com.laixer.swabbr.domain.interfaces.VlogRepository
+import com.laixer.swabbr.domain.model.UploadWrapper
+import com.laixer.swabbr.domain.model.Vlog
+import com.laixer.swabbr.domain.model.VlogLikeSummary
+import com.laixer.swabbr.domain.model.VlogViews
 import com.laixer.swabbr.domain.types.VlogWrapper
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -79,7 +82,8 @@ class VlogUseCase constructor(
      * @param vlogId The vlog id.
      * @param refresh Force a data refresh.
      */
-    fun getReactionCount(vlogId: UUID, refresh: Boolean = false): Single<Int> = reactionRepository.getCountForVlog(vlogId).map { it.count }
+    fun getReactionCount(vlogId: UUID, refresh: Boolean = false): Single<Int> =
+        reactionRepository.getCountForVlog(vlogId).map { it.count }
 
     /**
      *  Gets a vlog like summary for a vlog.
@@ -128,6 +132,7 @@ class VlogUseCase constructor(
      */
     fun unlike(vlogId: UUID): Completable = vlogLikeRepository.unlike(vlogId)
 
+    // TODO This performs way too many backend calls, see https://github.com/Laixer/Swabbr-Android/issues/155
     /**
      *  Extension functionality to convert an observable vlog
      *  to a [VlogWrapper].

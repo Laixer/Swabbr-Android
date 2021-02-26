@@ -12,8 +12,10 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.onClickProfile
+import com.laixer.swabbr.extensions.onClickProfileWithRelation
 import com.laixer.swabbr.extensions.showMessage
-import com.laixer.swabbr.presentation.AuthFragment
+import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.presentation.user.list.UserFollowRequestingAdapter
 import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
@@ -31,7 +33,7 @@ import java.util.*
  *
  */
 class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
-    private val profileVm: ProfileViewModel by sharedViewModel()
+    private val profileVm: ProfileViewModel by viewModel()
 
     private lateinit var adapter: UserWithRelationAdapter
 
@@ -40,7 +42,7 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
     }
 
     /**
-     *  Setup listeners and attach observers to the [authUserVm] resources.
+     *  Setup listeners and attach observers to the [authVm] resources.
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,7 +50,7 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
         // Setup and store the adapter.
         adapter = UserFollowRequestingAdapter(
             context = requireContext(),
-            onClickProfile = onProfileClick,
+            onClickProfile = onClickProfileWithRelation(),
             onClickAccept = onAccept,
             onClickDecline = onDecline
         )
@@ -69,23 +71,12 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
      *  @param refresh Force a data refresh.
      */
     private fun getData(refresh: Boolean = false) {
-        if (authUserVm.getSelfId() == userId) {
+        if (authVm.getSelfIdOrNull() == userId) {
             profileVm.getFollowersAndIncomingRequesters(refresh)
         } else {
             profileVm.getFollowers(userId, refresh)
         }
     }
-
-    // TODO Duplicate, centralize or something.
-    /**
-     *  Callback for when we click on a profile.
-     */
-    private val onProfileClick: (UserWithRelationItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
-    }
-
-    // TODO Fix
-    private val todoFixThisCallback: (UserWithRelationItem) -> Unit = {}
 
     /**
      *  Callback for when we accept a follow request.

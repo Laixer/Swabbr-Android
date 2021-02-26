@@ -1,97 +1,123 @@
 package com.laixer.swabbr.presentation.auth
 
-import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.tasks.Tasks.await
 import com.google.firebase.messaging.FirebaseMessaging
 import com.laixer.presentation.Resource
 import com.laixer.presentation.setError
 import com.laixer.presentation.setLoading
 import com.laixer.presentation.setSuccess
-import com.laixer.swabbr.domain.model.TokenWrapper
 import com.laixer.swabbr.domain.usecase.AuthUseCase
-import com.laixer.swabbr.domain.usecase.AuthUserUseCase
 import com.laixer.swabbr.presentation.model.RegistrationItem
-import com.laixer.swabbr.presentation.model.UserCompleteItem
 import com.laixer.swabbr.presentation.model.mapToDomain
-import com.laixer.swabbr.presentation.model.mapToPresentation
+import com.laixer.swabbr.services.users.UserManager
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 
-// TODO This is a mess. This contruction of logging in when registering
-//      while the backend doesn't bundle these calls might cause problems.
-//      Also, look at the blockingGet() calls.
 /**
- *  View model for managing user authentication operations.
- *
- *  This also stores the active jwt token. TODO Is that correct? Probably not.
+ *  View model for managing user login, logout and registration.
+ *  Note that this relies on the [UserManager]. This view model
+ *  triggers our API calls with regards to authentication, but
+ *  the refreshing of any tokens is beyond it's scope. This is
+ *  handled by our [UserManager].
  */
 open class AuthViewModel constructor(
     private val userManager: UserManager,
-    private val authUserUseCase: AuthUserUseCase,
     private val authUseCase: AuthUseCase,
     private val firebaseMessaging: FirebaseMessaging
 ) : ViewModel() {
-
-    val authenticatedUser = MutableLiveData<Resource<UserCompleteItem?>>()
-    val tokenWrapper = MutableLiveData<Resource<TokenWrapper>>()
+    // Used for graceful resource disposal.
     private val compositeDisposable = CompositeDisposable()
 
     /**
-     *  Logs the user in and subscribes for firebase notifications.
+     *  Observe this resource to check for when our authenticator
+     *  fails to refresh the user auth for whatever reason. If this
+     *  is the case, the value in this mutable resource is true. In
+     *  this case we need the user to log in again.
+     */
+    fun getNewAuthenticationRequiredResource() = userManager.newAuthenticationRequiredResource
+
+    /**
+     *  Will be updated after we have either logged in or registered. The
+     *  boolean value will indicate if the operation was successful or not.
+     */
+    val authenticationResultResource = MutableLiveData<Resource<Boolean>>()
+
+    /**
+     *  Checks if we are authenticated.
+     */
+    fun isAuthenticated(): Boolean = userManager.hasValidToken()
+        || (userManager.hasToken() && userManager.hasValidRefreshToken())
+
+    /**
+     *  Returns the user id of the currently authenticated user, or
+     *  null if we don't have an authenticated user.
+     */
+    fun getSelfIdOrNull(): UUID? = userManager.getUserIdOrNull()
+
+    /**
+     *  Gets the cached user account name if we have one.
+     */
+    fun getCachedEmailOrNull(): String? = userManager.getCachedEmailOrNull()
+
+    // TODO Optimize firebase token get operation. Is this the way to go? Maybe it is though...
+    /**
+     *  Logs the user in. Note that this first gets the firebase
+     *  token, then performs the login call.
      *
      *  @param email User login email.
      *  @param password User password.
-     *  @param firebaseToken Firebase token.
      */
-    fun login(email: String, password: String, firebaseToken: String) =
-        compositeDisposable.add(authUseCase
-            .login(email, password, firebaseToken)
-            .doOnSubscribe { authenticatedUser.setLoading() }
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    // TODO This doesn't check if we actually got a valid token.
+    fun login(email: String, password: String) =
+        compositeDisposable.add(
+            Single.fromCallable { await(firebaseMessaging.token) }
+                .subscribeOn(Schedulers.io())
+                .subscribe({ fbToken ->
+                    authUseCase
+                        .login(
+                            name = email,
+                            password = password,
+                            fbToken = fbToken
+                        )
+                        .doOnSubscribe { authenticationResultResource.setLoading() }
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(
+                            {
+                                userManager.login(
+                                    email = email,
+                                    tokenWrapper = it
+                                )
 
-                    // Save the token wrapper locally
-                    // TODO Do we even need this ever? I don't think so, as the userManager already has the token.
-                    tokenWrapper.setSuccess(it)
-
-                    // Trigger the login and user getting procedure.
-                    loginGetUser(email, password)
+                                // Save the token wrapper locally to notify observers.
+                                authenticationResultResource.setSuccess(true)
+                            },
+                            {
+                                authenticationResultResource.setError(it.message)
+                            }
+                        )
                 },
-                {
-                    authenticatedUser.setError(it.message)
-                }
-            )
+                    { authenticationResultResource.setError(it.message) })
         )
 
     /**
      *  Register a user and login right after if the registration succeeds.
      *
      *  @param registration The registration object.
-     *  @param firebaseToken Firebase token, required for logging in.
      */
-    fun register(registration: RegistrationItem, firebaseToken: String) =
+    fun register(registration: RegistrationItem) =
         compositeDisposable.add(authUseCase
             .register(registration.mapToDomain())
-            .doOnSubscribe { authenticatedUser.setLoading() }
             .subscribeOn(Schedulers.io())
             .subscribe(
                 {
-                    // First log the user in to acquire the jwt token.
-                    tokenWrapper.setSuccess(
-                        authUseCase
-                            .login(registration.email, registration.password, firebaseToken)
-                            .blockingGet()
-                    )
-
-                    userManager.createAccount(registration.email, registration.password)
-
-                    // TODO This probably contains duplicate operations with the userManager.createAccount method.
-                    loginGetUser(registration.email, registration.password)
+                    // If we reach this point we have created the user. Call the
+                    // login functionality right away so we can log the user in.
+                    login(registration.email, registration.password)
                 },
-                { authenticatedUser.setError(it.message) }
+                { authenticationResultResource.setError(it.message) }
             )
         )
 
@@ -102,47 +128,18 @@ open class AuthViewModel constructor(
     fun logout() =
         compositeDisposable.add(authUseCase
             .logout()
-            .doOnSubscribe { authenticatedUser.setLoading() }
             .subscribeOn(Schedulers.io())
             .subscribe(
-                {
-                    userManager.disconnect()
-                    authenticatedUser.setSuccess(null)
-                },
-                {
-                    userManager.disconnect(true)
-                    authenticatedUser.setError(it.message)
-                }
+                { userManager.logout() },
+                { userManager.logout() }
             )
         )
 
+    /**
+     *  Dispose resources.
+     */
     override fun onCleared() {
         compositeDisposable.dispose()
         super.onCleared()
-    }
-
-    /**
-     *  Connects to the user manager, gets the user from the
-     *  API and stores the user in [authenticatedUser].
-     */
-    private fun loginGetUser(email: String, password: String) {
-        // First login using the local user manager to store the jwt token.
-        // This has to be done in order for the auth interceptor to work.
-        userManager.connect(
-            email = email,
-            password = password,
-            token = tokenWrapper.value?.data?.jwtToken!!,
-            extras = bundleOf() // TODO This used to have id, is this correct?
-        )
-
-        firebaseMessaging.isAutoInitEnabled = true
-
-        // Then get the user to be stored for later retrieval.
-        // Logging in using the API only returns the token wrappers.
-        // TODO Is having the user required for this specific class?
-        val self = authUserUseCase.getSelf(true)
-            .map { self -> self.mapToPresentation() }
-            .blockingGet()
-        authenticatedUser.setSuccess(self)
     }
 }

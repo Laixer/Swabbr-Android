@@ -12,12 +12,14 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.onClickProfile
 import com.laixer.swabbr.extensions.showMessage
-import com.laixer.swabbr.presentation.AuthFragment
+import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.user.list.UserAdapter
 import kotlinx.android.synthetic.main.fragment_profile_following.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 /**
@@ -26,7 +28,7 @@ import java.util.*
  *  @param userId The user id of the profile we are looking at.
  */
 class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
-    private val profileVm: ProfileViewModel by sharedViewModel()
+    private val profileVm: ProfileViewModel by viewModel()
     private lateinit var userAdapter: UserAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,7 +43,7 @@ class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        userAdapter = UserAdapter(requireContext(), onClickProfile)
+        userAdapter = UserAdapter(requireContext(), onClickProfile())
         recycler_view_profile_following.apply {
             isNestedScrollingEnabled = false
             adapter = userAdapter
@@ -52,10 +54,6 @@ class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
         profileVm.followingUsers.observe(viewLifecycleOwner, Observer { onFollowingUsersUpdated(it) })
 
         getData(true)
-    }
-
-    private val onClickProfile: (UserItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.id}"))
     }
 
     /**

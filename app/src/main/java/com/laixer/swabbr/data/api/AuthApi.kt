@@ -8,7 +8,9 @@ import retrofit2.http.*
 import java.util.*
 
 /**
- *  Interface for authentication related API calls.
+ *  Interface for authentication related API calls. Note that
+ *  the No-Authentication header is appended to notify our
+ *  AuthInterceptor that we don't require a token. TODO This.
  */
 interface AuthApi {
     @POST("authentication/login")

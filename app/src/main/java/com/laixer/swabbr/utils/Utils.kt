@@ -7,8 +7,7 @@ import android.util.Size
 import android.view.Display
 import android.view.View
 import android.view.WindowManager
-import androidx.core.os.HandlerCompat.postDelayed
-import kotlinx.android.synthetic.main.activity_app.*
+import kotlinx.android.synthetic.main.activity_main.*
 
 // TODO Move to class that means something, not "Utils"
 object Utils {
@@ -38,8 +37,8 @@ object Utils {
 
     fun exitFullscreen(activity: Activity) = with(activity) {
 
-        toolbar?.visibility = View.VISIBLE
-        bottom_nav?.visibility = View.VISIBLE
+        toolbar_main_activity?.visibility = View.VISIBLE
+        bottom_navigation_view_main_activity?.visibility = View.VISIBLE
 
         window.apply {
             clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or WindowManager.LayoutParams.FLAG_FULLSCREEN)

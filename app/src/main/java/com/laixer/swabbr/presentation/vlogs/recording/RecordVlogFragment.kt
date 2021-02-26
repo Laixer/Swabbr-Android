@@ -32,13 +32,9 @@ import java.time.Duration
  *  a playback & confirmation popup is shown after recording. When the
  *  user decides to proceed with the vlog , the file is uploaded to the
  *  blob storage and the backend is notified of this.
- *
- *  Note that the [args] cameraId is not used but is hardcoded in the
- *  [RecordVideoFragment]. See the to do in that file.
  */
 class RecordVlogFragment : RecordVideoFragment() {
     /** AndroidX navigation arguments */
-    private val args: RecordVlogActivityArgs by navArgs() // TODO Should be fragment args
     private val vlogVm: VlogRecordingViewModel by viewModel()
 
     /**
@@ -106,7 +102,7 @@ class RecordVlogFragment : RecordVideoFragment() {
 
             // Hide the countdown text when we are finished.
             override fun onFinish() {
-                countdown.visibility = View.INVISIBLE
+                countdown?.visibility = View.INVISIBLE
                 lifecycleScope.launch(Dispatchers.Main) { onFinish() }
             }
         }

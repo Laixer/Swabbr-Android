@@ -1,4 +1,3 @@
-
 package com.laixer.swabbr.domain.model
 
 import com.laixer.swabbr.domain.types.Gender
@@ -17,4 +16,19 @@ data class User(
     val country: String?,
     val nickname: String,
     val profileImage: String?
-)
+) {
+    companion object {
+        /**
+         *  Represents an empty user object.
+         */
+        fun emptyObject() = User(
+            id = UUID.randomUUID(),
+            firstName = null,
+            lastName = null,
+            gender = Gender.UNSPECIFIED,
+            country = null,
+            nickname = "emptynickname",
+            profileImage = null
+        )
+    }
+}

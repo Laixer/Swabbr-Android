@@ -1,23 +1,18 @@
 package com.laixer.swabbr.presentation.likeoverview
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.onClickProfileWithRelation
 import com.laixer.swabbr.extensions.showMessage
-import com.laixer.swabbr.presentation.AuthFragment
-import com.laixer.swabbr.presentation.model.LikingUserWrapperItem
+import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.presentation.user.list.UserFollowableAdapter
 import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
@@ -49,7 +44,7 @@ class LikeOverviewFragment : AuthFragment() {
 
         likingUserAdapter = UserFollowableAdapter(
             context = requireContext(),
-            onClickProfile = onProfileClick,
+            onClickProfile = onClickProfileWithRelation(),
             onClickFollow = onFollowClick
         )
 
@@ -68,19 +63,11 @@ class LikeOverviewFragment : AuthFragment() {
     }
 
     /**
-     *  Callback for when we click a user. This will take
-     *  user to the profile of the clicked user.
-     */
-    private val onProfileClick: (UserWithRelationItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
-    }
-
-    /**
      *  Callback for when we click a follow button.
      */
     private val onFollowClick: (UserWithRelationItem) -> Unit = {
-            likeOverviewVm.follow(it.user.id)
-        }
+        likeOverviewVm.follow(it.user.id)
+    }
 
     /**
      *  Called when the [likeOverviewVm] vlog liking users resource changes.

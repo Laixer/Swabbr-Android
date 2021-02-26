@@ -1,7 +1,5 @@
 package com.laixer.swabbr
 
-import android.accounts.AbstractAccountAuthenticator
-import android.accounts.AccountManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
@@ -13,11 +11,10 @@ import com.laixer.swabbr.data.interfaces.*
 import com.laixer.swabbr.data.repository.*
 import com.laixer.swabbr.domain.interfaces.*
 import com.laixer.swabbr.domain.usecase.*
-import com.laixer.swabbr.presentation.MainActivityViewModel
-import com.laixer.swabbr.presentation.auth.AuthUserViewModel
+import com.laixer.swabbr.extensions.buildWithCustomAdapters
+import com.laixer.swabbr.services.okhttp.AuthInterceptor
 import com.laixer.swabbr.presentation.auth.AuthViewModel
-import com.laixer.swabbr.presentation.auth.SimpleAuthenticator
-import com.laixer.swabbr.presentation.auth.UserManager
+import com.laixer.swabbr.services.users.UserManager
 import com.laixer.swabbr.presentation.likeoverview.LikeOverviewViewModel
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.reaction.ReactionViewModel
@@ -25,7 +22,7 @@ import com.laixer.swabbr.presentation.search.SearchViewModel
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import com.laixer.swabbr.presentation.vlogs.playback.VlogViewModel
 import com.laixer.swabbr.presentation.vlogs.recording.VlogRecordingViewModel
-import com.laixer.swabbr.utils.BuildWithCustomAdapters
+import com.laixer.swabbr.services.okhttp.CacheInterceptor
 import com.squareup.moshi.Moshi
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
@@ -67,17 +64,26 @@ val firebaseModule: Module = module {
 }
 
 val authModule: Module = module {
-    factory<AccountManager> { AccountManager.get(androidContext()) }
-    single<AbstractAccountAuthenticator> { SimpleAuthenticator(androidContext(), get(), get()) }
-    single { UserManager(get(), get()) }
+    single { UserManager(get()) } // This must be a singleton!
 }
 
 val viewModelModule: Module = module {
-    viewModel { MainActivityViewModel(userManager = get()) }
-    viewModel { AuthUserViewModel(userManager = get(), authUserUseCase = get(), followUseCase = get()) }
     viewModel { LikeOverviewViewModel(vlogLikeOverviewUseCase = get(), followUseCase = get()) }
-    viewModel { AuthViewModel(userManager = get(), authUserUseCase = get(), authUseCase = get(), firebaseMessaging = get()) }
-    viewModel { ProfileViewModel(usersUseCase = get(), vlogUseCase = get(), followUseCase = get(), authUserUseCase = get()) }
+    viewModel {
+        AuthViewModel(
+            userManager = get(),
+            authUseCase = get(),
+            firebaseMessaging = get()
+        )
+    }
+    viewModel {
+        ProfileViewModel(
+            usersUseCase = get(),
+            vlogUseCase = get(),
+            followUseCase = get(),
+            authUserUseCase = get()
+        )
+    }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogUseCase = get()) }
     viewModel { VlogViewModel(authUserUseCase = get(), reactionsUseCase = get(), vlogUseCase = get()) }
     viewModel { VlogRecordingViewModel(mHttpClient = get(), vlogUseCase = get(), context = androidContext()) }
@@ -86,10 +92,17 @@ val viewModelModule: Module = module {
 }
 
 val useCaseModule: Module = module {
-    factory { AuthUserUseCase(userRepository = get(), followRequestRepository = get()) }
+    factory { AuthUserUseCase(userRepository = get(), userManager = get()) }
     factory { AuthUseCase(authRepository = get()) }
     factory { UsersUseCase(userRepository = get()) }
-    factory { VlogUseCase(userRepository = get(), vlogRepository = get(), vlogLikeRepository = get(), reactionRepository = get()) }
+    factory {
+        VlogUseCase(
+            userRepository = get(),
+            vlogRepository = get(),
+            vlogLikeRepository = get(),
+            reactionRepository = get()
+        )
+    }
     factory { VlogLikeOverviewUseCase(vlogLikeRepository = get(), userRepository = get()) }
     factory { ReactionUseCase(userRepository = get(), reactionRepository = get()) }
     factory { FollowUseCase(followRequestRepository = get(), userRepository = get()) }
@@ -124,7 +137,7 @@ val networkModule: Module = module {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(get())
-            .addConverterFactory(MoshiConverterFactory.create(Moshi.Builder().BuildWithCustomAdapters()))
+            .addConverterFactory(MoshiConverterFactory.create(Moshi.Builder().buildWithCustomAdapters()))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .build()
     }
@@ -132,18 +145,18 @@ val networkModule: Module = module {
     single<OkHttpClient> {
         OkHttpClient.Builder()
             .addInterceptor(get<AuthInterceptor>())
-            .addInterceptor(get<com.laixer.swabbr.CacheInterceptor>())
+            .addInterceptor(get<CacheInterceptor>())
             .addNetworkInterceptor(HttpLoggingInterceptor().apply {
                 this.level = HttpLoggingInterceptor.Level.BASIC // TODO Put back
             })
-            .cache(okhttp3.Cache(File(androidContext().cacheDir, "http-cache"), 10 * 1024 * 1024)) // 10Mb cache
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .callTimeout(30, TimeUnit.SECONDS)
+            .cache(okhttp3.Cache(File(androidContext().cacheDir, "http-cache"), 10 * 1024 * 1024)) // 10Mb cache TODO Do we want this?
+            .connectTimeout(5, TimeUnit.SECONDS) // TODO Fix for production
+            .readTimeout(300, TimeUnit.SECONDS)
+            .callTimeout(300, TimeUnit.SECONDS)
             .build()
     }
 
-    single { com.laixer.swabbr.CacheInterceptor() }
+    single { CacheInterceptor() }
     single { AuthInterceptor(userManager = get()) }
 
     single<AuthApi> { get<Retrofit>().create(AuthApi::class.java) }

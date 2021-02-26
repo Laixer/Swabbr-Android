@@ -1,4 +1,4 @@
-package com.laixer.swabbr.services
+package com.laixer.swabbr.services.notifications
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,11 +9,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.laixer.cache.Cache
 import com.laixer.swabbr.R
-import com.laixer.swabbr.services.notifications.NotificationHandler
-import com.laixer.swabbr.services.notifications.V1
-import org.koin.android.ext.android.get
 import java.lang.Exception
 
 class FirebaseService : FirebaseMessagingService() {
@@ -68,7 +64,7 @@ class FirebaseService : FirebaseMessagingService() {
      */
     private fun sendNotification(notification: V1.Notification?) {
         // Set default intent
-        var pendingIntent = notificationHandler.getPendingIntent(baseContext, notification)
+        val pendingIntent = notificationHandler.getPendingIntent(baseContext, notification)
         val channelId = getString(R.string.default_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 

@@ -1,4 +1,4 @@
-package com.laixer.swabbr
+package com.laixer.swabbr.services.okhttp
 
 import okhttp3.CacheControl
 import okhttp3.Interceptor

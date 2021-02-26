@@ -1,6 +1,5 @@
 package com.laixer.swabbr.presentation.vlogs.playback
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +15,7 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.onClickProfile
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.reaction.ReactionsAdapter
@@ -71,9 +71,7 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
 
         // Setup callback for the profile icon click.
         view_clickable_video_user.setOnClickListener {
-            vlogVm.vlog.value?.data?.user?.let {
-                onVlogProfileClick.invoke(it.id)
-            }
+            vlogVm.vlog.value?.data?.user?.let { onClickProfile().invoke(it) }
         }
 
         // Apply the reaction sheet adapter to the swipeable overlay.
@@ -81,8 +79,8 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
             reactionsRecyclerView.run {
                 isNestedScrollingEnabled = false
                 adapter = ReactionsAdapter(
-                    currentUserId = authUserVm.getSelfId(), // TODO Should be refactored
-                    onProfileClick = onReactionProfileClick,
+                    currentUserId = getSelfId(),
+                    onProfileClick = onClickProfile(),
                     onReactionClick = onReactionClick,
                     onDeleteClick = onReactionDeleteClick
                 )
@@ -128,23 +126,30 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
         //      with a LayoutTransition before an animation is started.
 
         // Takes us to a reaction recording fragment.
+        // TODO Why doesn't this work explicitly, only global? Just like watch reaction...
         button_post_reaction.setOnClickListener {
-            findNavController().navigate(WatchVlogFragmentDirections.actionRecordReaction("1", vlogId.toString()))
+            findNavController().navigate(
+                WatchVlogFragmentDirections.actionGlobalRecordReactionFragment(
+                    vlogId = vlogId.toString()
+                )
+            )
         }
 
         // Implement double tapping to like a vlog.
         // TODO Doesn't work, fix
-//        video_player.setOnTouchListener { v, event ->
-//            GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
-//                override fun onDoubleTap(e: MotionEvent?): Boolean {
-//                    toggleLike()
-//                    return true
-//                }
-//            }) // TODO Probably incorrect     .onTouchEvent(event)
-//
-//            // TODO What does this do?
-//            v.performClick()
-//        }
+        /**
+        video_player.setOnTouchListener { v, event ->
+        GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
+        override fun onDoubleTap(e: MotionEvent?): Boolean {
+        toggleLike()
+        return true
+        }
+        }) // TODO Probably incorrect     .onTouchEvent(event)
+
+        // TODO What does this do?
+        v.performClick()
+        }
+         */
 
         /**
          *  Disable the button until we have the vlog and the vlogLikedByUser
@@ -191,27 +196,16 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
         vlogVm.addView(vlogId)
     }
 
-    // TODO This shouldn't be placed here?
-    /**
-     *  Callback for when we click on a reaction profile.
-     */
-    private val onVlogProfileClick: (userId: UUID) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it}"))
-    }
-
-    // TODO This shouldn't be placed here.
-    /**
-     *  Callback for when we click on a reaction profile.
-     */
-    private val onReactionProfileClick: (ReactionWrapperItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
-    }
-
+    // TODO Explicit action doesn't work, global does... WHY
     /**
      *  Callback for when we click on a given reaction.
      */
     private val onReactionClick: (ReactionWrapperItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/watchReaction?reactionId=${it.reaction.id}"))
+        findNavController().navigate(
+            WatchVlogFragmentDirections.actionGlobalWatchReactionFragment(
+                reactionId = it.reaction.id.toString()
+            )
+        )
     }
 
     /**
@@ -418,7 +412,7 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
     private fun canToggleLike(): Boolean =
         !(vlogVm.vlog.value?.data == null
             || vlogVm.vlogLikedByCurrentUser.value?.data == null
-            || vlogVm.vlog.value!!.data!!.vlog.userId == authUserVm.getSelfId())
+            || vlogVm.vlog.value!!.data!!.vlog.userId == authVm.getSelfIdOrNull())
 
     companion object {
         fun create(vlogId: String): WatchVlogFragment {

@@ -1,4 +1,3 @@
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
@@ -8,7 +7,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 android {
   signingConfigs {
     release {
-    storeFile file('/home/pnobbe/StudioProjects/Swabbr-Android/contrib/keystore.jks')
+      storeFile file('/home/pnobbe/StudioProjects/Swabbr-Android/contrib/keystore.jks')
       storePassword 'nQsfdqNcnokU1JRRM899'
       keyPassword '3RPWvITJRMF2NkmqgSQ4'
       keyAlias 'swabbr_release'
@@ -136,9 +135,12 @@ dependencies {
   implementation Libs.appcompat
   implementation Libs.fragment_ktx
 
-  // Navigation component
-  implementation Libs.navigation_fragment_ktx
-  implementation Libs.navigation_ui_ktx
+  // Navigation component TODO
+//  implementation Libs.navigation_fragment_ktx
+//  implementation Libs.navigation_ui_ktx
+  implementation "androidx.navigation:navigation-fragment-ktx:2.3.3"
+  implementation "androidx.navigation:navigation-ui-ktx:2.3.3"
+  implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.3"
 
   implementation 'com.gu.android:toolargetool:0.2.1@aar'
 
@@ -149,6 +151,8 @@ dependencies {
   implementation Libs.firebase_crashlytics
   implementation Libs.firebase_analytics
   implementation Libs.firebase_messaging
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
   debugImplementation Libs.leakcanary_android
 
@@ -162,7 +166,7 @@ dependencies {
 
 repositories {
   google()
-    mavenCentral()
+  mavenCentral()
 }
 
 apply plugin: 'com.google.gms.google-services'

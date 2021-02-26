@@ -25,7 +25,7 @@ import java.util.*
 /**
  *  Adapter for vlog display using card views.
  *
- *  @param selfId Id of the current user. TODO This is really really ugly. Centralize.
+ *  @param selfId Id of the current user. // TODO can't we extract this globally?
  *  @param onClickVlog Callback when we click a vlog item.
  *  @param onClickDelete Callback when we click the delete icon. Note that
  *                       this is only relevant if we own the vlog, hence

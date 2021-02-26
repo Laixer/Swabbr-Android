@@ -17,9 +17,10 @@ import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.Pagination
 import com.laixer.swabbr.domain.types.SortingOrder
+import com.laixer.swabbr.extensions.onClickProfileWithRelation
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.AuthFragment
+import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.presentation.user.list.UserFollowableAdapter
 import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
@@ -34,13 +35,6 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
     private var userAdapter: UserWithRelationAdapter? = null
     private var currentPage: Int = 1
     private var lastQuery: String = ""
-
-    /**
-     *  Callback for when we click a user item.
-     */
-    private val onClickProfile: (UserWithRelationItem) -> Unit = {
-        findNavController().navigate(Uri.parse("https://swabbr.com/profile?userId=${it.user.id}"))
-    }
 
     /**
      *  Callback for when we click a follow button.
@@ -59,7 +53,7 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
 
         userAdapter = UserFollowableAdapter(
             context = requireContext(),
-            onClickProfile = onClickProfile,
+            onClickProfile = onClickProfileWithRelation(),
             onClickFollow = onClickFollow
         )
 

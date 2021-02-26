@@ -16,7 +16,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
-import com.laixer.swabbr.presentation.AuthFragment
+import com.laixer.swabbr.presentation.auth.AuthFragment
 import kotlinx.android.synthetic.main.fragment_video.*
 
 // TODO Orientation is wrong sometimes.

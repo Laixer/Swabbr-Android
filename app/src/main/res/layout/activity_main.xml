@@ -12,7 +12,7 @@
     tools:context=".presentation.MainActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbar_main_activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/color_white"
@@ -28,11 +28,15 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/color_black"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar_main_activity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!--
+        Container area for self-contained navigation to occur.
+        The main content of the application is displayed here.
+    -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_container_app"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -40,11 +44,11 @@
         android:layout_height="0dp"
         android:background="@color/color_window_background"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@id/bottom_nav"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view_main_activity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:navGraph="@navigation/nav_graph_app" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar_main_activity"
+        app:navGraph="@navigation/nav_graph_main_activity" />
 
     <!-- Divider bar. -->
     <View
@@ -58,7 +62,7 @@
 
     <!-- TODO Look at icon colors. -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
+        android:id="@+id/bottom_navigation_view_main_activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/color_white"

@@ -5,8 +5,7 @@ import android.content.Context
 import androidx.navigation.NavDeepLinkBuilder
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.reaction.WatchReactionFragmentArgs
-import com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragmentArgs
-import com.laixer.swabbr.presentation.vlogs.recording.RecordVlogActivityArgs
+import com.laixer.swabbr.presentation.vlogs.playback.WatchUserVlogsFragmentArgs
 import com.squareup.moshi.Json
 import java.time.ZonedDateTime
 
@@ -59,9 +58,8 @@ class V1 {
              */
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
-                    .setGraph(R.navigation.nav_graph_app)
-                    .setDestination(R.id.record_vlog_dest)
-                    .setArguments(RecordVlogActivityArgs(vlogId).toBundle())
+                    .setGraph(R.navigation.nav_graph_main_activity)
+                    .setDestination(R.id.recordVlogFragment)
                     .createPendingIntent()
         }
 
@@ -78,9 +76,9 @@ class V1 {
 
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
-                    .setGraph(R.navigation.nav_graph_vlog_playback)
-                    .setDestination(R.id.watch_vlog_dest)
-                    .setArguments(WatchVlogFragmentArgs(vlogId).toBundle())
+                    .setGraph(R.navigation.nav_graph_main_activity)
+                    .setDestination(R.id.watchUserVlogsFragment)
+                    .setArguments(WatchUserVlogsFragmentArgs(vlogId, vlogOwnerUserId).toBundle())
                     .createPendingIntent()
         }
 
@@ -97,9 +95,9 @@ class V1 {
 
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
-                    .setGraph(R.navigation.nav_graph_vlog_playback)
-                    .setDestination(R.id.watch_vlog_dest)
-                    .setArguments(WatchVlogFragmentArgs(vlogId).toBundle())
+                    .setGraph(R.navigation.nav_graph_main_activity)
+                    .setDestination(R.id.watchUserVlogsFragment)
+                    .setArguments(WatchUserVlogsFragmentArgs(vlogId, userThatLikedId).toBundle())
                     .createPendingIntent()
         }
 
@@ -114,11 +112,10 @@ class V1 {
             R.string.notification_message_vlognewreaction
         ) {
 
-            // TODO: Actually direct to the specified reaction
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
-                    .setGraph(R.navigation.nav_graph_vlog_playback)
-                    .setDestination(R.id.watch_reaction_dest)
+                    .setGraph(R.navigation.nav_graph_main_activity)
+                    .setDestination(R.id.watchReactionFragment)
                     .setArguments(WatchReactionFragmentArgs(reactionId).toBundle())
                     .createPendingIntent()
         }

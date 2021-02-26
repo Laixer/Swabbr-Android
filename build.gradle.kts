@@ -1,4 +1,5 @@
 buildscript {
+    val kotlin_version by extra("1.4.21")
     repositories {
         jcenter()
         google()
@@ -6,7 +7,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:${Versions.com_android_tools_build_gradle}")
+        classpath("com.android.tools.build:gradle:4.1.2")
         classpath("com.google.gms:google-services:${Versions.google_services}")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.org_jetbrains_kotlin}")
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.androidx_navigation}")

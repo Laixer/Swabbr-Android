@@ -9,6 +9,7 @@ import com.laixer.swabbr.extensions.reduceDragSensitivity
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
+import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
 import com.laixer.swabbr.presentation.video.WatchVideoListFragment
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
@@ -16,6 +17,7 @@ import com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragmentAdapter
 import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 // TODO Question: this gets the vlog user and vlog like summary as well
 //      for each vlog. We never display this information in this fragment
@@ -26,7 +28,15 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  *  vlogs in fullscreen.
  */
 class DashboardFragment : WatchVideoListFragment() {
-    private val vlogListVm: VlogListViewModel by sharedViewModel()
+    private val profileVm: ProfileViewModel by sharedViewModel() // TODO Remove this
+    private val vlogListVm: VlogListViewModel by viewModel()
+
+    /**
+     *  Trigger instant data get.
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
     /**
      *  Attaches the observers to the [vlogListVm] vlogs resource,
@@ -44,8 +54,6 @@ class DashboardFragment : WatchVideoListFragment() {
         // swipe_refresh_layout_watch_video_list.setOnRefreshListener { getData(true) }
 
         vlogListVm.vlogs.observe(viewLifecycleOwner, Observer { updateVlogsFromViewModel(it) })
-
-        getData(true)
     }
 
     private fun getData(refresh: Boolean = false) {
@@ -59,6 +67,14 @@ class DashboardFragment : WatchVideoListFragment() {
         fragment = this@DashboardFragment,
         vlogListResource = vlogListVm.vlogs
     )
+
+    override fun onStart() {
+        super.onStart()
+
+        // TODO When to call this && isAuthenticated?
+        //  We only want this to happen if we are authenticated, else we should be redirected to the login fragment
+        getData(false)
+    }
 
     /**
      *  Called when the observed vlog collection resource is updated.
