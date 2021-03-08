@@ -2,6 +2,7 @@ package com.laixer.swabbr.presentation
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -36,9 +37,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         injectFeature()
-
-        // Set the top toolbar as the action bar.
-        setSupportActionBar(toolbar_main_activity)
 
         // Exit if we aren't compatible with the play services.
         if (!PlayServicesChecker.checkPlayServices(this)) {

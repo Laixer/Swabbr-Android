@@ -29,7 +29,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Swabbr">
+        android:theme="@style/Base.Theme.Swabbr">
 
         <!-- Our main entry point. All functionality of the app exists in here using fragments. -->
         <activity

@@ -15,38 +15,6 @@
         <item name="android:windowContentTransitions">true</item>
     </style>
 
-    <!-- TODO What to put in here? -->
-    <!--
-        Main Swabbr theme, assigned in the AndroidManifest.xml file.
-        This acts as a base theme which is applied on application level.
-    -->
-    <style name="Theme.Swabbr" parent="Base.Theme.Swabbr">
-<!--        <item name="android:windowFullscreen">false</item>-->
-<!--        <item name="android:windowNoTitle">true</item>-->
-<!--        <item name="android:windowActionBar">false</item>-->
-<!--        <item name="android:navigationBarColor">@color/transparent</item>-->
-<!--        <item name="android:windowTranslucentNavigation">true</item>-->
-    </style>
-
-    <!-- Launcher theme which displays the splash screen in full screen mode. -->
-    <style name="Theme.Swabbr.Launcher" parent="Base.Theme.Swabbr">
-        <item name="android:windowBackground">@drawable/ic_logo_foreground</item>
-<!--        <item name="android:windowFullscreen">true</item>-->
-<!--        <item name="android:navigationBarColor">@color/transparent</item>-->
-<!--        <item name="android:windowTranslucentNavigation">true</item>-->
-    </style>
-
-    <!-- Theme when we are logging in. -->
-    <style name="Theme.Swabbr.Login" parent="Base.Theme.Swabbr">
-<!--        <item name="windowActionBar">false</item>-->
-    </style>
-
-    <!-- Theme for when we are recording a vlog or reaction. -->
-    <style name="Theme.Swabbr.Recording" parent="Base.Theme.Swabbr">
-<!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
-<!--        <item name="android:windowTranslucentNavigation">true</item>-->
-    </style>
-
     <style name="SmallTextAppearance" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">@color/color_body</item>
     </style>

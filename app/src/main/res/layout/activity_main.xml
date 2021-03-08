@@ -11,28 +11,6 @@
     android:orientation="vertical"
     tools:context=".presentation.MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_main_activity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_white"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/colorPrimaryDark" />
-
-    <!-- Divider bar. -->
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_black"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar_main_activity"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <!--
         Container area for self-contained navigation to occur.
         The main content of the application is displayed here.
@@ -47,18 +25,8 @@
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view_main_activity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_main_activity"
+        app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/nav_graph_main_activity" />
-
-    <!-- Divider bar. -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_black"
-        app:layout_constraintBottom_toBottomOf="@+id/nav_host_container_app"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- TODO Look at icon colors. -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
