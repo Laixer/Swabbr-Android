@@ -55,7 +55,6 @@ class VlogListCardAdapter(
                 .into(image_view_vlog_thumbnail)
 
             user_profile_image.loadAvatar(item.user.profileImage, item.user.id)
-            user_displayed_name.text = item.user.getDisplayName()
             user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
             text_view_vlog_date_created.text =
                 item.vlog.dateCreated.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))

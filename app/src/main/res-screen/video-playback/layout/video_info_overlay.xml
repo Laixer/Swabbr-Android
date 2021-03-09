@@ -27,10 +27,10 @@
             android:id="@+id/view_clickable_video_user"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@+id/user_profile_image"
-            app:layout_constraintEnd_toEndOf="@+id/video_user_displayed_name"
-            app:layout_constraintStart_toStartOf="@+id/user_profile_image"
-            app:layout_constraintTop_toTopOf="@+id/user_profile_image" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/video_user_nickname"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <!-- The @nickname tag. -->
@@ -41,51 +41,20 @@
             android:src="@drawable/ic_person_large_256"
             android:transitionName="userAvatar"
             app:civ_circle_background_color="@color/color_grey_300"
-            app:layout_constraintEnd_toStartOf="@+id/video_user_displayed_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-
-        <!-- The users (full) name, or username if none is present. -->
-        <TextView
-            android:id="@+id/video_user_displayed_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/content_margin_small"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textColor="@color/color_white"
-            android:textSize="14sp"
-            android:transitionName="userUsername"
-            app:layout_constraintStart_toEndOf="@+id/user_profile_image"
-            app:layout_constraintTop_toTopOf="@+id/user_profile_image"
-            tools:text="@string/placeholder_display_name" />
-
 
         <!-- @nickname for the user. -->
         <TextView
             android:id="@+id/video_user_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textAppearance="@style/SmallTextAppearance"
-            android:textColor="@color/color_white"
-            android:textSize="12sp"
-            android:transitionName="userName"
-            app:layout_constraintStart_toStartOf="@+id/video_user_displayed_name"
-            app:layout_constraintTop_toBottomOf="@+id/video_user_displayed_name"
+            android:layout_marginStart="@dimen/content_margin_small"
+            android:textAppearance="@style/NicknameTextAppearance"
+            app:layout_constraintBottom_toBottomOf="@+id/user_profile_image"
+            app:layout_constraintStart_toEndOf="@+id/user_profile_image"
+            app:layout_constraintTop_toTopOf="@+id/user_profile_image"
             tools:text="@string/placeholder_nickname" />
-
-        <!-- Displays the moment the video was created. -->
-        <TextView
-            android:id="@+id/text_view_video_date_created"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/placeholder_date"
-            android:textColor="@color/color_white"
-            app:layout_constraintBaseline_toBaselineOf="@+id/video_user_displayed_name"
-            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

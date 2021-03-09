@@ -8,7 +8,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
@@ -155,8 +154,8 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
                 }
             }
 
-        buttonConfirm.setOnClickListener { confirmChanges() }
-        buttonLogout.setOnClickListener {
+        button_profile_details_save.setOnClickListener { confirmChanges() }
+        button_profile_logout.setOnClickListener {
             // Perform logout operation and take us back to the login screen.
             authVm.logout()
         }

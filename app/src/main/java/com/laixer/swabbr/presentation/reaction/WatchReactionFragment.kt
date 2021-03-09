@@ -78,11 +78,7 @@ class WatchReactionFragment(id: String? = null) : WatchVideoFragment() {
                 video_content_loading_icon.visibility = View.GONE
                 data?.let {
                     user_profile_image.loadAvatar(it.user.profileImage, it.user.id)
-                    video_user_displayed_name.text = it.user.getDisplayName()
                     video_user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
-
-                    text_view_video_date_created.text =
-                        it.reaction.dateCreated.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
 
                     loadMediaSource(it.reaction.videoUri!!)
                 }

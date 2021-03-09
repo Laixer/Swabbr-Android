@@ -5,11 +5,10 @@
     <string name="retry">Retry</string>
 
     <!-- Tab names -->
-    <!-- TODO Should this be responsible for caps? -->
-    <string name="tab_vlogs">VLOGS</string>
-    <string name="tab_profile">PROFILE</string>
-    <string name="tab_following">FOLLOWING</string>
-    <string name="tab_followers">FOLLOWERS</string>
+    <string name="tab_vlogs">Vlogs</string>
+    <string name="tab_profile">Profile</string>
+    <string name="tab_following">Following</string>
+    <string name="tab_followers">Followers</string>
 
     <!-- Tab top text -->
     <string name="info_love_its">LOVE ITS!</string>

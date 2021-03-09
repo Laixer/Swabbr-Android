@@ -56,7 +56,7 @@ class VlogRecordingViewModel constructor(
                         )
                     )
                     .subscribeOn(Schedulers.io())
-                    .subscribe()
+                    .subscribe({}, {}) // We always want an error handler even if it's empty.
             }
             .ignoreElement()
 

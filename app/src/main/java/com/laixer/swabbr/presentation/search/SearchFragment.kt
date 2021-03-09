@@ -15,6 +15,7 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
+import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.domain.types.Pagination
 import com.laixer.swabbr.domain.types.SortingOrder
 import com.laixer.swabbr.extensions.onClickProfileWithRelation
@@ -40,7 +41,12 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
      *  Callback for when we click a follow button.
      */
     private val onClickFollow: (UserWithRelationItem) -> Unit = {
-        vm.follow(it.user.id)
+        when (it.followRequestStatus) {
+            FollowRequestStatus.PENDING -> vm.cancelFollowRequest(it.user.id)
+            FollowRequestStatus.ACCEPTED -> vm.unfollow(it.user.id)
+            FollowRequestStatus.DECLINED -> vm.follow(it.user.id)
+            FollowRequestStatus.NONEXISTENT -> vm.follow(it.user.id)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

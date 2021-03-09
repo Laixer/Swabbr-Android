@@ -1,9 +1,7 @@
 package com.laixer.swabbr.presentation.vlogs.playback
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -29,8 +27,6 @@ import kotlinx.android.synthetic.main.reactions_sheet.*
 import kotlinx.android.synthetic.main.video_info_overlay.*
 import kotlinx.android.synthetic.main.vlog_info_overlay.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 
 // TODO BUG java.lang.IllegalStateException: Fragment WatchVlogFragment{5c199a7} (3adedb84-c7a9-45ac-bf25-9df53bf0f9ee) f0} has null arguments
@@ -136,20 +132,20 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
         }
 
         // Implement double tapping to like a vlog.
-        // TODO Doesn't work, fix
-        /**
-        video_player.setOnTouchListener { v, event ->
-        GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
-        override fun onDoubleTap(e: MotionEvent?): Boolean {
-        toggleLike()
-        return true
-        }
-        }) // TODO Probably incorrect     .onTouchEvent(event)
+        val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onDoubleTap(e: MotionEvent?): Boolean {
 
-        // TODO What does this do?
-        v.performClick()
+                toggleLike()
+
+                return true
+            }
+        })
+
+        video_player.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+
+            view.performClick()
         }
-         */
 
         /**
          *  Disable the button until we have the vlog and the vlogLikedByUser
@@ -238,7 +234,7 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
 
             // Display the like animation.
             // TODO Move to helper.
-            ParticleSystem(requireActivity(), 20, R.drawable.ic_love_it_red, 1000)
+            ParticleSystem(requireActivity(), 20, R.drawable.ic_love_it, 1000)
                 .setSpeedModuleAndAngleRange(0.1F, 0.2F, 240, 300)
                 .setRotationSpeedRange(20F, 360F)
                 .setScaleRange(1.5F, 1.6F)
@@ -264,13 +260,9 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                 data?.let {
                     // Display the user info
                     user_profile_image.loadAvatar(it.user.profileImage, it.user.id)
-                    video_user_displayed_name.text = it.user.getDisplayName()
                     video_user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
 
                     // Display the vlog info and start playback
-                    // TODO Put in helper or something, not here
-                    text_view_video_date_created.text = it.vlog.dateCreated
-                        .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
                     vlog_view_count.text = requireContext().formatNumber(it.vlog.views)
 
                     loadMediaSource(it.vlog.videoUri!!)
@@ -384,7 +376,12 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                 button_vlog_like.isChecked = data!!
             }
             ResourceState.ERROR -> {
-                button_vlog_like.isEnabled = false
+                // If we reach this, we either couldn't load the vlog like state in the
+                // first place or our vlog like toggle has failed. Act accordingly.
+                button_vlog_like.isChecked = resource.data ?: false
+
+                // This doesn't handle whether or not the button is enabled,
+                // reaching this point said operation should already be done.
 
                 Toast.makeText(
                     requireContext(),

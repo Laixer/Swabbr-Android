@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/color_white"
-        app:itemIconSize="@dimen/medium_icon_size"
+        app:itemIconSize="@dimen/small_icon_size"
         app:itemIconTint="@color/colorPrimaryDark"
         app:itemTextColor="@color/color_body"
         app:labelVisibilityMode="unlabeled"

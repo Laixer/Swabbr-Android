@@ -16,6 +16,7 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.hideSoftKeyboard
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthViewModel
@@ -60,6 +61,9 @@ class LoginFragment : Fragment() {
      *  any permissions are declined, the user won't be logged in.
      */
     private fun onClickLogin() {
+        // Explicitly hide the input keyboard as Android doesn't do this for us.
+        hideSoftKeyboard()
+
         askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
             authVm.login(
                 emailInput.text.toString(),

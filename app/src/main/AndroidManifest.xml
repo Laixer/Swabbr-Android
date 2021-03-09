@@ -34,7 +34,8 @@
         <!-- Our main entry point. All functionality of the app exists in here using fragments. -->
         <activity
             android:name="com.laixer.swabbr.presentation.MainActivity"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

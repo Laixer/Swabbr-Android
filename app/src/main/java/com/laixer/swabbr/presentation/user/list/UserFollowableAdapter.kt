@@ -14,7 +14,8 @@ import kotlinx.android.synthetic.main.item_list_user_followable.view.*
  *
  *  @param context The application context.
  *  @param onClickProfile Callback for when we click the profile of this item.
- *  @param onClickFollow Callback for when we click the follow button.
+ *  @param onClickFollow Callback for when we click the follow button. Note that
+ *                       this can also be an unfollow, cancel or other operation.
  */
 class UserFollowableAdapter(
     context: Context,
@@ -33,10 +34,10 @@ class UserFollowableAdapter(
 
         // Control the follow button according to the follow request status.
         when (item.followRequestStatus) {
-            FollowRequestStatus.ACCEPTED -> itemView.user_follow_button.isVisible = false
-            FollowRequestStatus.DECLINED -> itemView.user_follow_button.isVisible = true
-            FollowRequestStatus.PENDING -> itemView.user_follow_button.isVisible = false
-            FollowRequestStatus.NONEXISTENT -> itemView.user_follow_button.isVisible = true
+            FollowRequestStatus.ACCEPTED -> itemView.user_follow_button.text = context.getString(R.string.follow_request_accepted)
+            FollowRequestStatus.DECLINED -> itemView.user_follow_button.text = context.getString(R.string.follow_request_follow)
+            FollowRequestStatus.PENDING -> itemView.user_follow_button.text = context.getString(R.string.follow_request_requested)
+            FollowRequestStatus.NONEXISTENT -> itemView.user_follow_button.text = context.getString(R.string.follow_request_follow)
         }
     }
 }

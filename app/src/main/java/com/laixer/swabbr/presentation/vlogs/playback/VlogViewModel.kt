@@ -67,7 +67,7 @@ class VlogViewModel constructor(
     fun addView(vlogId: UUID) = compositeDisposable.add(
         vlogUseCase.addView(vlogId)
             .subscribeOn(Schedulers.io())
-            .subscribe()
+            .subscribe({}, {}) // We always want an error handler even if it's empty.
     )
 
     // TODO Is this the way to go? I do think so.
@@ -101,7 +101,7 @@ class VlogViewModel constructor(
         compositeDisposable.add(
             reactionsUseCase.deleteReaction(reaction.id)
                 .subscribeOn(Schedulers.io())
-                .subscribe()
+                .subscribe({}, {}) // We always want an error handler even if it's empty.
         )
     }
 
@@ -171,16 +171,24 @@ class VlogViewModel constructor(
      *
      *  @param vlogId The vlog to like.
      */
-    fun like(vlogId: UUID) = compositeDisposable.add(
-        vlogUseCase.like(vlogId)
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    modifyVlogLikeCount(+1)
-                    vlogLikedByCurrentUser.setSuccess(true)
-                },
-                { /* TODO What to do here? */ }
-            ))
+    fun like(vlogId: UUID) {
+        // First update locally
+        modifyVlogLikeCount(+1)
+
+        // Then remote
+        compositeDisposable.add(
+            vlogUseCase.like(vlogId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        vlogLikedByCurrentUser.setSuccess(true)
+                    },
+                    {
+                        // Undo local update
+                        modifyVlogLikeCount(-1)
+                    }
+                ))
+    }
 
     /**
      *  Unlike a vlog as the current user.
@@ -191,17 +199,22 @@ class VlogViewModel constructor(
      *
      *  @param vlogId The vlog to unlike.
      */
-    fun unlike(vlogId: UUID) = compositeDisposable.add(
-        vlogUseCase.unlike(vlogId)
-            .doOnSubscribe { vlogLikedByCurrentUser.setSuccess(false) }
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    modifyVlogLikeCount(-1)
-                    vlogLikedByCurrentUser.setSuccess(false)
-                },
-                { /* TODO What to do here? */ }
-            ))
+    fun unlike(vlogId: UUID) {
+        modifyVlogLikeCount(-1)
+
+        compositeDisposable.add(
+            vlogUseCase.unlike(vlogId)
+                .doOnSubscribe { vlogLikedByCurrentUser.setSuccess(false) }
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        vlogLikedByCurrentUser.setSuccess(false)
+                    },
+                    {
+                        modifyVlogLikeCount(+1)
+                    }
+                ))
+    }
 
     // TODO Move to vlog like use case in the future
     /**

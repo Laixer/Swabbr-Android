@@ -11,6 +11,10 @@
 
     <color name="color_divider">#1F000000</color>
 
+    <!-- Icon related -->
+    <color name="color_reaction_post">#ff0000</color>
+    <color name="color_reaction_count">@color/colorPrimaryLight</color>
+
     <!-- Used to display transparent white overlays. -->
     <color name="color_transparent_overlay">#41FFFFFF</color>
 
@@ -24,4 +28,8 @@
 
     <color name="multiStateButtonPressed">#80ff8400</color>
     <color name="multiStateButtonDisabled">#c1636363</color>
+
+    <!-- Record button related. -->
+    <color name="color_recording_center">#ff0000</color>
+    <color name="color_recording_outline">@color/color_white</color>
 </resources>

@@ -12,6 +12,7 @@ import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.laixer.presentation.gone
 import com.laixer.presentation.visible
@@ -58,6 +59,10 @@ open class WatchVideoFragment : Player.EventListener, AuthFragment() {
 
         // Always hide the error message.
         text_display_video_playback_error.gone()
+
+        // TODO Ignore if landscape
+        // Fit to screen
+        video_player.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
     }
 
     // TODO Call this at creation to decrease loading time.
