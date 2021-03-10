@@ -11,6 +11,7 @@ import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.usecase.AuthUseCase
 import com.laixer.swabbr.presentation.model.RegistrationItem
 import com.laixer.swabbr.presentation.model.mapToDomain
+import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
 import com.laixer.swabbr.services.users.UserManager
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
@@ -28,9 +29,7 @@ open class AuthViewModel constructor(
     private val userManager: UserManager,
     private val authUseCase: AuthUseCase,
     private val firebaseMessaging: FirebaseMessaging
-) : ViewModel() {
-    // Used for graceful resource disposal.
-    private val compositeDisposable = CompositeDisposable()
+) : ViewModelBase() {
 
     /**
      *  Observe this resource to check for when our authenticator
@@ -134,12 +133,4 @@ open class AuthViewModel constructor(
                 { userManager.logout() }
             )
         )
-
-    /**
-     *  Dispose resources.
-     */
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
-    }
 }

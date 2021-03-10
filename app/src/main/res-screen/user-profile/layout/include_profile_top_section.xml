@@ -233,7 +233,7 @@
         android:layout_height="@dimen/mini_icon_size"
         android:layout_marginTop="@dimen/content_margin_small"
         android:layout_marginEnd="@dimen/content_margin_medium"
-        android:src="@drawable/ic_reaction_count"
+        android:src="@drawable/ic_reaction"
         android:tint="@color/colorPrimaryLight"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_view_views" />

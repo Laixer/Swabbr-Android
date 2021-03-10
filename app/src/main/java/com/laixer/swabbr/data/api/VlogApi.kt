@@ -32,14 +32,14 @@ interface VlogApi {
     @GET("vlog/for-user/{userId}")
     fun getVlogsForUser(
         @Path("userId") userId: UUID,
-        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("sortingOrder") sortingOrder: Int?,
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
     ): Single<List<VlogEntity>>
 
     @GET("vlog/recommended")
     fun getRecommendedVlogs(
-        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("sortingOrder") sortingOrder: Int?,
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
     ): Single<List<VlogEntity>>

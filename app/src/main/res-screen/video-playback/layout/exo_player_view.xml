@@ -47,6 +47,7 @@
         app:layout_constraintTop_toBottomOf="@+id/include">
 
         <!--
+            TODO Margin fixes https://github.com/Laixer/Swabbr-Android/issues/135
             Controls the margins in which the reactions will be displayed.
             This functions as the bottom sheet behavior component.
         -->
@@ -66,6 +67,20 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
+            <!--
+                TODO Remove this https://github.com/Laixer/Swabbr-Android/issues/135
+                 It's used to enable double tapping for vlog likes but our reaction
+                 bottom sheet blocks this behaviour.
+            -->
+            <View
+                android:id="@+id/reaction_sheet_clickable_for_double_tap"
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <!-- Displays all reactions. -->
             <include

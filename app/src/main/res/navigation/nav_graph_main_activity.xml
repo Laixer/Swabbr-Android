@@ -62,7 +62,7 @@
         app:destination="@id/searchFragment" />
     <fragment
         android:id="@+id/recordReactionFragment"
-        android:name="com.laixer.swabbr.presentation.reaction.RecordReactionFragment"
+        android:name="com.laixer.swabbr.presentation.reaction.playback.RecordReactionFragment"
         android:label="RecordReactionFragment">
         <argument
             android:name="vlogId"
@@ -83,10 +83,13 @@
         <action
             android:id="@+id/action_watchVlogFragment_to_recordReactionFragment"
             app:destination="@id/recordReactionFragment" />
+        <action
+            android:id="@+id/action_watchVlogFragment_to_watchReactionsForVlogFragment"
+            app:destination="@id/watchReactionsForVlogFragment" />
     </fragment>
     <fragment
         android:id="@+id/watchReactionFragment"
-        android:name="com.laixer.swabbr.presentation.reaction.WatchReactionFragment"
+        android:name="com.laixer.swabbr.presentation.reaction.playback.WatchReactionFragment"
         android:label="WatchReactionFragment">
         <argument
             android:name="reactionId"
@@ -125,5 +128,19 @@
     <action
         android:id="@+id/action_global_recordReactionFragment"
         app:destination="@id/recordReactionFragment" />
+    <fragment
+        android:id="@+id/watchReactionsForVlogFragment"
+        android:name="com.laixer.swabbr.presentation.reaction.list.WatchReactionsForVlogFragment"
+        android:label="WatchReactionsForVlogFragment">
+        <argument
+            android:name="vlogId"
+            app:argType="string" />
+        <argument
+            android:name="initialReactionId"
+            app:argType="string" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_watchReactionsForVlogFragment"
+        app:destination="@id/watchReactionsForVlogFragment" />
 
 </navigation>

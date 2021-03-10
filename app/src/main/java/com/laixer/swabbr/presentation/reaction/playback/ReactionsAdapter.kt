@@ -1,8 +1,7 @@
-package com.laixer.swabbr.presentation.reaction
+package com.laixer.swabbr.presentation.reaction.playback
 
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.laixer.presentation.inflate

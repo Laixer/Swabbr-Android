@@ -28,7 +28,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  *  vlogs in fullscreen.
  */
 class DashboardFragment : WatchVideoListFragment() {
-    private val profileVm: ProfileViewModel by sharedViewModel() // TODO Remove this
     private val vlogListVm: VlogListViewModel by viewModel()
 
     /**

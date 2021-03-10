@@ -122,5 +122,6 @@
     <!-- Dialog popup messages -->
     <string name="dialog_ok">Post</string>
     <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_date_picker_birth_date">Select your birth date</string>
 
 </resources>

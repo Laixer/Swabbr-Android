@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.reaction
+package com.laixer.swabbr.presentation.reaction.playback
 
 import android.content.Context
 import android.net.Uri
@@ -25,16 +25,14 @@ import java.util.*
  *  reactions. This includes uploading functionality.
  */
 class ReactionViewModel constructor(
-    private val mHttpClient: OkHttpClient,
+    mHttpClient: OkHttpClient,
     private val reactionsUseCase: ReactionUseCase,
-    private val context: Context
+    context: Context
 ) : UploadVideoViewModel(mHttpClient, context) {
     /**
      *  Resource in which [getReaction] stores its result.
      */
     val reaction = MutableLiveData<Resource<ReactionWrapperItem>>()
-
-    private val compositeDisposable = CompositeDisposable()
 
     /**
      *  Gets a reaction from the data store and stores it in
@@ -88,11 +86,6 @@ class ReactionViewModel constructor(
                     .subscribe({}, {}) // We always want an error handler even if it's empty.
             }
             .ignoreElement()
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
-    }
 
     companion object {
         private const val TAG = "ReactionViewModel"

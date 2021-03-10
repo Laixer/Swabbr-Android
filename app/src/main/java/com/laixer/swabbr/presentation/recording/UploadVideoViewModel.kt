@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,16 +19,15 @@ import java.math.RoundingMode
 import java.util.*
 import kotlin.math.ceil
 
+// TODO Clean up and make this use local storage & retries.
 /**
  *  View model containing functionality for uploading a video.
  */
 open class UploadVideoViewModel constructor(
     private val mHttpClient: OkHttpClient,
     private val context: Context
-) : ViewModel() {
+) : ViewModelBase() {
     protected val toast: Toast = Toast.makeText(context, "", Toast.LENGTH_LONG)
-
-    private val compositeDisposable = CompositeDisposable()
 
     /**
      *  Uploads a file to an external uri.
@@ -133,11 +133,6 @@ open class UploadVideoViewModel constructor(
             .build()
 
         mHttpClient.newCall(request).execute()
-    }
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
     }
 
     companion object {

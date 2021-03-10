@@ -26,7 +26,7 @@ interface VlogLikeApi {
     @GET("vlog-like/for-vlog/{vlogId}")
     fun getVlogLikes(
         @Path("vlogId") vlogId: UUID,
-        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("sortingOrder") sortingOrder: Int?,
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
     ): Single<List<VlogLikeEntity>>

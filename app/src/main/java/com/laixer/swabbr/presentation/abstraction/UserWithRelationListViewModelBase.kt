@@ -7,6 +7,7 @@ import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.domain.usecase.FollowUseCase
 import com.laixer.swabbr.extensions.cascadeFollowAction
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
+import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -18,17 +19,12 @@ import java.util.*
  */
 open class UserWithRelationListViewModelBase constructor(
     private val followUseCase: FollowUseCase
-) : ViewModel() {
+) : ViewModelBase() {
     /**
      *  Public resource in which we store the user with relation list.
      *  This is public so it can be observed.
      */
     val users = MutableLiveData<Resource<List<UserWithRelationItem>>>()
-
-    /**
-     *  Used for proper resource disposal.
-     */
-    protected val compositeDisposable = CompositeDisposable()
 
     /**
      *  Unfollow a given user as the current user. The operation
@@ -79,13 +75,5 @@ open class UserWithRelationListViewModelBase constructor(
                 .subscribeOn(Schedulers.io())
                 .subscribe({}, {}) // We always want an error handler even if it's empty.
         )
-    }
-
-    /**
-     *  Called on graceful disposal. This will dispose the [compositeDisposable]
-     */
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
     }
 }

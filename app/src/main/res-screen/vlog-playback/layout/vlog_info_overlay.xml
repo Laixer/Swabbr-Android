@@ -105,7 +105,7 @@
         android:layout_height="@dimen/small_icon_size"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_reaction_post"
+        android:src="@drawable/ic_reaction"
         android:tint="@color/color_reaction_post"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

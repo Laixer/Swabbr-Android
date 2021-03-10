@@ -13,6 +13,7 @@ import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
+import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -28,7 +29,7 @@ class VlogViewModel constructor(
     private val authUserUseCase: AuthUserUseCase,
     private val reactionsUseCase: ReactionUseCase,
     private val vlogUseCase: VlogUseCase
-) : ViewModel() {
+) : ViewModelBase() {
     /**
      *  Used to store a vlog when we watch a single item.
      */
@@ -56,8 +57,6 @@ class VlogViewModel constructor(
      *  liked the [vlog] resource.
      */
     val vlogLikedByCurrentUser = MutableLiveData<Resource<Boolean>>()
-
-    private val compositeDisposable = CompositeDisposable()
 
     /**
      *  Adds a single vlog view to a vlog.
@@ -251,13 +250,5 @@ class VlogViewModel constructor(
         }
 
         vlogLikeCount.setSuccess(vlogLikeCount.value!!.data!! + amount)
-    }
-
-    /**
-     *  Called on graceful disposal. This will dispose the [compositeDisposable]
-     */
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
     }
 }

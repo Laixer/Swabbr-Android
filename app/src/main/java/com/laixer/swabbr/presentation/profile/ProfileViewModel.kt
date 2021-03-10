@@ -16,6 +16,7 @@ import com.laixer.swabbr.domain.usecase.VlogUseCase
 import com.laixer.swabbr.extensions.cascadeFollowAction
 import com.laixer.swabbr.extensions.setSuccessAgain
 import com.laixer.swabbr.presentation.model.*
+import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -31,7 +32,7 @@ class ProfileViewModel constructor(
     private val usersUseCase: UsersUseCase,
     private val vlogUseCase: VlogUseCase,
     private val followUseCase: FollowUseCase
-) : ViewModel() {
+) : ViewModelBase() {
     /**
      *  Resource in which the user we look at is stored, along
      *  with statistics about the user.
@@ -75,11 +76,6 @@ class ProfileViewModel constructor(
      *  relevant if we are looking at the current user profile.
      */
     val followRequestAsCurrentUser = MutableLiveData<Resource<FollowRequestItem>>()
-
-    /**
-     *  Used for graceful resource disposal.
-     */
-    private val compositeDisposable = CompositeDisposable()
 
     /**
      *  Accepts an incoming follow request for the current user.
@@ -415,14 +411,6 @@ class ProfileViewModel constructor(
                 { this.selfComplete.setError(it.message) }
             )
         )
-    }
-
-    /**
-     *  Graceful shutdown to dispose all resources.
-     */
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
     }
 
     /**

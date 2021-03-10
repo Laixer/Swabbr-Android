@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.reaction
+package com.laixer.swabbr.presentation.reaction.playback
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +12,7 @@ import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
 import com.laixer.presentation.gone
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.onClickProfile
 import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.video.WatchVideoFragment
@@ -20,11 +21,8 @@ import kotlinx.android.synthetic.main.exo_player_view.*
 import kotlinx.android.synthetic.main.fragment_video.*
 import kotlinx.android.synthetic.main.video_info_overlay.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 
-// TODO Profile image click
 /**
  *  Wrapper around a single [WatchVideoFragment] used for [ReactionItem] playback.
  */
@@ -32,8 +30,6 @@ class WatchReactionFragment(id: String? = null) : WatchVideoFragment() {
     private val args by navArgs<WatchReactionFragmentArgs>()
     private val reactionVm: ReactionViewModel by viewModel()
     private val reactionId by lazy { UUID.fromString(id ?: args.reactionId) }
-
-    private val myId = UUID.randomUUID()
 
     /**
      *  Assign observers to [reactionVm].
@@ -54,15 +50,10 @@ class WatchReactionFragment(id: String? = null) : WatchVideoFragment() {
         vlog_info_overlay.gone()
 
         reactionVm.getReaction(reactionId)
-    }
 
-    // TODO STATE_ENDED enters twice in the profile vlogs viewpager -> reaction playback. Why?
-    /**
-     *  Go back to the vlog after playback has finished.
-     */
-    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-        if (playbackState == Player.STATE_ENDED) {
-            findNavController().popBackStack()
+        // Assign profile click if we have a profile
+        reactionVm.reaction.value?.data?.let { wrapper ->
+            view_clickable_video_user.setOnClickListener { onClickProfile().invoke(wrapper.user) }
         }
     }
 
@@ -92,6 +83,7 @@ class WatchReactionFragment(id: String? = null) : WatchVideoFragment() {
     companion object {
         private const val TAG = "VlogFragment"
 
+        // TODO Look into this.
         fun create(reactionId: String): WatchReactionFragment {
             return WatchReactionFragment(reactionId)
         }

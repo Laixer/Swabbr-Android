@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.NonNull
+import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
@@ -18,18 +19,26 @@ import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.auth.AuthFragment
+import com.laixer.swabbr.presentation.types.VideoPlaybackState
 import kotlinx.android.synthetic.main.fragment_video.*
 
 // TODO Orientation is wrong sometimes.
 // TODO Swipe refresh layout?
 // TODO When exiting and re-entering this - save the timestamp and continue there.
+// TODO Make autoplay a toggle
 /**
  *  Fragment for video playback. This is used both for vlog
  *  playback and for reaction playback. This implements the
  *  [Player.EventListener] interface to allow us to observe
  *  [video_player] events.
  */
-open class WatchVideoFragment : Player.EventListener, AuthFragment() {
+abstract class WatchVideoFragment : Player.EventListener, AuthFragment() {
+    // TODO Fully implement this for all states. https://github.com/Laixer/Swabbr-Android/issues/202
+    /**
+     *  Observe this to be notified when the video playback state changes.
+     */
+    val videoStateLiveData: MutableLiveData<VideoPlaybackState> = MutableLiveData()
+
     /**
      *  Actual player, which will be disposed and re-created
      *  whenever we exit / enter this fragment.
@@ -63,6 +72,21 @@ open class WatchVideoFragment : Player.EventListener, AuthFragment() {
         // TODO Ignore if landscape
         // Fit to screen
         video_player.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+    }
+
+    // TODO STATE_ENDED enters twice in the profile vlogs viewpager -> reaction playback. Why?
+    /**
+     *  Manages [videoStateLiveData] based on the player state.
+     */
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        when (playbackState) {
+            Player.STATE_READY -> videoStateLiveData.value = VideoPlaybackState.READY
+            Player.STATE_ENDED -> videoStateLiveData.value = VideoPlaybackState.FINISHED
+
+            // TODO Other states
+            // Player.STATE_IDLE -> videoStateLiveData.value = VideoPlaybackState.READY
+            // Player.STATE_BUFFERING -> videoStateLiveData.value = VideoPlaybackState.READY
+        }
     }
 
     // TODO Call this at creation to decrease loading time.

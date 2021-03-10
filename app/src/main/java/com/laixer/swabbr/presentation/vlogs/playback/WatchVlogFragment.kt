@@ -1,7 +1,9 @@
 package com.laixer.swabbr.presentation.vlogs.playback
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -14,9 +16,11 @@ import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.onClickProfile
+import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
-import com.laixer.swabbr.presentation.reaction.ReactionsAdapter
+import com.laixer.swabbr.presentation.reaction.playback.ReactionsAdapter
+import com.laixer.swabbr.presentation.utils.buildDoubleTapListener
 import com.laixer.swabbr.presentation.video.WatchVideoFragment
 import com.laixer.swabbr.utils.formatNumber
 import com.laixer.swabbr.utils.loadAvatar
@@ -131,19 +135,15 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
             )
         }
 
-        // Implement double tapping to like a vlog.
-        val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onDoubleTap(e: MotionEvent?): Boolean {
+        // Double tap to like a vlog.
+        val doubleTapListener = buildDoubleTapListener(requireActivity(), ::toggleLike)
+        // TODO We attach this behaviour to the reaction sheet. This is a temp fix.
+        //  After the following issue has been fixed change to video_player.setOnTouchListener { ... }.
+        //  https://github.com/Laixer/Swabbr-Android/issues/135
+        coordinator_layout_reactions_sheet.setOnTouchListener { _, event ->
+            doubleTapListener.onTouchEvent(event)
 
-                toggleLike()
-
-                return true
-            }
-        })
-
-        video_player.setOnTouchListener { _, event ->
-            gestureDetector.onTouchEvent(event)
-
+            // Required to call according to Android. Our view must know there was a click.
             view.performClick()
         }
 
@@ -198,8 +198,9 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
      */
     private val onReactionClick: (ReactionWrapperItem) -> Unit = {
         findNavController().navigate(
-            WatchVlogFragmentDirections.actionGlobalWatchReactionFragment(
-                reactionId = it.reaction.id.toString()
+            WatchVlogFragmentDirections.actionGlobalWatchReactionsForVlogFragment(
+                vlogId = vlogId.toString(), // TODO Can we cast all these params to uuid?
+                initialReactionId = it.reaction.id.toString()
             )
         )
     }
@@ -297,11 +298,7 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                     }
                 }
                 ResourceState.ERROR -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "Error loading reactions - ${resource.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showMessage("Could not load reactions")
                 }
             }
         }.also {

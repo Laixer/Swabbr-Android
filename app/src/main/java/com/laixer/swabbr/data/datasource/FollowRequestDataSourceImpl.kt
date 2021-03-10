@@ -16,10 +16,10 @@ class FollowRequestRemoteDataSourceImpl constructor(
         api.get(requesterId, receiverId).map { it.mapToDomain() }
 
     override fun getIncomingRequests(pagination: Pagination): Single<List<FollowRequest>> =
-        api.getIncomingRequests(pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
+        api.getIncomingRequests(pagination.sortingOrder.ordinal, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
     override fun getOutgoingRequests(pagination: Pagination): Single<List<FollowRequest>> =
-        api.getOutgoingRequests(pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
+        api.getOutgoingRequests(pagination.sortingOrder.ordinal, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
     override fun sendFollowRequest(userId: UUID): Completable =
         api.sendFollowRequest(userId)

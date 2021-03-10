@@ -44,6 +44,7 @@ class ReactionUseCase constructor(
                     }
             }
 
+    // TODO ConcatMapSingle loses our concurrency. https://github.com/Laixer/Swabbr-Android/issues/203
     /**
      *  Get all reactions for a given vlog with the user that posted
      *  these reactions in a wrapper.
@@ -54,7 +55,7 @@ class ReactionUseCase constructor(
     fun getAllForVlog(vlogId: UUID, refresh: Boolean): Single<List<ReactionWrapper>> =
         reactionRepository.getForVlog(vlogId)
             .flattenAsObservable { reactions -> reactions }
-            .flatMapSingle { reaction ->
+            .concatMapSingle { reaction ->
                 userRepository
                     .get(reaction.userId, false)
                     .map { user ->
