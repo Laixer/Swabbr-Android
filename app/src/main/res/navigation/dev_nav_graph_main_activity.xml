@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Top level nav graph for our app.
+-->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_main_activity"
+    app:startDestination="@id/devRecordVideoFragment2">
+    <fragment
+        android:id="@+id/devRecordVideoFragment2"
+        android:name="com.laixer.swabbr.presentation.recording.DevRecordVideoFragment"
+        android:label="DevRecordVideoFragment" />
+</navigation>

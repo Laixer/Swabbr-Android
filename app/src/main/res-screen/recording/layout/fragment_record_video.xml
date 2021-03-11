@@ -91,6 +91,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/circle_shape"
                 android:indeterminate="false"
+                android:visibility="gone"
                 android:progress="0"
                 android:progressDrawable="@drawable/circular_progress_bar" />
 
@@ -121,7 +122,7 @@
                     android:background="@color/transparent"
                     android:contentDescription="@string/torch"
                     android:src="@drawable/ic_torch_off"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     custom:offSrc="@drawable/ic_torch_on" />
 
             </LinearLayout>
@@ -140,7 +141,7 @@
                     android:background="@color/transparent"
                     android:contentDescription="@string/switch_camera"
                     android:src="@drawable/ic_switch_camera"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
             </LinearLayout>
 
         </LinearLayout>

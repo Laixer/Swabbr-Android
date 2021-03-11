@@ -69,8 +69,7 @@ abstract class WatchVideoFragment : Player.EventListener, AuthFragment() {
         // Always hide the error message.
         text_display_video_playback_error.gone()
 
-        // TODO Ignore if landscape
-        // Fit to screen
+        // Fit to screen.
         video_player.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
     }
 
@@ -83,7 +82,7 @@ abstract class WatchVideoFragment : Player.EventListener, AuthFragment() {
             Player.STATE_READY -> videoStateLiveData.value = VideoPlaybackState.READY
             Player.STATE_ENDED -> videoStateLiveData.value = VideoPlaybackState.FINISHED
 
-            // TODO Other states
+            // TODO Other states https://github.com/Laixer/Swabbr-Android/issues/202
             // Player.STATE_IDLE -> videoStateLiveData.value = VideoPlaybackState.READY
             // Player.STATE_BUFFERING -> videoStateLiveData.value = VideoPlaybackState.READY
         }

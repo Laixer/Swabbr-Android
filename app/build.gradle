@@ -5,6 +5,7 @@ apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
+  // TODO What is this?
   signingConfigs {
     release {
       storeFile file('/home/pnobbe/StudioProjects/Swabbr-Android/contrib/keystore.jks')
@@ -135,12 +136,10 @@ dependencies {
   implementation Libs.appcompat
   implementation Libs.fragment_ktx
 
-  // Navigation component TODO
-//  implementation Libs.navigation_fragment_ktx
-//  implementation Libs.navigation_ui_ktx
-  implementation "androidx.navigation:navigation-fragment-ktx:2.3.3"
-  implementation "androidx.navigation:navigation-ui-ktx:2.3.3"
-  implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.3"
+  // Navigation component
+  implementation "androidx.navigation:navigation-fragment-ktx:2.3.4"
+  implementation "androidx.navigation:navigation-ui-ktx:2.3.4"
+  implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.4"
 
   implementation 'com.gu.android:toolargetool:0.2.1@aar'
 

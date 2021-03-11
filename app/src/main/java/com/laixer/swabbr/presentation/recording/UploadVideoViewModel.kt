@@ -4,12 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
-import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -29,6 +24,7 @@ open class UploadVideoViewModel constructor(
 ) : ViewModelBase() {
     protected val toast: Toast = Toast.makeText(context, "", Toast.LENGTH_LONG)
 
+    // TODO Move upload functionality to a helper.
     /**
      *  Uploads a file to an external uri.
      *
@@ -54,19 +50,17 @@ open class UploadVideoViewModel constructor(
                     Base64.getEncoder().encodeToString(("Block-${counter++}").toByteArray(Charsets.UTF_8))
 
                 val available = bis.available()
-                viewModelScope.launch(Dispatchers.Main) {
-                    toast.setText(
-                        "Uploading chunk $counter/${
-                            ceil(
-                                total.toDouble().div(blockSize)
-                            ).toInt() + 1
-                        } (${
-                            (available.toDouble() / 1_000_000).toBigDecimal()
-                                .setScale(1, RoundingMode.HALF_EVEN)
-                        }MB remaining)"
-                    )
-                    toast.show()
-                }
+                Log.d(
+                    TAG,
+                    "Uploading chunk $counter/${
+                        ceil(
+                            total.toDouble().div(blockSize)
+                        ).toInt() + 1
+                    } (${
+                        (available.toDouble() / 1_000_000).toBigDecimal()
+                            .setScale(1, RoundingMode.HALF_EVEN)
+                    }MB remaining)"
+                )
 
                 uploadBlock(uploadUri.toString(), buffer, blockId, contentType)
                 blockIds.add(blockId)

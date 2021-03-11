@@ -50,8 +50,8 @@ class RecordReactionFragment : RecordVideoFragment() {
      *  can either conform or cancel the reaction operation. If the user
      *  confirms, the reaction is uploaded and posted to the backend.
      */
-    override fun stop() {
-        super.stop()
+    override fun stopRecording() {
+        super.stopRecording()
 
         val authority = "${BuildConfig.APPLICATION_ID}.provider"
         val localVideoUri = FileProvider.getUriForFile(requireContext(), authority, videoFile)

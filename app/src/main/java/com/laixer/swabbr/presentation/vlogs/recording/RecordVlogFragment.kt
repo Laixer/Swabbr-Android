@@ -3,21 +3,17 @@ package com.laixer.swabbr.presentation.vlogs.recording
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.navArgs
 import com.laixer.swabbr.BuildConfig
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.MainActivity
 import com.laixer.swabbr.presentation.recording.RecordVideoFragment
-import com.laixer.swabbr.utils.lastMinuteSeconds
-import com.laixer.swabbr.utils.minutes
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_record_video.*
 import kotlinx.android.synthetic.main.video_confirm_dialogue.*
@@ -34,7 +30,6 @@ import java.time.Duration
  *  blob storage and the backend is notified of this.
  */
 class RecordVlogFragment : RecordVideoFragment() {
-    /** AndroidX navigation arguments */
     private val vlogVm: VlogRecordingViewModel by viewModel()
 
     /**
@@ -46,67 +41,10 @@ class RecordVlogFragment : RecordVideoFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Enforce the vlog constraints.
-        initMinMaxVideoTimes(MINIMUM_RECORD_TIME, MAXIMUM_RECORD_TIME)
-
-        // Disable the recording button and assign the stop() function
-        // as click listener. This button will be enabled again after
-        // the minimum vlog time has exceeded. It can the be used to
-        // stop recording.
-        capture_button.apply {
-            isEnabled = false
-            setOnClickListener { stop() }
-        }
-
-        // Setup the "one minute left" trigger popup
-        stream_position_timer.apply {
-            // TODO In the case of vlogging recording time < 1 minute, this will act weird.
-            // TODO Dangerous cast to int
-            addEventAt(
-                MAXIMUM_RECORD_TIME.minutes().toInt() - 1,
-                MAXIMUM_RECORD_TIME.lastMinuteSeconds().toInt()
-            ) {
-                Toast.makeText(requireContext(), "One minute left!", Toast.LENGTH_LONG).show()
-                setTextColor(Color.RED)
-            }
-        }
+        // initMinMaxVideoTimes(MINIMUM_RECORD_TIME, MAXIMUM_RECORD_TIME)
 
         // Trigger the recording countdown and start vlogging.
-        startRecordingCountdown()
-    }
-
-    /**
-     *  Starts the recording process using [countDownFrom].
-     */
-    private fun startRecordingCountdown() = lifecycleScope.launch(Dispatchers.Main) {
-        // Specify what to do when the countdown exceeds.
-        countDownFrom(COUNTDOWN_MILLISECONDS) {
-            // Trigger the recording functionality and actually start the recording.
-            super.start()
-        }
-    }
-
-    /**
-     *  Starts the countdown popup and performs some function when
-     *  the time is up. Each second the UI will be updated.
-     *
-     *  @param countdownMs How long to count down in ms.
-     *  @param onFinish What to do when the time is up.
-     */
-    private fun countDownFrom(countdownMs: Long, onFinish: suspend () -> Unit) {
-        countdown.visibility = View.VISIBLE
-        val timer = object : CountDownTimer(countdownMs, COUNTDOWN_INTERVAL_MILLISECONDS) {
-            // Display the countdown on screen, updating each second.
-            override fun onTick(millisUntilFinished: Long) {
-                countdown.text = String.format("%1d", (millisUntilFinished / COUNTDOWN_INTERVAL_MILLISECONDS) + 1)
-            }
-
-            // Hide the countdown text when we are finished.
-            override fun onFinish() {
-                countdown?.visibility = View.INVISIBLE
-                lifecycleScope.launch(Dispatchers.Main) { onFinish() }
-            }
-        }
-        timer.start()
+        // startRecordingCountdown()
     }
 
     /**
@@ -114,8 +52,8 @@ class RecordVlogFragment : RecordVideoFragment() {
      *  can either conform or cancel the vlog operation. If the user
      *  confirms, the vlog is uploaded and posted to the backend.
      */
-    override fun stop() {
-        super.stop()
+    override fun stopRecording() {
+        super.stopRecording()
 
         val authority = "${BuildConfig.APPLICATION_ID}.provider"
         val localVideoUri = FileProvider.getUriForFile(requireContext(), authority, videoFile)
@@ -155,28 +93,21 @@ class RecordVlogFragment : RecordVideoFragment() {
      *  @param localVideoUri Locally stored video file uri.
      *  @param localThumbnailUri Locally stored thumbnail file uri.
      */
-    private fun upload(localVideoUri: Uri, localThumbnailUri: Uri) {
+    private fun
+        upload(localVideoUri: Uri, localThumbnailUri: Uri) {
         lifecycleScope.launch(Dispatchers.Main) {
             vlogVm.postVlog(localVideoUri, localThumbnailUri, false)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
                         lifecycleScope.launch(Dispatchers.Main) {
-                            Toast.makeText(
-                                requireContext(),
-                                "The vlog has been posted!",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            showMessage("The vlog has been posted!")
                             requireActivity().onBackPressed()
                         }
                     },
                     {
                         lifecycleScope.launch(Dispatchers.Main) {
-                            Toast.makeText(
-                                requireContext(),
-                                "Failed to upload vlog, please try again.",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            showMessage("Failed to upload vlog, please try again.")
                         }
                     })
         }

@@ -32,4 +32,11 @@
     <!-- Record button related. -->
     <color name="color_recording_center">#ff0000</color>
     <color name="color_recording_outline">@color/color_white</color>
+
+
+
+    <!-- TODO Copied from CameraXBasic example project -->
+    <color name="icActive">#FFFFFFFF</color>
+    <color name="icFocused">#DDFFFFFF</color>
+    <color name="icPressed">#AAFFFFFF</color>
 </resources>

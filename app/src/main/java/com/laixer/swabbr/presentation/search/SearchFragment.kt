@@ -100,12 +100,16 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         }
     }
 
+    /**
+     *  Search for users.
+     */
     @Throws(IllegalArgumentException::class)
     private fun search(
         query: String = lastQuery,
         page: Int = currentPage,
         refreshList: Boolean = true
     ): Boolean {
+
         // Can't search negative pages
         if (currentPage < 1) {
             Log.e(TAG, "page index must be 1 or higher, received '$page'")
@@ -177,6 +181,16 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         super.onDestroyView()
         searchRecyclerView.adapter = null
         userAdapter = null
+    }
+
+    // TODO https://github.com/Laixer/Swabbr-Android/issues/191
+    /**
+     *  Hide the soft keyboard when we leave this fragment.
+     */
+    override fun onPause() {
+        super.onPause()
+
+        hideSoftKeyboard()
     }
 
     companion object {

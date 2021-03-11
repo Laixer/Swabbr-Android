@@ -41,12 +41,13 @@ class App : Application() {
         // Unique initialization of Cache library to allow saving into device
         CacheLibrary.init(this)
 
-        // Determine if user is in night mode
-        val nightMode = when (resources.configuration.uiMode) {
-            Configuration.UI_MODE_NIGHT_YES -> AppCompatDelegate.MODE_NIGHT_YES
-            else -> AppCompatDelegate.MODE_NIGHT_NO
-        }
-
-        AppCompatDelegate.setDefaultNightMode(nightMode)
+        // TODO Not used
+//        // Determine if user is in night mode
+//        val nightMode = when (resources.configuration.uiMode) {
+//            Configuration.UI_MODE_NIGHT_YES -> AppCompatDelegate.MODE_NIGHT_YES
+//            else -> AppCompatDelegate.MODE_NIGHT_NO
+//        }
+//
+//        AppCompatDelegate.setDefaultNightMode(nightMode)
     }
 }

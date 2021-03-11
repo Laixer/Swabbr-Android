@@ -22,6 +22,7 @@ import android.util.Log
 import android.view.SurfaceView
 import kotlin.math.roundToInt
 
+// TODO Copied from example library https://github.com/android/camera-samples/blob/main/Camera2Video/utils/src/main/java/com/example/android/camera/utils/AutoFitSurfaceView.kt
 /**
  * A [SurfaceView] that can be adjusted to a specified aspect ratio and
  * performs center-crop transformation of input frames.
@@ -77,3 +78,4 @@ class AutoFitSurfaceView @JvmOverloads constructor(
         private val TAG = AutoFitSurfaceView::class.java.simpleName
     }
 }
+
