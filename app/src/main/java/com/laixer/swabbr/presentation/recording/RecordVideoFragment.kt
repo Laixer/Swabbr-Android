@@ -586,7 +586,7 @@ open class RecordVideoFragment : Fragment() {
         private val DEFAULT_MINIMUM_RECORD_TIME = Duration.ofSeconds(3)
         private val DEFAULT_MAXIMUM_RECORD_TIME = Duration.ofSeconds(10)
 
-        private const val RECORDER_VIDEO_BITRATE: Int = 500_000
+        private const val RECORDER_VIDEO_BITRATE: Int = 2_000_000
         private const val MIN_REQUIRED_RECORDING_TIME_MILLIS: Long = 1000L
 
         /** Milliseconds used for UI animations */
