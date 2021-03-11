@@ -6,6 +6,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.reaction.playback.WatchReactionFragmentArgs
 import com.laixer.swabbr.presentation.vlogs.playback.WatchUserVlogsFragmentArgs
+import com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragmentArgs
 import com.squareup.moshi.Json
 import java.time.ZonedDateTime
 
@@ -96,8 +97,8 @@ class V1 {
             override fun createPendingIntent(context: Context): PendingIntent =
                 NavDeepLinkBuilder(context)
                     .setGraph(R.navigation.nav_graph_main_activity)
-                    .setDestination(R.id.watchUserVlogsFragment)
-                    .setArguments(WatchUserVlogsFragmentArgs(vlogId, userThatLikedId).toBundle())
+                    .setDestination(R.id.watchVlogFragment)
+                    .setArguments(WatchVlogFragmentArgs(vlogId).toBundle())
                     .createPendingIntent()
         }
 

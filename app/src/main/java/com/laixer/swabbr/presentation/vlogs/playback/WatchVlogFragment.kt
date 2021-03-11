@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
@@ -20,6 +21,7 @@ import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.reaction.playback.ReactionsAdapter
+import com.laixer.swabbr.presentation.reaction.playback.WatchReactionFragmentArgs
 import com.laixer.swabbr.presentation.utils.buildDoubleTapListener
 import com.laixer.swabbr.presentation.video.WatchVideoFragment
 import com.laixer.swabbr.utils.formatNumber
@@ -37,15 +39,17 @@ import java.util.*
 // TODO BUG java.lang.RuntimeException: Unable to start activity ComponentInfo{com.laixer.swabbr/com.laixer.swabbr.presentation.MainActivity}:
 //  androidx.fragment.app.Fragment$InstantiationException: Unable to instantiate fragment com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragment:
 //  could not find Fragment constructor
+//  --> Quickfix is to match [WatchReactionFragment], look at this.
 /**
  *  Fragment for watching a single vlog. This extends [WatchVideoFragment]
  *  which contains the core playback functionality. This class manages
  *  the displaying of likes, reactions and other data about the vlog.
  *  Note that the playback of reactions is managed by [].
  */
-class WatchVlogFragment(id: String) : WatchVideoFragment() {
+class WatchVlogFragment(id: String? = null) : WatchVideoFragment() {
+    private val args by navArgs<WatchVlogFragmentArgs>()
     private val vlogVm: VlogViewModel by viewModel()
-    private val vlogId: UUID by lazy { UUID.fromString(id) }
+    private val vlogId: UUID by lazy { UUID.fromString(id ?: args.vlogId) }
 
     /**
      *  Attaches observers to the [vlogVm] resources.
