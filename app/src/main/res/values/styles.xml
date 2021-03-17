@@ -5,12 +5,12 @@
         means we are not in full screen mode.
     -->
     <style name="Base.Theme.Swabbr" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/color_window_background</item>
-        <item name="android:colorBackground">@color/color_window_background</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="android:colorBackground">@color/windowBackground</item>
 
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accent</item>
 
         <item name="android:windowContentTransitions">true</item>
     </style>
@@ -32,21 +32,21 @@
 
     <!-- Used to display regular settings. -->
     <style name="TextProfileSettings">
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/primaryDark</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/text_size_settings</item>
     </style>
 
     <!-- Used to display italic settings. -->
     <style name="TextProfileItalicSettings" parent="Base.Theme.Swabbr">
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/primary</item>
         <item name="android:textStyle">italic</item>
         <item name="android:textSize">@dimen/text_size_settings</item>
     </style>
 
     <!-- Used for input fields. -->
     <style name="TextInput" parent="Base.Theme.Swabbr">
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/primary</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">@dimen/text_size_settings</item>
     </style>
@@ -55,11 +55,11 @@
     <style name="SwabbrButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textSize">@dimen/button_text_size</item>
         <item name="backgroundTint">@color/transparent</item>
-        <item name="android:textColor">@color/colorPrimaryLight</item>
+        <item name="android:textColor">@color/primaryLight</item>
         <item name="cornerRadius">8dp</item>
-        <item name="strokeColor">@color/colorPrimaryLight</item>
+        <item name="strokeColor">@color/primaryLight</item>
         <item name="strokeWidth">2dp</item>
-        <item name="rippleColor">@color/colorPrimary</item>
+        <item name="rippleColor">@color/primary</item>
     </style>
 
 </resources>

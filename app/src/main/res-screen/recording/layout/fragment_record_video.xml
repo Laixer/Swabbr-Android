@@ -13,181 +13,21 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:custom="http://schemas.android.com/tools"
+    android:id="@+id/dev_record_video_loading_icon"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.laixer.swabbr.utils.AutoFitSurfaceView
-            android:id="@+id/view_finder"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:visibility="visible" />
-
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/countdown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:shadowColor="@color/color_white"
-        android:shadowDx="10"
-        android:shadowDy="10"
-        android:shadowRadius="1"
-        android:text="0"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
-        android:textSize="250sp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/bottom_stream_bar"
+    <!-- Used for previewing what our camera outputs. -->
+    <com.laixer.swabbr.utils.AutoFitSurfaceView
+        android:id="@+id/surface_view_record_video"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/content_margin_small"
-        android:background="@color/transparent"
-        android:gravity="bottom"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <RelativeLayout
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:layout_gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
-
-            <ImageButton
-                android:id="@+id/capture_button"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/selector_button_recording"
-                android:contentDescription="@string/capture"
-                android:scaleType="fitCenter"
-                android:visibility="visible" />
-
-            <ProgressBar
-                android:id="@+id/circular_progress_bar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/circle_shape"
-                android:indeterminate="false"
-                android:visibility="gone"
-                android:progress="0"
-                android:progressDrawable="@drawable/circular_progress_bar" />
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/button_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="@dimen/content_margin_small"
-            android:layout_marginVertical="@dimen/content_margin_small"
-            android:background="@drawable/rounded_bg"
-            android:orientation="horizontal"
-            android:padding="@dimen/content_margin_small">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="32dp"
-                android:orientation="horizontal">
-
-                <com.laixer.swabbr.presentation.utils.MultiStateButton
-                    android:id="@+id/toggle_torch"
-                    android:layout_width="@dimen/small_icon_size"
-                    android:layout_height="@dimen/small_icon_size"
-                    android:layout_gravity="center"
-                    android:background="@color/transparent"
-                    android:contentDescription="@string/torch"
-                    android:src="@drawable/ic_torch_off"
-                    android:visibility="visible"
-                    custom:offSrc="@drawable/ic_torch_on" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="32dp"
-                android:orientation="horizontal">
-
-                <com.laixer.swabbr.presentation.utils.MultiStateButton
-                    android:id="@+id/switch_camera"
-                    android:layout_width="@dimen/small_icon_size"
-                    android:layout_height="@dimen/small_icon_size"
-                    android:layout_gravity="center"
-                    android:background="@color/transparent"
-                    android:contentDescription="@string/switch_camera"
-                    android:src="@drawable/ic_switch_camera"
-                    android:visibility="visible" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/progressBar_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:background="@drawable/rounded_bg"
-            android:orientation="horizontal">
-
-            <com.laixer.swabbr.presentation.utils.TimerView
-                android:id="@+id/stream_position_timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/content_margin_small"
-                android:layout_marginVertical="@dimen/content_margin_small"
-                android:fontFamily="sans-serif-light"
-                android:includeFontPadding="false"
-                android:text= "@string/zero_time"
-                android:textColor="@android:color/white" />
-
-            <ProgressBar
-                android:id="@+id/horizontal_progress_bar"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:indeterminate="false"
-                android:text="@string/zero_time" />
-
-            <TextView
-                android:id="@+id/stream_max_duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/content_margin_small"
-                android:layout_marginVertical="@dimen/content_margin_small"
-                android:fontFamily="sans-serif-light"
-                android:includeFontPadding="false"
-                android:text="@string/zero_time"
-                android:textColor="@android:color/white"
-                app:layout_constraintEnd_toEndOf="parent" />
-        </LinearLayout>
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -62,7 +62,7 @@
         app:destination="@id/searchFragment" />
     <fragment
         android:id="@+id/recordReactionFragment"
-        android:name="com.laixer.swabbr.presentation.reaction.playback.RecordReactionFragment"
+        android:name="com.laixer.swabbr.presentation.reaction.recording.RecordReactionFragment"
         android:label="RecordReactionFragment">
         <argument
             android:name="vlogId"
@@ -144,7 +144,7 @@
         app:destination="@id/watchReactionsForVlogFragment" />
     <fragment
         android:id="@+id/devRecordVideoFragment"
-        android:name="com.laixer.swabbr.presentation.recording.DevRecordVideoFragment"
+        android:name="com.laixer.swabbr.presentation.recording.RecordVideoFragment"
         android:label="DevRecordVideoFragment" />
 
 </navigation>

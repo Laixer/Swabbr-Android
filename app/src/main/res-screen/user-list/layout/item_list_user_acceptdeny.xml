@@ -40,7 +40,7 @@
             android:background="@color/transparent"
             android:contentDescription="@string/accept"
             android:src="@drawable/ic_baseline_check_circle_outline_24"
-            android:tint="@color/colorAccept"
+            android:tint="@color/accept"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/follow_request_decline"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@string/decline"
             android:src="@drawable/ic_baseline_not_interested_24"
-            android:tint="@color/colorDecline"
+            android:tint="@color/decline"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

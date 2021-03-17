@@ -15,6 +15,7 @@ import java.util.*
 import kotlin.math.ceil
 
 // TODO Clean up and make this use local storage & retries.
+// TODO Leaks a context object!
 /**
  *  View model containing functionality for uploading a video.
  */

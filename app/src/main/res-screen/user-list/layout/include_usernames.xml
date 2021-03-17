@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textAppearance="@style/NicknameTextAppearance"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/primaryDark"
         tools:text="@string/placeholder_nickname" />
 
 </LinearLayout>

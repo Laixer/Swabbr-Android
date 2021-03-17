@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.reaction.playback
+package com.laixer.swabbr.presentation.reaction.recording
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -12,7 +12,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.laixer.swabbr.BuildConfig
 import com.laixer.swabbr.R
-import com.laixer.swabbr.presentation.recording.RecordVideoFragment
+import com.laixer.swabbr.presentation.reaction.playback.ReactionViewModel
+import com.laixer.swabbr.presentation.recording.RecordVideoFragment2
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.video_confirm_dialogue.*
 import kotlinx.coroutines.Dispatchers
@@ -28,9 +29,9 @@ import java.util.*
  *  blob storage and the backend is notified of this.
  *
  *  Note that the [args] cameraId is not used but is hardcoded in the
- *  [RecordVideoFragment]. See the to do in that file.
+ *  [RecordVideoFragment2]. See the to do in that file.
  */
-class RecordReactionFragment : RecordVideoFragment() {
+class RecordReactionFragment : RecordVideoFragment2() {
     /** AndroidX navigation arguments */
     private val args: RecordReactionFragmentArgs by navArgs()
     private val reactionVm: ReactionViewModel by viewModel()

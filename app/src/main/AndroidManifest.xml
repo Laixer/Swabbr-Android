@@ -30,7 +30,9 @@
         <!-- Our main entry point. All functionality of the app exists in here using fragments. -->
         <activity
             android:name="com.laixer.swabbr.presentation.MainActivity"
+            android:configChanges="orientation"
             android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

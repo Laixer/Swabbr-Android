@@ -1,180 +1,134 @@
 package com.laixer.swabbr.presentation.recording
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.hardware.camera2.*
-import android.media.MediaCodec
 import android.media.MediaRecorder
 import android.media.MediaScannerConnection
-import android.media.ThumbnailUtils
 import android.os.Bundle
-import android.os.CancellationSignal
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
-import android.util.Range
 import android.util.Size
 import android.view.*
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.laixer.swabbr.R
-import com.laixer.swabbr.extensions.showMessage
-import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.MainActivity
-import com.laixer.swabbr.utils.*
-import io.antmedia.android.broadcaster.utils.OrientationLiveData
+import com.laixer.swabbr.extensions.*
+import com.laixer.swabbr.presentation.types.VideoRecordingState
+import com.laixer.swabbr.utils.FileHelper.Companion.createFile
+import com.laixer.swabbr.utils.getPreviewOutputSize
 import kotlinx.android.synthetic.main.fragment_record_video.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
-import java.time.Duration
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
-// TODO This currently does not support a min/max record time of 0/infinite.
-// TODO Question - when do we exit fullscreen explicitly?
-// TODO Pressing back while recording crashes the app.
+// TODO Put all the lazy statements in a single try catch method and go to error state if we fail.
+// TODO Draw out the state machine maybe, find them bugs.
+// TODO Preview, leave, re-enter: before this a preview frame is shown, after this none is. Minor detail.
+// TODO Torch with repeating request
+// TODO java.lang.IllegalStateException: Handler (android.os.Handler) {cbba0a6} sending message to a Handler on a dead thread
+// FUTURE This is currently fixed on portrait mode. One day we may want to change this.
 /**
- *  Fragment containing functionality for recording video files. This
- *  can be extended to use this functionality to record reactions or
- *  vlogs, or some other kind of video.
+ *  Fragment for recording video using the camera2 API. Note that all
+ *  methods which require permissions are wrapped in a permission check.
+ *  When any permission are denied, [onPermissionsDeclined] is called.
  *
- *  This activity uses the camera/camcorder as the A/V source for the
- *  [android.media.MediaRecorder] API. A [android.view.TextureView]
- *  is used as the camera preview which limits the code to API 14+.
- *  This can be easily replaced with a [android.view.SurfaceView] to
- *  run on older devices.
+ *  This fragment only handles recording functionality. Extend this to
+ *  implement custom functionality and UI other than [surface_view_record_video].
  *
- *  This expects the required permissions to already be granted. A
- *  check is done at the [onCreate] method.
+ *  This design choice was deliberate, as the video recording process is
+ *  rather complex in Android. Splitting this functionality allows us to
+ *  keep an overview of what's happening where. Any UI elements, timed
+ *  callbacks etc should be handled by extensions of this class.
  */
-open class RecordVideoFragment : Fragment() {
-    private var recording = false
+abstract class RecordVideoFragment : RecordVideoInnerMethods() {
 
     /**
-     *  Native Android camera manager instance.
+     *  Used to enumerate and open camera instances. This is instantiated once
+     *  independently by [lazy] (does not need other objects than the context).
      */
     private val cameraManager: CameraManager by lazy {
-        val context = requireContext().applicationContext
-        context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        requireContext().getSystemService(Context.CAMERA_SERVICE) as CameraManager
     }
 
     /**
-     *  Gets the first camera in the camera id list of the [CameraManager].
+     *  Thread on which all camera operations run. This is created and started immediately, once.
      */
-    private val characteristics: CameraCharacteristics by lazy {
-        val list = cameraManager.cameraIdList
-        cameraManager.getCameraCharacteristics(list.first())
-    }
+    private val cameraThread by lazy { HandlerThread(CAMERA_THREAD_NAME).apply { start() } }
 
     /**
-     * File where the recording will be saved.
+     *  [Handler] corresponding to [cameraThread]. This is created immediately, once.
      */
-    protected val videoFile: File by lazy { FileHelper.createFile(requireContext(), "mp4") }
+    private val cameraHandler by lazy { Handler(cameraThread.looper) }
 
     /**
-     *  File where the recording thumbnail will be saved.
+     *  Setup a persistent [Surface] for the recorder so we can use it as an output target for the
+     *  camera session without preparing the recorder. This is whenever we select a camera.
      */
-    protected val thumbnailFile: File by lazy { FileHelper.createFile(requireContext(), "jpeg") }
+    private var recorderSurface: Surface? = null
 
     /**
-     * Setup a persistent [Surface] for the recorder
-     * so we can use it as an output target for the
-     * camera session without preparing the recorder
+     *  Media recorder which saves our recording. This is created each time we
+     *  start recording in [tryStartRecording]. The state machine is located here:
+     *  https://developer.android.com/reference/android/media/MediaRecorder
      */
-    private val recorderSurface: Surface by lazy {
-        // Get a persistent Surface from MediaCodec, don't forget to release when done
-        val surface = MediaCodec.createPersistentInputSurface()
-
-        // Prepare and release a dummy MediaRecorder with our new surface
-        // Required to allocate an appropriately sized buffer before passing the Surface as the
-        //  output target to the capture session
-        createRecorder(surface).apply {
-            prepare()
-            release()
-        }
-
-        surface
-    }
-
-    /** Saves the video recording */
-    private var recorder: MediaRecorder? = null
-
-    /** [HandlerThread] where all camera operations run */
-    private val cameraThread = HandlerThread("CameraThread").apply { start() }
-
-    /** [Handler] corresponding to [cameraThread] */
-    private val cameraHandler = Handler(cameraThread.looper)
-
-    /** Where the camera preview is displayed */
-    private lateinit var viewFinder: AutoFitSurfaceView
+    private var mediaRecorder: MediaRecorder? = null
 
     /**
-     *  Object required to be able to capture camera frames.
+     *  File where our recording will be stored. This is created once.
      */
-    private lateinit var session: CameraCaptureSession
-
-    /** The [CameraDevice] that will be opened in this fragment */
-    private lateinit var camera: CameraDevice
-
-    /** Requests used for preview only in the [CameraCaptureSession] */
-    private val previewRequest: CaptureRequest by lazy {
-        // Capture request holds references to target surfaces
-        session.device.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW).apply {
-            // Add the preview surface target
-            addTarget(viewFinder.holder.surface)
-        }.build()
-    }
-
-    /** Requests used for preview and recording in the [CameraCaptureSession] */
-    private val recordRequest: CaptureRequest by lazy {
-        // Capture request holds references to target surfaces
-        session.device.createCaptureRequest(CameraDevice.TEMPLATE_RECORD).apply {
-            // Add the preview and recording surface targets
-            addTarget(viewFinder.holder.surface)
-            addTarget(recorderSurface)
-
-            // TODO What to do with FPS?
-            // Sets user requested FPS for all targets
-            set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, Range(30, 30))
-        }.build()
-    }
-
-    private var recordingStartMillis: Long = 0L
-
-    /** Live data listener for changes in the device orientation relative to the camera */
-    private lateinit var relativeOrientation: OrientationLiveData
+    protected val outputFile: File by lazy { createFile(requireContext(), "mp4") }
 
     /**
-     *  This checks if we have the required permissions. If this
-     *  is not the case, the permissions are requested. If any of
-     *  these are denied, we go back to the previous activity or
-     *  fragment.
+     *  Camera object which will be opened by this fragment. Created
+     *  whenever we select a new camera in [tryInitializeCamera].
+     */
+    private var camera: CameraDevice? = null
+
+    /**
+     *  Object representing a video recording session. Created whenever
+     *  we select a new camera in [tryInitializeCamera].
+     */
+    private var cameraCaptureSession: CameraCaptureSession? = null
+
+    /**
+     *  Requests used only for preview in the [CameraCaptureSession]. This
+     *  is created whenever we select a new camera in [tryInitializeCamera].
+     */
+    private var previewRequest: CaptureRequest? = null
+
+    /**
+     *  Requests used for preview and recording in the [CameraCaptureSession].
+     *  Note that this does more than [previewRequest]. This is created when
+     *  we start recording using [tryStartRecording].
+     */
+    private var recordRequest: CaptureRequest? = null
+
+    // TODO Thread safety & concurrency. https://kinnrot.github.io/live-data-pitfall-you-should-be-aware-of/
+    /**
+     *  Enum indicating the state of this fragment. This is used to ensure
+     *  we can't execute certain functionality when we shouldn't. Do not
+     *  modify this. This is an observable object, which initially is set
+     *  to [BEGIN_STATE].
+     */
+    private var state: MutableLiveData<VideoRecordingState> = MutableLiveData(BEGIN_STATE)
+
+    /**
+     *  Gets the current [state], or [BEGIN_STATE] if the [state] is still null.
+     */
+    protected fun getCurrentState(): VideoRecordingState = state.value ?: BEGIN_STATE
+
+    /**
+     *  Ask for permissions right away.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
-            // Do nothing
-        }.onDeclined {
-            // At least one permission has been declined by the user
-            showMessage("Your permissions are required to record videos")
-
-            // Go back to home.
-            val intent = Intent(this.context, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
-        }
-
-        injectFeature()
-
-
+        askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) { /* Do nothing */ }
+            .onDeclined { onPermissionsDeclined() }
     }
 
     /**
@@ -184,364 +138,339 @@ open class RecordVideoFragment : Fragment() {
         inflater.inflate(R.layout.fragment_record_video, container, false)
 
     /**
-     *  Sets up our UI. Note that if we don't have camera permissions
-     *  this will simulate a back press along with a displayed message.
-     *
+     *  Starts our UI and camera initialization process. This attaches the
+     *  [onStateChanged] listener to [state]. This will also load the first
+     *  camera when the UI is ready for it.
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Utils.enterFullscreen(requireActivity())
+        // Assign state listener (only when the view has been created).
+        state.observe(viewLifecycleOwner, Observer { onStateChanged(it) })
 
         askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
-            // Set some automatic time-based events for our TimerView
-            stream_position_timer.apply {
-                // Allow broadcast to be stopped when the circular progress
-                // bar completes and thus exceeds the minimum recording time.
-                // The circular progress bar disappears also.
-                addProgressBar(circular_progress_bar) {
-                    capture_button?.isEnabled = true
-                    circular_progress_bar?.visibility = View.GONE
-                }
 
-                // Stop the recording when the time limit is exceeded.
-                addProgressBar(horizontal_progress_bar) {
-                    showMessage("Time limit reached, stopping recording.")
-                    stopRecording()
-                }
-            }
-
-            switch_camera.apply {
-                visibility = View.VISIBLE
-                // TODO
-                //setOnClickListener { this.changeCamera() }
-            }
-
-            toggle_torch.apply {
-                visibility = View.VISIBLE
-                // TODO
-                //setOnClickListener { mLiveVideoBroadcaster.toggleTorch() }
-            }
-
-            // React to user touching the capture button
-            // TODO Move this back to initializeCamera() to prevent race condition?
-            capture_button.setOnClickListener {
-                when (recording) {
-                    false -> startRecording()
-                    true -> stopRecording()
-                }
-            }
-
-            // Initialize the camera when the surface view has loaded.
-            viewFinder = view.findViewById(R.id.view_finder)
-            viewFinder.holder.addCallback(object : SurfaceHolder.Callback {
-                override fun surfaceDestroyed(holder: SurfaceHolder) = Unit
-                override fun surfaceChanged(
-                    holder: SurfaceHolder,
-                    format: Int,
-                    width: Int,
-                    height: Int
-                ) = Unit
-
-                override fun surfaceCreated(holder: SurfaceHolder) {
-                    // Selects appropriate preview size and configures view finder
-                    val previewSize = getPreviewOutputSize(
-                        viewFinder.display, characteristics, SurfaceHolder::class.java
+            // Assign setup callbacks to the holder of our surface view so that the
+            // camera will be setup once said element has been inflated completely.
+            surface_view_record_video.holder.addCallback(object : SurfaceHolder.Callback {
+                /**
+                 *  Called immediately after the surface is first created.
+                 */
+                override fun surfaceCreated(holder: SurfaceHolder?) {
+                    // Get an object representing the size of our auto fit surface view,
+                    // then assign the aspect ratio of said size to the surface view.
+                    val previewSize: Size = getPreviewOutputSize(
+                        display = surface_view_record_video.display,
+                        characteristics = camera?.let { cameraManager.getCameraCharacteristics(it.id) }
+                            ?: cameraManager.getFirstFrontFacingCameraCharacteristics(),
+                        targetClass = SurfaceHolder::class.java
                     )
-                    Log.d(TAG, "View finder size: ${viewFinder.width} x ${viewFinder.height}")
-                    Log.d(TAG, "Selected preview size: $previewSize")
-                    viewFinder.setAspectRatio(previewSize.width, previewSize.height)
 
-                    // To ensure that size is set, initialize camera in the view's thread
-                    // TODO This is a race condition. If this isn't called before start(), the app will crash.
-                    viewFinder.post { initializeCamera() }
-                }
-            })
+                    // Note that setting these parameters only affect the preview screen,
+                    // not the output video of the media recorder. It doesn't matter if the
+                    // aspect ratio isn't matching with our video source. This only matters
+                    // for the recording surface itself.
+                    surface_view_record_video.setAspectRatio(previewSize.width, previewSize.height)
 
-            // Used to rotate the output media to match device orientation
-            relativeOrientation = OrientationLiveData(requireContext(), characteristics).apply {
-                observe(viewLifecycleOwner, Observer { orientation ->
-                    Log.d(TAG, "Orientation changed: $orientation")
-                })
-            }
+                    // If this is not a re-enter, change our state to ready, then load our first camera.
+                    if (state.value == VideoRecordingState.LOADING) {
+                        state.postValue(VideoRecordingState.READY)
 
-            // This will setup the default minimum and maximum times.
-            // These can be overridden before starting the recording process.
-            initMinMaxVideoTimes(DEFAULT_MINIMUM_RECORD_TIME, DEFAULT_MAXIMUM_RECORD_TIME)
-
-        }.onDeclined {
-            // At least one permission has been declined by the user
-            showMessage("Your permissions are required to record videos")
-
-            // Go back to home.
-            val intent = Intent(this.context, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
-        }
-    }
-
-    /**
-     *  Resets the recording process.
-     */
-    protected fun reset() = lifecycleScope.launch(Dispatchers.IO) {
-        // Create a new recorder each time.
-        recorder = createRecorder(recorderSurface)
-
-        // Prevents screen rotation during the video recording
-        requireActivity().requestedOrientation =
-            ActivityInfo.SCREEN_ORIENTATION_LOCKED
-
-        recorder?.apply {
-            // Sets output orientation based on current sensor value at start time
-            relativeOrientation.value?.let { setOrientationHint(it) }
-            prepare()
-        }
-    }.also {
-        lifecycleScope.launch(Dispatchers.Main) {
-            // Go to full screen. Looks better and else we hide some UI elements.
-            Utils.enterFullscreen(requireActivity())
-
-            // The horizontal progress bar should display no progress yet.
-            horizontal_progress_bar.progress = 0
-        }
-    }
-
-    /**
-     *  Function for setting minimum and maximum recording times.
-     *  This will:
-     *  - Set the max for the [circular_progress_bar].
-     *  - Set time max for [horizontal_progress_bar].
-     *  - Set text for [stream_max_duration].
-     *
-     *  Note that this does not setup callbacks or starts the timer.
-     *
-     *  @param minimumRecordTime Minimum recording time as duration.
-     *  @param maximumRecordTime Maximum recording time as duration.
-     *  @throws [IllegalStateException] if we are already recording.
-     */
-    protected fun initMinMaxVideoTimes(minimumRecordTime: Duration, maximumRecordTime: Duration) {
-        if (recording) {
-            throw IllegalStateException("Can't modify minimum and maximum time during recording")
-        }
-
-        lifecycleScope.launch(Dispatchers.Main) {
-            // Setup the circular progress bar that enables the stop button.
-            // TODO Dangerous cast
-            circular_progress_bar.max = minimumRecordTime.seconds.toInt() * 10 // TODO Why x10?
-
-            // Setup the horizontal progress bar at the bottom of the screen.
-            // TODO Dangerous cast
-            horizontal_progress_bar.max = maximumRecordTime.seconds.toInt() * 10 // TODO Why x10?
-
-            // Set the maximum duration text
-            stream_max_duration.text =
-                getString(
-                    R.string.timer_value,
-                    maximumRecordTime.minutes(),
-                    maximumRecordTime.lastMinuteSeconds()
-                )
-        }
-    }
-
-    /**
-     * Creates a [MediaRecorder] instance using the
-     * provided [Surface] as input
-     */
-    private fun createRecorder(surface: Surface) = MediaRecorder().apply {
-        setAudioSource(MediaRecorder.AudioSource.MIC)
-        setVideoSource(MediaRecorder.VideoSource.SURFACE)
-        setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-        setOutputFile(videoFile.absolutePath)
-        setVideoEncodingBitRate(2_000_000)
-        setAudioEncodingBitRate(192_000)
-        setVideoEncoder(MediaRecorder.VideoEncoder.H264)
-        setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-        setInputSurface(surface)
-        setMaxDuration(10_000) // TODO Hardcoded max duration......
-
-        // TODO Width and height?
-    }
-
-    /**
-     *  Begin all camera operations in a coroutine in the main
-     *  thread. This function:
-     *  - Opens the camera.
-     *  - Configures the camera session.
-     *  - Starts the preview by dispatching a repeating request.
-     */
-    @SuppressLint("ClickableViewAccessibility")
-    private fun initializeCamera() = lifecycleScope.launch(Dispatchers.Main) {
-        // TODO Camera id
-        // Open the selected camera
-        val cameraId = cameraManager.cameraIdList.first()
-        camera = openCamera(cameraManager, cameraId, cameraHandler)
-
-        // Creates list of Surfaces where the camera will output frames
-        val targets = listOf(viewFinder.holder.surface, recorderSurface)
-
-        // Start a capture session using our open camera and list of Surfaces where frames will go
-        session = createCaptureSession(camera, targets, cameraHandler)
-
-        // Sends the capture request as frequently as possible until the session is torn down or
-        //  session.stopRepeating() is called
-        session.setRepeatingRequest(previewRequest, null, cameraHandler)
-
-        reset()
-    }
-
-    /**
-     *  Starts the recording process. This function can be overridden
-     *  to apply custom functionality to the recording process. This
-     *  also makes the record/stop button visible (but disabled) and
-     *  starts the horizontal progress bar.
-     */
-    protected open fun startRecording() {
-        // TODO Preconditions!!!
-
-        // Update IO related objects
-        lifecycleScope.launch(Dispatchers.IO) {
-            // Start recording repeating requests, which will stop the ongoing preview
-            //  repeating requests without having to explicitly call `session.stopRepeating`
-            session.setRepeatingRequest(recordRequest, null, cameraHandler)
-
-            // Finalizes recorder setup and starts recording
-            recorder?.start()
-
-            recordingStartMillis = System.currentTimeMillis()
-            Log.d(TAG, "Recording started")
-        }.also {
-            recording = true
-        }
-    }
-
-    /**
-     *  Stops the recording process. This function can be overridden to
-     *  apply custom functionality to the recording process. This also
-     *  stops the timer, removing all registered events.
-     */
-    protected open fun stopRecording() {
-        lifecycleScope.launch(Dispatchers.IO) {
-            if (!recording) {
-                cancel()
-            }
-
-            // Unlocks screen rotation after recording finished
-            requireActivity().requestedOrientation =
-                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-
-            // Requires recording of at least MIN_REQUIRED_RECORDING_TIME_MILLIS
-            val elapsedTimeMillis = System.currentTimeMillis() - recordingStartMillis
-            if (elapsedTimeMillis < MIN_REQUIRED_RECORDING_TIME_MILLIS) {
-                delay(MIN_REQUIRED_RECORDING_TIME_MILLIS - elapsedTimeMillis)
-            }
-
-            Log.d(TAG, "Recording stopped. Output file: $videoFile")
-            recorder?.stop()
-
-            // Broadcasts the media file to the rest of the system
-            MediaScannerConnection.scanFile(requireContext(), arrayOf(videoFile.absolutePath), null, null)
-
-            // Generates the thumbnail
-            val cancellationSignal = CancellationSignal() // TODO Use.
-            val thumbnail = ThumbnailUtils.createVideoThumbnail(videoFile, Size(384, 512), cancellationSignal)
-            FileHelper.writeBitmapToFile(thumbnail, thumbnailFile)
-
-        }.also {
-            recording = false
-        }
-    }
-
-    /**
-     *  Opens the camera and returns the opened device as the
-     *  result of the suspend coroutine).
-     */
-    @SuppressLint("MissingPermission")
-    private suspend fun openCamera(
-        manager: CameraManager,
-        cameraId: String,
-        handler: Handler? = null
-    ): CameraDevice = suspendCancellableCoroutine { cont ->
-        askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
-            manager.openCamera(cameraId, object : CameraDevice.StateCallback() {
-                override fun onOpened(device: CameraDevice) = cont.resume(device)
-
-                override fun onDisconnected(device: CameraDevice) {
-                    Log.w(TAG, "Camera $cameraId has been disconnected")
-
-                    findNavController().popBackStack()
-                }
-
-                override fun onError(device: CameraDevice, error: Int) {
-                    val msg = when (error) {
-                        ERROR_CAMERA_DEVICE -> "Fatal (device)"
-                        ERROR_CAMERA_DISABLED -> "Device policy"
-                        ERROR_CAMERA_IN_USE -> "Camera in use"
-                        ERROR_CAMERA_SERVICE -> "Fatal (service)"
-                        ERROR_MAX_CAMERAS_IN_USE -> "Maximum cameras in use"
-                        else -> "Unknown"
+                        // To ensure that size is set we initialize the camera in the view's thread.
+                        // Note that if we already have a camera open we initialize it again.
+                        surface_view_record_video.post {
+                            tryInitializeCamera(camera?.id ?: cameraManager.getFirstFrontFacingCameraId())
+                        }
                     }
-                    val exc = RuntimeException("Camera $cameraId error: ($error) $msg")
-                    Log.e(TAG, exc.message, exc)
-                    if (cont.isActive) cont.resumeWithException(exc)
                 }
-            }, handler)
+
+                // These are irrelevant for us, but required by the callback object interface.
+                override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) = Unit
+                override fun surfaceDestroyed(holder: SurfaceHolder?) = Unit
+            })
+        }.onDeclined { onPermissionsDeclined() }
+    }
+
+    /**
+     *  Override this method to listen to [state] changes.
+     */
+    protected open fun onStateChanged(state: VideoRecordingState) {}
+
+    /**
+     *  Called when we can't obtain the required permissions for whatever reason.
+     *  Override this to specify custom behaviour. This shows a message followed
+     *  by a simulated back press.
+     */
+    protected open fun onPermissionsDeclined() {
+        showMessage("Your permissions are required to record videos")
+        goBack()
+    }
+
+    /**
+     *  Attempts to switch from front camera to back camera or vice versa.
+     */
+    protected open fun trySwitchCamera() {
+        camera?.let {
+            when (cameraManager.getCameraFacingInt(it.id)) {
+                CameraCharacteristics.LENS_FACING_FRONT -> tryInitializeCamera(cameraManager.getFirstBackFacingCameraId())
+                CameraCharacteristics.LENS_FACING_BACK -> tryInitializeCamera(cameraManager.getFirstFrontFacingCameraId())
+                else -> Log.w(TAG, "Could not get a camera id to switch to")
+            }
         }
     }
 
     /**
-     *  Creates a [CameraCaptureSession] and returns the configured
-     *  session as the result of the suspend coroutine.
+     *  Opens and sets up our camera object on the main thread.
+     *  Only executes if our [state] is [VideoRecordingState.READY].
+     *
+     *  @param cameraId The selected camera.
      */
-    private suspend fun createCaptureSession(
-        device: CameraDevice,
-        targets: List<Surface>,
-        handler: Handler? = null
-    ): CameraCaptureSession = suspendCoroutine { cont ->
-        // Creates a capture session using the predefined targets, and defines a session state
-        // callback which resumes the coroutine once the session is configured
-        device.createCaptureSession(targets, object : CameraCaptureSession.StateCallback() {
-
-            override fun onConfigured(session: CameraCaptureSession) = cont.resume(session)
-
-            override fun onConfigureFailed(session: CameraCaptureSession) {
-                val exc = RuntimeException("Camera ${device.id} session configuration failed")
-                Log.e(TAG, exc.message, exc)
-                cont.resumeWithException(exc)
+    protected fun tryInitializeCamera(cameraId: String) {
+        askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
+            if (state.value != VideoRecordingState.READY) {
+                Log.w(TAG, "State not set to READY, can't start recording")
+                return@askPermission
             }
-        }, handler)
+
+            state.postValue(VideoRecordingState.SWITCHING_CAMERA)
+
+            lifecycleScope.launch(Dispatchers.Main) {
+                // Clean up any present resources.
+                tryCleanupCameraResources()
+
+                // Open the camera and get the info object.
+                camera = openCamera(cameraManager, cameraId)
+                val cameraInfo = cameraManager.getCameraInfo(cameraId, PREFERRED_VIDEO_SIZE)
+
+                // Release and re-create the recorder surface to match the selected size.
+                recorderSurface?.release()
+                recorderSurface = createRecorderSurface(cameraInfo.size, outputFile)
+
+                // Target the output to our surface view and to our recorder surface.
+                val targets = listOf(surface_view_record_video.holder.surface, recorderSurface!!)
+
+                /**
+                 *  Create a new capture sessions with a preview request which will be repeated.
+                 *  This sends the capture request as frequently as possible until the session
+                 *  is torn down or [CameraCaptureSession.stopRepeating] is called.
+                 */
+                cameraCaptureSession = createCameraCaptureSession(camera!!, targets, cameraHandler)
+                previewRequest =
+                    createCaptureRequest(cameraCaptureSession!!, listOf(surface_view_record_video.holder.surface))
+                cameraCaptureSession!!.setRepeatingRequest(previewRequest!!, null, cameraHandler)
+
+                // Change the state back to ready
+                state.postValue(VideoRecordingState.READY)
+            }
+        }.onDeclined { onPermissionsDeclined() }
     }
 
     /**
-     *  When we stop the current fragment try to close the camera.
+     *  Attempts to start recording the video.
+     */
+    protected open fun tryStartRecording() {
+        askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
+            // First validate our state
+            if (state.value != VideoRecordingState.READY) {
+                Log.w(TAG, "State not set to READY, can't start recording")
+                return@askPermission
+            }
+
+            // Then validate all our resources are present.
+            if (camera == null) {
+                Log.e(TAG, "Camera not connected, can't start recording")
+                return@askPermission
+            }
+            if (cameraCaptureSession == null) {
+                Log.e(TAG, "Camera capture session not initialized, can't start recording")
+                return@askPermission
+            }
+            if (recorderSurface == null) {
+                Log.e(TAG, "Recorder surface not initialized, can't start recording")
+                return@askPermission
+            }
+
+            try {
+                // TODO Store this on camera select maybe?
+                // First get the camera info again.
+                val cameraInfo = cameraManager.getCameraInfo(camera!!.id, PREFERRED_VIDEO_SIZE)
+
+                // New record request which outputs to the preview and recorder surface.
+                recordRequest = createCaptureRequest(
+                    cameraCaptureSession!!,
+                    listOf(surface_view_record_video.holder.surface, recorderSurface!!),
+                    cameraInfo.fps
+                )
+
+                // Start recording repeating requests, which will stop the ongoing preview
+                // repeating requests without having to explicitly call `session.stopRepeating`.
+                cameraCaptureSession!!.setRepeatingRequest(recordRequest!!, null, cameraHandler)
+
+                // Create a new media recorder and start it. If we don't recreate the
+                // media recorder here we can't guarantee its state.
+                mediaRecorder = createMediaRecorder(
+                    recorderSurface!!,
+                    cameraInfo.size,
+                    outputFile
+                ).apply {
+                    setOrientationHint(getOrientationHintFromCameraId(cameraManager, camera!!.id)) // TODO Race cond?
+                    prepare()
+                    start()
+                }
+
+                state.postValue(VideoRecordingState.RECORDING)
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Error while trying to start recording", e)
+                state.postValue(VideoRecordingState.ERROR)
+            }
+        }.onDeclined { onPermissionsDeclined() }
+    }
+
+    /**
+     *  Attempts to stop recording the video.
+     */
+    protected open fun tryStopRecording() {
+        // First validate our state
+        if (state.value != VideoRecordingState.RECORDING) {
+            Log.w(TAG, "State not set to RECORDING, can't stop recording")
+            return
+        }
+
+        // Then validate our resources
+        if (mediaRecorder == null) {
+            Log.e(TAG, "Media recorder not initialized, can't stop recording")
+            return
+        }
+
+        try {
+            // Explicitly stop the recorder, followed by explicitly releasing the camera.
+            mediaRecorder?.stop()
+            tryCleanupCameraResources()
+
+            // Broadcasts the media file to the rest of the system.
+            // Note that does not broadcast to the media gallery.
+            MediaScannerConnection.scanFile(
+                requireContext(),
+                arrayOf(outputFile.absolutePath),
+                arrayOf(VIDEO_MIME_TYPE),
+                null
+            )
+
+            state.postValue(VideoRecordingState.DONE_RECORDING)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error while trying to stop recording", e)
+            state.postValue(VideoRecordingState.ERROR)
+        }
+    }
+
+    /**
+     *  Call this in any state but [VideoRecordingState.RECORDING] to
+     *  re-setup adn thus re-enable our recording functionality.
+     */
+    protected open fun tryReset() {
+        // TODO also not in loading state?
+        // First validate our state
+        if (state.value == VideoRecordingState.RECORDING) {
+            Log.w(TAG, "State set to RECORDING, can't reset")
+            return
+        }
+
+        // Then validate our resources
+        // TODO
+
+        // TODO This is called twice now, maybe build some kind of transition function to do this for us?
+        // Go to ready and open the camera.
+        state.value = VideoRecordingState.READY // TODO used to be post, but that was a race condition.
+        tryInitializeCamera(camera?.id ?: cameraManager.getFirstFrontFacingCameraId())
+    }
+
+    /**
+     *  Called when we are recording but [onPause] gets called. This
+     *  will clean up our current resources and abort the recording,
+     *  followed by a state change.
+     */
+    private fun onRecordingInterrupted() {
+        mediaRecorder?.stop() // TODO t/c
+
+        state.postValue(VideoRecordingState.RECORDING_INTERRUPTED)
+
+        // TODO Remove this
+        showMessage("Recording process was interrupted")
+    }
+
+
+    /**
+     *  Clean up the current camera resources if any are present. This
+     *  should be called before [tryInitializeCamera] and in [onStop].
+     */
+    private fun tryCleanupCameraResources() {
+        try {
+            camera?.close()
+        } catch (e: Exception) {
+            Log.e(TAG, "Couldn't close camera", e)
+            state.postValue(VideoRecordingState.ERROR)
+        }
+    }
+
+    /**
+     *  When we are recording and this is paused, call [onRecordingInterrupted].
+     */
+    override fun onPause() {
+        super.onPause()
+
+        // TODO Release everything?
+        if (state.value == VideoRecordingState.RECORDING) {
+            onRecordingInterrupted()
+        }
+    }
+
+    // TODO Like this?
+    /**
+     *  When we resume this fragment try to reset the functionality if we are not
+     *  in [VideoRecordingState.LOADING] or [VideoRecordingState.DONE_RECORDING].
+     *  When we are loading the setup process should not be interfered with. When
+     *  we are done recording the reset process should be triggered explicitly.
+     */
+    override fun onResume() {
+        super.onResume()
+
+        if (state.value != VideoRecordingState.LOADING && state.value != VideoRecordingState.DONE_RECORDING) {
+            tryReset()
+        }
+    }
+
+    // TODO What if this doesn't get called? ALWAYS release the camera!
+    /**
+     *  Close the camera when this fragment exits.
      */
     override fun onStop() {
         super.onStop()
 
-        try {
-            camera.close()
-        } catch (e: Throwable) {
-            Log.e(TAG, "Error closing camera", e)
-        }
+        tryCleanupCameraResources()
     }
 
+    // TODO Guarantee that this is always called?
     /**
-     *  Cleans up all our resources.
+     *  Clean up resources when this object gets disposed.
      */
     override fun onDestroy() {
         super.onDestroy()
+
         cameraThread.quitSafely()
-        recorder?.release()
-        recorderSurface.release()
+        mediaRecorder?.release()
+        recorderSurface?.release()
     }
 
     companion object {
-        private val TAG = RecordVideoFragment::class.java.simpleName
+        private val TAG = this::class.java.simpleName
+        private const val CAMERA_THREAD_NAME = "Recording video camera thread"
+        private val BEGIN_STATE = VideoRecordingState.LOADING
 
-        // TODO Double declaration
-        private val DEFAULT_MINIMUM_RECORD_TIME = Duration.ofSeconds(3)
-        private val DEFAULT_MAXIMUM_RECORD_TIME = Duration.ofSeconds(10)
-
-        private const val RECORDER_VIDEO_BITRATE: Int = 2_000_000
-        private const val MIN_REQUIRED_RECORDING_TIME_MILLIS: Long = 1000L
+        // TODO Move to some config file
+        // Video constants
+        private const val FPS = 30
+        private const val VIDEO_MIME_TYPE = "video/mp4"
+        private val PREFERRED_VIDEO_SIZE = Size(1920, 1080) // 1080p
     }
 }

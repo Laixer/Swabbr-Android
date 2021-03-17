@@ -7,7 +7,7 @@
         android:top="3dp">
         <shape android:shape="oval">
 
-            <solid android:color="@color/color_reaction_post" />
+            <solid android:color="@color/reactionPost" />
 
             <size
                 android:width="18dp"

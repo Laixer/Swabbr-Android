@@ -39,7 +39,7 @@
             android:text="@string/placeholder_nickname"
             android:textAlignment="center"
             android:textAppearance="@style/NicknameTextAppearance"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/primaryDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -136,7 +136,7 @@
         android:maxLines="1"
         android:text="@string/placeholder_number"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryLight"
+        android:textColor="@color/primaryLight"
         app:layout_constraintBottom_toBottomOf="@+id/image_view_vlog_count"
         app:layout_constraintEnd_toStartOf="@+id/image_view_vlog_count"
         app:layout_constraintTop_toTopOf="@+id/image_view_vlog_count" />
@@ -148,7 +148,7 @@
         android:layout_marginTop="@dimen/content_margin_small"
         android:layout_marginEnd="@dimen/content_margin_medium"
         android:src="@drawable/exo_notification_small_icon"
-        android:tint="@color/colorPrimaryLight"
+        android:tint="@color/primaryLight"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_display_following_count" />
 
@@ -165,7 +165,7 @@
         android:maxLines="1"
         android:text="@string/placeholder_number"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryLight"
+        android:textColor="@color/primaryLight"
         app:layout_constraintBottom_toBottomOf="@+id/image_view_likes_received"
         app:layout_constraintEnd_toStartOf="@+id/image_view_likes_received"
         app:layout_constraintTop_toTopOf="@+id/image_view_likes_received" />
@@ -177,7 +177,7 @@
         android:layout_marginTop="@dimen/content_margin_small"
         android:layout_marginEnd="@dimen/content_margin_medium"
         android:src="@drawable/ic_love_it_outline"
-        android:tint="@color/colorPrimaryLight"
+        android:tint="@color/primaryLight"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_view_vlog_count" />
 
@@ -194,7 +194,7 @@
         android:maxLines="1"
         android:text="@string/placeholder_number"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryLight"
+        android:textColor="@color/primaryLight"
         app:layout_constraintBottom_toBottomOf="@+id/image_view_views"
         app:layout_constraintEnd_toStartOf="@+id/image_view_views"
         app:layout_constraintTop_toTopOf="@+id/image_view_views" />
@@ -206,7 +206,7 @@
         android:layout_marginTop="@dimen/content_margin_small"
         android:layout_marginEnd="@dimen/content_margin_medium"
         android:src="@drawable/ic_eye"
-        android:tint="@color/colorPrimaryLight"
+        android:tint="@color/primaryLight"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_view_likes_received" />
 
@@ -223,7 +223,7 @@
         android:maxLines="1"
         android:text="@string/placeholder_number"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryLight"
+        android:textColor="@color/primaryLight"
         app:layout_constraintEnd_toStartOf="@+id/image_view_reactions_received"
         app:layout_constraintTop_toTopOf="@+id/image_view_reactions_received" />
 
@@ -234,7 +234,7 @@
         android:layout_marginTop="@dimen/content_margin_small"
         android:layout_marginEnd="@dimen/content_margin_medium"
         android:src="@drawable/ic_reaction"
-        android:tint="@color/colorPrimaryLight"
+        android:tint="@color/primaryLight"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_view_views" />
 

@@ -24,7 +24,10 @@ import android.view.Display
 import kotlin.math.max
 import kotlin.math.min
 
-/** Helper class used to pre-compute shortest and longest sides of a [Size] */
+// TODO Understand - this was copied
+/**
+ *  Helper class used to pre-compute shortest and longest sides of a [Size].
+ */
 class SmartSize(width: Int, height: Int) {
     var size = Size(width, height)
     var long = max(size.width, size.height)
@@ -42,6 +45,7 @@ fun getDisplaySmartSize(display: Display): SmartSize {
     return SmartSize(outPoint.x, outPoint.y)
 }
 
+// TODO Clean up (copypasted)
 /**
  * Returns the largest available PREVIEW size. For more information, see:
  * https://d.android.com/reference/android/hardware/camera2/CameraDevice and

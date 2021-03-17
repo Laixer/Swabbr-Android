@@ -13,6 +13,7 @@ import java.util.*
  */
 class FileHelper {
     companion object {
+        // TODO Use mime type
         /**
          *  Creates a new file with filename based on the current date.
          */

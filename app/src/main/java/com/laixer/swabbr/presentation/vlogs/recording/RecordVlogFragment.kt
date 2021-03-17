@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.View
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
@@ -13,9 +12,8 @@ import com.laixer.swabbr.BuildConfig
 import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.MainActivity
-import com.laixer.swabbr.presentation.recording.RecordVideoFragment
+import com.laixer.swabbr.presentation.recording.RecordVideoFragment2
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_record_video.*
 import kotlinx.android.synthetic.main.video_confirm_dialogue.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,7 +27,7 @@ import java.time.Duration
  *  user decides to proceed with the vlog , the file is uploaded to the
  *  blob storage and the backend is notified of this.
  */
-class RecordVlogFragment : RecordVideoFragment() {
+class RecordVlogFragment : RecordVideoFragment2() {
     private val vlogVm: VlogRecordingViewModel by viewModel()
 
     /**

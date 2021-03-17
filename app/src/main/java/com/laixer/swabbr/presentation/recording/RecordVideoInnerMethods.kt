@@ -1,16 +1,19 @@
 package com.laixer.swabbr.presentation.recording
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Camera
-import android.hardware.camera2.*
+import android.content.pm.ActivityInfo
+import android.hardware.camera2.CameraCaptureSession
+import android.hardware.camera2.CameraDevice
+import android.hardware.camera2.CameraManager
+import android.hardware.camera2.CaptureRequest
 import android.media.MediaCodec
 import android.media.MediaRecorder
 import android.os.Handler
 import android.util.Log
 import android.util.Range
+import android.util.Size
 import android.view.Surface
-import androidx.fragment.app.Fragment
+import com.laixer.swabbr.presentation.utils.FixedOrientationFragment
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 import kotlin.coroutines.resume
@@ -18,46 +21,42 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 // TODO Understand suspend.
+// TODO Move these methods elsewhere, some utility or camera manager extension class.
 /**
  *  Fragment for recording video using the camera2 API.
  */
-abstract class RecordVideoInnerMethods : Fragment() {
+abstract class RecordVideoInnerMethods : FixedOrientationFragment(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+    // TODO Don't hard code these constants.
     /**
-     *  Gets the [CameraManager] from our [Context].
+     *  Creates a [MediaRecorder] instance using the provided [Surface] as input.
      */
-    protected fun getCameraManagerFromContext(): CameraManager =
-        requireContext().getSystemService(Context.CAMERA_SERVICE) as CameraManager
+    protected fun createMediaRecorder(surface: Surface, size: Size, outputFile: File) =
+        MediaRecorder().apply {
+            setAudioSource(MediaRecorder.AudioSource.MIC)
+            setVideoSource(MediaRecorder.VideoSource.SURFACE)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setVideoFrameRate(30)
+            setVideoEncodingBitRate(5_000_000)
+            setAudioEncodingBitRate(192_000)
+            setVideoEncoder(MediaRecorder.VideoEncoder.H264)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            setInputSurface(surface)
+            setOutputFile(outputFile.absolutePath)
+            setVideoSize(size.width, size.height)
+        }
 
     /**
-     *  Creates a [MediaRecorder] instance using the provided [Surface] as input
+     *  Creates a new recorder [Surface]. Don't forget to release this
+     *  surface when you are done with it.
      */
-    protected fun createRecorder(surface: Surface, outputFile: File) = MediaRecorder().apply {
-        setAudioSource(MediaRecorder.AudioSource.MIC)
-        setVideoSource(MediaRecorder.VideoSource.SURFACE)
-        setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-        setVideoEncodingBitRate(3_000_000)                  // TODO Don't hard code
-        setAudioEncodingBitRate(192_000)                    // TODO Don't hard code
-        setVideoEncoder(MediaRecorder.VideoEncoder.H264)
-        setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-        setInputSurface(surface)
-
-        // TODO
-        setOutputFile(outputFile.absolutePath)
-        // setVideoFrameRate(args.fps)
-        // setVideoSize(args.width, args.height)
-    }
-
-    /**
-     *  Creates a new recorder [Surface].
-     */
-    protected fun createRecorderSurface(outputFile: File): Surface {
+    protected fun createRecorderSurface(size: Size, outputFile: File): Surface {
         // Get a persistent Surface from MediaCodec, don't forget to release when done.
         val surface = MediaCodec.createPersistentInputSurface()
 
         // Prepare and release a dummy MediaRecorder with our new surface.
         // Required to allocate an appropriately sized buffer before passing
         // the Surface as the output target to the capture session.
-        createRecorder(surface, outputFile).apply {
+        createMediaRecorder(surface, size, outputFile).apply {
             prepare()
             release()
         }
@@ -106,13 +105,6 @@ abstract class RecordVideoInnerMethods : Fragment() {
         }, handler)
     }
 
-    // TODO Debug
-    /**
-     *  Gets the first available camera characteristics.
-     */
-    protected fun getFirstCameraCharacteristics(cameraManager: CameraManager): CameraCharacteristics =
-        cameraManager.getCameraCharacteristics(cameraManager.cameraIdList.first())
-
     /**
      *  Opens a camera object and returns the opened device. Note that this
      *  method is suspend and thus will returns as a coroutine result.
@@ -128,7 +120,6 @@ abstract class RecordVideoInnerMethods : Fragment() {
 
             override fun onDisconnected(device: CameraDevice) {
                 Log.w(TAG, "Camera $cameraId has been disconnected")
-                requireActivity().finish()
             }
 
             override fun onError(device: CameraDevice, error: Int) {
