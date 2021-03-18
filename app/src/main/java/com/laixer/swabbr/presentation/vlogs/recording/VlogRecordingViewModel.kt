@@ -18,12 +18,10 @@ import java.util.*
  *  This includes uploading functionality.
  */
 class VlogRecordingViewModel constructor(
-    private val mHttpClient: OkHttpClient,
+    mHttpClient: OkHttpClient,
     private val vlogUseCase: VlogUseCase,
-    private val context: Context
+    context: Context
 ) : UploadVideoViewModel(mHttpClient, context) {
-    private val compositeDisposable = CompositeDisposable()
-
     // TODO This is messy.
     // TODO Hard coded content types
     // TODO Make sure the order of execution is correct! It works though...
@@ -56,14 +54,9 @@ class VlogRecordingViewModel constructor(
                         )
                     )
                     .subscribeOn(Schedulers.io())
-                    .subscribe()
+                    .subscribe({}, {}) // We always want an error handler even if it's empty.
             }
             .ignoreElement()
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
-    }
 
     companion object {
         private const val TAG = "ReactionViewModel"

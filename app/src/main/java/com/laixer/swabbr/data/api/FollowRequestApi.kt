@@ -19,14 +19,14 @@ interface FollowRequestApi {
 
     @GET("followrequest/incoming")
     fun getIncomingRequests(
-        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("sortingOrder") sortingOrder: Int?,
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
     ): Single<List<FollowRequestEntity>>
 
     @GET("followrequest/outgoing")
     fun getOutgoingRequests(
-        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("sortingOrder") sortingOrder: Int?,
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
     ): Single<List<FollowRequestEntity>>

@@ -19,6 +19,7 @@ import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.PushNotificationPlatform
+import com.laixer.swabbr.extensions.hideSoftKeyboard
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthViewModel
@@ -69,11 +70,19 @@ class RegistrationFragment : Fragment() {
      */
     private fun onClickRegister() {
         // TODO Split checking functionality, there are more cases than this.
-        // We need a minimum password length.
+
         if (passwordInput.text.toString().length < 8) {
             showMessage("Password must consist of at least 8 characters.")
             return
         }
+
+        if (passwordInput.text.toString() != confirmPasswordInput.text.toString()) {
+            showMessage("Passwords must match")
+            return
+        }
+
+        // Explicitly hide the input keyboard as Android doesn't do this for us.
+        hideSoftKeyboard()
 
         // TODO Clean this up.
         authVm.register(
@@ -97,7 +106,6 @@ class RegistrationFragment : Fragment() {
             )
         )
     }
-
 
     // TODO Duplicate functionality with LoginFragment
     /**
@@ -123,8 +131,10 @@ class RegistrationFragment : Fragment() {
             ResourceState.ERROR -> {
                 loading_icon_registration.gone()
 
-                passwordInput.text.clear()
-                confirmPasswordInput.text.clear()
+                // TODO Do we want this? Annoying app flow though if we enable it...
+                // passwordInput.text.clear()
+                // confirmPasswordInput.text.clear()
+
                 Log.e(TAG, res.message!!)
 
                 showMessage("Could not register")
@@ -181,6 +191,5 @@ class RegistrationFragment : Fragment() {
 
     companion object {
         private const val TAG = "RegistrationFragment"
-        private val PUSH_NOTIFICATION_PLATFORM = PushNotificationPlatform.FCM
     }
 }

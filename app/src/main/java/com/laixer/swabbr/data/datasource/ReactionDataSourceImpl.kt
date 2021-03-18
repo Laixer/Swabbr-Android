@@ -23,7 +23,7 @@ class ReactionDataSourceImpl constructor(
     override fun get(reactionId: UUID): Single<Reaction> = api.getReaction(reactionId).map { it.mapToDomain() }
 
     override fun getForVlog(vlogId: UUID, pagination: Pagination): Single<List<Reaction>> =
-        api.getReactionsForVlog(vlogId, pagination.sortingOrder, pagination.limit, pagination.offset)
+        api.getReactionsForVlog(vlogId, pagination.sortingOrder.ordinal, pagination.limit, pagination.offset)
             .map { it.mapToDomain() }
 
     override fun getCountForVlog(vlogId: UUID): Single<DatasetStats> =

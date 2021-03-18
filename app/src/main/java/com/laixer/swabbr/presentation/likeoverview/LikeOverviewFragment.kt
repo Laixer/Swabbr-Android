@@ -10,6 +10,7 @@ import com.laixer.presentation.ResourceState
 import com.laixer.presentation.startRefreshing
 import com.laixer.presentation.stopRefreshing
 import com.laixer.swabbr.R
+import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.extensions.onClickProfileWithRelation
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.auth.AuthFragment
@@ -31,7 +32,7 @@ class LikeOverviewFragment : AuthFragment() {
      *  Sets up observers.
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        likeOverviewVm.likingUserWrappers.observe(viewLifecycleOwner, Observer { onVlogLikingUsersLoaded(it) })
+        likeOverviewVm.users.observe(viewLifecycleOwner, Observer { onVlogLikingUsersLoaded(it) })
 
         return inflater.inflate(R.layout.fragment_like_overview, container, false)
     }
@@ -66,7 +67,12 @@ class LikeOverviewFragment : AuthFragment() {
      *  Callback for when we click a follow button.
      */
     private val onFollowClick: (UserWithRelationItem) -> Unit = {
-        likeOverviewVm.follow(it.user.id)
+        when (it.followRequestStatus) {
+            FollowRequestStatus.PENDING -> likeOverviewVm.cancelFollowRequest(it.user.id)
+            FollowRequestStatus.ACCEPTED -> likeOverviewVm.unfollow(it.user.id)
+            FollowRequestStatus.DECLINED -> likeOverviewVm.follow(it.user.id)
+            FollowRequestStatus.NONEXISTENT -> likeOverviewVm.follow(it.user.id)
+        }
     }
 
     /**

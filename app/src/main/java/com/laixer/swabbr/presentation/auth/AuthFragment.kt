@@ -39,7 +39,8 @@ abstract class AuthFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Observe the authentication fail resource in the vm.
-        authVm.getNewAuthenticationRequiredResource().observe(viewLifecycleOwner, Observer { onShouldRedirectToLogin(it) })
+        authVm.getNewAuthenticationRequiredResource()
+            .observe(viewLifecycleOwner, Observer { onShouldRedirectToLogin(it) })
     }
 
     /**

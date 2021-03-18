@@ -12,7 +12,6 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-
     <!-- Layout displaying profile image, nickname and (optional) follow button. -->
     <LinearLayout
         android:layout_width="wrap_content"
@@ -33,42 +32,18 @@
             app:civ_circle_background_color="@color/color_grey_200" />
 
         <TextView
-            android:id="@+id/user_profile_displayed_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:autoSizeMaxTextSize="38sp"
-            android:autoSizeMinTextSize="@dimen/user_displayed_name_size"
-            android:autoSizeTextType="uniform"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="@string/placeholder_text"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimary"
-            android:transitionName="userUsername"
-            app:layout_constraintBottom_toTopOf="@id/video_user_nickname"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_profile_image" />
-
-        <TextView
             android:id="@+id/user_profile_nickname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:autoSizeMaxTextSize="38sp"
-            android:autoSizeMinTextSize="@dimen/user_nickname_size"
-            android:autoSizeTextType="uniform"
-            android:ellipsize="end"
-            android:singleLine="true"
             android:text="@string/placeholder_nickname"
             android:textAlignment="center"
-            android:textColor="@color/colorPrimaryLight"
-            android:transitionName="userName"
+            android:textAppearance="@style/NicknameTextAppearance"
+            android:textColor="@color/colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/video_user_displayed_name" />
+            app:layout_constraintTop_toBottomOf="@id/user_profile_profile_image" />
 
         <!-- Follow request status related button. -->
         <Button
@@ -77,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/follow_request_follow"
+            style="@style/SwabbrButton"
             android:visibility="visible" />
 
     </LinearLayout>
@@ -257,10 +233,9 @@
         android:layout_height="@dimen/mini_icon_size"
         android:layout_marginTop="@dimen/content_margin_small"
         android:layout_marginEnd="@dimen/content_margin_medium"
-        android:src="@drawable/ic_message"
+        android:src="@drawable/ic_reaction"
         android:tint="@color/colorPrimaryLight"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_view_views" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

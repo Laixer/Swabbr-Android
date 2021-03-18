@@ -57,26 +57,29 @@
             style="@style/TextProfileSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/register_dateofbirth"
+            android:layout_marginBottom="4dp"
+            android:text="@string/register_date_of_birth"
             app:layout_constraintBottom_toTopOf="@+id/inputBirthDate"
             app:layout_constraintStart_toStartOf="@+id/inputBirthDate" />
 
-        <EditText
+
+        <!-- Nickname -->
+        <com.laixer.swabbr.presentation.utils.EditTextDatePicker
             android:id="@+id/inputBirthDate"
-            style="@style/TextInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:ems="10"
-            android:inputType="date"
+            android:hint="@string/register_date_of_birth"
+
+            style="@style/TextInput"
+
             app:layout_constraintBottom_toTopOf="@+id/inputNickname"
             app:layout_constraintEnd_toEndOf="@+id/inputNickname"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/inputNickname"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.8" />
+            app:layout_constraintVertical_bias="0.773" />
 
-
-        <!-- Nickname -->
         <TextView
             android:id="@+id/textViewNickname"
             style="@style/TextProfileSettings"
@@ -96,9 +99,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="@dimen/profile_settings_side_margin"
-            android:ems="10"
             android:hint="@string/register_nickname_hint"
             android:inputType="textPersonName"
+            android:singleLine="true"
             android:text=""
             app:layout_constraintBaseline_toBaselineOf="@+id/textViewNickname"
             app:layout_constraintEnd_toEndOf="parent"
@@ -123,7 +126,6 @@
             android:layout_height="wrap_content"
             android:drawablePadding="5dp"
             android:drawableTint="@color/colorPrimary"
-            android:ems="10"
             android:hint="@string/register_firstName"
             android:inputType="textPersonName"
             android:text=""
@@ -148,7 +150,6 @@
             style="@style/TextInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:hint="@string/register_lastName"
             android:inputType="textPersonName"
             android:text=""
@@ -219,9 +220,10 @@
 
         <!-- Logs the user out. -->
         <Button
-            android:id="@+id/buttonLogout"
+            android:id="@+id/button_profile_logout"
             style="@style/SwabbrButton"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/profile_settings_side_margin"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
@@ -232,14 +234,15 @@
 
         <!-- Saves all modified properties. -->
         <Button
-            android:id="@+id/buttonConfirm"
+            android:id="@+id/button_profile_details_save"
             style="@style/SwabbrButton"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/save"
             app:layout_constraintEnd_toEndOf="@+id/spinnerDailyVlogRequestLimit"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toTopOf="@+id/buttonLogout" />
+            app:layout_constraintTop_toTopOf="@+id/button_profile_logout" />
 
 
         <!-- Hidden by default, until everything has been loaded. -->

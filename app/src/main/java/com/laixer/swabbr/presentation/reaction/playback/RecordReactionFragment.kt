@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.reaction
+package com.laixer.swabbr.presentation.reaction.playback
 
 import android.annotation.SuppressLint
 import android.app.Dialog

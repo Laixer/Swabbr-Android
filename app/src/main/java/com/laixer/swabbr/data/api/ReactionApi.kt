@@ -26,7 +26,7 @@ interface ReactionApi {
     @GET("reaction/for-vlog/{vlogId}")
     fun getReactionsForVlog(
         @Path("vlogId") vlogId: UUID,
-        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("sortingOrder") sortingOrder: Int?,
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
     ): Single<List<ReactionEntity>>

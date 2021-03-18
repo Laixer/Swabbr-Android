@@ -6,31 +6,14 @@
     android:gravity="center_vertical"
     android:orientation="vertical">
 
-    <!-- The users (full) name, or username if none is present. -->
-    <TextView
-        android:id="@+id/user_displayed_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textColor="@color/colorAccent"
-        android:textSize="14sp"
-        android:transitionName="userUsername"
-        tools:text="@string/placeholder_display_name" />
-
     <!-- The @nickname tag. -->
     <TextView
         android:id="@+id/user_nickname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textAppearance="@style/SmallTextAppearance"
-        android:textSize="12sp"
-        android:transitionName="userName"
-        android:textColor="@color/colorAccent"
+        android:textAppearance="@style/NicknameTextAppearance"
+        android:textColor="@color/colorPrimaryDark"
         tools:text="@string/placeholder_nickname" />
 
 </LinearLayout>

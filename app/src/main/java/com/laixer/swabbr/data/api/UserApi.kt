@@ -23,7 +23,7 @@ interface UserApi {
     @GET("user/{userId}/following")
     fun getFollowing(
         @Path("userId") userId: UUID,
-        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("sortingOrder") sortingOrder: Int?,
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
     ): Single<List<UserEntity>>
@@ -31,21 +31,21 @@ interface UserApi {
     @GET("user/{userId}/followers")
     fun getFollowers(
         @Path("userId") userId: UUID,
-        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("sortingOrder") sortingOrder: Int?,
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
     ): Single<List<UserEntity>>
 
     @GET("user/follow-requesting-users")
     fun getFollowRequestingUsers(
-        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("sortingOrder") sortingOrder: Int?,
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
     ): Single<List<UserWithRelationEntity>>
 
     @GET("user/vlog-liking-users")
     fun getVlogLikingUsers(
-        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("sortingOrder") sortingOrder: Int?,
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
     ): Single<List<VlogLikingUserWrapperEntity>>
@@ -56,7 +56,7 @@ interface UserApi {
     @GET("user/search")
     fun search(
         @Query("query") query: String,
-        @Query("sortingOrder") sortingOrder: SortingOrder?,
+        @Query("sortingOrder") sortingOrder: Int?,
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
     ): Single<List<UserWithRelationEntity>>

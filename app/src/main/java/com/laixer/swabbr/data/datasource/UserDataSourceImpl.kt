@@ -22,20 +22,20 @@ class UserDataSourceImpl constructor(
     override fun getSelfWithStats(): Single<UserWithStats> = api.getSelfWithStats().map { it.mapToDomain() }
 
     override fun getFollowing(userId: UUID, pagination: Pagination): Single<List<User>> =
-        api.getFollowing(userId, pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
+        api.getFollowing(userId, pagination.sortingOrder.ordinal, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
     override fun getFollowers(userId: UUID, pagination: Pagination): Single<List<User>> =
-        api.getFollowers(userId, pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
+        api.getFollowers(userId, pagination.sortingOrder.ordinal, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
     override fun getFollowRequestingUsers(pagination: Pagination): Single<List<UserWithRelation>> =
-        api.getFollowRequestingUsers(pagination.sortingOrder, pagination.limit, pagination.offset)
+        api.getFollowRequestingUsers(pagination.sortingOrder.ordinal, pagination.limit, pagination.offset)
             .map { it.mapToDomain() }
 
     override fun getVlogLikingUsers(pagination: Pagination): Single<List<LikingUserWrapper>> =
-        api.getVlogLikingUsers(pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
+        api.getVlogLikingUsers(pagination.sortingOrder.ordinal, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
     override fun search(query: String, pagination: Pagination): Single<List<UserWithRelation>> =
-        api.search(query, pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
+        api.search(query, pagination.sortingOrder.ordinal, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
     override fun update(user: UserUpdatableProperties): Completable = api.update(user.mapToData())
 }

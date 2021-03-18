@@ -15,48 +15,19 @@
         <item name="android:windowContentTransitions">true</item>
     </style>
 
-    <!-- TODO What to put in here? -->
-    <!--
-        Main Swabbr theme, assigned in the AndroidManifest.xml file.
-        This acts as a base theme which is applied on application level.
-    -->
-    <style name="Theme.Swabbr" parent="Base.Theme.Swabbr">
-<!--        <item name="android:windowFullscreen">false</item>-->
-<!--        <item name="android:windowNoTitle">true</item>-->
-<!--        <item name="android:windowActionBar">false</item>-->
-<!--        <item name="android:navigationBarColor">@color/transparent</item>-->
-<!--        <item name="android:windowTranslucentNavigation">true</item>-->
+    <!-- Controls how we display the nickname. -->
+    <style name="NicknameTextAppearance">
+        <item name="android:textSize">@dimen/text_size_user_nickname</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/text_size_auto_size_max</item>
+        <item name="android:autoSizeMinTextSize">@dimen/text_size_user_nickname</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/color_white</item>
     </style>
 
-    <!-- Launcher theme which displays the splash screen in full screen mode. -->
-    <style name="Theme.Swabbr.Launcher" parent="Base.Theme.Swabbr">
-        <item name="android:windowBackground">@drawable/ic_logo_foreground</item>
-<!--        <item name="android:windowFullscreen">true</item>-->
-<!--        <item name="android:navigationBarColor">@color/transparent</item>-->
-<!--        <item name="android:windowTranslucentNavigation">true</item>-->
-    </style>
-
-    <!-- Theme when we are logging in. -->
-    <style name="Theme.Swabbr.Login" parent="Base.Theme.Swabbr">
-<!--        <item name="windowActionBar">false</item>-->
-    </style>
-
-    <!-- Theme for when we are recording a vlog or reaction. -->
-    <style name="Theme.Swabbr.Recording" parent="Base.Theme.Swabbr">
-<!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
-<!--        <item name="android:windowTranslucentNavigation">true</item>-->
-    </style>
-
-    <style name="SmallTextAppearance" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textColor">@color/color_body</item>
-    </style>
-
-    <style name="TitleTextAppearance" parent="TextAppearance.AppCompat.Large">
-        <item name="android:textColor">@color/color_title</item>
-    </style>
-
-    <style name="SubtitleTextAppearance" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textColor">@color/color_subtitle</item>
+    <!-- Text appearance for the tab text. -->
+    <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">@dimen/text_size_tabs</item>
+        <item name="textAllCaps">true</item>
     </style>
 
     <!-- Used to display regular settings. -->
@@ -81,25 +52,14 @@
     </style>
 
     <!-- Used to style Swabbr buttons -->
-    <style name="SwabbrButton" parent="Base.Theme.Swabbr">
-        <item name="android:layout_width">@dimen/button_width</item>
-        <item name="android:layout_height">@dimen/button_height</item>
-        <item name="android:backgroundTint">@color/transparent</item>
-        <item name="android:textColor">@color/colorPrimaryLight</item>
+    <style name="SwabbrButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textSize">@dimen/button_text_size</item>
-        <item name="android:strokeColor">@color/color_black</item> <!-- TODO back to primary light -->
-        <item name="android:strokeWidth">@dimen/button_stroke_width</item>
-        <item name="android:radius">@dimen/button_radius</item>
-        <item name="android:shadowDx">0</item>
-        <item name="android:shadowDy">0</item>
-    </style>
-
-    <!-- Used to style tab layouts -->
-    <!-- TODO This doesn't seem to work -->
-    <style name="SwabbrTabLayout" parent="Base.Theme.Swabbr">
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">@dimen/text_size_tabs</item>
+        <item name="backgroundTint">@color/transparent</item>
+        <item name="android:textColor">@color/colorPrimaryLight</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="strokeColor">@color/colorPrimaryLight</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="rippleColor">@color/colorPrimary</item>
     </style>
 
 </resources>

@@ -35,40 +35,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <!-- The users (full) name, or username if none is present. -->
-    <TextView
-        android:id="@+id/video_user_displayed_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="@dimen/content_margin_large"
-        android:layout_marginBottom="@dimen/content_margin_small"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textColor="@color/color_white"
-        android:textSize="14sp"
-        android:transitionName="userUsername"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_reaction_item"
-        app:layout_constraintStart_toEndOf="@+id/user_profile_image"
-        tools:text="@string/placeholder_display_name"
-        tools:visibility="visible" />
-
-
     <!-- The @nickname tag. -->
     <TextView
         android:id="@+id/video_user_nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textAppearance="@style/SmallTextAppearance"
-        android:textColor="@color/color_white"
-        android:textSize="12sp"
-        android:transitionName="userName"
-        app:layout_constraintStart_toStartOf="@+id/video_user_displayed_name"
-        app:layout_constraintTop_toBottomOf="@+id/video_user_displayed_name"
+        android:layout_marginStart="@dimen/content_margin_small"
+        android:textAppearance="@style/NicknameTextAppearance"
+        app:layout_constraintBottom_toBottomOf="@+id/reaction_overlay"
+        app:layout_constraintStart_toEndOf="@+id/user_profile_image"
+        app:layout_constraintTop_toTopOf="@+id/reaction_overlay"
         tools:text="@string/placeholder_nickname"
         tools:visibility="visible" />
 
@@ -81,7 +58,7 @@
         android:layout_gravity="center"
         android:layout_marginEnd="@dimen/content_margin_small"
         android:background="@color/transparent"
-        android:src="@drawable/ic_baseline_delete"
+        android:src="@drawable/ic_delete"
         app:layout_constraintBottom_toBottomOf="@+id/user_profile_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/user_profile_image" />

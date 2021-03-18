@@ -48,10 +48,9 @@ abstract class WatchVideoListFragment : AuthFragment() {
         video_viewpager.adapter = getWatchVideoFragmentAdapter()
     }
 
-    // TODO Can we do this more elegantly?
     /**
      *  Override this function to clarify which implementation
-     *  of [WatchVideoFragmentAdapter] should be used an how
+     *  of [WatchVideoFragmentAdapter] should be used and how
      *  it should be instantiated. This will be called in the
      *  [onViewCreated] function, you do not need to assign it
      *  as the adapter for [video_viewpager] yourself.

@@ -17,8 +17,6 @@ object Utils {
 
         // TODO Restore
         println("TODO Numbed enterFullScreen, repair later")
-
-//        toolbar?.visibility = View.GONE
 //        bottom_nav?.visibility = View.GONE
 //
 //        window.apply {
@@ -36,8 +34,6 @@ object Utils {
     }
 
     fun exitFullscreen(activity: Activity) = with(activity) {
-
-        toolbar_main_activity?.visibility = View.VISIBLE
         bottom_navigation_view_main_activity?.visibility = View.VISIBLE
 
         window.apply {

@@ -6,7 +6,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 
 /**
- * Use only from Activities, don't use from Fragment (with getActivity) or from Dialog/DialogFragment
+ *  Use only from Activities, don't use from Fragment (with getActivity) or from Dialog/DialogFragment.
+ *  TODO Why not?
  */
 fun Activity.hideKeyboard() {
     val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager

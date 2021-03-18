@@ -17,7 +17,8 @@ import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.services.users.UserManager
 import com.laixer.swabbr.presentation.likeoverview.LikeOverviewViewModel
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
-import com.laixer.swabbr.presentation.reaction.ReactionViewModel
+import com.laixer.swabbr.presentation.reaction.list.ReactionListViewModel
+import com.laixer.swabbr.presentation.reaction.playback.ReactionViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import com.laixer.swabbr.presentation.vlogs.playback.VlogViewModel
@@ -89,6 +90,7 @@ val viewModelModule: Module = module {
     viewModel { VlogRecordingViewModel(mHttpClient = get(), vlogUseCase = get(), context = androidContext()) }
     viewModel { SearchViewModel(usersUseCase = get(), followUseCase = get()) }
     viewModel { ReactionViewModel(mHttpClient = get(), reactionsUseCase = get(), context = androidContext()) }
+    viewModel { ReactionListViewModel(reactionsUseCase = get()) }
 }
 
 val useCaseModule: Module = module {
@@ -142,6 +144,7 @@ val networkModule: Module = module {
             .build()
     }
 
+    // TODO Should this be a single?
     single<OkHttpClient> {
         OkHttpClient.Builder()
             .addInterceptor(get<AuthInterceptor>())

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
@@ -16,9 +17,12 @@ import com.laixer.presentation.gone
 import com.laixer.presentation.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.onClickProfile
+import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
-import com.laixer.swabbr.presentation.reaction.ReactionsAdapter
+import com.laixer.swabbr.presentation.reaction.playback.ReactionsAdapter
+import com.laixer.swabbr.presentation.reaction.playback.WatchReactionFragmentArgs
+import com.laixer.swabbr.presentation.utils.buildDoubleTapListener
 import com.laixer.swabbr.presentation.video.WatchVideoFragment
 import com.laixer.swabbr.utils.formatNumber
 import com.laixer.swabbr.utils.loadAvatar
@@ -29,23 +33,23 @@ import kotlinx.android.synthetic.main.reactions_sheet.*
 import kotlinx.android.synthetic.main.video_info_overlay.*
 import kotlinx.android.synthetic.main.vlog_info_overlay.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 
 // TODO BUG java.lang.IllegalStateException: Fragment WatchVlogFragment{5c199a7} (3adedb84-c7a9-45ac-bf25-9df53bf0f9ee) f0} has null arguments
 // TODO BUG java.lang.RuntimeException: Unable to start activity ComponentInfo{com.laixer.swabbr/com.laixer.swabbr.presentation.MainActivity}:
 //  androidx.fragment.app.Fragment$InstantiationException: Unable to instantiate fragment com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragment:
 //  could not find Fragment constructor
+//  --> Quickfix is to match [WatchReactionFragment], look at this.
 /**
  *  Fragment for watching a single vlog. This extends [WatchVideoFragment]
  *  which contains the core playback functionality. This class manages
  *  the displaying of likes, reactions and other data about the vlog.
  *  Note that the playback of reactions is managed by [].
  */
-class WatchVlogFragment(id: String) : WatchVideoFragment() {
+class WatchVlogFragment(id: String? = null) : WatchVideoFragment() {
+    private val args by navArgs<WatchVlogFragmentArgs>()
     private val vlogVm: VlogViewModel by viewModel()
-    private val vlogId: UUID by lazy { UUID.fromString(id) }
+    private val vlogId: UUID by lazy { UUID.fromString(id ?: args.vlogId) }
 
     /**
      *  Attaches observers to the [vlogVm] resources.
@@ -135,21 +139,17 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
             )
         }
 
-        // Implement double tapping to like a vlog.
-        // TODO Doesn't work, fix
-        /**
-        video_player.setOnTouchListener { v, event ->
-        GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
-        override fun onDoubleTap(e: MotionEvent?): Boolean {
-        toggleLike()
-        return true
-        }
-        }) // TODO Probably incorrect     .onTouchEvent(event)
+        // Double tap to like a vlog.
+        val doubleTapListener = buildDoubleTapListener(requireActivity(), ::toggleLike)
+        // TODO We attach this behaviour to the reaction sheet. This is a temp fix.
+        //  After the following issue has been fixed change to video_player.setOnTouchListener { ... }.
+        //  https://github.com/Laixer/Swabbr-Android/issues/135
+        coordinator_layout_reactions_sheet.setOnTouchListener { _, event ->
+            doubleTapListener.onTouchEvent(event)
 
-        // TODO What does this do?
-        v.performClick()
+            // Required to call according to Android. Our view must know there was a click.
+            view.performClick()
         }
-         */
 
         /**
          *  Disable the button until we have the vlog and the vlogLikedByUser
@@ -202,8 +202,9 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
      */
     private val onReactionClick: (ReactionWrapperItem) -> Unit = {
         findNavController().navigate(
-            WatchVlogFragmentDirections.actionGlobalWatchReactionFragment(
-                reactionId = it.reaction.id.toString()
+            WatchVlogFragmentDirections.actionGlobalWatchReactionsForVlogFragment(
+                vlogId = vlogId.toString(), // TODO Can we cast all these params to uuid?
+                initialReactionId = it.reaction.id.toString()
             )
         )
     }
@@ -238,7 +239,7 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
 
             // Display the like animation.
             // TODO Move to helper.
-            ParticleSystem(requireActivity(), 20, R.drawable.ic_love_it_red, 1000)
+            ParticleSystem(requireActivity(), 20, R.drawable.ic_love_it, 1000)
                 .setSpeedModuleAndAngleRange(0.1F, 0.2F, 240, 300)
                 .setRotationSpeedRange(20F, 360F)
                 .setScaleRange(1.5F, 1.6F)
@@ -264,13 +265,9 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                 data?.let {
                     // Display the user info
                     user_profile_image.loadAvatar(it.user.profileImage, it.user.id)
-                    video_user_displayed_name.text = it.user.getDisplayName()
                     video_user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
 
                     // Display the vlog info and start playback
-                    // TODO Put in helper or something, not here
-                    text_view_video_date_created.text = it.vlog.dateCreated
-                        .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
                     vlog_view_count.text = requireContext().formatNumber(it.vlog.views)
 
                     loadMediaSource(it.vlog.videoUri!!)
@@ -305,11 +302,7 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                     }
                 }
                 ResourceState.ERROR -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "Error loading reactions - ${resource.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showMessage("Could not load reactions")
                 }
             }
         }.also {
@@ -384,7 +377,12 @@ class WatchVlogFragment(id: String) : WatchVideoFragment() {
                 button_vlog_like.isChecked = data!!
             }
             ResourceState.ERROR -> {
-                button_vlog_like.isEnabled = false
+                // If we reach this, we either couldn't load the vlog like state in the
+                // first place or our vlog like toggle has failed. Act accordingly.
+                button_vlog_like.isChecked = resource.data ?: false
+
+                // This doesn't handle whether or not the button is enabled,
+                // reaching this point said operation should already be done.
 
                 Toast.makeText(
                     requireContext(),

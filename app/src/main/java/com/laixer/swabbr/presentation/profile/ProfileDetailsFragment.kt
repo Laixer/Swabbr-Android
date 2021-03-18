@@ -8,7 +8,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.laixer.presentation.Resource
 import com.laixer.presentation.ResourceState
@@ -87,12 +86,14 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
         /** This launches the ImagePicker activity and is resumed in [onActivityResult]. */
         fab_set_profile_image.setOnClickListener { ImagePicker.selectProfileImage(this) }
 
-        inputBirthDate.doOnTextChanged { text, _, _, _ ->
-            if (!::userOriginal.isInitialized) return@doOnTextChanged
-            if (text?.isNotBlank() == true) {
-                userUpdatableProperties.birthDate = LocalDate.parse(text.toString())
-            }
-        }
+        // Get a date picker popup for modifying our birth date.
+        inputBirthDate.setupClickListener(
+            manager = requireActivity().supportFragmentManager,
+            title = requireContext().getString(R.string.dialog_date_picker_birth_date),
+            callback = {
+                if (!::userOriginal.isInitialized) return@setupClickListener // TODO What happens here?
+                userUpdatableProperties.birthDate = it
+            })
 
         inputNickname.doOnTextChanged { text, _, _, _ ->
             if (!::userOriginal.isInitialized) return@doOnTextChanged
@@ -155,8 +156,8 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
                 }
             }
 
-        buttonConfirm.setOnClickListener { confirmChanges() }
-        buttonLogout.setOnClickListener {
+        button_profile_details_save.setOnClickListener { confirmChanges() }
+        button_profile_logout.setOnClickListener {
             // Perform logout operation and take us back to the login screen.
             authVm.logout()
         }
@@ -211,7 +212,7 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
      */
     private fun setFormValues(user: UserCompleteItem) {
         user_profile_profile_image_insettings.loadAvatar(user.profileImage, user.id)
-        //inputBirthDate.set TODO Fix birth date
+        inputBirthDate.setDate(user.birthDate)
         inputNickname.setText(user.nickname)
         inputFirstName.setText(user.firstName)
         inputLastName.setText(user.lastName)

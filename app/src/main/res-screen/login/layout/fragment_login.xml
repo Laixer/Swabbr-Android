@@ -31,7 +31,7 @@
             android:id="@+id/emailInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_baseline_email_24"
+            android:drawableStart="@drawable/ic_email"
             android:drawablePadding="5dp"
             android:drawableTint="@color/colorPrimary"
             android:ems="10"
@@ -44,7 +44,7 @@
             android:id="@+id/passwordInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_lock_24dp"
+            android:drawableStart="@drawable/ic_lock"
             android:drawablePadding="5dp"
             android:drawableTint="@color/colorPrimary"
             android:ems="10"
@@ -69,16 +69,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@color/material_on_primary_emphasis_high_type"
+            style="@style/SwabbrButton"
             android:enabled="false"
+
             android:text="@string/login_signin" />
 
         <Button
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/material_on_primary_emphasis_medium"
             android:text="@string/login_register"
+            style="@style/SwabbrButton"
             android:textAlignment="center" />
     </LinearLayout>
 

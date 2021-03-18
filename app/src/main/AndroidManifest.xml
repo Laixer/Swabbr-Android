@@ -29,12 +29,13 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Swabbr">
+        android:theme="@style/Base.Theme.Swabbr">
 
         <!-- Our main entry point. All functionality of the app exists in here using fragments. -->
         <activity
             android:name="com.laixer.swabbr.presentation.MainActivity"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

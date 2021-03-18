@@ -36,7 +36,6 @@ class UserAdapter(
          */
         fun bind(item: UserItem) {
             itemView.user_profile_image.loadAvatar(item.profileImage, item.id)
-            itemView.user_displayed_name.text = item.getDisplayName()
             itemView.user_nickname.text = context.getString(R.string.nickname, item.nickname)
 
             itemView.setOnClickListener { onClick.invoke(item) }

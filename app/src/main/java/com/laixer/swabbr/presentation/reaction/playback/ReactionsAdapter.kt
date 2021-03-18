@@ -1,8 +1,7 @@
-package com.laixer.swabbr.presentation.reaction
+package com.laixer.swabbr.presentation.reaction.playback
 
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.laixer.presentation.inflate
@@ -42,7 +41,6 @@ class ReactionsAdapter(
          */
         fun bind(item: ReactionWrapperItem) = with(itemView) {
             user_profile_image.loadAvatar(item.user.profileImage, item.user.id)
-            video_user_displayed_name.text = item.user.getDisplayName()
             video_user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
 
             // Take us to the user if we click the profile image.

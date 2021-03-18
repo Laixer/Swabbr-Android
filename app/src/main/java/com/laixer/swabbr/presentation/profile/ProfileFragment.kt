@@ -184,7 +184,6 @@ class ProfileFragment : AuthFragment() {
                 res.data?.let { user ->
                     // User information
                     user_profile_profile_image.loadAvatar(user.profileImage, user.id)
-                    user_profile_displayed_name.text = user.getDisplayName()
                     user_profile_nickname.text = requireContext().getString(R.string.nickname, user.nickname)
 
                     // User stats

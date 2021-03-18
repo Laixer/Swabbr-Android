@@ -9,6 +9,7 @@ import com.laixer.presentation.setSuccess
 import com.laixer.swabbr.domain.usecase.VlogUseCase
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
+import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -19,7 +20,7 @@ import java.util.*
 class VlogListViewModel constructor(
     private val usersVlogsUseCase: VlogUseCase,
     private val vlogUseCase: VlogUseCase
-) : ViewModel() {
+) : ViewModelBase() {
     /**
      *  Used as resource to store vlogs. Note that all get list
      *  functions use this as their storage target.
@@ -27,8 +28,6 @@ class VlogListViewModel constructor(
     val vlogs = MutableLiveData<Resource<List<VlogWrapperItem>>>()
 
     // TODO Implement optional vlog wrapper? Bind to backend? Probably that last one.
-
-    private val compositeDisposable = CompositeDisposable()
 
     /**
      *  Gets the recommended vlogs and stores them in [vlogs].
@@ -70,9 +69,4 @@ class VlogListViewModel constructor(
                     { vlogs.setError(it.message) }
                 )
         )
-
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
-    }
 }

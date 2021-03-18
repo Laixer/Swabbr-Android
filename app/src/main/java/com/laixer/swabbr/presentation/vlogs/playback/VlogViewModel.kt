@@ -13,6 +13,7 @@ import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
+import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
@@ -28,7 +29,7 @@ class VlogViewModel constructor(
     private val authUserUseCase: AuthUserUseCase,
     private val reactionsUseCase: ReactionUseCase,
     private val vlogUseCase: VlogUseCase
-) : ViewModel() {
+) : ViewModelBase() {
     /**
      *  Used to store a vlog when we watch a single item.
      */
@@ -57,8 +58,6 @@ class VlogViewModel constructor(
      */
     val vlogLikedByCurrentUser = MutableLiveData<Resource<Boolean>>()
 
-    private val compositeDisposable = CompositeDisposable()
-
     /**
      *  Adds a single vlog view to a vlog.
      *
@@ -67,7 +66,7 @@ class VlogViewModel constructor(
     fun addView(vlogId: UUID) = compositeDisposable.add(
         vlogUseCase.addView(vlogId)
             .subscribeOn(Schedulers.io())
-            .subscribe()
+            .subscribe({}, {}) // We always want an error handler even if it's empty.
     )
 
     // TODO Is this the way to go? I do think so.
@@ -101,7 +100,7 @@ class VlogViewModel constructor(
         compositeDisposable.add(
             reactionsUseCase.deleteReaction(reaction.id)
                 .subscribeOn(Schedulers.io())
-                .subscribe()
+                .subscribe({}, {}) // We always want an error handler even if it's empty.
         )
     }
 
@@ -171,16 +170,24 @@ class VlogViewModel constructor(
      *
      *  @param vlogId The vlog to like.
      */
-    fun like(vlogId: UUID) = compositeDisposable.add(
-        vlogUseCase.like(vlogId)
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    modifyVlogLikeCount(+1)
-                    vlogLikedByCurrentUser.setSuccess(true)
-                },
-                { /* TODO What to do here? */ }
-            ))
+    fun like(vlogId: UUID) {
+        // First update locally
+        modifyVlogLikeCount(+1)
+
+        // Then remote
+        compositeDisposable.add(
+            vlogUseCase.like(vlogId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        vlogLikedByCurrentUser.setSuccess(true)
+                    },
+                    {
+                        // Undo local update
+                        modifyVlogLikeCount(-1)
+                    }
+                ))
+    }
 
     /**
      *  Unlike a vlog as the current user.
@@ -191,17 +198,22 @@ class VlogViewModel constructor(
      *
      *  @param vlogId The vlog to unlike.
      */
-    fun unlike(vlogId: UUID) = compositeDisposable.add(
-        vlogUseCase.unlike(vlogId)
-            .doOnSubscribe { vlogLikedByCurrentUser.setSuccess(false) }
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    modifyVlogLikeCount(-1)
-                    vlogLikedByCurrentUser.setSuccess(false)
-                },
-                { /* TODO What to do here? */ }
-            ))
+    fun unlike(vlogId: UUID) {
+        modifyVlogLikeCount(-1)
+
+        compositeDisposable.add(
+            vlogUseCase.unlike(vlogId)
+                .doOnSubscribe { vlogLikedByCurrentUser.setSuccess(false) }
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        vlogLikedByCurrentUser.setSuccess(false)
+                    },
+                    {
+                        modifyVlogLikeCount(+1)
+                    }
+                ))
+    }
 
     // TODO Move to vlog like use case in the future
     /**
@@ -238,13 +250,5 @@ class VlogViewModel constructor(
         }
 
         vlogLikeCount.setSuccess(vlogLikeCount.value!!.data!! + amount)
-    }
-
-    /**
-     *  Called on graceful disposal. This will dispose the [compositeDisposable]
-     */
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
     }
 }

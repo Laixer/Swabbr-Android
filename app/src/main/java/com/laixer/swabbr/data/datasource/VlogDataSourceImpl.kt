@@ -27,10 +27,10 @@ class VlogDataSourceImpl constructor(
     override fun get(vlogId: UUID): Single<Vlog> = api.getVlog(vlogId).map { it.mapToDomain() }
 
     override fun getRecommended(pagination: Pagination): Single<List<Vlog>> =
-        api.getRecommendedVlogs(pagination.sortingOrder, pagination.limit, pagination.offset).map { it.mapToDomain() }
+        api.getRecommendedVlogs(pagination.sortingOrder.ordinal, pagination.limit, pagination.offset).map { it.mapToDomain() }
 
     override fun getForUser(userId: UUID, pagination: Pagination): Single<List<Vlog>> =
-        api.getVlogsForUser(userId, pagination.sortingOrder, pagination.limit, pagination.offset)
+        api.getVlogsForUser(userId, pagination.sortingOrder.ordinal, pagination.limit, pagination.offset)
             .map { it.mapToDomain() }
 
     override fun post(vlog: Vlog): Completable = api.postVlog(vlog.mapToData())
