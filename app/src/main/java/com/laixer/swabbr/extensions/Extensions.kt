@@ -14,7 +14,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.laixer.presentation.loadImageUrl
+import com.laixer.swabbr.presentation.utils.todosortme.loadImageUrl
 import java.io.ByteArrayOutputStream
 import java.net.URL
 import java.time.Duration

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.laixer.presentation.gone
+import com.laixer.swabbr.presentation.utils.todosortme.gone
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.auth.AuthFragment
 import kotlinx.android.synthetic.main.fragment_video_view_pager.*

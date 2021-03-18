@@ -1,17 +1,12 @@
 package com.laixer.swabbr
 
 import android.app.Application
-import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.ktx.messaging
-import com.gu.toolargetool.TooLargeTool
-import com.laixer.cache.CacheLibrary
+import com.laixer.swabbr.utils.cache.CacheLibrary
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin

@@ -1,20 +1,18 @@
 package com.laixer.swabbr.presentation.auth
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.google.android.gms.tasks.Tasks.await
 import com.google.firebase.messaging.FirebaseMessaging
-import com.laixer.presentation.Resource
-import com.laixer.presentation.setError
-import com.laixer.presentation.setLoading
-import com.laixer.presentation.setSuccess
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.presentation.utils.todosortme.setError
+import com.laixer.swabbr.presentation.utils.todosortme.setLoading
+import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
 import com.laixer.swabbr.domain.usecase.AuthUseCase
 import com.laixer.swabbr.presentation.model.RegistrationItem
 import com.laixer.swabbr.presentation.model.mapToDomain
 import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
 import com.laixer.swabbr.services.users.UserManager
 import io.reactivex.Single
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 

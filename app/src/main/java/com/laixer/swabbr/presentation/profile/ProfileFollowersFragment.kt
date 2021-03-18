@@ -1,18 +1,15 @@
 package com.laixer.swabbr.presentation.profile
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
-import com.laixer.presentation.startRefreshing
-import com.laixer.presentation.stopRefreshing
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
+import com.laixer.swabbr.presentation.utils.todosortme.startRefreshing
+import com.laixer.swabbr.presentation.utils.todosortme.stopRefreshing
 import com.laixer.swabbr.R
-import com.laixer.swabbr.extensions.onClickProfile
 import com.laixer.swabbr.extensions.onClickProfileWithRelation
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.auth.AuthFragment
@@ -20,7 +17,6 @@ import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.presentation.user.list.UserFollowRequestingAdapter
 import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
 import kotlinx.android.synthetic.main.fragment_profile_followers.*
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 

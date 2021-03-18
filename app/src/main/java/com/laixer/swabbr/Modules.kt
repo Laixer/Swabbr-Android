@@ -3,7 +3,7 @@ package com.laixer.swabbr
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
-import com.laixer.cache.Cache
+import com.laixer.swabbr.utils.cache.Cache
 import com.laixer.swabbr.data.api.*
 import com.laixer.swabbr.data.cache.*
 import com.laixer.swabbr.data.datasource.*

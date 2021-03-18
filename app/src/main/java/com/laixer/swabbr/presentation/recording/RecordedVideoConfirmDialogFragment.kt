@@ -51,10 +51,6 @@ class RecordedVideoConfirmDialogFragment(
         // Prevent the back button from being effective.
         isCancelable = false
 
-        // TODO
-        // Set to full screen
-        // setStyle(STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
-
         if (savedInstanceState != null) {
             currentPosition = savedInstanceState.getInt(KEY_PLAYBACK_TIME);
         }
@@ -80,7 +76,7 @@ class RecordedVideoConfirmDialogFragment(
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putInt(KEY_PLAYBACK_TIME, video_view_recorded_video.getCurrentPosition())
+        outState.putInt(KEY_PLAYBACK_TIME, video_view_recorded_video.currentPosition)
     }
 
     /**
@@ -121,11 +117,6 @@ class RecordedVideoConfirmDialogFragment(
         video_view_recorded_video.setOnPreparedListener {
             video_view_recorded_video.seekTo(currentPosition ?: 1) // 1 shows the first frame of the video
             video_view_recorded_video.start()
-        }
-
-        // Return the video position to the start when playback completes.
-        video_view_recorded_video.setOnCompletionListener {
-            video_view_recorded_video.seekTo(0) // 0 shows no frame but sets us at the start
         }
     }
 

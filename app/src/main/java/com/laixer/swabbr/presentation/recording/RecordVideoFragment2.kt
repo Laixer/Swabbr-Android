@@ -19,7 +19,6 @@ import android.util.Range
 import android.util.Size
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.florent37.runtimepermission.kotlin.askPermission
@@ -28,8 +27,6 @@ import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.MainActivity
 import com.laixer.swabbr.utils.*
-import io.antmedia.android.broadcaster.utils.OrientationLiveData
-import kotlinx.android.synthetic.main.fragment_record_video.*
 import kotlinx.android.synthetic.main.fragment_record_video2.*
 import kotlinx.coroutines.*
 import java.io.File
@@ -149,9 +146,6 @@ open class RecordVideoFragment2 : Fragment() {
 
     private var recordingStartMillis: Long = 0L
 
-    /** Live data listener for changes in the device orientation relative to the camera */
-    private lateinit var relativeOrientation: OrientationLiveData
-
     /**
      *  This checks if we have the required permissions. If this
      *  is not the case, the permissions are requested. If any of
@@ -259,12 +253,6 @@ open class RecordVideoFragment2 : Fragment() {
                 }
             })
 
-            // Used to rotate the output media to match device orientation
-            relativeOrientation = OrientationLiveData(requireContext(), characteristics).apply {
-                observe(viewLifecycleOwner, Observer { orientation ->
-                    Log.d(TAG, "Orientation changed: $orientation")
-                })
-            }
 
             // This will setup the default minimum and maximum times.
             // These can be overridden before starting the recording process.
@@ -293,8 +281,6 @@ open class RecordVideoFragment2 : Fragment() {
             ActivityInfo.SCREEN_ORIENTATION_LOCKED
 
         recorder?.apply {
-            // Sets output orientation based on current sensor value at start time
-            relativeOrientation.value?.let { setOrientationHint(it) }
             prepare()
         }
     }.also {

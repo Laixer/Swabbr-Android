@@ -3,7 +3,7 @@ package com.laixer.swabbr.presentation.reaction.playback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.laixer.presentation.Resource
+import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.types.VideoPlaybackState
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter

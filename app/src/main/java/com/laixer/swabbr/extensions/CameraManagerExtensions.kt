@@ -9,6 +9,17 @@ import com.laixer.swabbr.presentation.types.CameraDirection
 import com.laixer.swabbr.presentation.types.CameraInfo
 
 /**
+ *  Gets the first camera id in the specified [direction]. Other directions than
+ *  [CameraDirection.FRONT] and [CameraDirection.BACK] default to [CameraDirection.FRONT].
+ */
+fun CameraManager.getFirstCameraIdInDirection(direction: CameraDirection): String =
+    when (direction) {
+        CameraDirection.FRONT -> getFirstFrontFacingCameraId()
+        CameraDirection.BACK -> getFirstBackFacingCameraId()
+        else -> getFirstCameraIdInDirection(CameraDirection.FRONT)
+    }
+
+/**
  *  Gets the first front facing camera we can find or the first
  *  camera we can find if none are present.
  */
@@ -57,13 +68,6 @@ fun CameraManager.getFirstBackFacingCameraCharacteristics(): CameraCharacteristi
  */
 fun CameraManager.getCameraFacingInt(cameraId: String): Int? =
     getCameraCharacteristics(cameraId).get(CameraCharacteristics.LENS_FACING)
-
-/**
- *  Translates [CameraCharacteristics.LENS_FACING] to a [CameraDirection] enum
- *  for a specified camera id.
- */
-fun CameraManager.getCameraDirection(cameraId: String): CameraDirection =
-    getCameraDirection(getCameraCharacteristics(cameraId))
 
 /**
  *  Translates [CameraCharacteristics.LENS_FACING] to a [CameraDirection] enum.

@@ -11,8 +11,9 @@ import android.media.MediaRecorder
 import android.os.Handler
 import android.util.Log
 import android.util.Range
-import android.util.Size
 import android.view.Surface
+import com.laixer.swabbr.extensions.setOrientationHintFromDirection
+import com.laixer.swabbr.presentation.types.CameraInfo
 import com.laixer.swabbr.presentation.utils.FixedOrientationFragment
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
@@ -28,10 +29,18 @@ import kotlin.coroutines.suspendCoroutine
 abstract class RecordVideoInnerMethods : FixedOrientationFragment(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
     // TODO Don't hard code these constants.
     /**
-     *  Creates a [MediaRecorder] instance using the provided [Surface] as input.
+     *  Initializes an existing [MediaRecorder] instance using the provided
+     *  [Surface] as input. Note that this expects the [mediaRecorder] to be
+     *  in the Initial state. See the state machine for more information at:
+     *  https://developer.android.com/reference/android/media/MediaRecorder
      */
-    protected fun createMediaRecorder(surface: Surface, size: Size, outputFile: File) =
-        MediaRecorder().apply {
+    protected fun initializeMediaRecorder(
+        mediaRecorder: MediaRecorder,
+        cameraInfo: CameraInfo,
+        surface: Surface,
+        outputFile: File
+    ): MediaRecorder =
+        mediaRecorder.apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setVideoSource(MediaRecorder.VideoSource.SURFACE)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
@@ -42,21 +51,22 @@ abstract class RecordVideoInnerMethods : FixedOrientationFragment(ActivityInfo.S
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             setInputSurface(surface)
             setOutputFile(outputFile.absolutePath)
-            setVideoSize(size.width, size.height)
+            setVideoSize(cameraInfo.size.width, cameraInfo.size.height)
+            setOrientationHintFromDirection(cameraInfo.cameraDirection)
         }
 
     /**
      *  Creates a new recorder [Surface]. Don't forget to release this
      *  surface when you are done with it.
      */
-    protected fun createRecorderSurface(size: Size, outputFile: File): Surface {
+    protected fun createRecorderSurface(cameraInfo: CameraInfo, outputFile: File): Surface {
         // Get a persistent Surface from MediaCodec, don't forget to release when done.
         val surface = MediaCodec.createPersistentInputSurface()
 
         // Prepare and release a dummy MediaRecorder with our new surface.
         // Required to allocate an appropriately sized buffer before passing
         // the Surface as the output target to the capture session.
-        createMediaRecorder(surface, size, outputFile).apply {
+        initializeMediaRecorder(MediaRecorder(), cameraInfo, surface, outputFile).apply {
             prepare()
             release()
         }

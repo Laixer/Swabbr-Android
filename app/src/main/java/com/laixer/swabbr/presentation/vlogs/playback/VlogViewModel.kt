@@ -1,11 +1,10 @@
 package com.laixer.swabbr.presentation.vlogs.playback
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.laixer.presentation.Resource
-import com.laixer.presentation.setError
-import com.laixer.presentation.setLoading
-import com.laixer.presentation.setSuccess
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.presentation.utils.todosortme.setError
+import com.laixer.swabbr.presentation.utils.todosortme.setLoading
+import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
 import com.laixer.swabbr.domain.usecase.AuthUserUseCase
 import com.laixer.swabbr.domain.usecase.ReactionUseCase
 import com.laixer.swabbr.domain.usecase.VlogUseCase
@@ -14,7 +13,6 @@ import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
 import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
-import com.laixer.presentation.*
 import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.goBack
 import com.laixer.swabbr.extensions.reduceDragSensitivity
@@ -13,8 +12,12 @@ import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.reaction.playback.WatchReactionFragmentAdapter
 import com.laixer.swabbr.presentation.types.VideoPlaybackState
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.presentation.utils.todosortme.gone
+import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
 import com.laixer.swabbr.presentation.video.WatchVideoListFragment
+import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel

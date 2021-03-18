@@ -15,8 +15,8 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
-import com.laixer.presentation.gone
-import com.laixer.presentation.visible
+import com.laixer.swabbr.presentation.utils.todosortme.gone
+import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.types.VideoPlaybackState

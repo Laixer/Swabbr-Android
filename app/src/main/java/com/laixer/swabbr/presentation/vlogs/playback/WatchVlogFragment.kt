@@ -11,10 +11,9 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
-import com.laixer.presentation.gone
-import com.laixer.presentation.visible
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.presentation.utils.todosortme.gone
+import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.onClickProfile
 import com.laixer.swabbr.extensions.showMessage
@@ -26,6 +25,7 @@ import com.laixer.swabbr.presentation.utils.buildDoubleTapListener
 import com.laixer.swabbr.presentation.video.WatchVideoFragment
 import com.laixer.swabbr.utils.formatNumber
 import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.resources.ResourceState
 import com.plattysoft.leonids.ParticleSystem
 import kotlinx.android.synthetic.main.exo_player_view.*
 import kotlinx.android.synthetic.main.fragment_video.*

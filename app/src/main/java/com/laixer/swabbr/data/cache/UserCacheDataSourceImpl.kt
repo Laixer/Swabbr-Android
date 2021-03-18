@@ -1,6 +1,6 @@
 package com.laixer.swabbr.data.cache
 
-import com.laixer.cache.Cache
+import com.laixer.swabbr.utils.cache.Cache
 import com.laixer.swabbr.data.interfaces.UserCacheDataSource
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.model.UserComplete

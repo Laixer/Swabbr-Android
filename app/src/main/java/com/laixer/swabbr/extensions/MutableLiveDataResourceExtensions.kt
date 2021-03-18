@@ -1,8 +1,8 @@
 package com.laixer.swabbr.extensions
 
 import androidx.lifecycle.MutableLiveData
-import com.laixer.presentation.Resource
-import com.laixer.presentation.setSuccess
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import java.util.*
