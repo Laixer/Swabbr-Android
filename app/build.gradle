@@ -126,7 +126,7 @@ dependencies {
   implementation "androidx.navigation:navigation-ui-ktx:2.3.4"
   implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.4"
 
-  implementation 'com.gu.android:toolargetool:0.2.1@aar'
+  implementation 'com.gu.android:toolargetool:0.3.0@aar'
 
   // Firebase
   // Import the BoM for the Firebase platform

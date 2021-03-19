@@ -1,4 +1,4 @@
-package com.laixer.swabbr.presentation.viewmodel
+package com.laixer.swabbr.presentation.abstraction
 
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable

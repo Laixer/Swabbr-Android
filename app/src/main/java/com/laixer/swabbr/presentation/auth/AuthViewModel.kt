@@ -10,7 +10,7 @@ import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
 import com.laixer.swabbr.domain.usecase.AuthUseCase
 import com.laixer.swabbr.presentation.model.RegistrationItem
 import com.laixer.swabbr.presentation.model.mapToDomain
-import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
+import com.laixer.swabbr.presentation.abstraction.ViewModelBase
 import com.laixer.swabbr.services.users.UserManager
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!-- Fragment for recording a video with minimum and maximum length constraints. -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/dev_record_video_loading_icon"
+    android:id="@+id/record_video_loading_icon"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 

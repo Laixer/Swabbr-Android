@@ -68,7 +68,6 @@ class RecordingButton @JvmOverloads constructor(
      *  Called when we update our [state].
      */
     private fun onStateUpdated() {
-        // TODO inb4 not on UI thread crash
         // Handle the UI.
         recording_button_button?.isEnabled = when (state) {
             DISABLED -> false
@@ -102,8 +101,16 @@ class RecordingButton @JvmOverloads constructor(
     /**
      *  Call this method when we are ready to start recording.
      */
-    fun setReady() {
+    fun setEnabled() {
         state = ENABLED
+        onStateUpdated()
+    }
+
+    /**
+     *  Call this method when the button should be disabled.
+     */
+    fun setDisabled() {
+        state = DISABLED
         onStateUpdated()
     }
 
@@ -115,20 +122,11 @@ class RecordingButton @JvmOverloads constructor(
         onStateUpdated()
     }
 
-    // TODO This is explicitly called but could also be attached to the countdown timer.
     /**
-     *  Call this method when the minimum recording time has elapsed.
+     *  Called method when the minimum recording time has elapsed.
      */
-    fun onMinimumRecordTimeElapsed() {
+    private fun onMinimumRecordTimeElapsed() {
         state = RECORDING_AFTER_MINIMUM_DURATION
-        onStateUpdated()
-    }
-
-    /**
-     *  Call this method when the button should be disabled.
-     */
-    fun setDisabled() {
-        state = DISABLED
         onStateUpdated()
     }
 
@@ -150,6 +148,7 @@ class RecordingButton @JvmOverloads constructor(
             // Make sure we hit max progress at the end.
             override fun onFinish() {
                 recording_button_outline?.progress = OUTLINE_MAX_PROGRESS
+                onMinimumRecordTimeElapsed()
             }
         }.start()
     }

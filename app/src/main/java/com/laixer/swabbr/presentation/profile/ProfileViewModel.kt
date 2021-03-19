@@ -15,7 +15,7 @@ import com.laixer.swabbr.domain.usecase.VlogUseCase
 import com.laixer.swabbr.extensions.cascadeFollowAction
 import com.laixer.swabbr.extensions.setSuccessAgain
 import com.laixer.swabbr.presentation.model.*
-import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
+import com.laixer.swabbr.presentation.abstraction.ViewModelBase
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 

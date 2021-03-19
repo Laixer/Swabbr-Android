@@ -1,13 +1,11 @@
-package com.laixer.swabbr.presentation.vlogs.recording
+package com.laixer.swabbr.presentation.reaction.recording
 
 import android.content.Context
 import android.util.Log
 import androidx.core.net.toUri
-import com.laixer.swabbr.domain.usecase.VlogUseCase
+import com.laixer.swabbr.domain.usecase.ReactionUseCase
 import com.laixer.swabbr.presentation.model.ReactionItem
-import com.laixer.swabbr.presentation.model.VlogItem
 import com.laixer.swabbr.presentation.model.mapToDomain
-import com.laixer.swabbr.presentation.reaction.recording.RecordReactionViewModel
 import com.laixer.swabbr.presentation.recording.UploadVideoViewModel
 import com.laixer.swabbr.utils.files.ThumbnailHelper
 import com.laixer.swabbr.utils.media.MediaConstants
@@ -17,35 +15,35 @@ import okhttp3.OkHttpClient
 import java.io.File
 import java.util.*
 
-// TODO Duplicate functionality with [RecordReactionViewModel]. Todos located here.
-// TODO Refactor, https://github.com/Laixer/Swabbr-Android/issues/153
+// TODO Pretty much a duplicate of VlogRecordingViewModel. All todos are located there.
 /**
- *  View model containing functionality for recording vlogs.
- *  This includes uploading functionality.
+ *  View model containing functionality for posting reactions.
  */
-class VlogRecordingViewModel constructor(
+class RecordReactionViewModel constructor(
     mHttpClient: OkHttpClient,
-    private val vlogUseCase: VlogUseCase
+    private val reactionsUseCase: ReactionUseCase
 ) : UploadVideoViewModel(mHttpClient) {
     /**
-     *  Uploads a [VlogItem] including thumbnail and posts it to the backend.
+     *  Uploads a [ReactionItem] including thumbnail and posts the
+     *  reaction to the backend.
      *
-     *  @param context Caller context. TODO Can this a resource leak? Is this the way to go?
+     *  @param context Caller context.
      *  @param videoFile Local stored video file.
+     *  @param targetVlogId The vlog id we react to.
      *  @param isPrivate Accessibility of the video.
      */
-    fun postVlog(
+    fun postReaction(
         context: Context,
         videoFile: File,
+        targetVlogId: UUID,
         isPrivate: Boolean
     ) = compositeDisposable.add(
-        vlogUseCase.generateUploadWrapper()
+        reactionsUseCase.generateUploadWrapper()
             .map { uploadWrapper ->
                 Completable.fromCallable {
-                    // First generate thumbnail, then upload.
+                    // First generate thumbnail, then upload
                     val thumbnailFile = ThumbnailHelper.createThumbnailFromVideoFile(context, videoFile)
 
-                    // TODO Mime types etc declared at multiple places.
                     uploadFile(
                         context,
                         videoFile.toUri(),
@@ -60,25 +58,26 @@ class VlogRecordingViewModel constructor(
                     )
                 }
                     .andThen(
-                        vlogUseCase.postVlog(
-                            VlogItem.createForPosting(
+                        reactionsUseCase.postReaction(
+                            ReactionItem.createForPosting(
                                 id = uploadWrapper.id,
+                                targetVlogId = targetVlogId,
                                 isPrivate = isPrivate
                             ).mapToDomain()
                         )
                     )
                     .subscribeOn(Schedulers.io())
-                    .subscribe({}, {
-                        Log.e(TAG, "Could not upload vlog. Message: ${it.message}")
-                    })
+                    .subscribe(
+                        { Log.d(TAG, "Reaction posted") },
+                        { Log.e(TAG, "Could not upload reaction. Message: ${it.message}") })
             }
             .subscribeOn(Schedulers.io())
-            .subscribe({ /* TODO Success feedback (if relevant after refactor)*/ }, {
-                Log.e(TAG, "Could not generate vlog upload wrapper. Message: ${it.message}")
-            })
+            .subscribe(
+                { Log.d(TAG, "Reaction wrapper created") },
+                { Log.e(TAG, "Could not generate reaction upload wrapper. Message: ${it.message}") })
     )
 
     companion object {
-        private val TAG = VlogRecordingViewModel::class.java.simpleName
+        private val TAG = RecordReactionViewModel::class.java.simpleName
     }
 }

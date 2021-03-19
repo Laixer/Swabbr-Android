@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_main_activity"
-    app:startDestination="@id/devRecordVideoFragment">
+    app:startDestination="@id/dashboardFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -65,7 +65,7 @@
         android:name="com.laixer.swabbr.presentation.reaction.recording.RecordReactionFragment"
         android:label="RecordReactionFragment">
         <argument
-            android:name="vlogId"
+            android:name="targetVlogId"
             app:argType="string"
             app:nullable="false" />
     </fragment>
@@ -142,9 +142,5 @@
     <action
         android:id="@+id/action_global_watchReactionsForVlogFragment"
         app:destination="@id/watchReactionsForVlogFragment" />
-    <fragment
-        android:id="@+id/devRecordVideoFragment"
-        android:name="com.laixer.swabbr.presentation.recording.RecordVideoFragment"
-        android:label="DevRecordVideoFragment" />
 
 </navigation>

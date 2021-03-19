@@ -181,16 +181,6 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         userAdapter = null
     }
 
-    // TODO https://github.com/Laixer/Swabbr-Android/issues/191
-    /**
-     *  Hide the soft keyboard when we leave this fragment.
-     */
-    override fun onPause() {
-        super.onPause()
-
-        hideSoftKeyboard()
-    }
-
     companion object {
         private const val TAG = "SearchFragment"
     }

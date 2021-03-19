@@ -1,9 +1,7 @@
-package com.laixer.swabbr.utils
+package com.laixer.swabbr.services.moshi
 
 import android.net.Uri
-import com.laixer.swabbr.domain.types.SortingOrder
 import com.squareup.moshi.FromJson
-import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -33,8 +31,7 @@ class LocalDateAdapter {
     fun fromJson(input: String) =
         try {
             LocalDate.parse(input.substring(0, 10), DateTimeFormatter.ISO_LOCAL_DATE)
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             throw e
         }
 }
@@ -50,8 +47,7 @@ class ZonedDateTimeAdapter {
     fun fromJson(input: String) =
         try {
             ZonedDateTime.parse(input, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             throw e
         }
 }

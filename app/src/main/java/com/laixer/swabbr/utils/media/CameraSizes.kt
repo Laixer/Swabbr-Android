@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.laixer.swabbr.utils
+package com.laixer.swabbr.utils.media
 
 import android.graphics.Point
 import android.hardware.camera2.CameraCharacteristics

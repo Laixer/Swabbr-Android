@@ -230,6 +230,6 @@ class ProfileFragment : AuthFragment() {
     }
 
     internal companion object {
-        const val TAG = "AuthProfileFragment"
+        private val TAG = ProfileFragment::class.java.simpleName
     }
 }

@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.lifecycle.lifecycleScope
-import com.laixer.swabbr.presentation.utils.todosortme.gone
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.types.VideoRecordingState
+import com.laixer.swabbr.presentation.utils.todosortme.gone
 import kotlinx.android.synthetic.main.fragment_record_video_minmax.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,10 +19,13 @@ import java.util.*
 // TODO Use view.post maybe? Or some other non-timer solution? Might be more elegant than all the run-on-UI calls...
 // TODO Torch
 /**
- *  Fragment for recording a video with a minimum and maximum
- *  recording time. Call [setMinMaxDuration] to apply these
- *  constraints. If this method isn't called, default values
- *  are applied.
+ *  Fragment for recording a video with a minimum and maximum recording time.
+ *  Call [setMinMaxDuration] to apply these constraints. If this method isn't
+ *  called, default values are applied.
+ *
+ *  Note that this class does not enable [button_start_stop_recording]. You
+ *  should override [onStateChanged] and call [RecordingButton.setEnabled]
+ *  there at the desired state.
  */
 open class RecordMinMaxVideoFragment : RecordVideoFragment() {
 
@@ -60,8 +63,8 @@ open class RecordMinMaxVideoFragment : RecordVideoFragment() {
 
         button_start_stop_recording.setMinMaxDuration(minimumVideoDuration, maximumVideoDuration)
 
+        /** Only attach click listener. The rest is managed in [onStateChanged]. */
         button_switch_camera?.setOnClickListener { trySwitchCamera() }
-        button_switch_camera?.isEnabled = false
 
         // TODO Torch
         button_torch?.gone()
@@ -90,33 +93,27 @@ open class RecordMinMaxVideoFragment : RecordVideoFragment() {
 
         // UI updates
         lifecycleScope.launch(Dispatchers.Main) {
+            // Switch camera button
+            button_switch_camera?.isEnabled = when (state) {
+                VideoRecordingState.INITIALIZING_CAMERA -> false
+                VideoRecordingState.READY -> true
+                else -> false
+            }
+
+            // Recording button click listener.
             when (state) {
-                VideoRecordingState.READY -> {
-                    button_start_stop_recording?.setCustomOnClickListener { tryStartRecording() }
-                    button_start_stop_recording?.setReady()
+                VideoRecordingState.READY -> button_start_stop_recording?.setCustomOnClickListener { tryStartRecording() }
+                VideoRecordingState.RECORDING -> button_start_stop_recording?.setCustomOnClickListener { tryStopRecording() }
+                else -> button_start_stop_recording?.setCustomOnClickListener { /* Nothing */ }
+            }
 
-                    button_switch_camera?.isEnabled = true
-                }
-                VideoRecordingState.RECORDING -> {
-                    button_start_stop_recording?.setCustomOnClickListener { tryStopRecording() }
-
-                    button_switch_camera?.isEnabled = false
-                }
-                VideoRecordingState.DONE_RECORDING -> {
-                    // TODO This is dev
-                    // Launch external activity via intent to play video recorded using our provider
-//                    startActivity(Intent().apply {
-//                        action = Intent.ACTION_VIEW
-//                        type = MimeTypeMap.getSingleton()
-//                            .getMimeTypeFromExtension(outputFile.extension)
-//                        val authority = "${BuildConfig.APPLICATION_ID}.provider"
-//                        data = FileProvider.getUriForFile(requireContext(), authority, outputFile)
-//                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-//                            Intent.FLAG_ACTIVITY_CLEAR_TOP
-//                    })
-                }
-                else -> {
-                    button_start_stop_recording?.setCustomOnClickListener { tryStartRecording() }
+            // Recording button enabled/disabled state. Note that this does
+            // not enable the button. Enabling should be done explicitly.
+            when (state) {
+                VideoRecordingState.UI_READY -> button_start_stop_recording?.setDisabled()
+                VideoRecordingState.RECORDING -> button_start_stop_recording?.onStartRecording()
+                VideoRecordingState.DONE_RECORDING -> button_start_stop_recording?.setDisabled()
+                else -> { /* Do nothing */
                 }
             }
         }
@@ -170,14 +167,11 @@ open class RecordMinMaxVideoFragment : RecordVideoFragment() {
 
     /**
      *  Called [minimumVideoDuration] after we start recording.
-     *  This will enable the [button_start_stop_recording].
+     *  Extend this method to apply any custom functionality.
+     *  Notifying the [RecordingButton] of this event is done
+     *  internally by said object.
      */
-    @CallSuper
-    protected open fun onMinimumRecordingTimeElapsed() {
-        lifecycleScope.launch(Dispatchers.Main) {
-            button_start_stop_recording?.onMinimumRecordTimeElapsed()
-        }
-    }
+    protected open fun onMinimumRecordingTimeElapsed() { }
 
     /**
      *  Called [maximumVideoDuration] after we start recording.
@@ -191,19 +185,11 @@ open class RecordMinMaxVideoFragment : RecordVideoFragment() {
     }
 
     /**
-     *  Notifies our [button_start_stop_recording].
-     */
-    override fun tryStartRecording() {
-        super.tryStartRecording()
-        button_start_stop_recording?.onStartRecording()
-    }
-
-    /**
      *  Only tries to stops recording if our [minimumVideoDuration] has elapsed.
      */
+    @CallSuper
     override fun tryStopRecording() {
         if (hasMinimumRecordingTimeElapsed()) {
-            button_start_stop_recording?.setDisabled()
             super.tryStopRecording()
         }
     }

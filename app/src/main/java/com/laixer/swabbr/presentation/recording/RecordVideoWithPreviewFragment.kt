@@ -10,8 +10,9 @@ import com.laixer.swabbr.presentation.types.VideoRecordingState
  *  Once again the splitting of functionality is intentional, see
  *  the docs of the classes this inherits from for more explanation.
  */
-open class RecordingVideoWithPreviewFragment : RecordMinMaxVideoFragment() {
+open class RecordVideoWithPreviewFragment : RecordMinMaxVideoFragment() {
 
+    // TODO Additional styling for buttons etc?
     /**
      *  Popup object for our confirmation fragment.
      */
@@ -24,7 +25,7 @@ open class RecordingVideoWithPreviewFragment : RecordMinMaxVideoFragment() {
         super.onStateChanged(state)
 
         if (state == VideoRecordingState.DONE_RECORDING) {
-            popup = RecordedVideoConfirmDialogFragment(outputFile.toUri(), ::onConfirmed, ::onCancelled)
+            popup = RecordedVideoConfirmDialogFragment(outputFile.toUri(), ::onPreviewConfirmed, ::onPreviewDeclined)
             popup?.showNow(childFragmentManager, TAG)
         }
     }
@@ -36,7 +37,7 @@ open class RecordingVideoWithPreviewFragment : RecordMinMaxVideoFragment() {
      *  the dialog, other than dismissing the dialog.
      */
     @CallSuper
-    protected open fun onConfirmed() {
+    protected open fun onPreviewConfirmed() {
         popup?.dismiss()
 
         // TODO Remove debug
@@ -48,11 +49,8 @@ open class RecordingVideoWithPreviewFragment : RecordMinMaxVideoFragment() {
      *  the dialog, other than dismissing the dialog.
      */
     @CallSuper
-    private fun onCancelled() {
+    protected open fun onPreviewDeclined() {
         popup?.dismiss()
-
-        // TODO Remove debug
-        tryReset()
     }
 
     companion object {

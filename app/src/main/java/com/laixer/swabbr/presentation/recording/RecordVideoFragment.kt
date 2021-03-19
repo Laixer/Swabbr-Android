@@ -19,8 +19,9 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.*
 import com.laixer.swabbr.presentation.types.CameraDirection
 import com.laixer.swabbr.presentation.types.VideoRecordingState
-import com.laixer.swabbr.utils.FileHelper.Companion.createFile
-import com.laixer.swabbr.utils.getPreviewOutputSize
+import com.laixer.swabbr.utils.files.FileHelper.Companion.createFile
+import com.laixer.swabbr.utils.media.MediaConstants
+import com.laixer.swabbr.utils.media.getPreviewOutputSize
 import kotlinx.android.synthetic.main.fragment_record_video.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -84,7 +85,7 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
     /**
      *  File where our recording will be stored. This is created once.
      */
-    protected val outputFile: File by lazy { createFile(requireContext(), "mp4") }
+    protected val outputFile: File by lazy { createFile(requireContext(), VIDEO_BASE_NAME, VIDEO_MIME_TYPE) }
 
     /**
      *  Camera object which will be opened by this fragment. Created
@@ -274,7 +275,22 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
                     // Re-create the recorder surface to match the selected size.
                     recorderSurface = createRecorderSurface(cameraInfo, outputFile)
 
+                    /**
+                     * TODO Exception
+                     *  E/RecordVideoFragment: Error while trying to initialize camera
+                     *  java.lang.IllegalStateException: surface_view_record_video must not be null
+                     *  at com.laixer.swabbr.presentation.recording.RecordVideoFragment$tryInitializeCamera$1$1.invokeSuspend(RecordVideoFragment.kt:279)
+                     *  ...
+                     *
+                     *  tempfix:
+                     */
+                    if (surface_view_record_video == null) {
+                        Log.w(TAG, "Exception for camera initialization. surface view was null")
+                        return@launch
+                    }
+
                     // Target the output to our surface view and to our recorder surface.
+
                     val targets = listOf(surface_view_record_video.holder.surface, recorderSurface!!)
 
                     /**
@@ -469,8 +485,8 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
         super.onResume()
 
         if (state.value == VideoRecordingState.UI_READY ||
-            state.value != VideoRecordingState.READY ||
-            state.value != VideoRecordingState.DONE_RECORDING
+            state.value == VideoRecordingState.READY ||
+            state.value == VideoRecordingState.DONE_RECORDING
         ) {
             tryReset()
         }
@@ -504,8 +520,9 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
 
         // TODO Move to some config file
         // Video constants
-        private const val VIDEO_MIME_TYPE = "video/mp4"
-        private val PREFERRED_VIDEO_SIZE = Size(1920, 1080) // 1080p
+        private const val VIDEO_BASE_NAME = "video"
+        private const val VIDEO_MIME_TYPE = MediaConstants.VIDEO_MP4_MIME_TYPE
+        private val PREFERRED_VIDEO_SIZE = MediaConstants.SIZE_1080p
         private val CAMERA_BEGIN_DIRECTION = CameraDirection.FRONT
     }
 }

@@ -8,7 +8,7 @@ import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
 import com.laixer.swabbr.domain.usecase.ReactionUseCase
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
-import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
+import com.laixer.swabbr.presentation.abstraction.ViewModelBase
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 

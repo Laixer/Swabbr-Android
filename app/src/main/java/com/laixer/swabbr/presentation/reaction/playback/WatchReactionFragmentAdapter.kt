@@ -34,8 +34,7 @@ internal class WatchReactionFragmentAdapter(
      */
     override fun createFragment(position: Int): Fragment =
         reactionListResource.value!!.data!![position].reaction.id.let { reactionId ->
-            val createdFragment: WatchReactionFragment =
-                WatchReactionFragment.create(reactionId = reactionId.toString())
+            val createdFragment = WatchReactionFragment.newInstance(reactionId)
 
             // Attach the callback method if we have one.
             onVideoCompletedCallback?.let { callback ->

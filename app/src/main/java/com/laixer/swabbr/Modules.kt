@@ -11,7 +11,6 @@ import com.laixer.swabbr.data.interfaces.*
 import com.laixer.swabbr.data.repository.*
 import com.laixer.swabbr.domain.interfaces.*
 import com.laixer.swabbr.domain.usecase.*
-import com.laixer.swabbr.extensions.buildWithCustomAdapters
 import com.laixer.swabbr.services.okhttp.AuthInterceptor
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.services.users.UserManager
@@ -19,10 +18,12 @@ import com.laixer.swabbr.presentation.likeoverview.LikeOverviewViewModel
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.reaction.list.ReactionListViewModel
 import com.laixer.swabbr.presentation.reaction.playback.ReactionViewModel
+import com.laixer.swabbr.presentation.reaction.recording.RecordReactionViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import com.laixer.swabbr.presentation.vlogs.playback.VlogViewModel
 import com.laixer.swabbr.presentation.vlogs.recording.VlogRecordingViewModel
+import com.laixer.swabbr.services.moshi.buildWithCustomAdapters
 import com.laixer.swabbr.services.okhttp.CacheInterceptor
 import com.squareup.moshi.Moshi
 import io.reactivex.schedulers.Schedulers
@@ -87,10 +88,11 @@ val viewModelModule: Module = module {
     }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogUseCase = get()) }
     viewModel { VlogViewModel(authUserUseCase = get(), reactionsUseCase = get(), vlogUseCase = get()) }
-    viewModel { VlogRecordingViewModel(mHttpClient = get(), vlogUseCase = get(), context = androidContext()) }
+    viewModel { VlogRecordingViewModel(mHttpClient = get(), vlogUseCase = get()) }
     viewModel { SearchViewModel(usersUseCase = get(), followUseCase = get()) }
-    viewModel { ReactionViewModel(mHttpClient = get(), reactionsUseCase = get(), context = androidContext()) }
+    viewModel { ReactionViewModel(reactionsUseCase = get()) }
     viewModel { ReactionListViewModel(reactionsUseCase = get()) }
+    viewModel { RecordReactionViewModel(mHttpClient = get(), reactionsUseCase = get()) }
 }
 
 val useCaseModule: Module = module {

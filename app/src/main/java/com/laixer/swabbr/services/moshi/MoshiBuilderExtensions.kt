@@ -1,6 +1,5 @@
-package com.laixer.swabbr.extensions
+package com.laixer.swabbr.services.moshi
 
-import com.laixer.swabbr.utils.*
 import com.squareup.moshi.Moshi
 
 /**

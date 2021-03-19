@@ -20,9 +20,6 @@ import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-// TODO Question: this gets the vlog user and vlog like summary as well
-//      for each vlog. We never display this information in this fragment
-//      thus we make a lot of unnecessary backend calls. Change this?
 /**
  *  Fragment representing the user dashboard, displaying vlogs.
  *  This uses the [WatchVideoListFragment] to display swipeable
@@ -30,13 +27,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  */
 class DashboardFragment : WatchVideoListFragment() {
     private val vlogListVm: VlogListViewModel by viewModel()
-
-    /**
-     *  Trigger instant data get.
-     */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     /**
      *  Attaches the observers to the [vlogListVm] vlogs resource,

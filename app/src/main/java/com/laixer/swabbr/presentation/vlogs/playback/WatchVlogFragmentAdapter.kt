@@ -21,7 +21,7 @@ internal class WatchVlogFragmentAdapter(
      */
     override fun createFragment(position: Int): Fragment =
         vlogListResource.value!!.data!![position].vlog.id.let {
-            WatchVlogFragment.create(vlogId = it.toString())
+            WatchVlogFragment.newInstance(vlogId = it)
         }
 
     /**

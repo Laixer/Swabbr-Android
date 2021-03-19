@@ -12,7 +12,7 @@ import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
-import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
+import com.laixer.swabbr.presentation.abstraction.ViewModelBase
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 

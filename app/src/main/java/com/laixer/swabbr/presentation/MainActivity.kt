@@ -6,7 +6,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.utils.PlayServicesChecker
+import com.laixer.swabbr.services.play.PlayServicesChecker
 import io.reactivex.plugins.RxJavaPlugins
 import kotlinx.android.synthetic.main.activity_main.*
 

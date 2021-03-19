@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.laixer.swabbr.utils
+package com.laixer.swabbr.presentation.utils
 
 import android.content.Context
 import android.util.AttributeSet
