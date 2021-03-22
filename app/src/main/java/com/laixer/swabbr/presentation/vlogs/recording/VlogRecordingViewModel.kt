@@ -30,7 +30,7 @@ class VlogRecordingViewModel constructor(
     /**
      *  Uploads a [VlogItem] including thumbnail and posts it to the backend.
      *
-     *  @param context Caller context. TODO Can this a resource leak? Is this the way to go?
+     *  @param context Caller context. TODO Is this a resource leak? Is this the way to go?
      *  @param videoFile Local stored video file.
      *  @param isPrivate Accessibility of the video.
      */

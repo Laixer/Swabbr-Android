@@ -26,7 +26,7 @@ import java.util.*
  */
 class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
     private val profileVm: ProfileViewModel by viewModel()
-    private lateinit var userAdapter: UserAdapter
+    private var userAdapter: UserAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_profile_following, container, false)
@@ -73,8 +73,7 @@ class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
                     swipe_refresh_layout_profile_following.stopRefreshing()
 
                     data?.let {
-                        userAdapter.submitList(it)
-                        userAdapter.notifyDataSetChanged()
+                        userAdapter?.submitList(it)
                     }
                 }
                 ResourceState.ERROR -> {
@@ -84,6 +83,15 @@ class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
                 }
             }
         }
+    }
+
+    /**
+     *  Dispose adapter to prevent memory leak.
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        userAdapter = null
     }
 
     internal companion object {

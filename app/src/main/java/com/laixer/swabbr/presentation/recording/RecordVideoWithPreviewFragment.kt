@@ -50,6 +50,15 @@ open class RecordVideoWithPreviewFragment : RecordMinMaxVideoFragment() {
         popup?.dismiss()
     }
 
+    /**
+     *  Dispose our popup to prevent memory leaks.
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+
+        popup = null
+    }
+
     companion object {
         private val TAG = this::class.java.simpleName
     }

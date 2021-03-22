@@ -2,6 +2,7 @@ package com.laixer.swabbr.presentation.profile
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +10,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.tabs.TabLayoutMediator
-import com.laixer.swabbr.utils.resources.Resource
-import com.laixer.swabbr.utils.resources.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.extensions.reduceDragSensitivity
@@ -20,6 +19,8 @@ import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.UserWithStatsItem
 import com.laixer.swabbr.utils.formatNumber
 import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.include_profile_top_section.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -29,7 +30,7 @@ import kotlin.properties.Delegates
 /**
  *  Fragment for displaying generic user profile information.
  *  This fragment contains tabs for more specific user details
- *  and information display. If this profile displays the current|
+ *  and information display. If this profile displays the current
  *  user, additional information is displayed.
  */
 class ProfileFragment : AuthFragment() {
@@ -226,6 +227,17 @@ class ProfileFragment : AuthFragment() {
 
                 showMessage(res.message ?: "Error loading profile follow request status")
             }
+        }
+    }
+
+    /**
+     *  Dispose adapter to prevent memory leak.
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        viewpager_user_profile?.let {
+            it.adapter = null
         }
     }
 

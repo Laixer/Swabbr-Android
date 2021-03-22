@@ -30,6 +30,6 @@ class DatePickerDialogFragment(
      *  Calls [callback] when we have selected a new date.
      */
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) =
-        // Datepicker month starts at 0, LocalDate month starts at 1.
+        // DatePicker month starts at 0, LocalDate month starts at 1.
         callback.invoke(LocalDate.of(year, month + 1, dayOfMonth))
 }

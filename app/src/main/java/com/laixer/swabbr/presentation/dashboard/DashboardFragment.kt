@@ -8,13 +8,13 @@ import com.laixer.swabbr.extensions.reduceDragSensitivity
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
-import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.presentation.utils.todosortme.gone
 import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
 import com.laixer.swabbr.presentation.video.WatchVideoListFragment
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragmentAdapter
+import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 import kotlinx.android.synthetic.main.fragment_vlog_list.*

@@ -31,7 +31,7 @@ import java.util.*
 class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
     private val profileVm: ProfileViewModel by viewModel()
 
-    private lateinit var adapter: UserWithRelationAdapter
+    private var userAdapter: UserWithRelationAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_profile_followers, container, false)
@@ -44,14 +44,14 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Setup and store the adapter.
-        adapter = UserFollowRequestingAdapter(
+        userAdapter = UserFollowRequestingAdapter(
             context = requireContext(),
             onClickProfile = onClickProfileWithRelation(),
             onClickAccept = onAccept,
             onClickDecline = onDecline
         )
         recycler_view_profile_followers.isNestedScrollingEnabled = false
-        recycler_view_profile_followers.adapter = adapter
+        recycler_view_profile_followers.adapter = userAdapter
 
         swipe_refresh_layout_profile_followers.setOnRefreshListener { getData(true) }
 
@@ -102,8 +102,7 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
                         swipe_refresh_layout_profile_followers.stopRefreshing()
 
                         data?.let {
-                            adapter.submitList(it)
-                            adapter.notifyDataSetChanged()
+                            userAdapter?.submitList(it)
                         }
                     }
                     ResourceState.ERROR -> {
@@ -113,5 +112,14 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
                     }
                 }
         }
+    }
+
+    /**
+     *  Dispose adapter to prevent memory leak.
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        userAdapter = null
     }
 }
