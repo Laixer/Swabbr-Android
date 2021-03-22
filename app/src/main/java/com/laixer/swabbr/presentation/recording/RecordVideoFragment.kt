@@ -82,6 +82,7 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
      */
     private val mediaRecorder: MediaRecorder = MediaRecorder()
 
+    // TODO What happens when we overwrite the file after re-recording?
     /**
      *  File where our recording will be stored. This is created once.
      */
@@ -191,7 +192,7 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
                          *  in this case. The only way to exit said state is by [tryInitializeCamera].
                          *  We only explicitly call [tryInitializeCamera] if our [state] is still in
                          *  [VideoRecordingState.UI_READY], else some other caller has influenced the
-                         *  state.
+                         *  state (which is perfectly fine).
                          */
                         surface_view_record_video.post {
                             if (state.value == VideoRecordingState.UI_READY) {
@@ -485,8 +486,7 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
         super.onResume()
 
         if (state.value == VideoRecordingState.UI_READY ||
-            state.value == VideoRecordingState.READY ||
-            state.value == VideoRecordingState.DONE_RECORDING
+            state.value == VideoRecordingState.READY
         ) {
             tryReset()
         }

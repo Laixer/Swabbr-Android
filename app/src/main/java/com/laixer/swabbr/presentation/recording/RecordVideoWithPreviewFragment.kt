@@ -39,9 +39,6 @@ open class RecordVideoWithPreviewFragment : RecordMinMaxVideoFragment() {
     @CallSuper
     protected open fun onPreviewConfirmed() {
         popup?.dismiss()
-
-        // TODO Remove debug
-        tryReset()
     }
 
     /**

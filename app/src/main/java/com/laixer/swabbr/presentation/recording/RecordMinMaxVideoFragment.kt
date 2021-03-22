@@ -171,7 +171,7 @@ open class RecordMinMaxVideoFragment : RecordVideoFragment() {
      *  Notifying the [RecordingButton] of this event is done
      *  internally by said object.
      */
-    protected open fun onMinimumRecordingTimeElapsed() { }
+    protected open fun onMinimumRecordingTimeElapsed() {}
 
     /**
      *  Called [maximumVideoDuration] after we start recording.
