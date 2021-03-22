@@ -7,310 +7,139 @@ import kotlin.String
  *   `$ ./gradlew buildSrcVersions`
  */
 object Libs {
-    /**
-     * https://detekt.github.io/detekt
-     */
-    const val detekt_formatting: String = "io.gitlab.arturbosch.detekt:detekt-formatting:" +
-        Versions.io_gitlab_arturbosch_detekt
+  const val com_github_bumptech_glide_compiler: String = "com.github.bumptech.glide:compiler:4.11.0"
 
-    const val io_gitlab_arturbosch_detekt_gradle_plugin: String =
-        "io.gitlab.arturbosch.detekt:io.gitlab.arturbosch.detekt.gradle.plugin:" +
-            Versions.io_gitlab_arturbosch_detekt
+  const val glide: String = "com.github.bumptech.glide:glide:4.11.0"
 
-    const val azure_storage_android =
-        "com.microsoft.azure.android:azure-storage-android:" + Versions.com_microsoft_azure
+  const val adapter_rxjava2: String = "com.squareup.retrofit2:adapter-rxjava2:2.8.1"
 
-    /**
-     * https://github.com/bumptech/glide
-     */
-    const val com_github_bumptech_glide_compiler: String = "com.github.bumptech.glide:compiler:" +
-        Versions.com_github_bumptech_glide
+  const val converter_moshi: String = "com.squareup.retrofit2:converter-moshi:2.8.1"
 
-    /**
-     * https://github.com/bumptech/glide
-     */
-    const val glide: String = "com.github.bumptech.glide:glide:" + Versions.com_github_bumptech_glide
+  const val retrofit: String = "com.squareup.retrofit2:retrofit:2.8.1"
 
-    /**
-     * https://github.com/square/retrofit
-     */
-    const val adapter_rxjava2: String = "com.squareup.retrofit2:adapter-rxjava2:" +
-        Versions.com_squareup_retrofit2
+  const val logging_interceptor: String = "com.squareup.okhttp3:logging-interceptor:3.14.7"
 
-    /**
-     * https://github.com/square/retrofit
-     */
-    const val converter_moshi: String = "com.squareup.retrofit2:converter-moshi:" +
-        Versions.com_squareup_retrofit2
+  const val okhttp: String = "com.squareup.okhttp3:okhttp:3.14.7"
 
-    /**
-     * https://github.com/square/retrofit
-     */
-    const val retrofit: String = "com.squareup.retrofit2:retrofit:" + Versions.com_squareup_retrofit2
+  const val kotlin_android_extensions: String =
+      "org.jetbrains.kotlin:kotlin-android-extensions:1.3.72"
 
-    /**
-     * https://square.github.io/okhttp/
-     */
-    const val logging_interceptor: String = "com.squareup.okhttp3:logging-interceptor:" +
-        Versions.com_squareup_okhttp3
+  const val kotlin_android_extensions_runtime: String =
+      "org.jetbrains.kotlin:kotlin-android-extensions-runtime:1.3.72"
 
-    /**
-     * https://square.github.io/okhttp/
-     */
-    const val okhttp: String = "com.squareup.okhttp3:okhttp:" + Versions.com_squareup_okhttp3
+  const val kotlin_annotation_processing_gradle: String =
+      "org.jetbrains.kotlin:kotlin-annotation-processing-gradle:1.3.72"
 
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_android_extensions: String = "org.jetbrains.kotlin:kotlin-android-extensions:" +
-        Versions.org_jetbrains_kotlin
+  const val kotlin_reflect: String = "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
 
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_android_extensions_runtime: String =
-        "org.jetbrains.kotlin:kotlin-android-extensions-runtime:" + Versions.org_jetbrains_kotlin
+  const val kotlin_stdlib: String = "org.jetbrains.kotlin:kotlin-stdlib:1.3.72"
 
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_annotation_processing_gradle: String =
-        "org.jetbrains.kotlin:kotlin-annotation-processing-gradle:" + Versions.org_jetbrains_kotlin
+  const val kotlin_stdlib_jdk8: String = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72"
 
-    const val kotlin_gradle_plugin: String = "org.jetbrains.kotlin:kotlin-gradle-plugin:" +
-        Versions.org_jetbrains_kotlin
+  const val kotlin_gradle_plugin: String = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72"
 
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_reflect: String = "org.jetbrains.kotlin:kotlin-reflect:" +
-        Versions.org_jetbrains_kotlin
+  const val lifecycle_compiler: String = "androidx.lifecycle:lifecycle-compiler:2.2.0"
 
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_scripting_compiler_embeddable: String =
-        "org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:" + Versions.org_jetbrains_kotlin
+  const val lifecycle_extensions: String = "androidx.lifecycle:lifecycle-extensions:2.2.0"
 
-    /**
-     * https://kotlinlang.org/
-     */
-    const val kotlin_stdlib_jdk8: String = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:" +
-        Versions.org_jetbrains_kotlin
+  const val moshi_adapters: String = "com.squareup.moshi:moshi-adapters:1.8.0"
 
-    /**
-     * https://developer.android.com/topic/libraries/architecture/index.html
-     */
-    const val navigation_fragment_ktx: String = "androidx.navigation:navigation-fragment-ktx:" +
-        Versions.androidx_navigation
+  const val moshi_kotlin: String = "com.squareup.moshi:moshi-kotlin:1.8.0"
 
-    /**
-     * https://developer.android.com/topic/libraries/architecture/index.html
-     */
-    const val navigation_safe_args_gradle_plugin: String =
-        "androidx.navigation:navigation-safe-args-gradle-plugin:" + Versions.androidx_navigation
+  const val work_runtime_ktx: String = "androidx.work:work-runtime-ktx:2.3.1"
 
-    /**
-     * https://developer.android.com/topic/libraries/architecture/index.html
-     */
-    const val navigation_ui_ktx: String = "androidx.navigation:navigation-ui-ktx:" +
-        Versions.androidx_navigation
+  const val work_rxjava2: String = "androidx.work:work-rxjava2:2.3.1"
 
-    /**
-     * https://developer.android.com/topic/libraries/architecture/index.html
-     */
-    const val lifecycle_compiler: String = "androidx.lifecycle:lifecycle-compiler:" +
-        Versions.androidx_lifecycle
+  const val koin_android: String = "org.koin:koin-android:2.0.1"
 
-    /**
-     * https://developer.android.com/topic/libraries/architecture/index.html
-     */
-    const val lifecycle_extensions: String = "androidx.lifecycle:lifecycle-extensions:" +
-        Versions.androidx_lifecycle
+  const val koin_androidx_viewmodel: String = "org.koin:koin-androidx-viewmodel:2.0.1"
 
-    /**
-     * https://developer.android.com/jetpack/androidx
-     */
-    const val lifecycle_runtime_ktx: String = "androidx.lifecycle:lifecycle-runtime-ktx:" +
-        Versions.androidx_lifecycle
+  const val com_android_tools_build_gradle: String = "com.android.tools.build:gradle:4.1.2"
 
-    /**moshi_adapters
-     * https://github.com/square/moshi/
-     */
-    const val moshi_adapters: String = "com.squareup.moshi:moshi-adapters:" +
-        Versions.com_squareup_moshi
+  const val io_gitlab_arturbosch_detekt_gradle_plugin: String =
+      "io.gitlab.arturbosch.detekt:io.gitlab.arturbosch.detekt.gradle.plugin:1.12.0"
 
-    /**
-     * https://github.com/square/moshi/
-     */
-    const val moshi_kotlin: String = "com.squareup.moshi:moshi-kotlin:" + Versions.com_squareup_moshi
+  const val de_fayard_buildsrcversions_gradle_plugin: String =
+      "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:0.7.0"
 
-    /**
-     * https://developer.android.com/topic/libraries/architecture/index.html
-     */
-    const val work_runtime_ktx: String = "androidx.work:work-runtime-ktx:" + Versions.androidx_work
+  const val navigation_dynamic_features_fragment: String =
+      "androidx.navigation:navigation-dynamic-features-fragment:2.3.4"
 
-    /**
-     * https://developer.android.com/topic/libraries/architecture/index.html
-     */
-    const val work_rxjava2: String = "androidx.work:work-rxjava2:" + Versions.androidx_work
+  const val navigation_safe_args_gradle_plugin: String =
+      "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.0"
 
-    const val koin_android: String = "org.koin:koin-android:" + Versions.org_koin
+  const val firebase_crashlytics_gradle: String =
+      "com.google.firebase:firebase-crashlytics-gradle:2.3.0"
 
-    const val koin_androidx_viewmodel: String = "org.koin:koin-androidx-viewmodel:" +
-        Versions.org_koin
+  const val runtime_permission_kotlin: String =
+      "com.github.florent37:runtime-permission-kotlin:1.1.2"
 
-    /**
-     * https://developer.android.com/studio
-     */
-    const val com_android_tools_build_gradle: String = "com.android.tools.build:gradle:" +
-        Versions.com_android_tools_build_gradle
+  const val firebase_crashlytics_ktx: String = "com.google.firebase:firebase-crashlytics-ktx:17.2.2"
 
-    const val de_fayard_buildsrcversions_gradle_plugin: String =
-        "de.fayard.buildSrcVersions:de.fayard.buildSrcVersions.gradle.plugin:" +
-            Versions.de_fayard_buildsrcversions_gradle_plugin
+  const val navigation_fragment_ktx: String =
+      "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha01"
 
-    /**
-     * https://github.com/florent37/RuntimePermission
-     */
-    const val runtime_permission_kotlin: String = "com.github.florent37:runtime-permission-kotlin:" +
-        Versions.runtime_permission_kotlin
+  const val firebase_analytics_ktx: String = "com.google.firebase:firebase-analytics-ktx:17.6.0"
 
-    const val firebase_analytics: String = "com.google.firebase:firebase-analytics-ktx"
+  const val firebase_messaging_ktx: String = "com.google.firebase:firebase-messaging-ktx:20.3.0"
 
-    const val firebase_messaging: String = "com.google.firebase:firebase-messaging-ktx"
+  const val leakcanary_android: String = "com.squareup.leakcanary:leakcanary-android:2.2"
 
-    const val firebase_crashlytics: String = "com.google.firebase:firebase-crashlytics-ktx"
+  const val swiperefreshlayout: String = "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
-    /**
-     * http://github.com/square/leakcanary/
-     */
-    const val leakcanary_android: String = "com.squareup.leakcanary:leakcanary-android:" +
-        Versions.leakcanary_android
+  const val detekt_formatting: String = "io.gitlab.arturbosch.detekt:detekt-formatting:1.7.0-beta2"
 
-    /**
-     * https://developer.android.com/jetpack/androidx
-     */
-    const val swiperefreshlayout: String = "androidx.swiperefreshlayout:swiperefreshlayout:" +
-        Versions.swiperefreshlayout
+  const val legacy_support_v4: String = "androidx.legacy:legacy-support-v4:1.0.0"
 
-    /**
-     * http://tools.android.com
-     */
-    const val constraintlayout: String = "androidx.constraintlayout:constraintlayout:" +
-        Versions.constraintlayout
+  const val navigation_ui_ktx: String = "androidx.navigation:navigation-ui-ktx:2.3.0-alpha01"
 
-    /**
-     * https://github.com/hdodenhof/CircleImageView
-     */
-    const val circleimageview: String = "de.hdodenhof:circleimageview:" + Versions.circleimageview
+  const val constraintlayout: String = "androidx.constraintlayout:constraintlayout:1.1.3"
 
-    const val google_services: String = "com.google.gms:google-services:" + Versions.google_services
+  const val circleimageview: String = "de.hdodenhof:circleimageview:3.1.0"
 
-    const val camera_camera2: String = "androidx.camera:camera-camera2:" + Versions.camera_camera2
+  const val google_services: String = "com.google.gms:google-services:4.3.4"
 
-    /**
-     * https://github.com/mockito/mockito
-     */
-    const val mockito_inline: String = "org.mockito:mockito-inline:" + Versions.mockito_inline
+  const val camera_camera2: String = "androidx.camera:camera-camera2:1.0.0-beta03"
 
-    /**
-     * https://github.com/nhaarman/mockito-kotlin
-     */
-    const val mockito_kotlin: String = "com.nhaarman.mockitokotlin2:mockito-kotlin:" +
-        Versions.mockito_kotlin
+  const val mockito_inline: String = "org.mockito:mockito-inline:3.2.4"
 
-    /**
-     * https://developer.android.com/testing
-     */
-    const val espresso_core: String = "androidx.test.espresso:espresso-core:" + Versions.espresso_core
+  const val mockito_kotlin: String = "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
 
-    /**
-     * http://assertj.org
-     */
-    const val assertj_core: String = "org.assertj:assertj-core:" + Versions.assertj_core
+  const val assertj_core: String = "org.assertj:assertj-core:3.15.0"
 
-    /**
-     * https://developer.android.com/topic/libraries/architecture/index.html
-     */
-    const val core_testing: String = "androidx.arch.core:core-testing:" + Versions.core_testing
+  const val core_testing: String = "androidx.arch.core:core-testing:2.1.0"
 
-    /**
-     * https://developer.android.com/jetpack/androidx
-     */
-    const val fragment_ktx: String = "androidx.fragment:fragment-ktx:" + Versions.fragment_ktx
+  const val firebase_bom: String = "com.google.firebase:firebase-bom:25.12.0"
 
-    /**
-     * https://github.com/Dhaval2404/ImagePicker/
-     */
-    const val imagepicker: String = "com.github.dhaval2404:imagepicker:" + Versions.imagepicker
+  const val fragment_ktx: String = "androidx.fragment:fragment-ktx:1.2.4"
 
-    /**
-     * https://developer.android.com/studio
-     */
-    const val lint_gradle: String = "com.android.tools.lint:lint-gradle:" + Versions.lint_gradle
+  const val toolargetool: String = "com.gu.android:toolargetool:0.3.0"
 
-    /**
-     * https://github.com/ButterflyTV/Librtmp-Client-for-Android
-     */
-    const val rtmp_client: String = "net.butterflytv.utils:rtmp-client:" + Versions.rtmp_client
+  const val imagepicker: String = "com.github.dhaval2404:imagepicker:1.7.2"
 
-    /**
-     * http://developer.android.com/tools/extras/support-library.html
-     */
-    const val annotation: String = "androidx.annotation:annotation:" + Versions.annotation
+  const val lint_gradle: String = "com.android.tools.lint:lint-gradle:27.0.2"
 
-    /**
-     * http://plattysoft.github.io/Leonids/
-     */
-    const val leonidslib: String = "com.plattysoft.leonids:LeonidsLib:" + Versions.leonidslib
+  const val leonidslib: String = "com.plattysoft.leonids:LeonidsLib:1.3.2"
 
-    /**
-     * https://developer.android.com/jetpack/androidx
-     */
-    const val viewpager2: String = "androidx.viewpager2:viewpager2:" + Versions.viewpager2
+  const val viewpager2: String = "androidx.viewpager2:viewpager2:1.0.0"
 
-    /**
-     * https://developer.android.com/jetpack/androidx
-     */
-    const val appcompat: String = "androidx.appcompat:appcompat:" + Versions.appcompat
+  const val appcompat: String = "androidx.appcompat:appcompat:1.1.0"
 
-    const val exoplayer: String = "com.google.android.exoplayer:exoplayer:" + Versions.exoplayer
+  const val exoplayer: String = "com.google.android.exoplayer:exoplayer:2.10.5"
 
-    /**
-     * https://github.com/auth0/jwtdecode.android
-     */
-    const val jwtdecode: String = "com.auth0.android:jwtdecode:" + Versions.jwtdecode
+  const val jwtdecode: String = "com.auth0.android:jwtdecode:2.0.0"
 
-    /**
-     * https://developer.android.com/jetpack/androidx
-     */
-    const val core_ktx: String = "androidx.core:core-ktx:" + Versions.core_ktx
+  const val core_ktx: String = "androidx.core:core-ktx:1.5.0-alpha04"
 
-    /**
-     * https://github.com/material-components/material-components-android
-     */
-    const val material: String = "com.google.android.material:material:" + Versions.material
+  const val material: String = "com.google.android.material:material:1.1.0"
 
-    /**
-     * https://github.com/ReactiveX/RxKotlin
-     */
-    const val rxkotlin: String = "io.reactivex.rxjava2:rxkotlin:" + Versions.rxkotlin
+  const val rxkotlin: String = "io.reactivex.rxjava2:rxkotlin:2.4.0"
 
-    const val rxpaper2: String = "com.github.pakoito:RxPaper2:" + Versions.rxpaper2
+  const val rxpaper2: String = "com.github.pakoito:RxPaper2:1.4.0"
 
-    /**
-     * https://github.com/ReactiveX/RxJava
-     */
-    const val rxjava: String = "io.reactivex.rxjava2:rxjava:" + Versions.rxjava
+  const val rxjava: String = "io.reactivex.rxjava2:rxjava:2.2.17"
 
-    /**
-     * https://developer.android.com/studio
-     */
-    const val aapt2: String = "com.android.tools.build:aapt2:" + Versions.aapt2
+  const val aapt2: String = "com.android.tools.build:aapt2:4.0.2-6197926"
 
-    /**
-     * http://junit.org
-     */
-    const val junit: String = "junit:junit:" + Versions.junit
+  const val junit: String = "junit:junit:4.13"
 }
