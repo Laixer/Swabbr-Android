@@ -134,7 +134,7 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) { /* Do nothing */ }
+        askPermission(*PERMISSIONS) { /* Do nothing */ }
             .onDeclined { onPermissionsDeclined() }
     }
 
@@ -155,7 +155,7 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
         // Assign state listener (only when the view has been created).
         state.observe(viewLifecycleOwner, Observer { onStateChanged(it) })
 
-        askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
+        askPermission(*PERMISSIONS) {
             // Assign setup callbacks to the holder of our surface view so that the
             // camera will be setup once said element has been inflated completely.
             surface_view_record_video.holder.addCallback(object : SurfaceHolder.Callback {
@@ -247,7 +247,7 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
      *  @param cameraId The selected camera.
      */
     protected fun tryInitializeCamera(cameraId: String) {
-        askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
+        askPermission(*PERMISSIONS) {
             // Validate our state transition first.
             if (state.value != VideoRecordingState.UI_READY &&
                 state.value != VideoRecordingState.READY &&
@@ -328,7 +328,7 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
      *  Attempts to start recording the video.
      */
     protected open fun tryStartRecording() {
-        askPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) {
+        askPermission(*PERMISSIONS) {
             if (state.value != VideoRecordingState.READY) {
                 Log.w(TAG, "Illegal state transition from ${state.value}, can't start recording")
                 return@askPermission
@@ -517,6 +517,7 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
         private val TAG = RecordVideoFragment::class.java.simpleName
         private const val CAMERA_THREAD_NAME = "Recording video camera thread"
         private val BEGIN_STATE = VideoRecordingState.LOADING
+        private val PERMISSIONS = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
 
         // TODO Move to some config file
         // Video constants
