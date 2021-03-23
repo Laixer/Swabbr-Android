@@ -5,18 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.exoplayer2.Player
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
-import com.laixer.presentation.gone
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.getUuidOrNull
 import com.laixer.swabbr.extensions.onClickProfile
+import com.laixer.swabbr.extensions.putUuid
 import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
+import com.laixer.swabbr.presentation.utils.todosortme.gone
 import com.laixer.swabbr.presentation.video.WatchVideoFragment
 import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.exo_player_view.*
 import kotlinx.android.synthetic.main.fragment_video.*
 import kotlinx.android.synthetic.main.video_info_overlay.*
@@ -26,10 +26,13 @@ import java.util.*
 /**
  *  Wrapper around a single [WatchVideoFragment] used for [ReactionItem] playback.
  */
-class WatchReactionFragment(id: String? = null) : WatchVideoFragment() {
+class WatchReactionFragment() : WatchVideoFragment() {
     private val args by navArgs<WatchReactionFragmentArgs>()
     private val reactionVm: ReactionViewModel by viewModel()
-    private val reactionId by lazy { UUID.fromString(id ?: args.reactionId) }
+
+    private val reactionId: UUID by lazy {
+        arguments?.getUuidOrNull(BUNDLE_KEY_REACTION_ID) ?: UUID.fromString(args.reactionId)
+    }
 
     /**
      *  Assign observers to [reactionVm].
@@ -81,11 +84,14 @@ class WatchReactionFragment(id: String? = null) : WatchVideoFragment() {
     }
 
     companion object {
-        private const val TAG = "VlogFragment"
+        private val TAG = WatchReactionFragment::class.java.simpleName
+        private const val BUNDLE_KEY_REACTION_ID = "reactionId"
 
-        // TODO Look into this.
-        fun create(reactionId: String): WatchReactionFragment {
-            return WatchReactionFragment(reactionId)
+        /**
+         *  Static strong-typed constructor.
+         */
+        fun newInstance(reactionId: UUID) = WatchReactionFragment().apply {
+            arguments = Bundle().apply { putUuid(BUNDLE_KEY_REACTION_ID, reactionId) }
         }
     }
 }

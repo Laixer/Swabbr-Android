@@ -1,35 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#595959</color>
-    <color name="colorPrimaryDark">#5C626B</color>
-    <color name="colorPrimaryLight">#8E8E8E</color>
+    <color name="primary">#595959</color>
+    <color name="primaryDark">#5C626B</color>
+    <color name="primaryLight">#8E8E8E</color>
 
-    <color name="colorAccent">#393939</color>
+    <color name="accent">#393939</color>
 
-    <color name="colorAccept">#3E8A42</color>
-    <color name="colorDecline">#8A3E3E</color>
+    <color name="accept">#3E8A42</color>
+    <color name="decline">#8A3E3E</color>
 
-    <color name="color_divider">#1F000000</color>
+    <color name="divider">#1F000000</color>
 
     <!-- Icon related -->
-    <color name="color_reaction_post">#ff0000</color>
-    <color name="color_reaction_count">@color/colorPrimaryLight</color>
+    <color name="reactionPost">#ff0000</color>
+    <color name="reactionCount">@color/primaryLight</color>
 
     <!-- Used to display transparent white overlays. -->
-    <color name="color_transparent_overlay">#41FFFFFF</color>
+    <color name="transparentOverlay">#41FFFFFF</color>
 
-    <color name="color_title">@color/color_black</color>
-    <color name="color_subtitle">@color/color_grey_900</color>
-    <color name="color_body">@color/color_grey_700</color>
+    <color name="title">@color/color_black</color>
+    <color name="subtitle">@color/color_grey_900</color>
+    <color name="body">@color/color_grey_700</color>
 
-    <color name="color_window_background">@color/color_white</color>
-    <color name="color_window_background_transparent">#C3FAFAFA</color>
+    <color name="windowBackground">@color/color_white</color>
+    <color name="windowBackgroundTransparent">#C3FAFAFA</color>
     <color name="transparent">#0000</color>
 
     <color name="multiStateButtonPressed">#80ff8400</color>
     <color name="multiStateButtonDisabled">#c1636363</color>
 
-    <!-- Record button related. -->
-    <color name="color_recording_center">#ff0000</color>
-    <color name="color_recording_outline">@color/color_white</color>
+    <!-- Record button related. Before means before minimum recording time, after vice versa. -->
+    <color name="recordingButtonCenterBefore">@color/primaryDark</color>
+    <color name="recordingButtonCenterAfter">#ff0000</color>
+    <color name="recordingButtonCenterIdle">#959595</color>
+    <color name="recordingButtonOutlineBefore">#ff0000</color>
+    <color name="recordingButtonOutlineAfter">@color/color_white</color>
+    <color name="recordingButtonOutlineIdle">#CACACA</color>
+
 </resources>

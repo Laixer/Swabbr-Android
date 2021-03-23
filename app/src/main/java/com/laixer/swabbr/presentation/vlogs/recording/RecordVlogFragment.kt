@@ -1,194 +1,172 @@
 package com.laixer.swabbr.presentation.vlogs.recording
 
-import android.annotation.SuppressLint
-import android.app.Dialog
-import android.content.Intent
-import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.provider.MediaStore
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
-import androidx.core.content.FileProvider
+import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.navArgs
-import com.laixer.swabbr.BuildConfig
+import androidx.navigation.fragment.findNavController
 import com.laixer.swabbr.R
-import com.laixer.swabbr.presentation.MainActivity
-import com.laixer.swabbr.presentation.recording.RecordVideoFragment
-import com.laixer.swabbr.utils.lastMinuteSeconds
-import com.laixer.swabbr.utils.minutes
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_record_video.*
-import kotlinx.android.synthetic.main.video_confirm_dialogue.*
+import com.laixer.swabbr.extensions.showMessage
+import com.laixer.swabbr.presentation.recording.RecordVideoWithPreviewFragment
+import com.laixer.swabbr.presentation.types.VideoRecordingState
+import com.laixer.swabbr.presentation.utils.todosortme.gone
+import com.laixer.swabbr.presentation.utils.todosortme.visible
+import kotlinx.android.synthetic.main.fragment_record_video_minmax.*
+import kotlinx.android.synthetic.main.fragment_record_vlog.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.Duration
 
-// TODO Implement the request timeout in here as well.
 /**
- *  Fragment for recording a vlog. The vlog is buffered into a file, and
- *  a playback & confirmation popup is shown after recording. When the
- *  user decides to proceed with the vlog , the file is uploaded to the
- *  blob storage and the backend is notified of this.
+ *  Fragment for recording a vlog.
  */
-class RecordVlogFragment : RecordVideoFragment() {
-    /** AndroidX navigation arguments */
-    private val vlogVm: VlogRecordingViewModel by viewModel()
+class RecordVlogFragment : RecordVideoWithPreviewFragment() {
+    private val vm: VlogRecordingViewModel by viewModel()
 
     /**
-     *  This sets up the UI in order to start the countdown and
-     *  control the recording button accordingly.
+     *  Counter indicating how many retries we have had.
      */
-    @SuppressLint("MissingPermission")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private var attempts = 0
 
-        // Enforce the vlog constraints.
-        initMinMaxVideoTimes(MINIMUM_RECORD_TIME, MAXIMUM_RECORD_TIME)
+    /**
+     *  Flag indicating if we are already in the countdown state.
+     */
+    private var isCountingDown = false
 
-        // Disable the recording button and assign the stop() function
-        // as click listener. This button will be enabled again after
-        // the minimum vlog time has exceeded. It can the be used to
-        // stop recording.
-        capture_button.apply {
-            isEnabled = false
-            setOnClickListener { stop() }
-        }
-
-        // Setup the "one minute left" trigger popup
-        stream_position_timer.apply {
-            // TODO In the case of vlogging recording time < 1 minute, this will act weird.
-            // TODO Dangerous cast to int
-            addEventAt(
-                MAXIMUM_RECORD_TIME.minutes().toInt() - 1,
-                MAXIMUM_RECORD_TIME.lastMinuteSeconds().toInt()
-            ) {
-                Toast.makeText(requireContext(), "One minute left!", Toast.LENGTH_LONG).show()
-                setTextColor(Color.RED)
-            }
-        }
-
-        // Trigger the recording countdown and start vlogging.
-        startRecordingCountdown()
+    /**
+     *  Set durations at create time.
+     */
+    init {
+        setMinMaxDuration(MINIMUM_RECORD_TIME, MAXIMUM_RECORD_TIME)
     }
 
     /**
-     *  Starts the recording process using [countDownFrom].
+     *  Inflate our layout with countdown text view.
+     */
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+        inflater.inflate(R.layout.fragment_record_vlog, container, false)
+
+    /**
+     *  Start the countdown when we are ready to record.
+     */
+    override fun onStateChanged(state: VideoRecordingState) {
+        // First call super to allow extended functionality to execute.
+        super.onStateChanged(state)
+
+        // Only start the countdown once.
+        if (state == VideoRecordingState.READY && !isCountingDown) {
+            isCountingDown = true
+            startRecordingCountdown()
+        }
+
+        // Increase attempts by 1.
+        if (state == VideoRecordingState.DONE_RECORDING) {
+            attempts += 1
+        }
+    }
+
+    /**
+     *  Also reset the countdown flag.
+     */
+    override fun tryReset() {
+        isCountingDown = false
+
+        super.tryReset()
+    }
+
+    /**
+     *  Post the reaction when we confirm, and go back to where
+     *  we came from.
+     */
+    override fun onPreviewConfirmed() {
+        super.onPreviewConfirmed()
+
+        // Dispatch the post reaction operation.
+        vm.postVlog(
+            context = requireContext(),
+            isPrivate = false,
+            videoFile = outputFile
+        )
+
+        // Go to our own vlogs.
+        findNavController().navigate(RecordVlogFragmentDirections.actionGlobalProfileFragment()) // User id defaults to self
+    }
+
+    /**
+     *  If we have attempts left we may try again, so reset. Else
+     *  we will be navigated to our dashboard.
+     */
+    override fun onPreviewDeclined() {
+        super.onPreviewDeclined()
+
+        if (attempts >= MAXIMUM_RECORD_ATTEMPTS) {
+            showMessage("Maximum vlog attempts exceeded")
+            findNavController().navigate(RecordVlogFragmentDirections.actionGlobalDashboardFragment())
+        } else {
+            val left = MAXIMUM_RECORD_ATTEMPTS - attempts
+            val word = if (left > 1) "attempts" else "attempt"
+            showMessage("$left $word left")
+
+            tryReset()
+        }
+    }
+
+    /**
+     *  Starts the recording process using the countdown UI.
      */
     private fun startRecordingCountdown() = lifecycleScope.launch(Dispatchers.Main) {
-        // Specify what to do when the countdown exceeds.
-        countDownFrom(COUNTDOWN_MILLISECONDS) {
-            // Trigger the recording functionality and actually start the recording.
-            super.start()
-        }
-    }
+        text_view_record_vlog_countdown?.visible()
 
-    /**
-     *  Starts the countdown popup and performs some function when
-     *  the time is up. Each second the UI will be updated.
-     *
-     *  @param countdownMs How long to count down in ms.
-     *  @param onFinish What to do when the time is up.
-     */
-    private fun countDownFrom(countdownMs: Long, onFinish: suspend () -> Unit) {
-        countdown.visibility = View.VISIBLE
-        val timer = object : CountDownTimer(countdownMs, COUNTDOWN_INTERVAL_MILLISECONDS) {
-            // Display the countdown on screen, updating each second.
+        // Timer object handling our UI.
+        val timer = object : CountDownTimer(COUNTDOWN_MILLISECONDS, COUNTDOWN_INTERVAL_MILLISECONDS) {
             override fun onTick(millisUntilFinished: Long) {
-                countdown.text = String.format("%1d", (millisUntilFinished / COUNTDOWN_INTERVAL_MILLISECONDS) + 1)
+                // Only proceed if we are ready or switching camera.
+                if (getCurrentState() != VideoRecordingState.READY &&
+                    getCurrentState() != VideoRecordingState.INITIALIZING_CAMERA
+                ) {
+                    // Hide and abort.
+                    text_view_record_vlog_countdown?.gone()
+                    this.cancel()
+                    return
+                }
+
+                // Display the countdown on screen, updating each second.
+                text_view_record_vlog_countdown?.text =
+                    String.format("%1d", (millisUntilFinished / COUNTDOWN_INTERVAL_MILLISECONDS) + 1)
+
+                // If we have only one second left, disable the camera switcher.
+                if (millisUntilFinished <= 1100) {
+                    button_switch_camera?.isEnabled = false
+                }
             }
 
-            // Hide the countdown text when we are finished.
+            // Hide the countdown text when we are finished, then start recording.
             override fun onFinish() {
-                countdown?.visibility = View.INVISIBLE
-                lifecycleScope.launch(Dispatchers.Main) { onFinish() }
+                text_view_record_vlog_countdown?.gone()
+
+                lifecycleScope.launch(Dispatchers.Main) {
+                    if (getCurrentState() == VideoRecordingState.READY) {
+                        tryStartRecording()
+                    }
+                }
             }
         }
+
         timer.start()
-    }
-
-    /**
-     *  Stops the recording process and creates a popup in which the user
-     *  can either conform or cancel the vlog operation. If the user
-     *  confirms, the vlog is uploaded and posted to the backend.
-     */
-    override fun stop() {
-        super.stop()
-
-        val authority = "${BuildConfig.APPLICATION_ID}.provider"
-        val localVideoUri = FileProvider.getUriForFile(requireContext(), authority, videoFile)
-        val localThumbnailUri = FileProvider.getUriForFile(requireContext(), authority, thumbnailFile)
-
-        // TODO I believe this is a race condition. This should only run after stop() has completed.
-        lifecycleScope.launch(Dispatchers.Main) {
-            // Confirmation and playback popup
-            Dialog(requireActivity()).apply {
-                setCancelable(true)
-                setContentView(R.layout.video_confirm_dialogue)
-
-                preview_container.setVideoURI(localVideoUri)
-                preview_container.start()
-
-                // Pressing cancel goes to home
-                preview_cancel.setOnClickListener {
-                    val intent = Intent(this.context, MainActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    startActivity(intent)
-                }
-
-                // Pressing ok posts the vlog
-                preview_ok.setOnClickListener {
-                    dismiss()
-                    upload(localVideoUri, localThumbnailUri)
-                }
-            }.show()
-        }
-    }
-
-    // TODO Duplicate functionality with RecordReactionFragment
-    /**
-     *  Called when the user confirms the vlog post after playback.
-     *  This method includes success and failure callbacks.
-     *
-     *  @param localVideoUri Locally stored video file uri.
-     *  @param localThumbnailUri Locally stored thumbnail file uri.
-     */
-    private fun upload(localVideoUri: Uri, localThumbnailUri: Uri) {
-        lifecycleScope.launch(Dispatchers.Main) {
-            vlogVm.postVlog(localVideoUri, localThumbnailUri, false)
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                    {
-                        lifecycleScope.launch(Dispatchers.Main) {
-                            Toast.makeText(
-                                requireContext(),
-                                "The vlog has been posted!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            requireActivity().onBackPressed()
-                        }
-                    },
-                    {
-                        lifecycleScope.launch(Dispatchers.Main) {
-                            Toast.makeText(
-                                requireContext(),
-                                "Failed to upload vlog, please try again.",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    })
-        }
     }
 
     companion object {
         private val TAG = RecordVlogFragment::class.java.simpleName
 
-        const val COUNTDOWN_MILLISECONDS = 5_000L
-        const val COUNTDOWN_INTERVAL_MILLISECONDS = 1_000L
+        private const val COUNTDOWN_MILLISECONDS = 5_000L
+        private const val COUNTDOWN_INTERVAL_MILLISECONDS = 1_000L
+        private const val MAXIMUM_RECORD_ATTEMPTS = 2
 
-        private val MINIMUM_RECORD_TIME = Duration.ofSeconds(10)
+        private val MINIMUM_RECORD_TIME = Duration.ofSeconds(2) // TODO 10 seconds
         private val MAXIMUM_RECORD_TIME = Duration.ofMinutes(10)
     }
 

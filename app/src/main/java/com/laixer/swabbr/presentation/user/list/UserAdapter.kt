@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.laixer.presentation.inflate
+import com.laixer.swabbr.presentation.utils.todosortme.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.utils.diffcallback.UserDiffCallback

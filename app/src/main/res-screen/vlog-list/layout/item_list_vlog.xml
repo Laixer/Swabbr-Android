@@ -33,7 +33,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textAlignment="textStart"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/primaryDark"
         app:layout_constraintBottom_toBottomOf="@+id/include_user_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/include_user_info"

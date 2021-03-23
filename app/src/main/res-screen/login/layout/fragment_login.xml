@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_email"
             android:drawablePadding="5dp"
-            android:drawableTint="@color/colorPrimary"
+            android:drawableTint="@color/primary"
             android:ems="10"
             android:hint="@string/login_usernameEmail"
             android:inputType="textEmailAddress"
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_lock"
             android:drawablePadding="5dp"
-            android:drawableTint="@color/colorPrimary"
+            android:drawableTint="@color/primary"
             android:ems="10"
             android:hint="@string/login_password"
             android:inputType="textPassword" />

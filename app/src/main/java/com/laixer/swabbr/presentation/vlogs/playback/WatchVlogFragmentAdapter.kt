@@ -2,7 +2,7 @@ package com.laixer.swabbr.presentation.vlogs.playback
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
-import com.laixer.presentation.Resource
+import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
 
@@ -21,7 +21,7 @@ internal class WatchVlogFragmentAdapter(
      */
     override fun createFragment(position: Int): Fragment =
         vlogListResource.value!!.data!![position].vlog.id.let {
-            WatchVlogFragment.create(vlogId = it.toString())
+            WatchVlogFragment.newInstance(vlogId = it)
         }
 
     /**

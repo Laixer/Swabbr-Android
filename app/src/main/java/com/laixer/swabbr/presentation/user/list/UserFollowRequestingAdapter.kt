@@ -2,9 +2,8 @@ package com.laixer.swabbr.presentation.user.list
 
 import android.content.Context
 import android.view.View
-import com.laixer.presentation.gone
-import com.laixer.presentation.invisible
-import com.laixer.presentation.visible
+import com.laixer.swabbr.presentation.utils.todosortme.gone
+import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.presentation.model.UserWithRelationItem

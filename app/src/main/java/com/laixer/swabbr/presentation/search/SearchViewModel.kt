@@ -1,8 +1,8 @@
 package com.laixer.swabbr.presentation.search
 
-import com.laixer.presentation.setError
-import com.laixer.presentation.setLoading
-import com.laixer.presentation.setSuccess
+import com.laixer.swabbr.presentation.utils.todosortme.setError
+import com.laixer.swabbr.presentation.utils.todosortme.setLoading
+import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
 import com.laixer.swabbr.domain.types.Pagination
 import com.laixer.swabbr.domain.usecase.FollowUseCase
 import com.laixer.swabbr.domain.usecase.UsersUseCase

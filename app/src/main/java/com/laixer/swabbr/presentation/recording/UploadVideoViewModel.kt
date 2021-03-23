@@ -3,13 +3,7 @@ package com.laixer.swabbr.presentation.recording
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
-import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.laixer.swabbr.presentation.abstraction.ViewModelBase
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -19,27 +13,27 @@ import java.math.RoundingMode
 import java.util.*
 import kotlin.math.ceil
 
-// TODO Clean up and make this use local storage & retries.
+// TODO Refactor this by a lot.
 /**
  *  View model containing functionality for uploading a video.
  */
 open class UploadVideoViewModel constructor(
-    private val mHttpClient: OkHttpClient,
-    private val context: Context
+    private val mHttpClient: OkHttpClient
 ) : ViewModelBase() {
-    protected val toast: Toast = Toast.makeText(context, "", Toast.LENGTH_LONG)
-
+    // TODO Move upload functionality to a helper.
     /**
      *  Uploads a file to an external uri.
      *
      *  @param localVideoUri The local uri to the recorded video file.
      *  @param uploadUri The uri to which the video file should be uploaded.
-     *  @param contentType The MIME type.
+     *  @param contentTypeString The MIME type.
      */
-    protected fun uploadFile(localVideoUri: Uri, uploadUri: Uri, contentType: String) {
+    protected fun uploadFile(context: Context, localVideoUri: Uri, uploadUri: Uri, contentTypeString: String) {
         context.contentResolver.openInputStream(localVideoUri)?.let {
             val bis = BufferedInputStream(it)
             val blockIds = emptyList<String>().toMutableList()
+
+            val contentType = MediaType.get(contentTypeString)
 
             var counter = 1
             val total = bis.available()
@@ -54,25 +48,23 @@ open class UploadVideoViewModel constructor(
                     Base64.getEncoder().encodeToString(("Block-${counter++}").toByteArray(Charsets.UTF_8))
 
                 val available = bis.available()
-                viewModelScope.launch(Dispatchers.Main) {
-                    toast.setText(
-                        "Uploading chunk $counter/${
-                            ceil(
-                                total.toDouble().div(blockSize)
-                            ).toInt() + 1
-                        } (${
-                            (available.toDouble() / 1_000_000).toBigDecimal()
-                                .setScale(1, RoundingMode.HALF_EVEN)
-                        }MB remaining)"
-                    )
-                    toast.show()
-                }
+                Log.d(
+                    TAG,
+                    "Uploading chunk $counter/${
+                        ceil(
+                            total.toDouble().div(blockSize)
+                        ).toInt() + 1
+                    } (${
+                        (available.toDouble() / 1_000_000).toBigDecimal()
+                            .setScale(1, RoundingMode.HALF_EVEN)
+                    }MB remaining)"
+                )
 
                 uploadBlock(uploadUri.toString(), buffer, blockId, contentType)
                 blockIds.add(blockId)
             }
 
-            commitBlockList(uploadUri.toString(), blockIds)
+            commitBlockList(uploadUri.toString(), contentType, blockIds)
 
             bis.close()
             it.close()
@@ -91,11 +83,9 @@ open class UploadVideoViewModel constructor(
         baseUri: String,
         blockContents: ByteArray,
         blockId: String,
-        contentType: String
+        contentType: MediaType
     ) {
-        // TODO Not that bulletproof
-        val mime = MediaType.get(contentType)
-        val body = RequestBody.create(mime, blockContents)
+        val body = RequestBody.create(contentType, blockContents)
 
         Log.d(TAG, body.toString())
         val uploadBlockUri = "$baseUri&comp=block&blockId=$blockId"
@@ -110,7 +100,7 @@ open class UploadVideoViewModel constructor(
         mHttpClient.newCall(request).execute()
     }
 
-    private fun commitBlockList(baseUri: String, blockIds: List<String>) {
+    private fun commitBlockList(baseUri: String, contentType: MediaType, blockIds: List<String>) {
         val blockIdsPayload = StringBuilder().apply {
             append("<?xml version='1.0' ?><BlockList>")
             for (blockId in blockIds) {
@@ -122,7 +112,6 @@ open class UploadVideoViewModel constructor(
         Log.d(TAG, blockIdsPayload.toString())
 
         val putBlockListUrl = "$baseUri&comp=blockList"
-        val contentType = MediaType.get("video/mp4")
         val body = RequestBody.create(contentType, blockIdsPayload.toString())
 
         val request = Request.Builder()
@@ -136,7 +125,7 @@ open class UploadVideoViewModel constructor(
     }
 
     companion object {
-        private const val TAG = "UploadVideoViewModel"
+        private val TAG = UploadVideoViewModel::class.java.simpleName
         private const val X_MS_VERSION = "2019-02-02"
         private const val X_MS_BLOB_TYPE = "BlockBlob"
     }

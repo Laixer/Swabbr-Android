@@ -1,10 +1,11 @@
 package com.laixer.swabbr.presentation.video
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.laixer.presentation.gone
+import com.laixer.swabbr.presentation.utils.todosortme.gone
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.auth.AuthFragment
 import kotlinx.android.synthetic.main.fragment_video_view_pager.*
@@ -14,7 +15,8 @@ import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 /**
  *  This fragment is used to watch a video and to be able to swipe left
  *  and right to go to other videos. When entering this fragment, the
- *  entire fragment is filled with the [video_viewpager].
+ *  entire fragment is filled with the [video_viewpager]. This also
+ *  disposes the created adapter.
  *
  *  Note that each video in the [video_viewpager] is inflated using a
  *  [WatchVideoFragmentAdapter] implementation.
@@ -56,6 +58,17 @@ abstract class WatchVideoListFragment : AuthFragment() {
      *  as the adapter for [video_viewpager] yourself.
      */
     protected abstract fun getWatchVideoFragmentAdapter(): WatchVideoFragmentAdapter
+
+    /**
+     *  Explicitly dispose the adapter to prevent memory leaks.
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        video_viewpager?.let {
+            it.adapter = null
+        }
+    }
 }
 
 

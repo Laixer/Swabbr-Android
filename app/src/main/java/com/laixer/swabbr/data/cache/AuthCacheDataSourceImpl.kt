@@ -1,6 +1,6 @@
 package com.laixer.swabbr.data.cache
 
-import com.laixer.cache.Cache
+import com.laixer.swabbr.utils.cache.Cache
 import com.laixer.swabbr.data.interfaces.AuthCacheDataSource
 import com.laixer.swabbr.domain.model.TokenWrapper
 import io.reactivex.Completable

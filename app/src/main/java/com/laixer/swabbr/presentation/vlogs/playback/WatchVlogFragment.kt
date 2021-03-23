@@ -11,21 +11,22 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
-import com.laixer.presentation.gone
-import com.laixer.presentation.visible
 import com.laixer.swabbr.R
+import com.laixer.swabbr.extensions.getUuidOrNull
 import com.laixer.swabbr.extensions.onClickProfile
+import com.laixer.swabbr.extensions.putUuid
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.reaction.playback.ReactionsAdapter
-import com.laixer.swabbr.presentation.reaction.playback.WatchReactionFragmentArgs
 import com.laixer.swabbr.presentation.utils.buildDoubleTapListener
+import com.laixer.swabbr.presentation.utils.todosortme.gone
+import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.presentation.video.WatchVideoFragment
 import com.laixer.swabbr.utils.formatNumber
 import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import com.plattysoft.leonids.ParticleSystem
 import kotlinx.android.synthetic.main.exo_player_view.*
 import kotlinx.android.synthetic.main.fragment_video.*
@@ -35,21 +36,19 @@ import kotlinx.android.synthetic.main.vlog_info_overlay.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
-// TODO BUG java.lang.IllegalStateException: Fragment WatchVlogFragment{5c199a7} (3adedb84-c7a9-45ac-bf25-9df53bf0f9ee) f0} has null arguments
-// TODO BUG java.lang.RuntimeException: Unable to start activity ComponentInfo{com.laixer.swabbr/com.laixer.swabbr.presentation.MainActivity}:
-//  androidx.fragment.app.Fragment$InstantiationException: Unable to instantiate fragment com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragment:
-//  could not find Fragment constructor
-//  --> Quickfix is to match [WatchReactionFragment], look at this.
 /**
  *  Fragment for watching a single vlog. This extends [WatchVideoFragment]
  *  which contains the core playback functionality. This class manages
  *  the displaying of likes, reactions and other data about the vlog.
  *  Note that the playback of reactions is managed by [].
  */
-class WatchVlogFragment(id: String? = null) : WatchVideoFragment() {
+class WatchVlogFragment : WatchVideoFragment() {
     private val args by navArgs<WatchVlogFragmentArgs>()
     private val vlogVm: VlogViewModel by viewModel()
-    private val vlogId: UUID by lazy { UUID.fromString(id ?: args.vlogId) }
+
+    private val vlogId: UUID by lazy {
+        arguments?.getUuidOrNull(BUNDLE_KEY_VLOG_ID) ?: UUID.fromString(args.vlogId)
+    }
 
     /**
      *  Attaches observers to the [vlogVm] resources.
@@ -134,7 +133,7 @@ class WatchVlogFragment(id: String? = null) : WatchVideoFragment() {
         button_post_reaction.setOnClickListener {
             findNavController().navigate(
                 WatchVlogFragmentDirections.actionGlobalRecordReactionFragment(
-                    vlogId = vlogId.toString()
+                    targetVlogId = vlogId.toString()
                 )
             )
         }
@@ -413,8 +412,14 @@ class WatchVlogFragment(id: String? = null) : WatchVideoFragment() {
             || vlogVm.vlog.value!!.data!!.vlog.userId == authVm.getSelfIdOrNull())
 
     companion object {
-        fun create(vlogId: String): WatchVlogFragment {
-            return WatchVlogFragment(vlogId)
+        private val TAG = WatchVlogFragment::class.java.simpleName
+        private const val BUNDLE_KEY_VLOG_ID = "vlogId"
+
+        /**
+         *  Static strong-typed constructor.
+         */
+        fun newInstance(vlogId: UUID) = WatchVlogFragment().apply {
+            arguments = Bundle().apply { putUuid(BUNDLE_KEY_VLOG_ID, vlogId) }
         }
     }
 }

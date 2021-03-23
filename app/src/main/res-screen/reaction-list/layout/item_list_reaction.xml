@@ -70,7 +70,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/medium_profile_image_size"
         android:layout_marginStart="@dimen/medium_profile_image_size_half"
-        android:background="@color/color_transparent_overlay"
+        android:background="@color/transparentOverlay"
         android:translationZ="-1dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/user_profile_image"

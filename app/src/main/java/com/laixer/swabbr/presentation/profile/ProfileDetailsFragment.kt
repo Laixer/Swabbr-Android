@@ -9,8 +9,8 @@ import android.widget.ArrayAdapter
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import com.github.dhaval2404.imagepicker.ImagePicker
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
@@ -28,7 +28,6 @@ import kotlinx.android.synthetic.main.fragment_registration.*
 import kotlinx.android.synthetic.main.fragment_registration.fab_set_profile_image
 import kotlinx.android.synthetic.main.fragment_registration.inputNickname
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.time.LocalDate
 import java.util.*
 
 // TODO This doesn't allow us to set any properties to null. Maybe we want this for first name and last name?
@@ -158,7 +157,7 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
 
         button_profile_details_save.setOnClickListener { confirmChanges() }
         button_profile_logout.setOnClickListener {
-            // Perform logout operation and take us back to the login screen.
+            // Perform logout operation which take us back to the login screen.
             authVm.logout()
         }
 

@@ -3,19 +3,15 @@ package com.laixer.swabbr.presentation.user.list
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.laixer.presentation.inflate
+import com.laixer.swabbr.presentation.utils.todosortme.inflate
 import com.laixer.swabbr.R
-import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.presentation.utils.diffcallback.UserWithRelationDiffCallback
 import com.laixer.swabbr.utils.loadAvatar
 import kotlinx.android.synthetic.main.include_user_large.view.*
 import kotlinx.android.synthetic.main.include_usernames.view.*
-import kotlinx.android.synthetic.main.item_list_user_followable.view.*
 
 /**
  *  Adapter for a [UserWithRelationItem] in a list. This can be extended to

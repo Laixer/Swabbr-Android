@@ -32,7 +32,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/empty_vlog_collection"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/primaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

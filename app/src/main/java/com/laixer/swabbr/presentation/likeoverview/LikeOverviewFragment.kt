@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
-import com.laixer.presentation.startRefreshing
-import com.laixer.presentation.stopRefreshing
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.presentation.utils.todosortme.startRefreshing
+import com.laixer.swabbr.presentation.utils.todosortme.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.extensions.onClickProfileWithRelation
@@ -17,6 +16,7 @@ import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.presentation.user.list.UserFollowableAdapter
 import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
+import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.fragment_like_overview.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

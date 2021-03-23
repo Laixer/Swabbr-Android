@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
+import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.extensions.reduceDragSensitivity
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
 import com.laixer.swabbr.presentation.video.WatchVideoListFragment
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
+import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 import org.koin.androidx.viewmodel.ext.android.viewModel

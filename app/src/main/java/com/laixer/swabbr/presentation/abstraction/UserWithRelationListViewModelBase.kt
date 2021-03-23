@@ -1,14 +1,11 @@
 package com.laixer.swabbr.presentation.abstraction
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.laixer.presentation.Resource
+import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.domain.usecase.FollowUseCase
 import com.laixer.swabbr.extensions.cascadeFollowAction
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
-import com.laixer.swabbr.presentation.viewmodel.ViewModelBase
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 

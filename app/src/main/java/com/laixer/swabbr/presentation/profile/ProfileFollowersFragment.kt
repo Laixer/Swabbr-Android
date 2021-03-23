@@ -1,18 +1,15 @@
 package com.laixer.swabbr.presentation.profile
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
-import com.laixer.presentation.startRefreshing
-import com.laixer.presentation.stopRefreshing
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
+import com.laixer.swabbr.presentation.utils.todosortme.startRefreshing
+import com.laixer.swabbr.presentation.utils.todosortme.stopRefreshing
 import com.laixer.swabbr.R
-import com.laixer.swabbr.extensions.onClickProfile
 import com.laixer.swabbr.extensions.onClickProfileWithRelation
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.auth.AuthFragment
@@ -20,7 +17,6 @@ import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.presentation.user.list.UserFollowRequestingAdapter
 import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
 import kotlinx.android.synthetic.main.fragment_profile_followers.*
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
@@ -35,7 +31,7 @@ import java.util.*
 class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
     private val profileVm: ProfileViewModel by viewModel()
 
-    private lateinit var adapter: UserWithRelationAdapter
+    private var userAdapter: UserWithRelationAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_profile_followers, container, false)
@@ -48,14 +44,14 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Setup and store the adapter.
-        adapter = UserFollowRequestingAdapter(
+        userAdapter = UserFollowRequestingAdapter(
             context = requireContext(),
             onClickProfile = onClickProfileWithRelation(),
             onClickAccept = onAccept,
             onClickDecline = onDecline
         )
         recycler_view_profile_followers.isNestedScrollingEnabled = false
-        recycler_view_profile_followers.adapter = adapter
+        recycler_view_profile_followers.adapter = userAdapter
 
         swipe_refresh_layout_profile_followers.setOnRefreshListener { getData(true) }
 
@@ -106,8 +102,7 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
                         swipe_refresh_layout_profile_followers.stopRefreshing()
 
                         data?.let {
-                            adapter.submitList(it)
-                            adapter.notifyDataSetChanged()
+                            userAdapter?.submitList(it)
                         }
                     }
                     ResourceState.ERROR -> {
@@ -117,5 +112,14 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
                     }
                 }
         }
+    }
+
+    /**
+     *  Dispose adapter to prevent memory leak.
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        userAdapter = null
     }
 }

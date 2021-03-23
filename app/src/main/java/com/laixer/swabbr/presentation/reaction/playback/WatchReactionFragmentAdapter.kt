@@ -3,7 +3,7 @@ package com.laixer.swabbr.presentation.reaction.playback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.laixer.presentation.Resource
+import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.types.VideoPlaybackState
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
@@ -34,8 +34,7 @@ internal class WatchReactionFragmentAdapter(
      */
     override fun createFragment(position: Int): Fragment =
         reactionListResource.value!!.data!![position].reaction.id.let { reactionId ->
-            val createdFragment: WatchReactionFragment =
-                WatchReactionFragment.create(reactionId = reactionId.toString())
+            val createdFragment = WatchReactionFragment.newInstance(reactionId)
 
             // Attach the callback method if we have one.
             onVideoCompletedCallback?.let { callback ->

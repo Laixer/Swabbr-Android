@@ -3,25 +3,23 @@ package com.laixer.swabbr.presentation.dashboard
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import com.laixer.presentation.*
 import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.reduceDragSensitivity
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
-import com.laixer.swabbr.presentation.profile.ProfileViewModel
+import com.laixer.swabbr.presentation.utils.todosortme.gone
+import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
 import com.laixer.swabbr.presentation.video.WatchVideoListFragment
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragmentAdapter
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 import kotlinx.android.synthetic.main.fragment_vlog_list.*
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-// TODO Question: this gets the vlog user and vlog like summary as well
-//      for each vlog. We never display this information in this fragment
-//      thus we make a lot of unnecessary backend calls. Change this?
 /**
  *  Fragment representing the user dashboard, displaying vlogs.
  *  This uses the [WatchVideoListFragment] to display swipeable
@@ -29,13 +27,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  */
 class DashboardFragment : WatchVideoListFragment() {
     private val vlogListVm: VlogListViewModel by viewModel()
-
-    /**
-     *  Trigger instant data get.
-     */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     /**
      *  Attaches the observers to the [vlogListVm] vlogs resource,

@@ -2,17 +2,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'kotlin-kapt'
 
 android {
-  signingConfigs {
-    release {
-      storeFile file('/home/pnobbe/StudioProjects/Swabbr-Android/contrib/keystore.jks')
-      storePassword 'nQsfdqNcnokU1JRRM899'
-      keyPassword '3RPWvITJRMF2NkmqgSQ4'
-      keyAlias 'swabbr_release'
-    }
-  }
   compileSdkVersion DefaultConfig.compileSdk
 
   ndkVersion "21.3.6528147"
@@ -56,8 +50,6 @@ android {
 
       buildConfigField "Boolean", "DEBUG_MODE", "false"
       buildConfigField "String", "API_ENDPOINT", "\"https://staging.swabbr.com/api/\""
-
-      signingConfig signingConfigs.release
     }
 
     debug {
@@ -86,16 +78,10 @@ android {
 }
 
 dependencies {
-  implementation project(Modules.cache)
-  implementation project(Modules.network)
-  implementation project(Modules.presentation)
-  implementation project(Modules.liveVideoBroadcasterSDK)
-
+  // Kotlin
   implementation Libs.kotlin_stdlib_jdk8
   implementation Libs.kotlin_reflect
-
-  implementation Libs.jwtdecode
-  implementation Libs.runtime_permission_kotlin
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   // Koin
   implementation Libs.koin_android
@@ -134,27 +120,43 @@ dependencies {
   implementation Libs.core_ktx
   implementation Libs.appcompat
   implementation Libs.fragment_ktx
-
-  // Navigation component TODO
-//  implementation Libs.navigation_fragment_ktx
-//  implementation Libs.navigation_ui_ktx
-  implementation "androidx.navigation:navigation-fragment-ktx:2.3.3"
-  implementation "androidx.navigation:navigation-ui-ktx:2.3.3"
-  implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.3"
-
-  implementation 'com.gu.android:toolargetool:0.2.1@aar'
-
-  // Firebase
-  // Import the BoM for the Firebase platform
-  implementation platform('com.google.firebase:firebase-bom:25.12.0')
-
-  implementation Libs.firebase_crashlytics
-  implementation Libs.firebase_analytics
-  implementation Libs.firebase_messaging
-  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
+  // Navigation component
+  implementation "androidx.navigation:navigation-fragment-ktx:2.3.4"
+  implementation "androidx.navigation:navigation-ui-ktx:2.3.4"
+  implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.4"
+
+  // Others
+  implementation 'com.gu.android:toolargetool:0.3.0@aar'
+  implementation Libs.runtime_permission_kotlin
+  implementation Libs.jwtdecode
+
+  // Firebase (including other Firebase products)
+  implementation platform('com.google.firebase:firebase-bom:26.7.0')
+  implementation 'com.google.firebase:firebase-analytics-ktx'
+  implementation 'com.google.firebase:firebase-crashlytics-ktx'
+  implementation 'com.google.firebase:firebase-messaging-ktx'
+
+  // Leak analysis
   debugImplementation Libs.leakcanary_android
+
+  // TODO Look into this - do we need all of these?
+  // Some UI components
+  implementation Libs.lifecycle_extensions
+  kapt Libs.lifecycle_compiler
+  testImplementation Libs.core_testing
+
+  implementation Libs.navigation_ui_ktx
+  implementation Libs.swiperefreshlayout
+
+  api Libs.glide
+  kapt Libs.com_github_bumptech_glide_compiler
+  implementation Libs.core_ktx
+  implementation Libs.kotlin_stdlib_jdk8
+
+  // Caching
+  implementation Libs.rxpaper2
 
   // Testing dependencies
   testImplementation Libs.junit
@@ -168,5 +170,3 @@ repositories {
   google()
   mavenCentral()
 }
-
-apply plugin: 'com.google.gms.google-services'

@@ -1,6 +1,5 @@
 package com.laixer.swabbr.presentation.search
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,12 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
-import com.laixer.presentation.startRefreshing
-import com.laixer.presentation.stopRefreshing
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
+import com.laixer.swabbr.presentation.utils.todosortme.startRefreshing
+import com.laixer.swabbr.presentation.utils.todosortme.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.domain.types.Pagination
@@ -100,12 +98,16 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         }
     }
 
+    /**
+     *  Search for users.
+     */
     @Throws(IllegalArgumentException::class)
     private fun search(
         query: String = lastQuery,
         page: Int = currentPage,
         refreshList: Boolean = true
     ): Boolean {
+
         // Can't search negative pages
         if (currentPage < 1) {
             Log.e(TAG, "page index must be 1 or higher, received '$page'")

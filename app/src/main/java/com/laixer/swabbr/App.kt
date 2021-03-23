@@ -1,17 +1,12 @@
 package com.laixer.swabbr
 
 import android.app.Application
-import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.ktx.messaging
-import com.gu.toolargetool.TooLargeTool
-import com.laixer.cache.CacheLibrary
+import com.laixer.swabbr.utils.cache.CacheLibrary
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -41,12 +36,13 @@ class App : Application() {
         // Unique initialization of Cache library to allow saving into device
         CacheLibrary.init(this)
 
-        // Determine if user is in night mode
-        val nightMode = when (resources.configuration.uiMode) {
-            Configuration.UI_MODE_NIGHT_YES -> AppCompatDelegate.MODE_NIGHT_YES
-            else -> AppCompatDelegate.MODE_NIGHT_NO
-        }
-
-        AppCompatDelegate.setDefaultNightMode(nightMode)
+        // TODO Not used
+//        // Determine if user is in night mode
+//        val nightMode = when (resources.configuration.uiMode) {
+//            Configuration.UI_MODE_NIGHT_YES -> AppCompatDelegate.MODE_NIGHT_YES
+//            else -> AppCompatDelegate.MODE_NIGHT_NO
+//        }
+//
+//        AppCompatDelegate.setDefaultNightMode(nightMode)
     }
 }

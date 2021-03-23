@@ -3,7 +3,7 @@ package com.laixer.swabbr.services.okhttp
 import com.laixer.swabbr.BuildConfig
 import com.laixer.swabbr.data.model.TokenWrapperEntity
 import com.laixer.swabbr.data.model.mapToDomain
-import com.laixer.swabbr.extensions.buildWithCustomAdapters
+import com.laixer.swabbr.services.moshi.buildWithCustomAdapters
 import com.laixer.swabbr.services.users.UserManager
 import com.squareup.moshi.Moshi
 import okhttp3.*

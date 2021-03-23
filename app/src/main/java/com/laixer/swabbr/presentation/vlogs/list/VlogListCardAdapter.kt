@@ -1,15 +1,14 @@
 package com.laixer.swabbr.presentation.vlogs.list
 
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
-import com.laixer.presentation.gone
-import com.laixer.presentation.inflate
-import com.laixer.presentation.visible
+import com.laixer.swabbr.presentation.utils.todosortme.gone
+import com.laixer.swabbr.presentation.utils.todosortme.inflate
+import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.utils.diffcallback.VlogWrapperDiffCallback
@@ -17,7 +16,6 @@ import com.laixer.swabbr.utils.loadAvatar
 import kotlinx.android.synthetic.main.include_user_large.view.*
 import kotlinx.android.synthetic.main.include_usernames.view.*
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
-import kotlinx.android.synthetic.main.video_info_overlay.*
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*

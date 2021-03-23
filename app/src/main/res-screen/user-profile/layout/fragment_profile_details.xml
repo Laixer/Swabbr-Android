@@ -125,7 +125,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:drawablePadding="5dp"
-            android:drawableTint="@color/colorPrimary"
+            android:drawableTint="@color/primary"
             android:hint="@string/register_firstName"
             android:inputType="textPersonName"
             android:text=""

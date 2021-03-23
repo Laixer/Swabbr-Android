@@ -2,9 +2,9 @@ package com.laixer.swabbr.services.users
 
 import androidx.lifecycle.MutableLiveData
 import com.auth0.android.jwt.JWT
-import com.laixer.cache.Cache
-import com.laixer.presentation.Resource
-import com.laixer.presentation.setSuccess
+import com.laixer.swabbr.utils.cache.Cache
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
 import com.laixer.swabbr.domain.model.TokenWrapper
 import java.time.ZoneId
 import java.time.ZonedDateTime
