@@ -1,11 +1,13 @@
 package com.laixer.swabbr.presentation.reaction.recording
 
+import android.media.MediaScannerConnection
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.laixer.swabbr.extensions.goBack
 import com.laixer.swabbr.presentation.recording.RecordVideoWithPreviewFragment
 import com.laixer.swabbr.presentation.types.VideoRecordingState
+import com.laixer.swabbr.services.uploading.ReactionUploadWorker
 import kotlinx.android.synthetic.main.fragment_record_video_minmax.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,12 +15,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.Duration
 import java.util.*
 
-
 /**
  *  Fragment for recording a reaction.
  */
 class RecordReactionFragment : RecordVideoWithPreviewFragment() {
-    private val vm: RecordReactionViewModel by viewModel()
 
     private val args: RecordReactionFragmentArgs by navArgs()
     private val targetVlogId: UUID by lazy { UUID.fromString(args.targetVlogId) }
@@ -52,12 +52,25 @@ class RecordReactionFragment : RecordVideoWithPreviewFragment() {
     override fun onPreviewConfirmed() {
         super.onPreviewConfirmed()
 
-        // Dispatch the post reaction operation.
-        vm.postReaction(
+        // TODO This doesn't seem to do anything currently
+        // Broadcasts the media file to the rest of the system.
+        // Note that does not broadcast to the media gallery,
+        // which it should be doing.
+        MediaScannerConnection.scanFile(
+            requireContext(),
+            arrayOf(outputFile.absolutePath),
+            arrayOf(VIDEO_MIME_TYPE),
+            null
+        )
+
+        // FUTURE: Implement isPrivate
+        // Dispatch the uploading process
+        ReactionUploadWorker.enqueue(
             context = requireContext(),
-            isPrivate = false,
+            userId = getSelfId(),
+            videoFile = outputFile,
             targetVlogId = targetVlogId,
-            videoFile = outputFile
+            isPrivate = false
         )
 
         // Go back, which should take us back to the vlog we are posting to.

@@ -1,8 +1,8 @@
 package com.laixer.swabbr.presentation.vlogs.recording
 
+import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +14,8 @@ import com.laixer.swabbr.presentation.recording.RecordVideoWithPreviewFragment
 import com.laixer.swabbr.presentation.types.VideoRecordingState
 import com.laixer.swabbr.presentation.utils.todosortme.gone
 import com.laixer.swabbr.presentation.utils.todosortme.visible
+import com.laixer.swabbr.services.uploading.ReactionUploadWorker
+import com.laixer.swabbr.services.uploading.VlogUploadWorker
 import kotlinx.android.synthetic.main.fragment_record_video_minmax.*
 import kotlinx.android.synthetic.main.fragment_record_vlog.*
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +27,6 @@ import java.time.Duration
  *  Fragment for recording a vlog.
  */
 class RecordVlogFragment : RecordVideoWithPreviewFragment() {
-    private val vm: VlogRecordingViewModel by viewModel()
 
     /**
      *  Counter indicating how many retries we have had.
@@ -85,11 +86,24 @@ class RecordVlogFragment : RecordVideoWithPreviewFragment() {
     override fun onPreviewConfirmed() {
         super.onPreviewConfirmed()
 
-        // Dispatch the post reaction operation.
-        vm.postVlog(
+        // TODO This doesn't seem to do anything currently
+        // Broadcasts the media file to the rest of the system.
+        // Note that does not broadcast to the media gallery,
+        // which it should be doing.
+        MediaScannerConnection.scanFile(
+            requireContext(),
+            arrayOf(outputFile.absolutePath),
+            arrayOf(VIDEO_MIME_TYPE),
+            null
+        )
+
+        // FUTURE: Implement isPrivate
+        // Dispatch the uploading process
+        VlogUploadWorker.enqueue(
             context = requireContext(),
-            isPrivate = false,
-            videoFile = outputFile
+            userId = getSelfId(),
+            videoFile = outputFile,
+            isPrivate = false
         )
 
         // Go to our own vlogs.

@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
+import com.laixer.swabbr.presentation.auth.AuthFragment
 
 // TODO Do we really want this to behave like this? Maybe not, maybe do this in the activity? ...
 /**
@@ -13,7 +14,7 @@ import androidx.fragment.app.Fragment
  *  @param orientation One of [ActivityInfo.SCREEN_ORIENTATION_PORTRAIT]
  *   or [ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE].
  */
-abstract class FixedOrientationFragment(private val orientation: Int) : Fragment() {
+abstract class FixedOrientationFragment(private val orientation: Int) : AuthFragment() {
     /**
      *  This stores the original orientation before modifying it here.
      */

@@ -45,7 +45,7 @@ abstract class RecordVideoInnerMethods : FixedOrientationFragment(ActivityInfo.S
             setVideoSource(MediaRecorder.VideoSource.SURFACE)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setVideoFrameRate(30)
-            setVideoEncodingBitRate(5_000_000)
+            setVideoEncodingBitRate(3_000_000)
             setAudioEncodingBitRate(192_000)
             setVideoEncoder(MediaRecorder.VideoEncoder.H264)
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)

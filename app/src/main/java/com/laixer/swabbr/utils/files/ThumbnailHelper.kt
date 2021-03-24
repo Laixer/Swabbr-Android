@@ -20,6 +20,7 @@ class ThumbnailHelper {
         fun createThumbnailFromVideoFile(context: Context, videoFile: File, size: Size = DEFAULT_SIZE): File {
             // TODO Use cancellation for timeout?
             val cancellationSignal = CancellationSignal()
+
             val thumbnail = ThumbnailUtils.createVideoThumbnail(videoFile, size, cancellationSignal)
 
             val thumbnailFile = FileHelper.createFile(context, FILE_NAME_BASE, DEFAULT_MIME_TYPE, true)

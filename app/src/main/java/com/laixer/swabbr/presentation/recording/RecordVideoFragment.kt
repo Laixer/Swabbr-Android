@@ -5,6 +5,7 @@ import android.content.Context
 import android.hardware.camera2.*
 import android.media.MediaRecorder
 import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -215,9 +216,7 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
     /**
      *  Override this method to listen to [state] changes.
      */
-    protected open fun onStateChanged(state: VideoRecordingState) {
-        Log.d(TAG, "State changed to ${state.value}")
-    }
+    protected open fun onStateChanged(state: VideoRecordingState) { }
 
     /**
      *  Called when we can't obtain the required permissions for whatever reason.
@@ -396,15 +395,6 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
             recorderSurface?.release()
             tryCleanupCameraResources()
 
-            // Broadcasts the media file to the rest of the system.
-            // Note that does not broadcast to the media gallery.
-            MediaScannerConnection.scanFile(
-                requireContext(),
-                arrayOf(outputFile.absolutePath),
-                arrayOf(VIDEO_MIME_TYPE),
-                null
-            )
-
             state.postValue(VideoRecordingState.DONE_RECORDING)
         } catch (e: Exception) {
             Log.e(TAG, "Error while trying to stop recording", e)
@@ -521,9 +511,9 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
 
         // TODO Move to some config file
         // Video constants
-        private const val VIDEO_BASE_NAME = "video"
-        private const val VIDEO_MIME_TYPE = MediaConstants.VIDEO_MP4_MIME_TYPE
-        private val PREFERRED_VIDEO_SIZE = MediaConstants.SIZE_1080p
-        private val CAMERA_BEGIN_DIRECTION = CameraDirection.FRONT
+        internal const val VIDEO_BASE_NAME = "video"
+        internal const val VIDEO_MIME_TYPE = MediaConstants.VIDEO_MP4_MIME_TYPE
+        internal val PREFERRED_VIDEO_SIZE = MediaConstants.SIZE_1080p
+        internal val CAMERA_BEGIN_DIRECTION = CameraDirection.FRONT
     }
 }

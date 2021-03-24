@@ -3,7 +3,6 @@ package com.laixer.swabbr
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
-import com.laixer.swabbr.utils.cache.Cache
 import com.laixer.swabbr.data.api.*
 import com.laixer.swabbr.data.cache.*
 import com.laixer.swabbr.data.datasource.*
@@ -11,20 +10,19 @@ import com.laixer.swabbr.data.interfaces.*
 import com.laixer.swabbr.data.repository.*
 import com.laixer.swabbr.domain.interfaces.*
 import com.laixer.swabbr.domain.usecase.*
-import com.laixer.swabbr.services.okhttp.AuthInterceptor
 import com.laixer.swabbr.presentation.auth.AuthViewModel
-import com.laixer.swabbr.services.users.UserManager
 import com.laixer.swabbr.presentation.likeoverview.LikeOverviewViewModel
 import com.laixer.swabbr.presentation.profile.ProfileViewModel
 import com.laixer.swabbr.presentation.reaction.list.ReactionListViewModel
 import com.laixer.swabbr.presentation.reaction.playback.ReactionViewModel
-import com.laixer.swabbr.presentation.reaction.recording.RecordReactionViewModel
 import com.laixer.swabbr.presentation.search.SearchViewModel
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
 import com.laixer.swabbr.presentation.vlogs.playback.VlogViewModel
-import com.laixer.swabbr.presentation.vlogs.recording.VlogRecordingViewModel
 import com.laixer.swabbr.services.moshi.buildWithCustomAdapters
+import com.laixer.swabbr.services.okhttp.AuthInterceptor
 import com.laixer.swabbr.services.okhttp.CacheInterceptor
+import com.laixer.swabbr.services.users.UserManager
+import com.laixer.swabbr.utils.cache.Cache
 import com.squareup.moshi.Moshi
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
@@ -59,6 +57,7 @@ private val loadFeature by lazy {
     )
 }
 
+// TODO This means our firebase instance is injectable!
 val firebaseModule: Module = module {
     single { FirebaseCrashlytics.getInstance() }
     single { FirebaseAnalytics.getInstance(androidContext()) }
@@ -88,11 +87,9 @@ val viewModelModule: Module = module {
     }
     viewModel { VlogListViewModel(usersVlogsUseCase = get(), vlogUseCase = get()) }
     viewModel { VlogViewModel(authUserUseCase = get(), reactionsUseCase = get(), vlogUseCase = get()) }
-    viewModel { VlogRecordingViewModel(mHttpClient = get(), vlogUseCase = get()) }
     viewModel { SearchViewModel(usersUseCase = get(), followUseCase = get()) }
     viewModel { ReactionViewModel(reactionsUseCase = get()) }
     viewModel { ReactionListViewModel(reactionsUseCase = get()) }
-    viewModel { RecordReactionViewModel(mHttpClient = get(), reactionsUseCase = get()) }
 }
 
 val useCaseModule: Module = module {
@@ -152,9 +149,14 @@ val networkModule: Module = module {
             .addInterceptor(get<AuthInterceptor>())
             .addInterceptor(get<CacheInterceptor>())
             .addNetworkInterceptor(HttpLoggingInterceptor().apply {
-                this.level = HttpLoggingInterceptor.Level.BASIC // TODO Put back
+                this.level = HttpLoggingInterceptor.Level.BASIC
             })
-            .cache(okhttp3.Cache(File(androidContext().cacheDir, "http-cache"), 10 * 1024 * 1024)) // 10Mb cache TODO Do we want this?
+            .cache(
+                okhttp3.Cache(
+                    File(androidContext().cacheDir, "http-cache"),
+                    10 * 1024 * 1024
+                )
+            ) // 10Mb cache TODO Do we want this?
             .connectTimeout(5, TimeUnit.SECONDS) // TODO Fix for production
             .readTimeout(300, TimeUnit.SECONDS)
             .callTimeout(300, TimeUnit.SECONDS)

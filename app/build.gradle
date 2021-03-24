@@ -138,6 +138,9 @@ dependencies {
   implementation 'com.google.firebase:firebase-crashlytics-ktx'
   implementation 'com.google.firebase:firebase-messaging-ktx'
 
+  // Background work using WorkManager
+  implementation "androidx.work:work-runtime-ktx:2.5.0" // Kotlin + coroutines
+
   // Leak analysis
   debugImplementation Libs.leakcanary_android
 
