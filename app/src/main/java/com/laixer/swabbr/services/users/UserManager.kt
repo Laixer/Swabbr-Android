@@ -1,6 +1,7 @@
 package com.laixer.swabbr.services.users
 
 import androidx.lifecycle.MutableLiveData
+import androidx.work.WorkManager
 import com.auth0.android.jwt.JWT
 import com.laixer.swabbr.utils.cache.Cache
 import com.laixer.swabbr.utils.resources.Resource
@@ -10,6 +11,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
 
+// TODO Should this be a background service? Maybe yes?
 // TODO Should this contain email?
 // TODO Invalidate should maybe also clear the refresh token? We should have
 //  the ability to force a login by the user if refreshing also doesn't work.

@@ -28,7 +28,7 @@ class FileHelper {
             val extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
                 ?: throw Exception("Could not find extension for mime type $mimeType")
 
-            val fileName = if (useTimeStamp) {
+            val fileName = if (!useTimeStamp) {
                 "$name.$extension"
             } else {
                 val sdf = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss_SSS", Locale.ENGLISH).format(Date())
@@ -38,32 +38,6 @@ class FileHelper {
             return File(context.filesDir, fileName)
         }
 
-        /**
-         *  Write a bitmap to an existing file.
-         *
-         *  @return True if successful.
-         */
-        fun writeBitmapToFile(
-            bitmap: Bitmap,
-            file: File,
-            compressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG,
-            quality: Int = 100
-        ): Boolean {
-            return try {
-                val os = FileOutputStream(file)
-                bitmap.compress(compressFormat, quality, os)
-                os.flush()
-                os.close()
-
-                true
-            } catch (e: Exception) {
-                Log.e(TAG, "Couldn't write bitmap to file $file")
-
-                false
-            }
-        }
-
-        // Log tag.
         private val TAG = FileHelper::class.java.simpleName
     }
 }

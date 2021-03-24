@@ -158,7 +158,7 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
         button_profile_details_save.setOnClickListener { confirmChanges() }
         button_profile_logout.setOnClickListener {
             // Perform logout operation which take us back to the login screen.
-            authVm.logout()
+            authVm.logout(requireContext())
         }
 
         // Setup spinner values

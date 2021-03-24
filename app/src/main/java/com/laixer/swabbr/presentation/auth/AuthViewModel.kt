@@ -1,6 +1,8 @@
 package com.laixer.swabbr.presentation.auth
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import androidx.work.WorkManager
 import com.google.android.gms.tasks.Tasks.await
 import com.google.firebase.messaging.FirebaseMessaging
 import com.laixer.swabbr.utils.resources.Resource
@@ -11,10 +13,13 @@ import com.laixer.swabbr.domain.usecase.AuthUseCase
 import com.laixer.swabbr.presentation.model.RegistrationItem
 import com.laixer.swabbr.presentation.model.mapToDomain
 import com.laixer.swabbr.presentation.abstraction.ViewModelBase
+import com.laixer.swabbr.services.uploading.ReactionUploadWorker
+import com.laixer.swabbr.services.uploading.VlogUploadWorker
 import com.laixer.swabbr.services.users.UserManager
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import java.util.*
+import kotlin.coroutines.coroutineContext
 
 /**
  *  View model for managing user login, logout and registration.
@@ -122,13 +127,23 @@ open class AuthViewModel constructor(
      *  Logs the user out. Note that this will also disable any
      *  future notifications through firebase.
      */
-    fun logout() =
+    fun logout(context: Context) {
+        // Scoped function to also cancel existing jobs.
+        fun onLogout() {
+            // First cancel, then logout. These jobs expect us to be logged in.
+            WorkManager.getInstance(context).cancelAllWorkByTag(ReactionUploadWorker.WORK_TAG)
+            WorkManager.getInstance(context).cancelAllWorkByTag(VlogUploadWorker.WORK_TAG)
+
+            userManager.logout()
+        }
+
         compositeDisposable.add(authUseCase
             .logout()
             .subscribeOn(Schedulers.io())
             .subscribe(
-                { userManager.logout() },
-                { userManager.logout() }
+                { onLogout() },
+                { onLogout() }
             )
         )
+    }
 }
