@@ -40,6 +40,7 @@
         android:scrollbarThumbVertical="@drawable/rounded_bg"
         android:scrollbars="vertical"
         android:visibility="visible"
+        android:animateLayoutChanges="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -52,6 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:animateLayoutChanges="false"
             android:divider="@android:color/transparent"
             android:dividerHeight="25sp"
             tools:listitem="@layout/item_list_reaction" />

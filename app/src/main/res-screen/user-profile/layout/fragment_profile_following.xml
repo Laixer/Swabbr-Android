@@ -11,6 +11,7 @@
         tools:listitem="@layout/item_list_user"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="false"
         android:paddingTop="@dimen/content_margin_medium"
         android:paddingStart="@dimen/content_margin_medium"
         android:paddingEnd="@dimen/content_margin_medium"

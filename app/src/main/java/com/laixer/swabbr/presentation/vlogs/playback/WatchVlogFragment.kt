@@ -36,6 +36,8 @@ import kotlinx.android.synthetic.main.vlog_info_overlay.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
+// TODO Pressing back, then doing anything, then re-entering Swabbr makes
+//      us re-enter this fragment, attempting to start vlogging again.
 /**
  *  Fragment for watching a single vlog. This extends [WatchVideoFragment]
  *  which contains the core playback functionality. This class manages
@@ -121,12 +123,6 @@ class WatchVlogFragment : WatchVideoFragment() {
                 }
             })
         }
-
-        // TODO Bug
-        //      java.lang.IllegalStateException: Page(s) contain a ViewGroup with a LayoutTransition
-        //      (or animateLayoutChanges="true"), which interferes with the scrolling animation. Make
-        //      sure to call getLayoutTransition().setAnimateParentHierarchy(false) on all ViewGroups
-        //      with a LayoutTransition before an animation is started.
 
         // Takes us to a reaction recording fragment.
         // TODO Why doesn't this work explicitly, only global? Just like watch reaction...
