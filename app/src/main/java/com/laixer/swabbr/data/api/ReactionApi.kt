@@ -20,6 +20,9 @@ interface ReactionApi {
     @GET("reaction/{reactionId}")
     fun getReaction(@Path("reactionId") reactionId: UUID): Single<ReactionEntity>
 
+    @GET("reaction/wrapper/{reactionId}")
+    fun getReactionWrapper(@Path("reactionId") reactionId: UUID): Single<ReactionWrapperEntity>
+
     @PUT("reaction")
     fun updateReaction(@Body updatedReaction: ReactionEntity): Completable
 
@@ -30,6 +33,14 @@ interface ReactionApi {
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
     ): Single<List<ReactionEntity>>
+
+    @GET("reaction/wrappers-for-vlog/{vlogId}")
+    fun getReactionWrappersForVlog(
+        @Path("vlogId") vlogId: UUID,
+        @Query("sortingOrder") sortingOrder: Int?,
+        @Query("limit") limit: Int?,
+        @Query("offset") offset: Int?
+    ): Single<List<ReactionWrapperEntity>>
 
     @GET("reaction/for-vlog/{vlogId}/count")
     fun getReactionCountForVlog(@Path("vlogId") vlogId: UUID): Single<DatasetStatsEntity>

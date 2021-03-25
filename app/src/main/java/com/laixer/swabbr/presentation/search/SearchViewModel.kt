@@ -1,5 +1,6 @@
 package com.laixer.swabbr.presentation.search
 
+import android.util.Log
 import com.laixer.swabbr.presentation.utils.todosortme.setError
 import com.laixer.swabbr.presentation.utils.todosortme.setLoading
 import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
@@ -7,6 +8,7 @@ import com.laixer.swabbr.domain.types.Pagination
 import com.laixer.swabbr.domain.usecase.FollowUseCase
 import com.laixer.swabbr.domain.usecase.UsersUseCase
 import com.laixer.swabbr.presentation.abstraction.UserWithRelationListViewModelBase
+import com.laixer.swabbr.presentation.likeoverview.LikeOverviewViewModel
 import com.laixer.swabbr.presentation.model.mapToPresentation
 import io.reactivex.schedulers.Schedulers
 
@@ -48,6 +50,7 @@ class SearchViewModel constructor(
                     },
                     {
                         users.setError(it.message)
+                        Log.e(TAG, "Could not search for users - ${it.message}")
                     })
             )
 
@@ -55,4 +58,8 @@ class SearchViewModel constructor(
      *  Clears the current search results.
      */
     fun clearSearchResults() = users.setSuccess(emptyList())
+
+    companion object {
+        private val TAG = SearchViewModel::class.java.simpleName
+    }
 }

@@ -1,14 +1,15 @@
 package com.laixer.swabbr.presentation.vlogs.list
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.domain.usecase.VlogUseCase
+import com.laixer.swabbr.presentation.abstraction.ViewModelBase
+import com.laixer.swabbr.presentation.model.VlogWrapperItem
+import com.laixer.swabbr.presentation.model.mapToPresentation
 import com.laixer.swabbr.presentation.utils.todosortme.setError
 import com.laixer.swabbr.presentation.utils.todosortme.setLoading
 import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
-import com.laixer.swabbr.domain.usecase.VlogUseCase
-import com.laixer.swabbr.presentation.model.VlogWrapperItem
-import com.laixer.swabbr.presentation.model.mapToPresentation
-import com.laixer.swabbr.presentation.abstraction.ViewModelBase
+import com.laixer.swabbr.utils.resources.Resource
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
@@ -38,12 +39,15 @@ class VlogListViewModel constructor(
                 .doOnSubscribe { vlogs.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .map { list ->
-                    list.sortedByDescending { it.vlog.dateStarted }
+                    list//.sortedByDescending { it.vlog.dateStarted } // TODO Is this sort really required?
                         .mapToPresentation()
                 }
                 .subscribe(
                     { vlogs.setSuccess(it) },
-                    { vlogs.setError(it.message) }
+                    {
+                        vlogs.setError(it.message)
+                        Log.e(TAG, "Could not get recommended vlogs - ${it.message}")
+                    }
                 )
         )
 
@@ -59,12 +63,19 @@ class VlogListViewModel constructor(
                 .doOnSubscribe { vlogs.setLoading() }
                 .subscribeOn(Schedulers.io())
                 .map { list ->
-                    list.sortedByDescending { it.vlog.dateStarted }
+                    list//.sortedByDescending { it.vlog.dateStarted } // TODO Is this sort really required?
                         .mapToPresentation()
                 }
                 .subscribe(
                     { vlogs.setSuccess(it) },
-                    { vlogs.setError(it.message) }
+                    {
+                        vlogs.setError(it.message)
+                        Log.e(TAG, "Could not get vlogs for user - ${it.message}")
+                    }
                 )
         )
+
+    companion object {
+        private val TAG = VlogListViewModel::class.java.simpleName
+    }
 }

@@ -1,6 +1,6 @@
 package com.laixer.swabbr.presentation.model
 
-import com.laixer.swabbr.domain.types.ReactionWrapper
+import com.laixer.swabbr.domain.model.ReactionWrapper
 
 /**
  *  Item representing a single reaction.
@@ -10,7 +10,6 @@ data class ReactionWrapperItem(
     val user: UserItem
 )
 
-// TODO These can be null.
 /**
  * Map a reaction from domain to presentation.
  */

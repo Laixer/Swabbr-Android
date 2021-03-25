@@ -1,12 +1,13 @@
 package com.laixer.swabbr.data.datasource
 
 import com.laixer.swabbr.data.api.VlogApi
+import com.laixer.swabbr.data.interfaces.VlogDataSource
 import com.laixer.swabbr.data.model.mapToData
 import com.laixer.swabbr.data.model.mapToDomain
-import com.laixer.swabbr.data.interfaces.VlogDataSource
 import com.laixer.swabbr.domain.model.UploadWrapper
 import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.model.VlogViews
+import com.laixer.swabbr.domain.model.VlogWrapper
 import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -26,11 +27,22 @@ class VlogDataSourceImpl constructor(
 
     override fun get(vlogId: UUID): Single<Vlog> = api.getVlog(vlogId).map { it.mapToDomain() }
 
+    override fun getWrapper(vlogId: UUID): Single<VlogWrapper> = api.getVlogWrapper(vlogId).map { it.mapToDomain() }
+
     override fun getRecommended(pagination: Pagination): Single<List<Vlog>> =
-        api.getRecommendedVlogs(pagination.sortingOrder.ordinal, pagination.limit, pagination.offset).map { it.mapToDomain() }
+        api.getRecommendedVlogs(pagination.sortingOrder.ordinal, pagination.limit, pagination.offset)
+            .map { it.mapToDomain() }
+
+    override fun getWrappersRecommended(pagination: Pagination): Single<List<VlogWrapper>> =
+        api.getRecommendedVlogWrappers(pagination.sortingOrder.ordinal, pagination.limit, pagination.offset)
+            .map { it.mapToDomain() }
 
     override fun getForUser(userId: UUID, pagination: Pagination): Single<List<Vlog>> =
         api.getVlogsForUser(userId, pagination.sortingOrder.ordinal, pagination.limit, pagination.offset)
+            .map { it.mapToDomain() }
+
+    override fun getWrappersForUser(userId: UUID, pagination: Pagination): Single<List<VlogWrapper>> =
+        api.getVlogWrappersForUser(userId, pagination.sortingOrder.ordinal, pagination.limit, pagination.offset)
             .map { it.mapToDomain() }
 
     override fun post(vlog: Vlog): Completable = api.postVlog(vlog.mapToData())

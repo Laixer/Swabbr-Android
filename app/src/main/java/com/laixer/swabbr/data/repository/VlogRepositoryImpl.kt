@@ -6,6 +6,7 @@ import com.laixer.swabbr.domain.interfaces.VlogRepository
 import com.laixer.swabbr.domain.model.UploadWrapper
 import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.model.VlogViews
+import com.laixer.swabbr.domain.model.VlogWrapper
 import com.laixer.swabbr.domain.types.Pagination
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -28,11 +29,19 @@ class VlogRepositoryImpl constructor(
 
     override fun get(vlogId: UUID): Single<Vlog> = remoteDataSource.get(vlogId)
 
+    override fun getWrapper(vlogId: UUID): Single<VlogWrapper> = remoteDataSource.getWrapper(vlogId)
+
     override fun getRecommended(pagination: Pagination): Single<List<Vlog>> =
         remoteDataSource.getRecommended(pagination)
 
+    override fun getWrappersRecommended(pagination: Pagination): Single<List<VlogWrapper>> =
+        remoteDataSource.getWrappersRecommended(pagination)
+
     override fun getForUser(userId: UUID, pagination: Pagination): Single<List<Vlog>> =
         remoteDataSource.getForUser(userId, pagination)
+
+    override fun getWrappersForUser(userId: UUID, pagination: Pagination): Single<List<VlogWrapper>> =
+        remoteDataSource.getWrappersForUser(userId, pagination)
 
     override fun post(vlog: Vlog): Completable = remoteDataSource.post(vlog)
 

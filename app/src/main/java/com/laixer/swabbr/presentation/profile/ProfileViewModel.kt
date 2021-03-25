@@ -1,10 +1,7 @@
 package com.laixer.swabbr.presentation.profile
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.laixer.swabbr.utils.resources.Resource
-import com.laixer.swabbr.presentation.utils.todosortme.setError
-import com.laixer.swabbr.presentation.utils.todosortme.setLoading
-import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
 import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.domain.types.Pagination
@@ -14,8 +11,12 @@ import com.laixer.swabbr.domain.usecase.UsersUseCase
 import com.laixer.swabbr.domain.usecase.VlogUseCase
 import com.laixer.swabbr.extensions.cascadeFollowAction
 import com.laixer.swabbr.extensions.setSuccessAgain
-import com.laixer.swabbr.presentation.model.*
 import com.laixer.swabbr.presentation.abstraction.ViewModelBase
+import com.laixer.swabbr.presentation.model.*
+import com.laixer.swabbr.presentation.utils.todosortme.setError
+import com.laixer.swabbr.presentation.utils.todosortme.setLoading
+import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
+import com.laixer.swabbr.utils.resources.Resource
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
@@ -103,7 +104,10 @@ class ProfileViewModel constructor(
                         // Call this to notify all observers
                         followersAndFollowRequestingUsers.setSuccessAgain()
                     },
-                    { /* TODO Undo what we did */ }
+                    {
+                        // TODO Undo what we did
+                        Log.e(TAG, "Could not accept follow request - ${it.message}")
+                    }
                 )
         )
     }
@@ -120,7 +124,9 @@ class ProfileViewModel constructor(
         .subscribeOn(Schedulers.io())
         .subscribe(
             { setFollowRequestAsNonExistent(receiverId) },
-            { followRequestAsCurrentUser.setError(it.message) }
+            {
+                Log.e(TAG, "Could not cancel follow request - ${it.message}")
+            }
         )
     )
 
@@ -155,7 +161,10 @@ class ProfileViewModel constructor(
                     // Call this to notify all observers
                     followersAndFollowRequestingUsers.setSuccessAgain()
                 },
-                { /* TODO Undo what we did */ }
+                {
+                    // TODO Undo what we did
+                    Log.e(TAG, "Could not decline follow request - ${it.message}")
+                }
             )
         )
     }
@@ -181,7 +190,9 @@ class ProfileViewModel constructor(
                         userVlogs.setSuccess(userVlogs.value!!.data!!.filter { it.vlog.id != vlog.id })
                     }
                 },
-                { userVlogs.setError(it.message) }
+                {
+                    Log.e(TAG, "Could not delete vlog - ${it.message}")
+                }
             )
         )
     }
@@ -198,7 +209,10 @@ class ProfileViewModel constructor(
         .map { it.mapToPresentation() }
         .subscribe(
             { user.setSuccess(it) },
-            { user.setError(it.message) }
+            {
+                user.setError(it.message)
+                Log.e(TAG, "Could not get user - ${it.message}")
+            }
         )
     )
 
@@ -215,7 +229,10 @@ class ProfileViewModel constructor(
         .subscribe(
             // TODO Maybe have this always cascade to the userWithStats resource as well?
             { selfComplete.setSuccess(it) },
-            { selfComplete.setError(it.message) }
+            {
+                selfComplete.setError(it.message)
+                Log.e(TAG, "Could not get complete user - ${it.message}")
+            }
         )
     )
 
@@ -235,7 +252,10 @@ class ProfileViewModel constructor(
         }
         .subscribe(
             { userVlogs.setSuccess(it) },
-            { userVlogs.setError(it.message) }
+            {
+                userVlogs.setError(it.message)
+                Log.e(TAG, "Could not get user vlogs - ${it.message}")
+            }
         )
     )
 
@@ -252,7 +272,10 @@ class ProfileViewModel constructor(
         .map { it.mapToPresentation() }
         .subscribe(
             { followingUsers.setSuccess(it) },
-            { followingUsers.setError(it.message) }
+            {
+                followingUsers.setError(it.message)
+                Log.e(TAG, "Could not get users with the current user is following - ${it.message}")
+            }
         )
     )
 
@@ -278,7 +301,10 @@ class ProfileViewModel constructor(
                         )
                     )
             },
-            { followingUsers.setError(it.message) }
+            {
+                followingUsers.setError(it.message) // TODO Is this correct?
+                Log.e(TAG, "Could not get users that are following the current user - ${it.message}")
+            }
         )
     )
 
@@ -319,11 +345,13 @@ class ProfileViewModel constructor(
                             {
                                 // Couldn't get incoming requests, just use what we have.
                                 followersAndFollowRequestingUsers.setSuccess(followers)
+                                Log.e(TAG, "getFollowersAndIncomingRequesters - ${it.message}")
                             }
                         )
                 },
                 {
                     followersAndFollowRequestingUsers.setError(it.message)
+                    Log.e(TAG, "getFollowersAndIncomingRequesters - ${it.message}")
                 }
             )
         )
@@ -341,7 +369,10 @@ class ProfileViewModel constructor(
         .subscribeOn(Schedulers.io())
         .subscribe(
             { followRequestAsCurrentUser.setSuccess(it.mapToPresentation()) },
-            { followRequestAsCurrentUser.setError(it.message) }
+            {
+                followRequestAsCurrentUser.setError(it.message)
+                Log.e(TAG, "Could not get follow request as the current user - ${it.message}")
+            }
         )
     )
 
@@ -364,7 +395,9 @@ class ProfileViewModel constructor(
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                         { followRequestAsCurrentUser.setSuccess(it) },
-                        { /* Does nothing */ }
+                        {
+                            Log.e(TAG, "Could not send follow request - ${it.message}")
+                        }
                     )
             },
             { followRequestAsCurrentUser.setError(it.message) }
@@ -382,7 +415,10 @@ class ProfileViewModel constructor(
         .subscribeOn(Schedulers.io())
         .subscribe(
             { setFollowRequestAsNonExistent(receiverId) },
-            { followRequestAsCurrentUser.setError(it.message) }
+            {
+                followRequestAsCurrentUser.setError(it.message)
+                Log.e(TAG, "Could not unfollow - ${it.message}")
+            }
         )
     )
 
@@ -406,7 +442,10 @@ class ProfileViewModel constructor(
                     getSelfComplete(true)
                     getUser(authUserUseCase.getSelfId(), true)
                 },
-                { this.selfComplete.setError(it.message) }
+                {
+                    this.selfComplete.setError(it.message)
+                    Log.e(TAG, "Could not update and get self - ${it.message}")
+                }
             )
         )
     }
@@ -427,4 +466,8 @@ class ProfileViewModel constructor(
                 timeCreated = null
             )
         )
+
+    companion object {
+        private val TAG = ProfileViewModel::class.java.simpleName
+    }
 }

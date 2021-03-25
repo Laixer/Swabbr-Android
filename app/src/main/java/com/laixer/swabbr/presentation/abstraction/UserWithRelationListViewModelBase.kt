@@ -1,11 +1,12 @@
 package com.laixer.swabbr.presentation.abstraction
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.domain.usecase.FollowUseCase
 import com.laixer.swabbr.extensions.cascadeFollowAction
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
+import com.laixer.swabbr.utils.resources.Resource
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
@@ -36,7 +37,7 @@ open class UserWithRelationListViewModelBase constructor(
         compositeDisposable.add(
             followUseCase.unfollow(userId)
                 .subscribeOn(Schedulers.io())
-                .subscribe({}, {}) // We always want an error handler even if it's empty.
+                .subscribe({}, { Log.e(TAG, "Could not unfollow - ${it.message}") })
         )
     }
 
@@ -53,7 +54,7 @@ open class UserWithRelationListViewModelBase constructor(
         compositeDisposable.add(
             followUseCase.sendFollowRequest(userId)
                 .subscribeOn(Schedulers.io())
-                .subscribe({}, {}) // We always want an error handler even if it's empty.
+                .subscribe({}, { Log.e(TAG, "Could not follow - ${it.message}") })
         )
     }
 
@@ -70,7 +71,11 @@ open class UserWithRelationListViewModelBase constructor(
         compositeDisposable.add(
             followUseCase.cancelFollowRequest(userId)
                 .subscribeOn(Schedulers.io())
-                .subscribe({}, {}) // We always want an error handler even if it's empty.
+                .subscribe({}, { Log.e(TAG, "Could not cancel follow request - ${it.message}") })
         )
+    }
+
+    companion object {
+        private val TAG = UserWithRelationListViewModelBase::class.java.simpleName
     }
 }

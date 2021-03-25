@@ -1,27 +1,24 @@
 package com.laixer.swabbr.presentation.vlogs.playback
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.laixer.swabbr.utils.resources.Resource
-import com.laixer.swabbr.presentation.utils.todosortme.setError
-import com.laixer.swabbr.presentation.utils.todosortme.setLoading
-import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
 import com.laixer.swabbr.domain.usecase.AuthUserUseCase
 import com.laixer.swabbr.domain.usecase.ReactionUseCase
 import com.laixer.swabbr.domain.usecase.VlogUseCase
+import com.laixer.swabbr.presentation.abstraction.ViewModelBase
 import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
-import com.laixer.swabbr.presentation.abstraction.ViewModelBase
+import com.laixer.swabbr.presentation.utils.todosortme.setError
+import com.laixer.swabbr.presentation.utils.todosortme.setLoading
+import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
+import com.laixer.swabbr.utils.resources.Resource
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 /**
- *  View model which contains details about a single vlog. If
- *  a list of vlogs is desired, use [VlogListViewModel]. This
- *  also contains functionality for the reactions that belong
- *  to the [vlog] resource. Watching vlogs is done using the
- *  [ReactionViewModel].
+ *  View model which contains details about a single vlog.
  */
 class VlogViewModel constructor(
     private val authUserUseCase: AuthUserUseCase,
@@ -64,7 +61,7 @@ class VlogViewModel constructor(
     fun addView(vlogId: UUID) = compositeDisposable.add(
         vlogUseCase.addView(vlogId)
             .subscribeOn(Schedulers.io())
-            .subscribe({}, {}) // We always want an error handler even if it's empty.
+            .subscribe({}, { Log.e(TAG, "Could not add view to vlog - ${it.message}") })
     )
 
     // TODO Is this the way to go? I do think so.
@@ -98,14 +95,12 @@ class VlogViewModel constructor(
         compositeDisposable.add(
             reactionsUseCase.deleteReaction(reaction.id)
                 .subscribeOn(Schedulers.io())
-                .subscribe({}, {}) // We always want an error handler even if it's empty.
+                .subscribe({}, { Log.e(TAG, "Could not delete reaction - ${it.message}") })
         )
     }
 
     /**
-     *  Gets a vlog and stores it in [vlogs]. Also store the
-     *  vlog like count in [vlogLikeCount] based on the summary
-     *  contained in the [VlogWrapperItem].
+     *  Gets a vlog and stores it in [vlog].
      *
      *  @param vlogId The vlog to get.
      *  @param refresh Force a data refresh.
@@ -114,13 +109,13 @@ class VlogViewModel constructor(
         compositeDisposable.add(
             vlogUseCase.get(vlogId, refresh)
                 .doOnSubscribe { vlog.setLoading() }
-                .subscribeOn(Schedulers.io()).map { it.mapToPresentation() }
+                .subscribeOn(Schedulers.io())
                 .subscribe(
+                    { vlog.setSuccess(it.mapToPresentation()) },
                     {
-                        vlog.setSuccess(it)
-                        vlogLikeCount.setSuccess(it.vlogLikeSummary.totalLikes)
-                    },
-                    { vlog.setError(it.message) }
+                        vlog.setError(it.message)
+                        Log.e(TAG, "Could not get vlog - ${it.message}")
+                    }
                 )
         )
 
@@ -136,10 +131,12 @@ class VlogViewModel constructor(
             reactionsUseCase.getAllForVlog(vlogId, refresh)
                 .doOnSubscribe { reactions.setLoading() }
                 .subscribeOn(Schedulers.io())
-                .map { it.mapToPresentation() }
                 .subscribe(
-                    { reactions.setSuccess(it) },
-                    { reactions.setError(it.message) }
+                    { reactions.setSuccess(it.mapToPresentation()) },
+                    {
+                        reactions.setError(it.message)
+                        Log.e(TAG, "Could not get reactions for vlog - ${it.message}")
+                    }
                 )
         )
 
@@ -155,7 +152,10 @@ class VlogViewModel constructor(
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     { reactionCount.setSuccess(it) },
-                    { reactionCount.setError(it.message) }
+                    {
+                        reactionCount.setError(it.message)
+                        Log.e(TAG, "Could not get reaction count for vlog - ${it.message}")
+                    }
                 )
         )
 
@@ -183,6 +183,7 @@ class VlogViewModel constructor(
                     {
                         // Undo local update
                         modifyVlogLikeCount(-1)
+                        Log.e(TAG, "Could not like vlog - ${it.message}")
                     }
                 ))
     }
@@ -209,6 +210,7 @@ class VlogViewModel constructor(
                     },
                     {
                         modifyVlogLikeCount(+1)
+                        Log.e(TAG, "Could not unlike vlog - ${it.message}")
                     }
                 ))
     }
@@ -224,7 +226,10 @@ class VlogViewModel constructor(
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     { vlogLikedByCurrentUser.setSuccess(it) },
-                    { vlogLikedByCurrentUser.setError(it.message) }
+                    {
+                        vlogLikedByCurrentUser.setError(it.message)
+                        Log.e(TAG, "Could not check if vlog is liked by current user - ${it.message}")
+                    }
                 )
         )
 
@@ -248,5 +253,9 @@ class VlogViewModel constructor(
         }
 
         vlogLikeCount.setSuccess(vlogLikeCount.value!!.data!! + amount)
+    }
+
+    companion object {
+        private val TAG = VlogViewModel::class.java.simpleName
     }
 }
