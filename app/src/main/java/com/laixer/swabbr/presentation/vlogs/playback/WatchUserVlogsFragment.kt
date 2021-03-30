@@ -1,19 +1,20 @@
 package com.laixer.swabbr.presentation.vlogs.playback
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.extensions.reduceDragSensitivity
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
 import com.laixer.swabbr.presentation.video.WatchVideoListFragment
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
+import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_video_view_pager.*
@@ -49,8 +50,9 @@ class WatchUserVlogsFragment : WatchVideoListFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         video_viewpager.reduceDragSensitivity()
+    }
 
-        /** Gets the actual vlogs. The result is handled by [onVlogsUpdated]. */
+    override fun getData(refresh: Boolean) {
         vlogListVm.getVlogsForUser(UUID.fromString(userId), refresh = true)
     }
 
@@ -62,6 +64,7 @@ class WatchUserVlogsFragment : WatchVideoListFragment() {
         vlogListResource = vlogListVm.vlogs
     )
 
+    // TODO Pull up to WatchVideoListFragment
     /**
      *  Called when the observed vlog list resource in [vlogListVm] changes.
      *  If we fail to load the vlogs, a back press is simulated.
@@ -69,17 +72,26 @@ class WatchUserVlogsFragment : WatchVideoListFragment() {
     private fun onVlogsUpdated(res: Resource<List<VlogWrapperItem>>) = with(res) {
         when (state) {
             ResourceState.LOADING -> {
-                // TODO
+                // Clear the adapter if we went to another user.
+                // video_viewpager.adapter?.
             }
             ResourceState.SUCCESS -> {
-                // TODO Look at this
                 data?.let {
-                    initialVlogId?.let {
-                        video_viewpager.currentItem =
-                            vlogListVm.vlogs.value?.data?.indexOf(vlogListVm.vlogs.value?.data?.first { item ->
-                                item.vlog.id.toString() == it
-                            }) ?: 0
+                    val initialItemIndex =
+                        vlogListVm.vlogs.value?.data?.indexOf(vlogListVm.vlogs.value?.data?.first { item ->
+                            item.vlog.id.toString() == initialVlogId
+                        })
+
+                    // Assign index based on if we found the desired item in our list.
+                    val selectedItemIndex = if (initialItemIndex == null) {
+                        Log.w(TAG, "Could not find index of vlog with id $initialVlogId")
+                        0
+                    } else {
+                        initialItemIndex
                     }
+
+                    // Don't animate, just go there instantly.
+                    video_viewpager.setCurrentItem(selectedItemIndex, false)
 
                     video_viewpager.adapter?.notifyDataSetChanged()
                 }
@@ -93,5 +105,3 @@ class WatchUserVlogsFragment : WatchVideoListFragment() {
         }
     }
 }
-
-

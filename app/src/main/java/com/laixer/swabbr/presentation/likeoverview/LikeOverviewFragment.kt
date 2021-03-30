@@ -58,8 +58,9 @@ class LikeOverviewFragment : AuthFragment() {
 
         // Swipe down to refresh the result set.
         swipe_refresh_layout_liking_users.setOnRefreshListener { likeOverviewVm.getLikingUserWrappers() }
+    }
 
-        /** Start the data fetch. Response is handled by [onVlogLikingUsersLoaded] */
+    override fun getData(refresh: Boolean) {
         likeOverviewVm.getLikingUserWrappers()
     }
 

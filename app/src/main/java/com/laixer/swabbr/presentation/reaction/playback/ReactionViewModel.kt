@@ -2,15 +2,17 @@ package com.laixer.swabbr.presentation.reaction.playback
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.laixer.swabbr.domain.usecase.ReactionUseCase
+import com.laixer.swabbr.presentation.abstraction.ViewModelBase
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
 import com.laixer.swabbr.presentation.utils.todosortme.setError
 import com.laixer.swabbr.presentation.utils.todosortme.setLoading
 import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
-import com.laixer.swabbr.presentation.abstraction.ViewModelBase
 import com.laixer.swabbr.utils.resources.Resource
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -28,18 +30,21 @@ class ReactionViewModel constructor(
      *  Gets a reaction from the data store and stores it in
      *  [reaction] on completion.
      */
-    fun getReaction(reactionId: UUID) = compositeDisposable.add(
-        reactionsUseCase.get(reactionId)
-            .doOnSubscribe { reaction.setLoading() }
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                { reaction.setSuccess(it.mapToPresentation()) },
-                {
-                    reaction.setError(it.message)
-                    Log.e(TAG, "Could not get reaction $reactionId. Message: ${it.message}")
-                }
+    fun getReaction(reactionId: UUID) =
+        viewModelScope.launch {
+            compositeDisposable.add(
+                reactionsUseCase.get(reactionId)
+                    .doOnSubscribe { reaction.setLoading() }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                        { reaction.setSuccess(it.mapToPresentation()) },
+                        {
+                            reaction.setError(it.message)
+                            Log.e(TAG, "Could not get reaction $reactionId. Message: ${it.message}")
+                        }
+                    )
             )
-    )
+        }
 
     companion object {
         private val TAG = ReactionViewModel::class.java.simpleName

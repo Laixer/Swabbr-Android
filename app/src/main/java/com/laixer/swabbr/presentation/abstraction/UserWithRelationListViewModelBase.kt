@@ -2,12 +2,14 @@ package com.laixer.swabbr.presentation.abstraction
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.domain.usecase.FollowUseCase
 import com.laixer.swabbr.extensions.cascadeFollowAction
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.utils.resources.Resource
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -34,11 +36,13 @@ open class UserWithRelationListViewModelBase constructor(
         // First update locally, then perform the action.
         users.cascadeFollowAction(userId, FollowRequestStatus.NONEXISTENT)
 
-        compositeDisposable.add(
-            followUseCase.unfollow(userId)
-                .subscribeOn(Schedulers.io())
-                .subscribe({}, { Log.e(TAG, "Could not unfollow - ${it.message}") })
-        )
+        viewModelScope.launch {
+            compositeDisposable.add(
+                followUseCase.unfollow(userId)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({}, { Log.e(TAG, "Could not unfollow - ${it.message}") })
+            )
+        }
     }
 
     /**
@@ -51,11 +55,13 @@ open class UserWithRelationListViewModelBase constructor(
         // First update locally, then perform the action.
         users.cascadeFollowAction(userId, FollowRequestStatus.PENDING)
 
-        compositeDisposable.add(
-            followUseCase.sendFollowRequest(userId)
-                .subscribeOn(Schedulers.io())
-                .subscribe({}, { Log.e(TAG, "Could not follow - ${it.message}") })
-        )
+        viewModelScope.launch {
+            compositeDisposable.add(
+                followUseCase.sendFollowRequest(userId)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({}, { Log.e(TAG, "Could not follow - ${it.message}") })
+            )
+        }
     }
 
     /**
@@ -68,11 +74,13 @@ open class UserWithRelationListViewModelBase constructor(
         // First update locally, then perform the action.
         users.cascadeFollowAction(userId, FollowRequestStatus.NONEXISTENT)
 
-        compositeDisposable.add(
-            followUseCase.cancelFollowRequest(userId)
-                .subscribeOn(Schedulers.io())
-                .subscribe({}, { Log.e(TAG, "Could not cancel follow request - ${it.message}") })
-        )
+        viewModelScope.launch {
+            compositeDisposable.add(
+                followUseCase.cancelFollowRequest(userId)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({}, { Log.e(TAG, "Could not cancel follow request - ${it.message}") })
+            )
+        }
     }
 
     companion object {

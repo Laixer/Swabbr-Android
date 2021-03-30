@@ -46,7 +46,10 @@ class DashboardFragment : WatchVideoListFragment() {
         vlogListVm.vlogs.observe(viewLifecycleOwner, Observer { updateVlogsFromViewModel(it) })
     }
 
-    private fun getData(refresh: Boolean = false) {
+    /**
+     *  Get the recommended vlogs.
+     */
+    override fun getData(refresh: Boolean) {
         vlogListVm.getRecommendedVlogs(refresh)
     }
 
@@ -57,14 +60,6 @@ class DashboardFragment : WatchVideoListFragment() {
         fragment = this@DashboardFragment,
         vlogListResource = vlogListVm.vlogs
     )
-
-    override fun onStart() {
-        super.onStart()
-
-        // TODO When to call this && isAuthenticated?
-        //  We only want this to happen if we are authenticated, else we should be redirected to the login fragment
-        getData(false)
-    }
 
     /**
      *  Called when the observed vlog collection resource is updated.

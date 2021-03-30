@@ -19,7 +19,14 @@ import java.util.*
  *  login page.
  */
 abstract class AuthFragment : Fragment() {
+
     protected val authVm: AuthViewModel by sharedViewModel()
+
+    /**
+     *  Modify this parameter to determine the refresh parameter
+     *  for the first [getData] call. Defaults to false.
+     */
+    protected var defaultRefresh: Boolean = false
 
     /**
      *  Attaches an error handler to our API calls whenever a
@@ -49,17 +56,28 @@ abstract class AuthFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        checkIfAuthenticated()
+        if (checkIfAuthenticated()) {
+           getData()
+        }
     }
 
     /**
      *  Navigates to the login fragment if we aren't authenticated.
+     *
+     *  @return Whether or not we are authenticated.
      */
-    private fun checkIfAuthenticated() {
+    private fun checkIfAuthenticated(): Boolean =
         if (!authVm.isAuthenticated()) {
             findNavController().navigate(R.id.action_global_loginFragment)
+            false
+        } else {
+            true
         }
-    }
+
+    /**
+     *  Override this method to only get data if we are authenticated.
+     */
+    protected open fun getData(refresh: Boolean = defaultRefresh) { }
 
     // TODO Is this the right solution? Probably not...
     /**

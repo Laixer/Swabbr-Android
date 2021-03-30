@@ -26,6 +26,7 @@
         app:keep_content_on_player_reset="true"
         app:resize_mode="fit"
         app:show_buffering="always"
+        app:buffered_color="@color/reactionPost"
         app:surface_type="texture_view" />
 
 
@@ -35,7 +36,6 @@
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="@dimen/large_icon_size"
         android:layout_height="@dimen/large_icon_size"
-
         android:layout_gravity="center"
         android:indeterminate="true" />
 

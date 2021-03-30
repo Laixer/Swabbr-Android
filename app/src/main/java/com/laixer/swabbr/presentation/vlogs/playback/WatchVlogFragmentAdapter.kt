@@ -6,7 +6,6 @@ import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
 
-// TODO Dependent on mutable live data, is this desired? Maybe too coupled...
 /**
  *  Adapter that creates a [WatchVlogFragment] for each vlog
  *  so the vlog can be played back using this fragment.

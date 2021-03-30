@@ -9,11 +9,10 @@ import android.widget.ArrayAdapter
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import com.github.dhaval2404.imagepicker.ImagePicker
-import com.laixer.swabbr.utils.resources.Resource
-import com.laixer.swabbr.utils.resources.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
+import com.laixer.swabbr.extensions.clearText
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.model.UserCompleteItem
@@ -21,28 +20,36 @@ import com.laixer.swabbr.presentation.model.UserUpdatablePropertiesItem
 import com.laixer.swabbr.presentation.model.extractUpdatableProperties
 import com.laixer.swabbr.presentation.utils.onActivityResult
 import com.laixer.swabbr.presentation.utils.selectProfileImage
+import com.laixer.swabbr.presentation.utils.todosortme.gone
+import com.laixer.swabbr.presentation.utils.todosortme.visible
+import com.laixer.swabbr.utils.clearAvatar
 import com.laixer.swabbr.utils.encodeToBase64
 import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.fragment_profile_details.*
 import kotlinx.android.synthetic.main.fragment_registration.*
 import kotlinx.android.synthetic.main.fragment_registration.fab_set_profile_image
 import kotlinx.android.synthetic.main.fragment_registration.inputNickname
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
 
 // TODO This doesn't allow us to set any properties to null. Maybe we want this for first name and last name?
 /**
  *  Fragment for displaying profile details of the current user
  *  which includes update functionality for all properties displayed.
+ *  Getting the initial vm data is done by [ProfileFragment].
  *
  *  Note that the follow mode is controlled by [switchIsPrivate].
  *
  *  @param userId The id of the profile we are looking at. Note that at
  *                the moment this will always be the current user. This
  *                might change in the future.
+ *  @param profileVm Single profile vm instance from [ProfileFragment].
  */
-class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
-    private val profileVm: ProfileViewModel by sharedViewModel()
+class ProfileDetailsFragment(
+    private val userId: UUID,
+    private val profileVm: ProfileViewModel
+) : AuthFragment() {
 
     /**
      *  Flag set by [confirmChanges] when we are awaiting a data
@@ -175,9 +182,6 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerDailyVlogRequestLimit.adapter = adapter
         }
-
-        // Finally, get the user complete object itself
-        profileVm.getSelfComplete()
     }
 
     /**
@@ -204,6 +208,19 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
         userUpdatableProperties.profileImage = selectedBitmap.encodeToBase64()
     }
 
+    private fun clearFormValues() {
+        user_profile_profile_image_insettings.clearAvatar()
+        inputBirthDate.clearDate()
+        inputNickname.clearText()
+        inputFirstName.clearText()
+        inputLastName.clearText()
+
+        switchIsPrivate.isChecked = false
+
+        spinnerGender.gone()
+        spinnerDailyVlogRequestLimit.gone()
+    }
+
     /**
      *  This updates the form values based on a given user object.
      *
@@ -215,8 +232,12 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
         inputNickname.setText(user.nickname)
         inputFirstName.setText(user.firstName)
         inputLastName.setText(user.lastName)
-        spinnerGender.setSelection(user.gender.ordinal)
+
         switchIsPrivate.isChecked = user.isPrivate
+
+        spinnerGender.visible()
+        spinnerGender.setSelection(user.gender.ordinal)
+        spinnerDailyVlogRequestLimit.visible()
         spinnerDailyVlogRequestLimit.setSelection(user.dailyVlogRequestLimit)
     }
 
@@ -242,6 +263,7 @@ class ProfileDetailsFragment(private val userId: UUID) : AuthFragment() {
     private fun onUserCompleteUpdated(res: Resource<UserCompleteItem>) {
         when (res.state) {
             ResourceState.LOADING -> {
+                clearFormValues()
             }
             ResourceState.SUCCESS -> {
                 res.data?.let { user ->

@@ -42,7 +42,7 @@
 
 
     <!-- TODO Fix -->
-<!--    &lt;!&ndash; Fullscreen swipe refresh layout&ndash;&gt;-->
+    <!-- Fullscreen swipe refresh layout-->
 <!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
 <!--        android:id="@+id/swipe_refresh_layout_watch_video_list"-->
 <!--        android:layout_width="match_parent"-->

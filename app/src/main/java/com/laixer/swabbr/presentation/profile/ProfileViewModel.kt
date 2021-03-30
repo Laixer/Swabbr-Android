@@ -2,6 +2,7 @@ package com.laixer.swabbr.presentation.profile
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.laixer.swabbr.domain.model.Vlog
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.domain.types.Pagination
@@ -13,11 +14,11 @@ import com.laixer.swabbr.extensions.cascadeFollowAction
 import com.laixer.swabbr.extensions.setSuccessAgain
 import com.laixer.swabbr.presentation.abstraction.ViewModelBase
 import com.laixer.swabbr.presentation.model.*
-import com.laixer.swabbr.presentation.utils.todosortme.setError
-import com.laixer.swabbr.presentation.utils.todosortme.setLoading
-import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
+import com.laixer.swabbr.presentation.utils.todosortme.*
 import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -85,7 +86,7 @@ class ProfileViewModel constructor(
      */
     fun acceptRequest(requesterId: UUID) {
         // First bump for instant UI update, but only if we have said resource.
-        if (user.value?.data != null && user.value!!.data!!.id == requesterId) {
+        user.value?.data.let {
             val newTotalFollowers = user.value!!.data!!.totalFollowers + 1
             user.value!!.data!!.totalFollowers = newTotalFollowers
             user.setSuccessAgain()
@@ -95,21 +96,23 @@ class ProfileViewModel constructor(
         followersAndFollowRequestingUsers.cascadeFollowAction(requesterId, FollowRequestStatus.ACCEPTED)
 
         // Then send
-        compositeDisposable.add(
-            followUseCase
-                .acceptRequest(requesterId)
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                    {
-                        // Call this to notify all observers
-                        followersAndFollowRequestingUsers.setSuccessAgain()
-                    },
-                    {
-                        // TODO Undo what we did
-                        Log.e(TAG, "Could not accept follow request - ${it.message}")
-                    }
-                )
-        )
+        viewModelScope.launch {
+            compositeDisposable.add(
+                followUseCase
+                    .acceptRequest(requesterId)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                        {
+                            // Call this to notify all observers
+                            followersAndFollowRequestingUsers.setSuccessAgain()
+                        },
+                        {
+                            // TODO Undo what we did
+                            Log.e(TAG, "Could not accept follow request - ${it.message}")
+                        }
+                    )
+            )
+        }
     }
 
     /**
@@ -118,28 +121,20 @@ class ProfileViewModel constructor(
      *
      *  @param receiverId The follow request receiving user.
      */
-    fun cancelFollowRequest(receiverId: UUID) = compositeDisposable.add(followUseCase
-        .cancelFollowRequest(receiverId)
-        .doOnSubscribe { followRequestAsCurrentUser.setLoading() }
-        .subscribeOn(Schedulers.io())
-        .subscribe(
-            { setFollowRequestAsNonExistent(receiverId) },
-            {
-                Log.e(TAG, "Could not cancel follow request - ${it.message}")
-            }
-        )
-    )
-
-    /**
-     *  Sets all used resources to loading.
-     */
-    fun clearResources() {
-        user.setLoading()
-        selfComplete.setLoading()
-        userVlogs.setLoading()
-        followingUsers.setLoading()
-        followersAndFollowRequestingUsers.setLoading()
-    }
+    fun cancelFollowRequest(receiverId: UUID) =
+        viewModelScope.launch {
+            compositeDisposable.add(followUseCase
+                .cancelFollowRequest(receiverId)
+                .doOnSubscribe { followRequestAsCurrentUser.setLoading() }
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    { setFollowRequestAsNonExistent(receiverId) },
+                    {
+                        Log.e(TAG, "Could not cancel follow request - ${it.message}")
+                    }
+                )
+            )
+        }
 
     /**
      *  Declines an incoming follow request for the current user.
@@ -153,20 +148,22 @@ class ProfileViewModel constructor(
         }
 
         // Then send the request
-        compositeDisposable.add(followUseCase
-            .declineRequest(requesterId)
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    // Call this to notify all observers
-                    followersAndFollowRequestingUsers.setSuccessAgain()
-                },
-                {
-                    // TODO Undo what we did
-                    Log.e(TAG, "Could not decline follow request - ${it.message}")
-                }
+        viewModelScope.launch {
+            compositeDisposable.add(followUseCase
+                .declineRequest(requesterId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        // Call this to notify all observers
+                        followersAndFollowRequestingUsers.setSuccessAgain()
+                    },
+                    {
+                        // TODO Undo what we did
+                        Log.e(TAG, "Could not decline follow request - ${it.message}")
+                    }
+                )
             )
-        )
+        }
     }
 
     /**
@@ -182,19 +179,21 @@ class ProfileViewModel constructor(
             return
         }
 
-        compositeDisposable.add(vlogUseCase
-            .delete(vlog.id)
-            .subscribe(
-                {
-                    if (userVlogs.value?.data != null) {
-                        userVlogs.setSuccess(userVlogs.value!!.data!!.filter { it.vlog.id != vlog.id })
+        viewModelScope.launch {
+            compositeDisposable.add(vlogUseCase
+                .delete(vlog.id)
+                .subscribe(
+                    {
+                        if (userVlogs.value?.data != null) {
+                            userVlogs.setSuccess(userVlogs.value!!.data!!.filter { it.vlog.id != vlog.id })
+                        }
+                    },
+                    {
+                        Log.e(TAG, "Could not delete vlog - ${it.message}")
                     }
-                },
-                {
-                    Log.e(TAG, "Could not delete vlog - ${it.message}")
-                }
+                )
             )
-        )
+        }
     }
 
     /**
@@ -203,18 +202,28 @@ class ProfileViewModel constructor(
      *  @param userId The user to get.
      *  @param refresh Force a data refresh.
      */
-    fun getUser(userId: UUID, refresh: Boolean = false) = compositeDisposable.add(usersUseCase
-        .getWithStats(userId, refresh)
-        .subscribeOn(Schedulers.io())
-        .map { it.mapToPresentation() }
-        .subscribe(
-            { user.setSuccess(it) },
-            {
-                user.setError(it.message)
-                Log.e(TAG, "Could not get user - ${it.message}")
-            }
-        )
-    )
+    fun getUser(userId: UUID, refresh: Boolean = false) {
+        user.postValue(Resource(ResourceState.LOADING, user.value?.data))
+
+        viewModelScope.launch {
+            compositeDisposable.add(usersUseCase
+                .getWithStats(userId, refresh)
+                .subscribeOn(Schedulers.io())
+                .map { it.mapToPresentation() }
+                .subscribe(
+                    {
+                        val id = it.id
+                        user.setSuccess(it)
+                    },
+                    {
+                        user.setError(it.message)
+
+                        Log.e(TAG, "Could not get user - ${it.message}")
+                    }
+                )
+            )
+        }
+    }
 
     /**
      *  Gets the current user with non-public properties.
@@ -222,19 +231,22 @@ class ProfileViewModel constructor(
      *
      *  @param refresh Force a data refresh.
      */
-    fun getSelfComplete(refresh: Boolean = false) = compositeDisposable.add(authUserUseCase
-        .getSelf(refresh)
-        .subscribeOn(Schedulers.io())
-        .map { it.mapToPresentation() }
-        .subscribe(
-            // TODO Maybe have this always cascade to the userWithStats resource as well?
-            { selfComplete.setSuccess(it) },
-            {
-                selfComplete.setError(it.message)
-                Log.e(TAG, "Could not get complete user - ${it.message}")
-            }
-        )
-    )
+    fun getSelfComplete(refresh: Boolean = false) =
+        viewModelScope.launch {
+            compositeDisposable.add(authUserUseCase
+                .getSelf(refresh)
+                .subscribeOn(Schedulers.io())
+                .map { it.mapToPresentation() }
+                .subscribe(
+                    // TODO Maybe have this always cascade to the userWithStats resource as well?
+                    { selfComplete.setSuccess(it) },
+                    {
+                        selfComplete.setError(it.message)
+                        Log.e(TAG, "Could not get complete user - ${it.message}")
+                    }
+                )
+            )
+        }
 
     /**
      *  Gets all vlogs that are owned by a given user.
@@ -242,22 +254,25 @@ class ProfileViewModel constructor(
      *  @param userId The vlog owner.
      *  @param refresh Force a data refresh.
      */
-    fun getVlogsByUser(userId: UUID, refresh: Boolean = false) = compositeDisposable.add(vlogUseCase
-        .getAllForUser(userId, refresh)
-        .doOnSubscribe { userVlogs.setLoading() }
-        .subscribeOn(Schedulers.io())
-        .map { list ->
-            list.sortedByDescending { it.vlog.dateStarted }
-                .map { wrapper -> wrapper.mapToPresentation() }
+    fun getVlogsByUser(userId: UUID, refresh: Boolean = false) =
+        viewModelScope.launch {
+            compositeDisposable.add(vlogUseCase
+                .getAllForUser(userId, refresh)
+                .doOnSubscribe { userVlogs.setLoading() }
+                .subscribeOn(Schedulers.io())
+                .map { list ->
+                    list.sortedByDescending { it.vlog.dateStarted }
+                        .map { wrapper -> wrapper.mapToPresentation() }
+                }
+                .subscribe(
+                    { userVlogs.setSuccess(it) },
+                    {
+                        userVlogs.setError(it.message)
+                        Log.e(TAG, "Could not get user vlogs - ${it.message}")
+                    }
+                )
+            )
         }
-        .subscribe(
-            { userVlogs.setSuccess(it) },
-            {
-                userVlogs.setError(it.message)
-                Log.e(TAG, "Could not get user vlogs - ${it.message}")
-            }
-        )
-    )
 
     /**
      *  Gets all users that a user is following.
@@ -265,19 +280,22 @@ class ProfileViewModel constructor(
      *  @param userId The user that is following.
      *  @param refresh Force a data refresh.
      */
-    fun getFollowing(userId: UUID, refresh: Boolean = false) = compositeDisposable.add(followUseCase
-        .getFollowing(userId, refresh = refresh)
-        .doOnSubscribe { followingUsers.setLoading() }
-        .subscribeOn(Schedulers.io())
-        .map { it.mapToPresentation() }
-        .subscribe(
-            { followingUsers.setSuccess(it) },
-            {
-                followingUsers.setError(it.message)
-                Log.e(TAG, "Could not get users with the current user is following - ${it.message}")
-            }
-        )
-    )
+    fun getFollowing(userId: UUID, refresh: Boolean = false) =
+        viewModelScope.launch {
+            compositeDisposable.add(followUseCase
+                .getFollowing(userId, refresh = refresh)
+                .doOnSubscribe { followingUsers.setLoading() }
+                .subscribeOn(Schedulers.io())
+                .map { it.mapToPresentation() }
+                .subscribe(
+                    { followingUsers.setSuccess(it) },
+                    {
+                        followingUsers.setError(it.message)
+                        Log.e(TAG, "Could not get users with the current user is following - ${it.message}")
+                    }
+                )
+            )
+        }
 
     /**
      *  Gets all followers for a given [userId]. Note that this converts each
@@ -287,26 +305,29 @@ class ProfileViewModel constructor(
      *  @param userId The user to get the followers for.
      *  @param refresh Force a data refresh.
      */
-    fun getFollowers(userId: UUID, refresh: Boolean = false) = compositeDisposable.add(followUseCase
-        .getFollowers(userId, refresh)
-        .doOnSubscribe { followingUsers.setLoading() }
-        .map { it.mapToPresentation() }
-        .subscribe(
-            {
-                followersAndFollowRequestingUsers
-                    .setSuccess(
-                        it.mapToUserWithRelationItem(
-                            requestingUserId = userId,
-                            followRequestStatus = FollowRequestStatus.ACCEPTED
-                        )
-                    )
-            },
-            {
-                followingUsers.setError(it.message) // TODO Is this correct?
-                Log.e(TAG, "Could not get users that are following the current user - ${it.message}")
-            }
-        )
-    )
+    fun getFollowers(userId: UUID, refresh: Boolean = false) =
+        viewModelScope.launch {
+            compositeDisposable.add(followUseCase
+                .getFollowers(userId, refresh)
+                .doOnSubscribe { followingUsers.setLoading() }
+                .map { it.mapToPresentation() }
+                .subscribe(
+                    {
+                        followersAndFollowRequestingUsers
+                            .setSuccess(
+                                it.mapToUserWithRelationItem(
+                                    requestingUserId = userId,
+                                    followRequestStatus = FollowRequestStatus.ACCEPTED
+                                )
+                            )
+                    },
+                    {
+                        followingUsers.setError(it.message) // TODO Is this correct?
+                        Log.e(TAG, "Could not get users that are following the current user - ${it.message}")
+                    }
+                )
+            )
+        }
 
     /**
      *  First does the same as [getFollowers] for the current user, then gets
@@ -321,40 +342,42 @@ class ProfileViewModel constructor(
     fun getFollowersAndIncomingRequesters(refresh: Boolean) {
         val selfId = authUserUseCase.getSelfId()
 
-        compositeDisposable.add(followUseCase
-            .getFollowers(selfId, refresh)
-            .doOnSubscribe { followingUsers.setLoading() }
-            .map {
-                it.mapToPresentation()
-                    .mapToUserWithRelationItem(
-                        requestingUserId = selfId,
-                        followRequestStatus = FollowRequestStatus.ACCEPTED
-                    )
-            }
-            .subscribe(
-                { followers ->
-                    // Now get the incoming requests.
-                    followUseCase.getFollowRequestingUsers(Pagination.latest())
-                        .map { it.mapToPresentation() }
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(
-                            { requesters ->
-                                // Requesting users first, then existing followers.
-                                followersAndFollowRequestingUsers.setSuccess(requesters.plus(followers))
-                            },
-                            {
-                                // Couldn't get incoming requests, just use what we have.
-                                followersAndFollowRequestingUsers.setSuccess(followers)
-                                Log.e(TAG, "getFollowersAndIncomingRequesters - ${it.message}")
-                            }
+        viewModelScope.launch {
+            compositeDisposable.add(followUseCase
+                .getFollowers(selfId, refresh)
+                .doOnSubscribe { followingUsers.setLoading() }
+                .map {
+                    it.mapToPresentation()
+                        .mapToUserWithRelationItem(
+                            requestingUserId = selfId,
+                            followRequestStatus = FollowRequestStatus.ACCEPTED
                         )
-                },
-                {
-                    followersAndFollowRequestingUsers.setError(it.message)
-                    Log.e(TAG, "getFollowersAndIncomingRequesters - ${it.message}")
                 }
+                .subscribe(
+                    { followers ->
+                        // Now get the incoming requests.
+                        followUseCase.getFollowRequestingUsers(Pagination.latest())
+                            .map { it.mapToPresentation() }
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(
+                                { requesters ->
+                                    // Requesting users first, then existing followers.
+                                    followersAndFollowRequestingUsers.setSuccess(requesters.plus(followers))
+                                },
+                                {
+                                    // Couldn't get incoming requests, just use what we have.
+                                    followersAndFollowRequestingUsers.setSuccess(followers)
+                                    Log.e(TAG, "getFollowersAndIncomingRequesters - ${it.message}")
+                                }
+                            )
+                    },
+                    {
+                        followersAndFollowRequestingUsers.setError(it.message)
+                        Log.e(TAG, "getFollowersAndIncomingRequesters - ${it.message}")
+                    }
+                )
             )
-        )
+        }
     }
 
     /**
@@ -363,64 +386,73 @@ class ProfileViewModel constructor(
      *
      *  @param receiverId The receiving user id.
      */
-    fun getFollowRequestAsCurrentUser(receiverId: UUID) = compositeDisposable.add(followUseCase
-        .get(authUserUseCase.getSelfId(), receiverId)
-        .doOnSubscribe { followRequestAsCurrentUser.setLoading() }
-        .subscribeOn(Schedulers.io())
-        .subscribe(
-            { followRequestAsCurrentUser.setSuccess(it.mapToPresentation()) },
-            {
-                followRequestAsCurrentUser.setError(it.message)
-                Log.e(TAG, "Could not get follow request as the current user - ${it.message}")
-            }
-        )
-    )
+    fun getFollowRequestAsCurrentUser(receiverId: UUID) =
+        viewModelScope.launch {
+            compositeDisposable.add(followUseCase
+                .get(authUserUseCase.getSelfId(), receiverId)
+                .doOnSubscribe { followRequestAsCurrentUser.setLoading() }
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    { followRequestAsCurrentUser.setSuccess(it.mapToPresentation()) },
+                    {
+                        followRequestAsCurrentUser.setError(it.message)
+                        Log.e(TAG, "Could not get follow request as the current user - ${it.message}")
+                    }
+                )
+            )
+        }
 
     /**
      *  Send a follow request as the current user.
      *
      *  @param receiverId The user to be followed.
      */
-    fun sendFollowRequest(receiverId: UUID) = compositeDisposable.add(followUseCase
-        .sendFollowRequest(receiverId)
-        .doOnSubscribe { followRequestAsCurrentUser.setLoading() }
-        .subscribeOn(Schedulers.io())
-        .subscribe(
-            {
-                // After sending the follow request, get it immediately.
-                // Some updates might have taken place automatically.
-                followUseCase
-                    .get(authUserUseCase.getSelfId(), receiverId)
-                    .map { followRequest -> followRequest.mapToPresentation() }
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(
-                        { followRequestAsCurrentUser.setSuccess(it) },
-                        {
-                            Log.e(TAG, "Could not send follow request - ${it.message}")
-                        }
-                    )
-            },
-            { followRequestAsCurrentUser.setError(it.message) }
-        )
-    )
+    fun sendFollowRequest(receiverId: UUID) =
+        viewModelScope.launch {
+            compositeDisposable.add(followUseCase
+                .sendFollowRequest(receiverId)
+                .doOnSubscribe { followRequestAsCurrentUser.setLoading() }
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        // After sending the follow request, get it immediately.
+                        // Some updates might have taken place automatically.
+                        followUseCase
+                            .get(authUserUseCase.getSelfId(), receiverId)
+                            .map { followRequest -> followRequest.mapToPresentation() }
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(
+                                { followRequestAsCurrentUser.setSuccess(it) },
+                                {
+                                    Log.e(TAG, "Could not send follow request - ${it.message}")
+                                }
+                            )
+                    },
+                    { followRequestAsCurrentUser.setError(it.message) }
+                )
+            )
+        }
 
     /**
      *  Unfollow a user as the current user.
      *
      *  @param receiverId The user to unfollow.
      */
-    fun unfollow(receiverId: UUID) = compositeDisposable.add(followUseCase
-        .unfollow(receiverId)
-        .doOnSubscribe { followRequestAsCurrentUser.setLoading() }
-        .subscribeOn(Schedulers.io())
-        .subscribe(
-            { setFollowRequestAsNonExistent(receiverId) },
-            {
-                followRequestAsCurrentUser.setError(it.message)
-                Log.e(TAG, "Could not unfollow - ${it.message}")
-            }
-        )
-    )
+    fun unfollow(receiverId: UUID) =
+        viewModelScope.launch {
+            compositeDisposable.add(followUseCase
+                .unfollow(receiverId)
+                .doOnSubscribe { followRequestAsCurrentUser.setLoading() }
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    { setFollowRequestAsNonExistent(receiverId) },
+                    {
+                        followRequestAsCurrentUser.setError(it.message)
+                        Log.e(TAG, "Could not unfollow - ${it.message}")
+                    }
+                )
+            )
+        }
 
     // TODO Double user get operation, this is suboptimal.
     /**
@@ -433,22 +465,23 @@ class ProfileViewModel constructor(
      *
      *  @param user User with updated properties.
      */
-    fun updateGetSelf(user: UserUpdatablePropertiesItem) {
-        compositeDisposable.add(authUserUseCase
-            .updateSelf(user.mapToDomain())
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    getSelfComplete(true)
-                    getUser(authUserUseCase.getSelfId(), true)
-                },
-                {
-                    this.selfComplete.setError(it.message)
-                    Log.e(TAG, "Could not update and get self - ${it.message}")
-                }
+    fun updateGetSelf(user: UserUpdatablePropertiesItem) =
+        viewModelScope.launch {
+            compositeDisposable.add(authUserUseCase
+                .updateSelf(user.mapToDomain())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        getSelfComplete(true)
+                        getUser(authUserUseCase.getSelfId(), true)
+                    },
+                    {
+                        selfComplete.setError(it.message)
+                        Log.e(TAG, "Could not update and get self - ${it.message}")
+                    }
+                )
             )
-        )
-    }
+        }
 
     /**
      *  Creates a follow request entity representing a non

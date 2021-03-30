@@ -35,6 +35,13 @@ fun ImageView.loadAvatar(profileImage: String?, userId: UUID) = profileImage?.le
 } ?: loadImageUrl(URL("https://api.hello-avatar.com/adorables/285/${userId}"))
 
 /**
+ * Clear the image of an image view.
+ */
+fun ImageView.clearAvatar() {
+    this.background = null
+}
+
+/**
  * Manages the various graphs needed for a [BottomNavigationView].
  *
  * This sample is a workaround until the Navigation Component supports multiple back stacks.

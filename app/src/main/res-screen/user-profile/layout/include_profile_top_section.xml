@@ -4,6 +4,7 @@
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_layout_profile_top"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -36,7 +37,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="@string/placeholder_nickname"
             android:textAlignment="center"
             android:textAppearance="@style/NicknameTextAppearance"
             android:textColor="@color/primaryDark"
@@ -48,11 +48,11 @@
         <!-- Follow request status related button. -->
         <Button
             android:id="@+id/button_profile_follow"
+            style="@style/SwabbrButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/follow_request_follow"
-            style="@style/SwabbrButton"
             android:visibility="visible" />
 
     </LinearLayout>

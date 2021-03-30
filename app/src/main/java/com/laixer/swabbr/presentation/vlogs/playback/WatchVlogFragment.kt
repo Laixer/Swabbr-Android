@@ -152,34 +152,19 @@ class WatchVlogFragment : WatchVideoFragment() {
          */
         button_vlog_like.isEnabled = false
         button_vlog_like.setOnClickListener { toggleLike() }
-
-        getResourcesIfRequired()
     }
 
+    // TODO Merge to single call.
     /**
-     *  If the [vlogVm] still contains a vlog with id [vlogId],
-     *  we don't need to refresh the resources. Otherwise, clear
-     *  and call a full refresh.
+     *  Get the vlog and its additional data.
      */
-    private fun getResourcesIfRequired() {
-        if (vlogId == vlogVm.vlog.value?.data?.vlog?.id) {
-            return
-        }
-
-        // Prevent previous vlog data from being loaded
-        vlogVm.clearResources()
-
-        /**
-         *  Retrieve the actual vlog using the view model. When the
-         *  vlog has been retrieved, [onVlogLoaded] will be called.
-         *  A similar structure exists for the reactions and likes.
-         */
+    override fun getData(refresh: Boolean) {
         vlogVm.getVlog(vlogId)
         vlogVm.getReactions(vlogId)
-        vlogVm.getReactionCount(vlogId)
         vlogVm.isVlogLikedByCurrentUser(vlogId)
     }
 
+    // TODO Is this behaviour correct? I think not... Change to on vlog finished?
     // FUTURE Trigger only when we finish watching a vlog?
     /**
      *  Called each time we enter this fragment. This adds a
@@ -237,7 +222,7 @@ class WatchVlogFragment : WatchVideoFragment() {
             ParticleSystem(requireActivity(), 20, R.drawable.ic_love_it, 1000)
                 .setSpeedModuleAndAngleRange(0.1F, 0.2F, 240, 300)
                 .setRotationSpeedRange(20F, 360F)
-                .setScaleRange(1.5F, 1.6F)
+                .setScaleRange(1.2F, 1.4F)
                 .setFadeOut(500)
                 .oneShot(button_vlog_like, 1)
         }

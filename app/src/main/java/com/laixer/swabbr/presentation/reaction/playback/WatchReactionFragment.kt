@@ -52,12 +52,14 @@ class WatchReactionFragment() : WatchVideoFragment() {
         // Hide the vlog stats overlay.
         vlog_info_overlay.gone()
 
-        reactionVm.getReaction(reactionId)
-
         // Assign profile click if we have a profile
         reactionVm.reaction.value?.data?.let { wrapper ->
             view_clickable_video_user.setOnClickListener { onClickProfile().invoke(wrapper.user) }
         }
+    }
+
+    override fun getData(refresh: Boolean) {
+        reactionVm.getReaction(reactionId)
     }
 
     /**
@@ -74,7 +76,7 @@ class WatchReactionFragment() : WatchVideoFragment() {
                     user_profile_image.loadAvatar(it.user.profileImage, it.user.id)
                     video_user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
 
-                    loadMediaSource(it.reaction.videoUri!!)
+                    loadMediaSource(it.reaction.videoUri!!) // TODO This can be empty if our backend / mapping fails!
                 }
             }
             ResourceState.ERROR -> {

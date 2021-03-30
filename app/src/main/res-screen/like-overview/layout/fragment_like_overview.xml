@@ -31,7 +31,7 @@
         android:layout_marginTop="@dimen/content_margin_medium"
         android:layout_marginStart="@dimen/content_margin_large"
         android:layout_marginEnd="@dimen/content_margin_medium"
-        android:animateLayoutChanges="true"
+        android:animateLayoutChanges="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

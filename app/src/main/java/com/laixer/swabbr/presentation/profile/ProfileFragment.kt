@@ -2,7 +2,6 @@ package com.laixer.swabbr.presentation.profile
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,12 +31,17 @@ import kotlin.properties.Delegates
  *  This fragment contains tabs for more specific user details
  *  and information display. If this profile displays the current
  *  user, additional information is displayed.
+ *
+ *  This fragment controls the initial data get operations. The
+ *  individual tabs will not call these methods and will only
+ *  observe the initial behaviour. Refreshing behaviour can be
+ *  controlled by individual tabs.
  */
 class ProfileFragment : AuthFragment() {
     private val args: ProfileFragmentArgs by navArgs()
     private val profileVm: ProfileViewModel by viewModel()
 
-    // TODO Is this the best solution? Might be...
+    // TODO Is this the best solution? Might be - probably not though.
     /**
      *  The id of the profile that we are looking at. If no user id has
      *  been specified, this is assigned as the current users id.
@@ -57,24 +61,15 @@ class ProfileFragment : AuthFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
+
+        // Determine if we are looking at the current user.
+        isSelf = authVm.getSelfIdOrNull() == userId
     }
 
     /**
-     *  Binds update functions to observable resources in the
-     *  [authVm].
+     *  Binds update functions to observable resources in the [authVm].
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Instantly clear resources if they are different than expected
-        // TODO Look at this
-        profileVm.user.value?.data?.let {
-            if (it.id != userId) {
-                profileVm.clearResources()
-            }
-        }
-
-        setHasOptionsMenu(true)
-
         profileVm.user.observe(viewLifecycleOwner, Observer { onUserUpdated(it) })
         // TODO Conditional observe? Right now we simply never call the resource if we are self.
         profileVm.followRequestAsCurrentUser.observe(viewLifecycleOwner, Observer { onFollowRequestUpdated(it) })
@@ -89,8 +84,9 @@ class ProfileFragment : AuthFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Determine if we are looking at the current user.
-        isSelf = authVm.getSelfIdOrNull() == userId
+        // TODO Fix
+        // Refresh layout
+        // swipe_refresh_layout_profile_top.setOnRefreshListener { getData(true) }
 
         // Reduce swiping sensitivity for tabs.
         viewpager_user_profile.reduceDragSensitivity()
@@ -100,12 +96,9 @@ class ProfileFragment : AuthFragment() {
         button_profile_follow.isVisible = !isSelf
         button_profile_follow.setOnClickListener { onClickFollowButton() }
 
-        // Always refresh all data about the user for correct display.
-        getData(false)
-
         /** Setup the tab layout based on [isSelf]. */
         if (isSelf) {
-            viewpager_user_profile.adapter = ProfileTabSelfAdapter(this, userId)
+            viewpager_user_profile.adapter = ProfileTabSelfAdapter(this, userId, profileVm)
             viewpager_user_profile.offscreenPageLimit = ProfileTabSelfAdapter.ITEM_COUNT
 
             TabLayoutMediator(tab_layout_user_profile, viewpager_user_profile) { tab, position ->
@@ -118,7 +111,7 @@ class ProfileFragment : AuthFragment() {
                 }
             }.attach()
         } else {
-            viewpager_user_profile.adapter = ProfileTabAdapter(this, userId)
+            viewpager_user_profile.adapter = ProfileTabAdapter(this, userId, profileVm)
             viewpager_user_profile.offscreenPageLimit = ProfileTabAdapter.ITEM_COUNT
 
             TabLayoutMediator(tab_layout_user_profile, viewpager_user_profile) { tab, position ->
@@ -137,10 +130,24 @@ class ProfileFragment : AuthFragment() {
      *
      *  @param refresh Force a data refresh.
      */
-    private fun getData(refresh: Boolean = false) {
+    override fun getData(refresh: Boolean) {
         profileVm.getUser(userId, refresh)
+        profileVm.getFollowing(userId, refresh)
+        profileVm.getVlogsByUser(userId, refresh)
 
-        // Only get the follow request if we are not looking at our own profile
+        // Conditional for incoming follow requests or not
+        if (isSelf) {
+            profileVm.getFollowersAndIncomingRequesters(refresh)
+        } else {
+            profileVm.getFollowers(userId, refresh)
+        }
+
+        // Only get self complete if we are ourself
+        if (isSelf) {
+            profileVm.getSelfComplete()
+        }
+
+        // If we are looking at another profile, get the follow request status too.
         if (!isSelf) {
             profileVm.getFollowRequestAsCurrentUser(userId)
         }

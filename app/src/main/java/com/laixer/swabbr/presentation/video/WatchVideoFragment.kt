@@ -15,11 +15,11 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
-import com.laixer.swabbr.presentation.utils.todosortme.gone
-import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.types.VideoPlaybackState
+import com.laixer.swabbr.presentation.utils.todosortme.gone
+import com.laixer.swabbr.presentation.utils.todosortme.visible
 import kotlinx.android.synthetic.main.fragment_video.*
 
 // TODO Orientation is wrong sometimes.
@@ -98,14 +98,12 @@ abstract class WatchVideoFragment : Player.EventListener, AuthFragment() {
      *  @param endpoint Resource location.
      */
     protected fun loadMediaSource(endpoint: Uri) {
-        // Throw if we already have a media source.
-        if (mediaSource != null) {
-            throw IllegalStateException("Can't overwrite media source")
+        // Only get the media source if we don't already have a media source.
+        if (mediaSource == null) {
+            val dataSourceFactory = DefaultHttpDataSourceFactory(requireContext().getString(R.string.app_name))
+            val mediaSourceFactory = ProgressiveMediaSource.Factory(dataSourceFactory)
+            mediaSource = mediaSourceFactory.createMediaSource(endpoint)
         }
-
-        val dataSourceFactory = DefaultHttpDataSourceFactory(requireContext().getString(R.string.app_name))
-        val mediaSourceFactory = ProgressiveMediaSource.Factory(dataSourceFactory)
-        mediaSource = mediaSourceFactory.createMediaSource(endpoint)
 
         playMediaSourceIfPresent()
     }
