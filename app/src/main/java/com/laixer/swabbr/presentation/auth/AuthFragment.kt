@@ -5,10 +5,10 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.laixer.swabbr.utils.resources.Resource
-import com.laixer.swabbr.utils.resources.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
 
@@ -27,6 +27,11 @@ abstract class AuthFragment : Fragment() {
      *  for the first [getData] call. Defaults to false.
      */
     protected var defaultRefresh: Boolean = false
+
+    /**
+     *  Flag to help us trigger [getData] in [onResume].
+     */
+    private var wasRedirectedToLogin: Boolean = false
 
     /**
      *  Attaches an error handler to our API calls whenever a
@@ -59,16 +64,28 @@ abstract class AuthFragment : Fragment() {
      */
     private fun checkIfAuthenticated(): Boolean =
         if (!authVm.isAuthenticated()) {
-            findNavController().navigate(R.id.action_global_loginFragment)
+
+            toLogin()
+
             false
         } else {
+
+            wasRedirectedToLogin = false
             true
         }
 
     /**
+     *  Takes us to the login screen.
+     */
+    private fun toLogin() {
+        wasRedirectedToLogin = true
+        findNavController().navigate(R.id.action_global_loginFragment)
+    }
+
+    /**
      *  Override this method to only get data if we are authenticated.
      */
-    protected open fun getData(refresh: Boolean = defaultRefresh) { }
+    protected open fun getData(refresh: Boolean = defaultRefresh) {}
 
     // TODO Is this the right solution? Probably not...
     /**
@@ -78,15 +95,7 @@ abstract class AuthFragment : Fragment() {
      *  can't get the id this will return a random value and simulate
      *  a back press.
      */
-    protected fun getSelfId(): UUID {
-        val id = authVm.getSelfIdOrNull()
-        return if (id == null) {
-            findNavController().popBackStack()
-            UUID.randomUUID()
-        } else {
-            id
-        }
-    }
+    protected fun getSelfId(): UUID = authVm.getSelfIdOrNull() ?: UUID.randomUUID()
 
     /**
      *  If our [authVm] determines we can't stay authenticated for
@@ -97,9 +106,9 @@ abstract class AuthFragment : Fragment() {
             ResourceState.LOADING -> {
             }
             ResourceState.SUCCESS -> { // If this resource is true we require new authentication by the user.
-                res.data?.let {
-                    if (it) {
-                        findNavController().navigate(R.id.action_global_loginFragment)
+                res.data?.let { newAuthenticationRequired ->
+                    if (newAuthenticationRequired) {
+                        toLogin()
                     }
                 }
             }
@@ -108,6 +117,18 @@ abstract class AuthFragment : Fragment() {
         }
     }
 
+    /**
+     *  Re-trigger [getData] if we were redirected before.
+     */
+    override fun onResume() {
+        super.onResume()
+
+        // Only get data if we are authenticated.
+        if (wasRedirectedToLogin && authVm.isAuthenticated()) {
+            wasRedirectedToLogin = false
+            getData()
+        }
+    }
 
     companion object {
         const val TAG = "AuthActivity"

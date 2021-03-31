@@ -5,7 +5,7 @@ import com.laixer.swabbr.domain.interfaces.UserRepository
 import com.laixer.swabbr.domain.model.UserComplete
 import com.laixer.swabbr.domain.model.UserUpdatableProperties
 import com.laixer.swabbr.services.uploading.UploadHelper.Companion.uploadFile
-import com.laixer.swabbr.services.users.UserManager
+import com.laixer.swabbr.services.users.UserService
 import com.laixer.swabbr.utils.media.MediaConstants
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -17,13 +17,13 @@ import java.util.*
  */
 class AuthUserUseCase constructor(
     private val userRepository: UserRepository,
-    private val userManager: UserManager
+    private val userService: UserService
 ) {
     /**
      *  Gets the id of the currently authenticated user. Only call this if
      *  we are authenticated.
      */
-    fun getSelfId(): UUID = userManager.getUserIdOrNull() ?: UUID.randomUUID() // TODO Horrible solution
+    fun getSelfId(): UUID = userService.getUserIdOrNull() ?: UUID.randomUUID() // TODO Horrible solution
 
     /**
      *  Get the currently authenticated user. This contains
