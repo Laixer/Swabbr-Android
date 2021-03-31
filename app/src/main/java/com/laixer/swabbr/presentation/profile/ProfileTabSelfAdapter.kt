@@ -12,18 +12,19 @@ import java.util.*
  */
 internal class ProfileTabSelfAdapter(
     fragment: Fragment,
-    private val userId: UUID
+    private val userId: UUID,
+    private val profileVm: ProfileViewModel
 ) : FragmentStateAdapter(fragment) {
     /**
      *  Selects which tab belongs to which fragment.
      */
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> ProfileVlogsFragment(userId)
-            1 -> ProfileDetailsFragment(userId)
-            2 -> ProfileFollowingFragment(userId)
-            3 -> ProfileFollowersFragment(userId)
-            else -> ProfileVlogsFragment(userId)
+            0 -> ProfileVlogsFragment(userId, profileVm)
+            1 -> ProfileDetailsFragment(userId, profileVm)
+            2 -> ProfileFollowingFragment(userId, profileVm)
+            3 -> ProfileFollowersFragment(userId, profileVm)
+            else -> ProfileVlogsFragment(userId, profileVm)
         }
     }
 

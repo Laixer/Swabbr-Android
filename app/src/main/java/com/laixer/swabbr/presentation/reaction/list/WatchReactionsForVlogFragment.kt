@@ -56,7 +56,7 @@ class WatchReactionsForVlogFragment : WatchVideoListFragment() {
     /**
      *  Gets our reactions for our vlog.
      */
-    private fun getData(refresh: Boolean = false) {
+    override fun getData(refresh: Boolean) {
         reactionListVm.getReactionsForVlog(vlogId, refresh)
     }
 
@@ -68,17 +68,6 @@ class WatchReactionsForVlogFragment : WatchVideoListFragment() {
         reactionListResource = reactionListVm.reactions,
         onVideoCompletedCallback = ::onVideoPlaybackStateChanged
     )
-
-    /**
-     *  Triggers the data get.
-     */
-    override fun onStart() {
-        super.onStart()
-
-        // TODO When to call this && isAuthenticated?
-        //  We only want this to happen if we are authenticated, else we should be redirected to the login fragment
-        getData(false)
-    }
 
     /**
      *  Go to the next reaction if one finishes playback. If we don't have

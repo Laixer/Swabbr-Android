@@ -8,7 +8,7 @@ import com.laixer.swabbr.presentation.utils.todosortme.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.utils.diffcallback.UserDiffCallback
-import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.loadAvatarFromUser
 import kotlinx.android.synthetic.main.include_user_large.view.*
 import kotlinx.android.synthetic.main.include_usernames.view.*
 
@@ -35,7 +35,7 @@ class UserAdapter(
          *  Method that specifies the binding for a [UserItem].
          */
         fun bind(item: UserItem) {
-            itemView.user_profile_image.loadAvatar(item.profileImage, item.id)
+            itemView.user_profile_image.loadAvatarFromUser(item)
             itemView.user_nickname.text = context.getString(R.string.nickname, item.nickname)
 
             itemView.setOnClickListener { onClick.invoke(item) }

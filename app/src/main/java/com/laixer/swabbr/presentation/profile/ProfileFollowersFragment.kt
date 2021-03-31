@@ -5,10 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.laixer.swabbr.utils.resources.Resource
-import com.laixer.swabbr.utils.resources.ResourceState
-import com.laixer.swabbr.presentation.utils.todosortme.startRefreshing
-import com.laixer.swabbr.presentation.utils.todosortme.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.onClickProfileWithRelation
 import com.laixer.swabbr.extensions.showMessage
@@ -16,8 +12,11 @@ import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.presentation.user.list.UserFollowRequestingAdapter
 import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
+import com.laixer.swabbr.presentation.utils.todosortme.startRefreshing
+import com.laixer.swabbr.presentation.utils.todosortme.stopRefreshing
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.fragment_profile_followers.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 /**
@@ -26,10 +25,12 @@ import java.util.*
  *  follow requests.
  *
  *  @param userId The user id of the profile we are looking at.
- *
+ *  @param profileVm Single profile vm instance from [ProfileFragment].
  */
-class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
-    private val profileVm: ProfileViewModel by viewModel()
+class ProfileFollowersFragment(
+    private val userId: UUID,
+    private val profileVm: ProfileViewModel
+) : AuthFragment() {
 
     private var userAdapter: UserWithRelationAdapter? = null
 
@@ -53,24 +54,21 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
         recycler_view_profile_followers.isNestedScrollingEnabled = false
         recycler_view_profile_followers.adapter = userAdapter
 
-        swipe_refresh_layout_profile_followers.setOnRefreshListener { getData(true) }
+        swipe_refresh_layout_profile_followers.setOnRefreshListener { refreshData() }
 
         profileVm.followersAndFollowRequestingUsers.observe(viewLifecycleOwner, Observer { onFollowersUpdated(it) })
-
-        getData()
     }
 
     /**
-     *  Gets data from the [profileVm] based on if the profile
-     *  belongs to the current user or not.
-     *
-     *  @param refresh Force a data refresh.
+     *  Only performs data refreshes. Note that this does not
+     *  follow the [getData] structure as our parent fragment
+     *  manages the initial data get operation.
      */
-    private fun getData(refresh: Boolean = false) {
+    private fun refreshData() {
         if (authVm.getSelfIdOrNull() == userId) {
-            profileVm.getFollowersAndIncomingRequesters(refresh)
+            profileVm.getFollowersAndIncomingRequesters(true)
         } else {
-            profileVm.getFollowers(userId, refresh)
+            profileVm.getFollowers(userId, true)
         }
     }
 
@@ -96,21 +94,24 @@ class ProfileFollowersFragment(private val userId: UUID) : AuthFragment() {
      */
     private fun onFollowersUpdated(res: Resource<List<UserWithRelationItem>>) {
         res.run {
-                when (state) {
-                    ResourceState.LOADING -> swipe_refresh_layout_profile_followers.startRefreshing()
-                    ResourceState.SUCCESS -> {
-                        swipe_refresh_layout_profile_followers.stopRefreshing()
+            when (state) {
+                ResourceState.LOADING -> {
+                    swipe_refresh_layout_profile_followers.startRefreshing()
+                }
+                ResourceState.SUCCESS -> {
+                    swipe_refresh_layout_profile_followers.stopRefreshing()
 
-                        data?.let {
-                            userAdapter?.submitList(it)
-                        }
-                    }
-                    ResourceState.ERROR -> {
-                        swipe_refresh_layout_profile_followers.stopRefreshing()
-
-                        showMessage("Could not get followers")
+                    data?.let {
+                        userAdapter?.submitList(it)
+                        userAdapter?.notifyDataSetChanged()
                     }
                 }
+                ResourceState.ERROR -> {
+                    swipe_refresh_layout_profile_followers.stopRefreshing()
+
+                    showMessage("Could not get followers")
+                }
+            }
         }
     }
 

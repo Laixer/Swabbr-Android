@@ -1,5 +1,6 @@
 package com.laixer.swabbr.presentation.model
 
+import android.net.Uri
 import com.laixer.swabbr.domain.model.UserComplete
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
@@ -21,34 +22,15 @@ data class UserCompleteItem(
     val birthDate: LocalDate?,
     val timeZone: ZoneOffset?,
     var nickname: String,
-    val profileImage: String?,
+    val hasProfileImage: Boolean,
+    val profileImageUri: Uri?,
+    val profileImageUploadUri: Uri?,
     val latitude: Double?,
     val longitude: Double?,
     var isPrivate: Boolean,
     val dailyVlogRequestLimit: Int,
     val followMode: FollowMode
-) {
-    /** TODO Duplicate functionality with [UserItem]. */
-    /**
-     *  Gets the user display name. When no first name and
-     *  last name are present, this returns the nickname.
-     */
-    fun getDisplayName(): String {
-        if (!firstName.isNullOrBlank() && !lastName.isNullOrBlank()) {
-            return "$firstName $lastName"
-        }
-
-        if (!firstName.isNullOrBlank()) {
-            return firstName as String
-        }
-
-        if (!lastName.isNullOrBlank()) {
-            return lastName as String
-        }
-
-        return nickname
-    }
-}
+)
 
 /**
  *  Map a user complete object from domain to presentation.
@@ -62,7 +44,9 @@ fun UserComplete.mapToPresentation(): UserCompleteItem = UserCompleteItem(
     birthDate,
     timeZone,
     nickname,
-    profileImage,
+    hasProfileImage,
+    profileImageUri,
+    profileImageUploadUri,
     latitude,
     longitude,
     isPrivate,
@@ -82,10 +66,23 @@ fun UserCompleteItem.mapToDomain(): UserComplete = UserComplete(
     birthDate,
     timeZone,
     nickname,
-    profileImage,
+    hasProfileImage,
+    profileImageUri,
+    profileImageUploadUri,
     latitude,
     longitude,
     isPrivate,
     dailyVlogRequestLimit,
     followMode
+)
+
+fun UserCompleteItem.extractUser(): UserItem = UserItem(
+    id,
+    firstName,
+    lastName,
+    gender,
+    country,
+    nickname,
+    hasProfileImage,
+    profileImageUri
 )

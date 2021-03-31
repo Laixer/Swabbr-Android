@@ -4,6 +4,7 @@ import com.laixer.swabbr.domain.model.UserComplete
 import com.laixer.swabbr.domain.model.UserUpdatableProperties
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
+import java.io.File
 import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -24,7 +25,7 @@ class UserUpdatablePropertiesItem(
     var birthDate: LocalDate? = null,
     var timeZone: ZoneOffset? = null,
     var nickname: String? = null,
-    var profileImage: String? = null,
+    var profileImageFile: File?,
     var latitude: Double? = null,
     var longitude: Double? = null,
     var isPrivate: Boolean? = null,
@@ -43,7 +44,7 @@ fun UserUpdatablePropertiesItem.copy(): UserUpdatablePropertiesItem = UserUpdata
     birthDate,
     timeZone,
     nickname,
-    profileImage,
+    profileImageFile,
     latitude,
     longitude,
     isPrivate,
@@ -62,7 +63,7 @@ fun UserCompleteItem.extractUpdatableProperties(): UserUpdatablePropertiesItem =
     birthDate,
     timeZone,
     nickname,
-    profileImage,
+    null,
     latitude,
     longitude,
     isPrivate,
@@ -81,7 +82,7 @@ fun UserUpdatableProperties.mapToPresentation(): UserUpdatablePropertiesItem = U
     birthDate,
     timeZone,
     nickname,
-    profileImage,
+    null,
     latitude,
     longitude,
     isPrivate,
@@ -100,7 +101,7 @@ fun UserUpdatablePropertiesItem.mapToDomain(): UserUpdatableProperties = UserUpd
     birthDate,
     timeZone,
     nickname,
-    profileImage,
+    profileImageFile,
     latitude,
     longitude,
     isPrivate,

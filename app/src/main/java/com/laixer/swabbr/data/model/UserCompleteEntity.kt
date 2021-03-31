@@ -1,11 +1,13 @@
 package com.laixer.swabbr.data.model
 
+import android.net.Uri
 import com.laixer.swabbr.domain.model.UserComplete
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
 import com.squareup.moshi.Json
 import java.time.LocalDate
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.util.*
 
 /**
@@ -20,7 +22,9 @@ data class UserCompleteEntity(
     @field:Json(name = "birthDate") val birthDate: LocalDate?,
     @field:Json(name = "timeZone") val timeZone: ZoneOffset?,
     @field:Json(name = "nickname") val nickname: String,
-    @field:Json(name = "profileImageBase64Encoded") val profileImage: String?,
+    @field:Json(name = "hasProfileImage") val hasProfileImage: Boolean,
+    @field:Json(name = "profileImageUri") val profileImageUri: Uri?,
+    @field:Json(name = "profileImageUploadUri") val profileImageUploadUri: Uri?,
     @field:Json(name = "latitude") val latitude: Double?,
     @field:Json(name = "longitude") val longitude: Double?,
     @field:Json(name = "isPrivate") val isPrivate: Boolean,
@@ -40,7 +44,9 @@ fun UserCompleteEntity.mapToDomain(): UserComplete = UserComplete(
     birthDate,
     timeZone,
     nickname,
-    profileImage,
+    hasProfileImage,
+    profileImageUri,
+    profileImageUploadUri,
     latitude,
     longitude,
     isPrivate,

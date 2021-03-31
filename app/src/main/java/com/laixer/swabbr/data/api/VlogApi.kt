@@ -20,6 +20,9 @@ interface VlogApi {
     @GET("vlog/{vlogId}")
     fun getVlog(@Path("vlogId") vlogId: UUID): Single<VlogEntity>
 
+    @GET("vlog/wrapper/{vlogId}")
+    fun getVlogWrapper(@Path("vlogId") vlogId: UUID): Single<VlogWrapperEntity>
+
     @GET("vlog/generate-upload-uri")
     fun generateUploadWrapper(): Single<UploadWrapperEntity>
 
@@ -37,12 +40,27 @@ interface VlogApi {
         @Query("offset") offset: Int?
     ): Single<List<VlogEntity>>
 
+    @GET("vlog/wrappers-for-user/{userId}")
+    fun getVlogWrappersForUser(
+        @Path("userId") userId: UUID,
+        @Query("sortingOrder") sortingOrder: Int?,
+        @Query("limit") limit: Int?,
+        @Query("offset") offset: Int?
+    ): Single<List<VlogWrapperEntity>>
+
     @GET("vlog/recommended")
     fun getRecommendedVlogs(
         @Query("sortingOrder") sortingOrder: Int?,
         @Query("limit") limit: Int?,
         @Query("offset") offset: Int?
     ): Single<List<VlogEntity>>
+
+    @GET("vlog/wrappers-recommended")
+    fun getRecommendedVlogWrappers(
+        @Query("sortingOrder") sortingOrder: Int?,
+        @Query("limit") limit: Int?,
+        @Query("offset") offset: Int?
+    ): Single<List<VlogWrapperEntity>>
 
     @POST("vlog")
     fun postVlog(@Body newVlog: VlogEntity): Completable

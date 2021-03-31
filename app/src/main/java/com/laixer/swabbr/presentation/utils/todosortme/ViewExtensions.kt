@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.request.RequestOptions
 import java.net.URL
@@ -33,7 +34,10 @@ fun SwipeRefreshLayout.stopRefreshing() {
 fun ViewGroup.inflate(layoutId: Int, attachToRoot: Boolean = false): View =
     LayoutInflater.from(context).inflate(layoutId, this, attachToRoot)
 
-fun ImageView.loadImageUrl(url: URL) = Glide.with(this).load(GlideUrl(url)).into(this)
+// TODO Is this done one a background thread?
+fun ImageView.loadImageUrl(url: URL) = Glide
+    .with(this)
+    .load(GlideUrl(url))
+    .diskCacheStrategy(DiskCacheStrategy.ALL)
+    .into(this)
 
-fun ImageView.loadImageRound(url: URL) =
-    Glide.with(this).load(GlideUrl(url)).apply(RequestOptions.circleCropTransform()).into(this)

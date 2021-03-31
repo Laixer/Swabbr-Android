@@ -1,27 +1,26 @@
 package com.laixer.swabbr.presentation.vlogs.playback
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.laixer.swabbr.utils.resources.Resource
-import com.laixer.swabbr.presentation.utils.todosortme.setError
-import com.laixer.swabbr.presentation.utils.todosortme.setLoading
-import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
+import androidx.lifecycle.viewModelScope
 import com.laixer.swabbr.domain.usecase.AuthUserUseCase
 import com.laixer.swabbr.domain.usecase.ReactionUseCase
 import com.laixer.swabbr.domain.usecase.VlogUseCase
+import com.laixer.swabbr.presentation.abstraction.ViewModelBase
 import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
-import com.laixer.swabbr.presentation.abstraction.ViewModelBase
+import com.laixer.swabbr.presentation.utils.todosortme.setError
+import com.laixer.swabbr.presentation.utils.todosortme.setLoading
+import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
+import com.laixer.swabbr.utils.resources.Resource
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
- *  View model which contains details about a single vlog. If
- *  a list of vlogs is desired, use [VlogListViewModel]. This
- *  also contains functionality for the reactions that belong
- *  to the [vlog] resource. Watching vlogs is done using the
- *  [ReactionViewModel].
+ *  View model which contains details about a single vlog.
  */
 class VlogViewModel constructor(
     private val authUserUseCase: AuthUserUseCase,
@@ -64,20 +63,8 @@ class VlogViewModel constructor(
     fun addView(vlogId: UUID) = compositeDisposable.add(
         vlogUseCase.addView(vlogId)
             .subscribeOn(Schedulers.io())
-            .subscribe({}, {}) // We always want an error handler even if it's empty.
+            .subscribe({}, { Log.e(TAG, "Could not add view to vlog - ${it.message}") })
     )
-
-    // TODO Is this the way to go? I do think so.
-    /**
-     *  Sets all the single vlog resources to the loading state.
-     */
-    fun clearResources() {
-        vlog.setLoading()
-        reactions.setLoading()
-        reactionCount.setLoading()
-        vlogLikeCount.setLoading()
-        vlogLikedByCurrentUser.setLoading()
-    }
 
     /**
      *  Deletes a reaction. Note that this will also remove
@@ -98,31 +85,36 @@ class VlogViewModel constructor(
         compositeDisposable.add(
             reactionsUseCase.deleteReaction(reaction.id)
                 .subscribeOn(Schedulers.io())
-                .subscribe({}, {}) // We always want an error handler even if it's empty.
+                .subscribe({}, { Log.e(TAG, "Could not delete reaction - ${it.message}") })
         )
     }
 
     /**
-     *  Gets a vlog and stores it in [vlogs]. Also store the
-     *  vlog like count in [vlogLikeCount] based on the summary
-     *  contained in the [VlogWrapperItem].
+     *  Gets a vlog and stores it in [vlog].
      *
      *  @param vlogId The vlog to get.
      *  @param refresh Force a data refresh.
      */
     fun getVlog(vlogId: UUID, refresh: Boolean = false) =
-        compositeDisposable.add(
-            vlogUseCase.get(vlogId, refresh)
-                .doOnSubscribe { vlog.setLoading() }
-                .subscribeOn(Schedulers.io()).map { it.mapToPresentation() }
-                .subscribe(
-                    {
-                        vlog.setSuccess(it)
-                        vlogLikeCount.setSuccess(it.vlogLikeSummary.totalLikes)
-                    },
-                    { vlog.setError(it.message) }
-                )
-        )
+        viewModelScope.launch {
+            compositeDisposable.add(
+                vlogUseCase.get(vlogId, refresh)
+                    .doOnSubscribe { vlog.setLoading() }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                        {
+                            val wrapper = it.mapToPresentation()
+                            vlog.setSuccess(wrapper)
+                            vlogLikeCount.setSuccess(wrapper.vlogLikeCount)
+                            reactionCount.setSuccess(wrapper.reactionCount)
+                        },
+                        {
+                            vlog.setError(it.message)
+                            Log.e(TAG, "Could not get vlog - ${it.message}")
+                        }
+                    )
+            )
+        }
 
     /**
      *  Get reaction for a vlog and store them in [reactions].
@@ -132,32 +124,20 @@ class VlogViewModel constructor(
      *  @param refresh Force a data refresh, false by default.
      */
     fun getReactions(vlogId: UUID, refresh: Boolean = false) =
-        compositeDisposable.add(
-            reactionsUseCase.getAllForVlog(vlogId, refresh)
-                .doOnSubscribe { reactions.setLoading() }
-                .subscribeOn(Schedulers.io())
-                .map { it.mapToPresentation() }
-                .subscribe(
-                    { reactions.setSuccess(it) },
-                    { reactions.setError(it.message) }
-                )
-        )
-
-    /**
-     *  Get the amount of reactions that belong to a vlog.
-     *
-     *  @param vlogId The vlog to get the count for.
-     */
-    fun getReactionCount(vlogId: UUID, refresh: Boolean = false) =
-        compositeDisposable.add(
-            vlogUseCase.getReactionCount(vlogId, refresh)
-                .doOnSubscribe { reactions.setLoading() }
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                    { reactionCount.setSuccess(it) },
-                    { reactionCount.setError(it.message) }
-                )
-        )
+        viewModelScope.launch {
+            compositeDisposable.add(
+                reactionsUseCase.getAllForVlog(vlogId, refresh)
+                    .doOnSubscribe { reactions.setLoading() }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                        { reactions.setSuccess(it.mapToPresentation()) },
+                        {
+                            reactions.setError(it.message)
+                            Log.e(TAG, "Could not get reactions for vlog - ${it.message}")
+                        }
+                    )
+            )
+        }
 
     /**
      *  Like a vlog as the current user.
@@ -173,18 +153,21 @@ class VlogViewModel constructor(
         modifyVlogLikeCount(+1)
 
         // Then remote
-        compositeDisposable.add(
-            vlogUseCase.like(vlogId)
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                    {
-                        vlogLikedByCurrentUser.setSuccess(true)
-                    },
-                    {
-                        // Undo local update
-                        modifyVlogLikeCount(-1)
-                    }
-                ))
+        viewModelScope.launch {
+            compositeDisposable.add(
+                vlogUseCase.like(vlogId)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                        {
+                            vlogLikedByCurrentUser.setSuccess(true)
+                        },
+                        {
+                            // Undo local update
+                            modifyVlogLikeCount(-1)
+                            Log.e(TAG, "Could not like vlog - ${it.message}")
+                        }
+                    ))
+        }
     }
 
     /**
@@ -199,18 +182,21 @@ class VlogViewModel constructor(
     fun unlike(vlogId: UUID) {
         modifyVlogLikeCount(-1)
 
-        compositeDisposable.add(
-            vlogUseCase.unlike(vlogId)
-                .doOnSubscribe { vlogLikedByCurrentUser.setSuccess(false) }
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                    {
-                        vlogLikedByCurrentUser.setSuccess(false)
-                    },
-                    {
-                        modifyVlogLikeCount(+1)
-                    }
-                ))
+        viewModelScope.launch {
+            compositeDisposable.add(
+                vlogUseCase.unlike(vlogId)
+                    .doOnSubscribe { vlogLikedByCurrentUser.setSuccess(false) }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                        {
+                            vlogLikedByCurrentUser.setSuccess(false)
+                        },
+                        {
+                            modifyVlogLikeCount(+1)
+                            Log.e(TAG, "Could not unlike vlog - ${it.message}")
+                        }
+                    ))
+        }
     }
 
     // TODO Move to vlog like use case in the future
@@ -218,15 +204,20 @@ class VlogViewModel constructor(
      *  Checks if a given vlog is liked by the current user.
      */
     fun isVlogLikedByCurrentUser(vlogId: UUID) =
-        compositeDisposable.add(
-            vlogUseCase.isVlogLikedByUser(vlogId, authUserUseCase.getSelfId())
-                .doOnSubscribe { vlogLikedByCurrentUser.setLoading() }
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                    { vlogLikedByCurrentUser.setSuccess(it) },
-                    { vlogLikedByCurrentUser.setError(it.message) }
-                )
-        )
+        viewModelScope.launch {
+            compositeDisposable.add(
+                vlogUseCase.isVlogLikedByUser(vlogId, authUserUseCase.getSelfId())
+                    .doOnSubscribe { vlogLikedByCurrentUser.setLoading() }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
+                        { vlogLikedByCurrentUser.setSuccess(it) },
+                        {
+                            vlogLikedByCurrentUser.setError(it.message)
+                            Log.e(TAG, "Could not check if vlog is liked by current user - ${it.message}")
+                        }
+                    )
+            )
+        }
 
     // FUTURE Fix this race condition
     /**
@@ -248,5 +239,9 @@ class VlogViewModel constructor(
         }
 
         vlogLikeCount.setSuccess(vlogLikeCount.value!!.data!! + amount)
+    }
+
+    companion object {
+        private val TAG = VlogViewModel::class.java.simpleName
     }
 }

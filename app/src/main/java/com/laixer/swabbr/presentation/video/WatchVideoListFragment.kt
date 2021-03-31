@@ -1,13 +1,12 @@
 package com.laixer.swabbr.presentation.video
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.laixer.swabbr.presentation.utils.todosortme.gone
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.auth.AuthFragment
+import com.laixer.swabbr.presentation.utils.todosortme.gone
 import kotlinx.android.synthetic.main.fragment_video_view_pager.*
 
 // TODO Swipe refresh layout?
@@ -25,9 +24,8 @@ abstract class WatchVideoListFragment : AuthFragment() {
     /**
      *  Inflates the view pager.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_video_view_pager, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+        = inflater.inflate(R.layout.fragment_video_view_pager, container, false)
 
     /**
      *  Sets the [WatchVideoFragmentAdapter] as the adapter for the
@@ -36,6 +34,10 @@ abstract class WatchVideoListFragment : AuthFragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // TODO
+        // Prevent code-triggered animation transitions from crashing the app.
+        // video_viewpager.layoutTransition.setAnimateParentHierarchy(false)
 
         // Hide the empty collection message
         text_display_empty_video_collection.gone()

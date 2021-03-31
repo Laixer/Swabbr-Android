@@ -9,7 +9,7 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.utils.diffcallback.ReactionWrapperDiffCallback
-import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.loadAvatarFromUser
 import kotlinx.android.synthetic.main.item_list_reaction.view.*
 import java.util.*
 
@@ -40,7 +40,7 @@ class ReactionsAdapter(
          *  Binds a single [ReactionWrapperItem] to the UI.
          */
         fun bind(item: ReactionWrapperItem) = with(itemView) {
-            user_profile_image.loadAvatar(item.user.profileImage, item.user.id)
+            user_profile_image.loadAvatarFromUser(item.user)
             video_user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
 
             // Take us to the user if we click the profile image.

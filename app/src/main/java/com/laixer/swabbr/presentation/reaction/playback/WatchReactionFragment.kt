@@ -12,9 +12,10 @@ import com.laixer.swabbr.extensions.onClickProfile
 import com.laixer.swabbr.extensions.putUuid
 import com.laixer.swabbr.presentation.model.ReactionItem
 import com.laixer.swabbr.presentation.model.ReactionWrapperItem
+import com.laixer.swabbr.presentation.model.mapToDomain
 import com.laixer.swabbr.presentation.utils.todosortme.gone
 import com.laixer.swabbr.presentation.video.WatchVideoFragment
-import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.loadAvatarFromUser
 import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.exo_player_view.*
@@ -52,12 +53,14 @@ class WatchReactionFragment() : WatchVideoFragment() {
         // Hide the vlog stats overlay.
         vlog_info_overlay.gone()
 
-        reactionVm.getReaction(reactionId)
-
         // Assign profile click if we have a profile
         reactionVm.reaction.value?.data?.let { wrapper ->
             view_clickable_video_user.setOnClickListener { onClickProfile().invoke(wrapper.user) }
         }
+    }
+
+    override fun getData(refresh: Boolean) {
+        reactionVm.getReaction(reactionId)
     }
 
     /**
@@ -71,10 +74,10 @@ class WatchReactionFragment() : WatchVideoFragment() {
             ResourceState.SUCCESS -> {
                 video_content_loading_icon.visibility = View.GONE
                 data?.let {
-                    user_profile_image.loadAvatar(it.user.profileImage, it.user.id)
+                    user_profile_image.loadAvatarFromUser(it.user.mapToDomain())
                     video_user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
 
-                    loadMediaSource(it.reaction.videoUri!!)
+                    loadMediaSource(it.reaction.videoUri!!) // TODO This can be empty if our backend / mapping fails!
                 }
             }
             ResourceState.ERROR -> {

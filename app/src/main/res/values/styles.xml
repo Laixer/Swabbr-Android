@@ -61,5 +61,4 @@
         <item name="strokeWidth">2dp</item>
         <item name="rippleColor">@color/primary</item>
     </style>
-
 </resources>

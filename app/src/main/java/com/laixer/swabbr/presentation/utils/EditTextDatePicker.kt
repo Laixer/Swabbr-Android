@@ -48,6 +48,13 @@ class EditTextDatePicker @JvmOverloads constructor(
     }
 
     /**
+     * Clear the date for a date edit text.
+     */
+    fun clearDate() {
+        this.text = null
+    }
+
+    /**
      *  Called when a date is selected.
      */
     private fun onDateSelected(dateSelected: LocalDate) {

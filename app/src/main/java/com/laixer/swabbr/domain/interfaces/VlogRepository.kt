@@ -16,11 +16,17 @@ interface VlogRepository {
 
     fun get(vlogId: UUID): Single<Vlog>
 
+    fun getWrapper(vlogId: UUID): Single<VlogWrapper>
+
     fun generateUploadWrapper(): Single<UploadWrapper>
 
     fun getRecommended(pagination: Pagination = Pagination.latest()): Single<List<Vlog>>
 
+    fun getWrappersRecommended(pagination: Pagination = Pagination.latest()): Single<List<VlogWrapper>>
+
     fun getForUser(userId: UUID, pagination: Pagination = Pagination.latest()): Single<List<Vlog>>
+
+    fun getWrappersForUser(userId: UUID, pagination: Pagination = Pagination.latest()): Single<List<VlogWrapper>>
 
     fun post(vlog: Vlog): Completable
 

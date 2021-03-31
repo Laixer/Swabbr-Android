@@ -5,27 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.laixer.swabbr.utils.resources.Resource
-import com.laixer.swabbr.utils.resources.ResourceState
-import com.laixer.swabbr.presentation.utils.todosortme.startRefreshing
-import com.laixer.swabbr.presentation.utils.todosortme.stopRefreshing
 import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.onClickProfile
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.user.list.UserAdapter
+import com.laixer.swabbr.presentation.utils.todosortme.startRefreshing
+import com.laixer.swabbr.presentation.utils.todosortme.stopRefreshing
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.fragment_profile_following.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 /**
  *  Fragment displaying all users that the displayed user is following himself.
  *
  *  @param userId The user id of the profile we are looking at.
+ *  @param profileVm Single profile vm instance from [ProfileFragment].
  */
-class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
-    private val profileVm: ProfileViewModel by viewModel()
+class ProfileFollowingFragment(
+    private val userId: UUID,
+    private val profileVm: ProfileViewModel
+) : AuthFragment() {
+
     private var userAdapter: UserAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,7 +37,7 @@ class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
 
     /**
      *  Setup UI, attach observers to observable [profileVm] vars.
-     *  This will trigger [getData] to display up to date
+     *  This will trigger [refreshData] to display up to date
      *  information about who the current user is following.
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,19 +49,15 @@ class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
             adapter = userAdapter
         }
 
-        swipe_refresh_layout_profile_following.setOnRefreshListener { getData(true) }
+        swipe_refresh_layout_profile_following.setOnRefreshListener { refreshData() }
 
         profileVm.followingUsers.observe(viewLifecycleOwner, Observer { onFollowingUsersUpdated(it) })
-
-        getData(true)
     }
 
     /**
      *  Triggers a get for the following users.
-     *
-     *  @param refresh Force a data refresh.
      */
-    private fun getData(refresh: Boolean = false) = profileVm.getFollowing(userId, refresh)
+    private fun refreshData() = profileVm.getFollowing(userId, true)
 
     /**
      *  Called when the observed resource of [UserItem]s changes.
@@ -68,7 +67,9 @@ class ProfileFollowingFragment(private val userId: UUID) : AuthFragment() {
     private fun onFollowingUsersUpdated(resource: Resource<List<UserItem>>) {
         resource.run {
             when (state) {
-                ResourceState.LOADING -> swipe_refresh_layout_profile_following.startRefreshing()
+                ResourceState.LOADING -> {
+                    swipe_refresh_layout_profile_following.startRefreshing()
+                }
                 ResourceState.SUCCESS -> {
                     swipe_refresh_layout_profile_following.stopRefreshing()
 

@@ -1,25 +1,27 @@
 package com.laixer.swabbr.presentation.auth
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
 import com.google.android.gms.tasks.Tasks.await
 import com.google.firebase.messaging.FirebaseMessaging
-import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.domain.usecase.AuthUseCase
+import com.laixer.swabbr.presentation.abstraction.ViewModelBase
+import com.laixer.swabbr.presentation.model.RegistrationItem
+import com.laixer.swabbr.presentation.model.mapToDomain
 import com.laixer.swabbr.presentation.utils.todosortme.setError
 import com.laixer.swabbr.presentation.utils.todosortme.setLoading
 import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
-import com.laixer.swabbr.domain.usecase.AuthUseCase
-import com.laixer.swabbr.presentation.model.RegistrationItem
-import com.laixer.swabbr.presentation.model.mapToDomain
-import com.laixer.swabbr.presentation.abstraction.ViewModelBase
 import com.laixer.swabbr.services.uploading.ReactionUploadWorker
 import com.laixer.swabbr.services.uploading.VlogUploadWorker
 import com.laixer.swabbr.services.users.UserManager
+import com.laixer.swabbr.utils.resources.Resource
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.coroutines.coroutineContext
 
 /**
  *  View model for managing user login, logout and registration.
@@ -74,35 +76,41 @@ open class AuthViewModel constructor(
      *  @param password User password.
      */
     fun login(email: String, password: String) =
-        compositeDisposable.add(
-            Single.fromCallable { await(firebaseMessaging.token) }
-                .subscribeOn(Schedulers.io())
-                .subscribe({ fbToken ->
-                    authUseCase
-                        .login(
-                            name = email,
-                            password = password,
-                            fbToken = fbToken
-                        )
-                        .doOnSubscribe { authenticationResultResource.setLoading() }
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(
-                            {
-                                userManager.login(
-                                    email = email,
-                                    tokenWrapper = it
-                                )
+        viewModelScope.launch {
+            compositeDisposable.add(
+                Single.fromCallable { await(firebaseMessaging.token) }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ fbToken ->
+                        authUseCase
+                            .login(
+                                name = email,
+                                password = password,
+                                fbToken = fbToken
+                            )
+                            .doOnSubscribe { authenticationResultResource.setLoading() }
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(
+                                {
+                                    userManager.login(
+                                        email = email,
+                                        tokenWrapper = it
+                                    )
 
-                                // Save the token wrapper locally to notify observers.
-                                authenticationResultResource.setSuccess(true)
-                            },
-                            {
-                                authenticationResultResource.setError(it.message)
-                            }
-                        )
-                },
-                    { authenticationResultResource.setError(it.message) })
-        )
+                                    // Save the token wrapper locally to notify observers.
+                                    authenticationResultResource.setSuccess(true)
+                                },
+                                {
+                                    authenticationResultResource.setError(it.message)
+                                    Log.e(TAG, "Could not login - ${it.message}")
+                                }
+                            )
+                    },
+                        {
+                            authenticationResultResource.setError(it.message)
+                            Log.e(TAG, "Could not login - ${it.message}")
+                        })
+            )
+        }
 
     /**
      *  Register a user and login right after if the registration succeeds.
@@ -110,18 +118,23 @@ open class AuthViewModel constructor(
      *  @param registration The registration object.
      */
     fun register(registration: RegistrationItem) =
-        compositeDisposable.add(authUseCase
-            .register(registration.mapToDomain())
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                {
-                    // If we reach this point we have created the user. Call the
-                    // login functionality right away so we can log the user in.
-                    login(registration.email, registration.password)
-                },
-                { authenticationResultResource.setError(it.message) }
+        viewModelScope.launch {
+            compositeDisposable.add(authUseCase
+                .register(registration.mapToDomain())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        // If we reach this point we have created the user. Call the
+                        // login functionality right away so we can log the user in.
+                        login(registration.email, registration.password)
+                    },
+                    {
+                        authenticationResultResource.setError(it.message)
+                        Log.e(TAG, "Could not register- ${it.message}")
+                    }
+                )
             )
-        )
+        }
 
     /**
      *  Logs the user out. Note that this will also disable any
@@ -137,13 +150,22 @@ open class AuthViewModel constructor(
             userManager.logout()
         }
 
-        compositeDisposable.add(authUseCase
-            .logout()
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                { onLogout() },
-                { onLogout() }
+        viewModelScope.launch {
+            compositeDisposable.add(authUseCase
+                .logout()
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    { onLogout() },
+                    {
+                        onLogout()
+                        Log.e(TAG, "Could not logout properly - ${it.message}")
+                    }
+                )
             )
-        )
+        }
+    }
+
+    companion object {
+        private val TAG = AuthViewModel::class.java.simpleName
     }
 }

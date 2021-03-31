@@ -28,6 +28,7 @@ import com.laixer.swabbr.presentation.utils.selectProfileImage
 import com.laixer.swabbr.utils.encodeToBase64
 import kotlinx.android.synthetic.main.fragment_registration.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import java.io.File
 
 /**
  *  Fragment for handling user registration.
@@ -84,6 +85,7 @@ class RegistrationFragment : Fragment() {
         hideSoftKeyboard()
 
         // TODO Clean this up.
+        // TODO Also pass the file to the profile image here.
         authVm.register(
             RegistrationItem(
                 email = emailInput.text.toString(),
@@ -96,7 +98,6 @@ class RegistrationFragment : Fragment() {
                 birthDate = null,
                 // timeZone = //ZonedDateTime.now().offset,
                 timeZone = null, // Timezone doesn't work yet
-                profileImage = selectedProfileImage?.encodeToBase64(),
                 latitude = null,
                 longitude = null,
                 isPrivate = null,
@@ -156,12 +157,12 @@ class RegistrationFragment : Fragment() {
 
     /**
      *  Function that stores and sets our profile image if we select one.
-     *
-     *  @param selectedBitmap The selected profile image.
      */
-    private fun onBitmapSelected(selectedBitmap: Bitmap) {
-        this.selectedProfileImage = selectedBitmap
-        avatarPicker.setImageBitmap(selectedBitmap)
+    private fun onBitmapSelected(imageFile: File, imageBitmap: Bitmap) {
+        // this.selectedProfileImage = selectedBitmap
+        // TODO Profile image
+
+        avatarPicker.setImageBitmap(imageBitmap)
     }
 
     /**

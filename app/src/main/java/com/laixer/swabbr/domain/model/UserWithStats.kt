@@ -1,6 +1,8 @@
 package com.laixer.swabbr.domain.model
 
+import android.net.Uri
 import com.laixer.swabbr.domain.types.Gender
+import java.time.ZonedDateTime
 import java.util.*
 
 /**
@@ -14,7 +16,8 @@ data class UserWithStats(
     val gender: Gender,
     val country: String?,
     val nickname: String,
-    val profileImage: String?,
+    val hasProfileImage: Boolean,
+    val profileImageUri: Uri?,
     val totalLikesReceived: Int,
     val totalFollowers: Int,
     val totalFollowing: Int,

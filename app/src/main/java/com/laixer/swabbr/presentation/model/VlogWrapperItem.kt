@@ -1,27 +1,29 @@
 package com.laixer.swabbr.presentation.model
 
-import com.laixer.swabbr.domain.types.VlogWrapper
+import com.laixer.swabbr.domain.model.VlogWrapper
 
 /**
  *  Item containing a vlog, its user and its vlog like summary.
  */
 data class VlogWrapperItem(
-    val user: UserItem,
     val vlog: VlogItem,
-    var vlogLikeSummary: VlogLikeSummaryItem
+    val user: UserItem,
+    val vlogLikeCount: Int,
+    val reactionCount: Int
 ) {
+    // TODO Fix this
     fun equals(compare: VlogWrapperItem): Boolean =
         this.vlog.id.equals(compare.vlog.id)
 }
 
-// TODO These can be null.
 /**
  *  Maps a vlog wrapper from domain to presentation.
  */
 fun VlogWrapper.mapToPresentation(): VlogWrapperItem = VlogWrapperItem(
-    user.mapToPresentation(),
     vlog.mapToPresentation(),
-    vlogLikeSummary.mapToPresentation()
+    user.mapToPresentation(),
+    vlogLikeCount,
+    reactionCount
 )
 
 /**

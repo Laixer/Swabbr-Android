@@ -1,8 +1,10 @@
 package com.laixer.swabbr.data.model
 
+import android.net.Uri
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.types.Gender
 import com.squareup.moshi.Json
+import java.time.ZonedDateTime
 import java.util.*
 
 /**
@@ -16,7 +18,8 @@ data class UserEntity(
     @field:Json(name = "gender") val gender: Int,
     @field:Json(name = "country") val country: String?,
     @field:Json(name = "nickname") val nickname: String,
-    @field:Json(name = "profileImageBase64Encoded") val profileImage: String?
+    @field:Json(name = "hasProfileImage") val hasProfileImage: Boolean,
+    @field:Json(name = "profileImageUri") val profileImageUri: Uri?
 )
 
 /**
@@ -29,7 +32,8 @@ fun UserEntity.mapToDomain(): User = User(
     Gender.values()[gender],
     country,
     nickname,
-    profileImage
+    hasProfileImage,
+    profileImageUri
 )
 
 /**
@@ -42,7 +46,8 @@ fun User.mapToData(): UserEntity = UserEntity(
     gender.ordinal,
     country,
     nickname,
-    profileImage
+    hasProfileImage,
+    profileImageUri
 )
 
 /**

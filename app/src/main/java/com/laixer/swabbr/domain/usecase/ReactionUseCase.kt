@@ -1,10 +1,10 @@
 package com.laixer.swabbr.domain.usecase
 
-import com.laixer.swabbr.domain.model.Reaction
-import com.laixer.swabbr.domain.model.UploadWrapper
 import com.laixer.swabbr.domain.interfaces.ReactionRepository
 import com.laixer.swabbr.domain.interfaces.UserRepository
-import com.laixer.swabbr.domain.types.ReactionWrapper
+import com.laixer.swabbr.domain.model.Reaction
+import com.laixer.swabbr.domain.model.ReactionWrapper
+import com.laixer.swabbr.domain.model.UploadWrapper
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
@@ -24,27 +24,15 @@ class ReactionUseCase constructor(
      *
      *  @param reactionId The reaction to delete.
      */
-    fun deleteReaction(reactionId: UUID) : Completable = reactionRepository.delete(reactionId)
+    fun deleteReaction(reactionId: UUID): Completable = reactionRepository.delete(reactionId)
 
     /**
      *  Gets a single reaction wrapper.
      *
      *  @param reactionId The id of the reaction.
      */
-    fun get(reactionId: UUID): Single<ReactionWrapper> =
-        reactionRepository.get(reactionId)
-            .flatMap { reaction ->
-                userRepository
-                    .get(reaction.userId, false)
-                    .map { user ->
-                        ReactionWrapper(
-                            reaction = reaction,
-                            user = user
-                        )
-                    }
-            }
+    fun get(reactionId: UUID): Single<ReactionWrapper> = reactionRepository.getWrapper(reactionId)
 
-    // TODO ConcatMapSingle loses our concurrency. https://github.com/Laixer/Swabbr-Android/issues/203
     /**
      *  Get all reactions for a given vlog with the user that posted
      *  these reactions in a wrapper.
@@ -53,19 +41,7 @@ class ReactionUseCase constructor(
      *  @param refresh Force a refresh of the data.
      */
     fun getAllForVlog(vlogId: UUID, refresh: Boolean): Single<List<ReactionWrapper>> =
-        reactionRepository.getForVlog(vlogId)
-            .flattenAsObservable { reactions -> reactions }
-            .concatMapSingle { reaction ->
-                userRepository
-                    .get(reaction.userId, false)
-                    .map { user ->
-                        ReactionWrapper(
-                            reaction = reaction,
-                            user = user
-                        )
-                    }
-            }
-            .toList()
+        reactionRepository.getWrappersForVlog(vlogId)
 
     /**
      *  Generates a new upload wrapper for a reaction.

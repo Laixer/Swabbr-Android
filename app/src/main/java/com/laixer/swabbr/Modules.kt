@@ -98,7 +98,6 @@ val useCaseModule: Module = module {
     factory { UsersUseCase(userRepository = get()) }
     factory {
         VlogUseCase(
-            userRepository = get(),
             vlogRepository = get(),
             vlogLikeRepository = get(),
             reactionRepository = get()

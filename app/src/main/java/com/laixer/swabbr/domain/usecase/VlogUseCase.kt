@@ -4,24 +4,18 @@ import com.laixer.swabbr.domain.interfaces.ReactionRepository
 import com.laixer.swabbr.domain.interfaces.UserRepository
 import com.laixer.swabbr.domain.interfaces.VlogLikeRepository
 import com.laixer.swabbr.domain.interfaces.VlogRepository
-import com.laixer.swabbr.domain.model.UploadWrapper
-import com.laixer.swabbr.domain.model.Vlog
-import com.laixer.swabbr.domain.model.VlogLikeSummary
-import com.laixer.swabbr.domain.model.VlogViews
-import com.laixer.swabbr.domain.types.VlogWrapper
+import com.laixer.swabbr.domain.model.*
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.util.*
 
-// TODO Performance could be gained here when adding the user and vloglikesummary to one or multiple vlogs.
 // TODO Pass refresh everywhere
 /**
  *  Use case which handles vlog related requests. This bundles vlogs
  *  with the user that owns the vlog as a [Pair].
  */
 class VlogUseCase constructor(
-    private val userRepository: UserRepository,
     private val vlogRepository: VlogRepository,
     private val vlogLikeRepository: VlogLikeRepository,
     private val reactionRepository: ReactionRepository
@@ -40,10 +34,7 @@ class VlogUseCase constructor(
      *
      *  @param refresh Force a refresh of the data.
      */
-    fun getRecommendedVlogs(refresh: Boolean): Single<List<VlogWrapper>> = vlogRepository
-        .getRecommended()
-        .toCompleteVlogWrapper(refresh)
-        .toList()
+    fun getRecommendedVlogs(refresh: Boolean): Single<List<VlogWrapper>> = vlogRepository.getWrappersRecommended()
 
     /**
      *  Get a vlog paired with the user who posted it.
@@ -51,9 +42,7 @@ class VlogUseCase constructor(
      *  @param vlogId The vlog to get.
      *  @return Force a refresh of the data.
      */
-    fun get(vlogId: UUID, refresh: Boolean): Single<VlogWrapper> = vlogRepository
-        .get(vlogId)
-        .toCompleteVlogWrapper(refresh)
+    fun get(vlogId: UUID, refresh: Boolean): Single<VlogWrapper> = vlogRepository.getWrapper(vlogId)
 
     /**
      *  Get all vlogs that belong with a given user and return each
@@ -62,10 +51,8 @@ class VlogUseCase constructor(
      *  @param userId The user that owns the vlogs.
      *  @param refresh Force a refresh of the data.
      */
-    fun getAllForUser(userId: UUID, refresh: Boolean): Single<List<VlogWrapper>> = vlogRepository
-        .getForUser(userId)
-        .toCompleteVlogWrapper(refresh)
-        .toList()
+    fun getAllForUser(userId: UUID, refresh: Boolean): Single<List<VlogWrapper>> =
+        vlogRepository.getWrappersForUser(userId)
 
     /**
      *  Delete a vlog which is owned by the currently authenticated user.
@@ -75,7 +62,6 @@ class VlogUseCase constructor(
     fun delete(vlogId: UUID): Completable = vlogRepository.delete(vlogId)
 
     // FUTURE: Use dataset stats object to handle these kind of set statistics.
-    // TODO Backend This can also become part of a summary of some kind.
     /**
      *  Get the total amount of reactions for a vlog.
      *
@@ -84,14 +70,6 @@ class VlogUseCase constructor(
      */
     fun getReactionCount(vlogId: UUID, refresh: Boolean = false): Single<Int> =
         reactionRepository.getCountForVlog(vlogId).map { it.count }
-
-    /**
-     *  Gets a vlog like summary for a vlog.
-     *
-     *  @param vlogId Vlog id to get a summary for.
-     */
-    fun getVlogLikeSummary(vlogId: UUID): Single<VlogLikeSummary> =
-        vlogLikeRepository.getVlogLikeSummary(vlogId)
 
     /**
      *  Checks if a vlog is liked by a user.
@@ -131,64 +109,4 @@ class VlogUseCase constructor(
      *  @param vlogId The vlog to like.
      */
     fun unlike(vlogId: UUID): Completable = vlogLikeRepository.unlike(vlogId)
-
-    // TODO This performs way too many backend calls, see https://github.com/Laixer/Swabbr-Android/issues/155
-    /**
-     *  Extension functionality to convert an observable vlog
-     *  to a [VlogWrapper].
-     *
-     *  @param refresh Force a data refresh.
-     */
-    private fun Observable<Vlog>.toCompleteVlogWrapper(refresh: Boolean): Observable<VlogWrapper> = this
-        .flatMapSingle { vlog ->
-            userRepository
-                .get(vlog.userId, refresh)
-                .map { user -> Pair(user, vlog) }
-        }
-        .flatMapSingle { pair ->
-            vlogLikeRepository
-                .getVlogLikeSummary(pair.second.id)
-                .map { summary ->
-                    VlogWrapper(
-                        pair.first, // The user
-                        pair.second, // The vlog
-                        summary
-                    )
-                }
-        }
-
-    /**
-     *  Extension functionality to convert a list of vlogs
-     *  to [VlogWrapper] objects.
-     *
-     *  @param refresh Force a data refresh.
-     */
-    private fun Single<List<Vlog>>.toCompleteVlogWrapper(refresh: Boolean): Observable<VlogWrapper> = this
-        .flattenAsObservable { vlogs -> vlogs }
-        .toCompleteVlogWrapper(refresh)
-
-    // TODO Duplicate code?
-    /**
-     *  Extension functionality to convert a single vlog to
-     *  a [VlogWrapper].
-     *
-     *  @param refresh Force a data refresh.
-     */
-    private fun Single<Vlog>.toCompleteVlogWrapper(refresh: Boolean): Single<VlogWrapper> = this
-        .flatMap { vlog ->
-            userRepository
-                .get(vlog.userId, refresh)
-                .map { user -> Pair(user, vlog) }
-        }
-        .flatMap { pair ->
-            vlogLikeRepository
-                .getVlogLikeSummary(pair.second.id)
-                .map { summary ->
-                    VlogWrapper(
-                        pair.first, // The user
-                        pair.second, // The vlog
-                        summary
-                    )
-                }
-        }
 }

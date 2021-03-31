@@ -14,25 +14,39 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.laixer.swabbr.domain.model.User
+import com.laixer.swabbr.presentation.model.UserItem
+import com.laixer.swabbr.presentation.model.mapToDomain
 import com.laixer.swabbr.presentation.utils.todosortme.loadImageUrl
 import java.io.ByteArrayOutputStream
 import java.net.URL
 import java.time.Duration
-import java.util.UUID
 
-// TODO This throws if we have an invalid base64 in the database.
-//      Can we handle this cleaner than try/catching it?
 /**
- *  Decodes and applies the user avatar to a profile image holder.
+ *  Gets the profile image for a user and assigns it.
  */
-fun ImageView.loadAvatar(profileImage: String?, userId: UUID) = profileImage?.let {
+fun ImageView.loadAvatarFromUser(user: UserItem) = loadAvatarFromUser(user.mapToDomain())
+
+/**
+ *  Gets the profile image for a user and assigns it.
+ */
+fun ImageView.loadAvatarFromUser(user: User) =
     try {
-        this.setImageBitmap(convertBase64ToBitmap(it))
+        if (user.hasProfileImage && user.profileImageUri != null) {
+            loadImageUrl(URL(user.profileImageUri.toString()))
+        } else {
+            loadImageUrl(URL("https://api.hello-avatar.com/adorables/285/${user.id}"))
+        }
+    } catch (e: Exception) {
+        println("Exception while loading profile image")
     }
-    catch (e: Exception){
-        println("Exception in decoding profile image")
-    }
-} ?: loadImageUrl(URL("https://api.hello-avatar.com/adorables/285/${userId}"))
+
+/**
+ * Clear the image of an image view.
+ */
+fun ImageView.clearAvatar() {
+    this.background = null
+}
 
 /**
  * Manages the various graphs needed for a [BottomNavigationView].
@@ -94,14 +108,15 @@ fun BottomNavigationView.setupWithNavController(
                 if (firstFragmentTag != newlySelectedItemTag) {
                     // Commit a transaction that cleans the back stack and adds the first fragment
                     // to it, creating the fixed started destination.
-                    fragmentManager.beginTransaction().attach(selectedFragment).setPrimaryNavigationFragment(selectedFragment).apply {
-                        // Detach all other Fragments
-                        graphIdToTagMap.forEach { _, fragmentTagIter ->
-                            if (fragmentTagIter != newlySelectedItemTag) {
-                                detach(fragmentManager.findFragmentByTag(firstFragmentTag)!!)
+                    fragmentManager.beginTransaction().attach(selectedFragment)
+                        .setPrimaryNavigationFragment(selectedFragment).apply {
+                            // Detach all other Fragments
+                            graphIdToTagMap.forEach { _, fragmentTagIter ->
+                                if (fragmentTagIter != newlySelectedItemTag) {
+                                    detach(fragmentManager.findFragmentByTag(firstFragmentTag)!!)
+                                }
                             }
-                        }
-                    }.addToBackStack(firstFragmentTag).setReorderingAllowed(true).commit()
+                        }.addToBackStack(firstFragmentTag).setReorderingAllowed(true).commit()
                 }
                 selectedItemTag = newlySelectedItemTag
                 isOnFirstFragment = selectedItemTag == firstFragmentTag

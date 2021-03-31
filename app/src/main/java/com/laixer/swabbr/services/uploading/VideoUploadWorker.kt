@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.laixer.swabbr.domain.model.UploadWrapper
+import com.laixer.swabbr.services.uploading.UploadHelper.Companion.uploadFile
 import com.laixer.swabbr.services.users.UserManager
 import com.laixer.swabbr.utils.files.ThumbnailHelper
 import com.laixer.swabbr.utils.media.MediaConstants
@@ -28,14 +29,6 @@ abstract class VideoUploadWorker(appContext: Context, workerParameters: WorkerPa
 
     private val userManager: UserManager by inject()
 
-    /**
-     *  First validates if we should execute, then if we can execute.
-     *  Then this calls [getUploadWrapper]. The video content is then
-     *  uploaded, followed by a call to [doAfterFilesUploaded].
-     *
-     *  Do not override this method, implement [getUploadWrapper] and
-     *  [doAfterFilesUploaded] instead.
-     */
     override fun doWork(): Result {
         // Retry check
         if (runAttemptCount >= MAX_RETRY_COUNT) {
@@ -48,14 +41,14 @@ abstract class VideoUploadWorker(appContext: Context, workerParameters: WorkerPa
         }
 
         val userId = UUID.fromString(
-            inputData.getString("userId")
+            inputData.getString(KEY_USER_ID)
                 ?: throw Exception("Input data did not contain user id")
         )
         if (userId != userManager.getUserId()) {
             throw Exception("Specified user id doesn't match current user")
         }
 
-        val fileAbsolutePath = inputData.getString("fileAbsolutePath")
+        val fileAbsolutePath = inputData.getString(KEY_FILE_ABSOLUTE_PATH)
             ?: throw Exception("Input data did not contain file uri")
 
         val videoFile = File(fileAbsolutePath)
@@ -111,56 +104,13 @@ abstract class VideoUploadWorker(appContext: Context, workerParameters: WorkerPa
      */
     protected abstract fun doAfterFilesUploaded(uploadWrapper: UploadWrapper): Boolean
 
-    /**
-     *  Uploads a file to an external uri.
-     *
-     *  @param file The file to upload.
-     *  @param uploadUri The uri to which the video file should be uploaded.
-     *  @param contentTypeString The MIME type as string.
-     *
-     *  @return Successful or not.
-     */
-    private fun uploadFile(file: File, uploadUri: Uri, contentTypeString: String): Boolean {
-        try {
-            val contentType = MediaType.parse(contentTypeString)
-            if (contentType == null) {
-                Log.e(TAG, "Could not parse content type $contentTypeString")
-                return false
-            }
-
-            // We only specify the actual content type here. All other
-            // content types reference to the multipart request type.
-            val body = RequestBody.create(contentType, file)
-
-            val request = Request.Builder()
-                .url(uploadUri.toString())
-                .put(body)
-                .addHeader("Content-Type", contentTypeString)
-                .build()
-
-            val response = OkHttpClient.Builder()
-                .build()
-                .newCall(request)
-                .execute()
-
-            if (!response.isSuccessful) {
-                val responseBody = response.body()?.string()
-                Log.e(TAG, "Upload failed. Response body: $responseBody")
-                return false
-            } else {
-                Log.d(TAG, "Upload succeeded for file ${file.absolutePath}")
-            }
-
-            return true
-
-        } catch (e: Exception) {
-            Log.e(TAG, "Exception in upload of file ${file.absolutePath}", e)
-            return false
-        }
-    }
-
     companion object {
         private val TAG = VideoUploadWorker::class.java.simpleName
+
+        /**
+         *  Maximum retries for an upload.
+         */
+        private const val MAX_RETRY_COUNT = 7
 
         /**
          *  Add the current user id to the input data using this key.
@@ -171,10 +121,5 @@ abstract class VideoUploadWorker(appContext: Context, workerParameters: WorkerPa
          *  Add the absolute file path to the input data using this key.
          */
         const val KEY_FILE_ABSOLUTE_PATH = "fileAbsolutePath"
-
-        /**
-         *  Maximum retries for an upload.
-         */
-        private const val MAX_RETRY_COUNT = 4
     }
 }
