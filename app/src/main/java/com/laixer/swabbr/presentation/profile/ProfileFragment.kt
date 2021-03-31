@@ -17,7 +17,7 @@ import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.model.FollowRequestItem
 import com.laixer.swabbr.presentation.model.UserWithStatsItem
 import com.laixer.swabbr.utils.formatNumber
-import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.loadAvatarFromUser
 import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -56,14 +56,11 @@ class ProfileFragment : AuthFragment() {
 
     /**
      *  Indicates if we are looking at the currently authenticated user.
+     *  Only call this when we are authenticated, else we can't guarantee
+     *  that this boolean flag is correct.
      */
-    private var isSelf by Delegates.notNull<Boolean>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // Determine if we are looking at the current user.
-        isSelf = authVm.getSelfIdOrNull() == userId
+    private val isSelf by lazy {
+        authVm.getSelfIdOrNull() == userId
     }
 
     /**
@@ -137,14 +134,17 @@ class ProfileFragment : AuthFragment() {
 
         // Conditional for incoming follow requests or not
         if (isSelf) {
-            profileVm.getFollowersAndIncomingRequesters(refresh)
+            // TODO Is this the way to go? Might be though.
+            // Always get new incoming follow requests
+            profileVm.getFollowersAndIncomingRequesters(refresh = true)
         } else {
             profileVm.getFollowers(userId, refresh)
         }
 
-        // Only get self complete if we are ourself
         if (isSelf) {
-            profileVm.getSelfComplete()
+            // TODO Bad design. Make the call itself get the URI maybe?
+            // Always set this to true since we always need a valid profile image upload URI.
+            profileVm.getSelfComplete(refresh = true)
         }
 
         // If we are looking at another profile, get the follow request status too.
@@ -189,7 +189,7 @@ class ProfileFragment : AuthFragment() {
             ResourceState.SUCCESS -> {
                 res.data?.let { user ->
                     // User information
-                    user_profile_profile_image.loadAvatar(user.profileImage, user.id)
+                    user_profile_profile_image.loadAvatarFromUser(user)
                     user_profile_nickname.text = requireContext().getString(R.string.nickname, user.nickname)
 
                     // User stats

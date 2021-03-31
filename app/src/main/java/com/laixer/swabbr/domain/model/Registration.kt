@@ -20,7 +20,6 @@ data class Registration(
     val country: String?,
     val birthDate: LocalDate?,
     val timezone: ZoneOffset?,
-    val profileImage: String?,
     val latitude: Double?,
     val longitude: Double?,
     val isPrivate: Boolean?,

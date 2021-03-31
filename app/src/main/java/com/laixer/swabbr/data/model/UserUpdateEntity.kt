@@ -19,7 +19,7 @@ data class UserUpdateEntity(
     @field:Json(name = "birthDate") val birthDate: LocalDate?,
     @field:Json(name = "timeZone") val timeZone: ZoneOffset?,
     @field:Json(name = "nickname") val nickname: String?,
-    @field:Json(name = "profileImageBase64Encoded") val profileImage: String?,
+    @field:Json(name = "profileImageUpdated") val profileImageUpdated: Boolean = false,
     @field:Json(name = "latitude") val latitude: Double?,
     @field:Json(name = "longitude") val longitude: Double?,
     @field:Json(name = "isPrivate") val isPrivate: Boolean?,
@@ -38,7 +38,7 @@ fun UserUpdatableProperties.mapToData(): UserUpdateEntity = UserUpdateEntity(
     birthDate,
     timeZone,
     nickname,
-    profileImage,
+    (profileImageFile != null), // If we have a file, we have updated the profile image.
     latitude,
     longitude,
     isPrivate,

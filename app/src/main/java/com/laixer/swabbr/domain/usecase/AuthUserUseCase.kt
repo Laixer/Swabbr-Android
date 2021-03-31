@@ -1,9 +1,12 @@
 package com.laixer.swabbr.domain.usecase
 
-import com.laixer.swabbr.domain.model.*
-import com.laixer.swabbr.domain.interfaces.FollowRequestRepository
+import android.net.Uri
 import com.laixer.swabbr.domain.interfaces.UserRepository
+import com.laixer.swabbr.domain.model.UserComplete
+import com.laixer.swabbr.domain.model.UserUpdatableProperties
+import com.laixer.swabbr.services.uploading.UploadHelper.Companion.uploadFile
 import com.laixer.swabbr.services.users.UserManager
+import com.laixer.swabbr.utils.media.MediaConstants
 import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.*
@@ -34,28 +37,19 @@ class AuthUserUseCase constructor(
      *  Update the currently authenticated user.
      *
      *  @param user User with updated properties.
+     *  @param imageUploadUri If the [user] also contains a profile image file, also
+     *                        specify the uri to upload to. Else nothing happens.
      */
-    fun updateSelf(user: UserUpdatableProperties): Completable = userRepository.update(user)
+    fun updateSelf(user: UserUpdatableProperties, imageUploadUri: Uri? = null): Completable =
+        if (user.profileImageFile != null && imageUploadUri != null) {
+            Completable.fromAction {
+                uploadFile(user.profileImageFile, imageUploadUri, MediaConstants.IMAGE_JPEG_MIME_TYPE)
+            }.andThen(userRepository.update(user))
+        } else {
+            userRepository.update(user)
+        }
 
-    // TODO Do we need this?
-    /**
-     *  Converts a [UserUpdatableProperties] object to a [UserComplete] object.
-     *  All properties which are left as [null] will not be assigned.
-     */
-    private fun UserUpdatableProperties.convertToUser(current: UserComplete): UserComplete = UserComplete(
-        current.id,
-        this.firstName ?: current.firstName,
-        this.lastName ?: current.lastName,
-        this.gender ?: current.gender,
-        this.country ?: current.country,
-        this.birthDate ?: current.birthDate,
-        this.timeZone ?: current.timeZone,
-        this.nickname ?: current.nickname,
-        this.profileImage ?: current.profileImage,
-        this.latitude ?: current.latitude,
-        this.longitude ?: current.longitude,
-        this.isPrivate ?: current.isPrivate,
-        this.dailyVlogRequestLimit ?: current.dailyVlogRequestLimit,
-        this.followMode ?: current.followMode
-    )
+    companion object {
+        val TAG = AuthUserUseCase::class.java.simpleName
+    }
 }

@@ -1,8 +1,10 @@
 package com.laixer.swabbr.data.model
 
+import android.net.Uri
 import com.laixer.swabbr.domain.model.UserWithStats
 import com.laixer.swabbr.domain.types.Gender
 import com.squareup.moshi.Json
+import java.time.ZonedDateTime
 import java.util.*
 
 /**
@@ -15,7 +17,8 @@ data class UserWithStatsEntity(
     @field:Json(name = "gender") val gender: Int,
     @field:Json(name = "country") val country: String?,
     @field:Json(name = "nickname") val nickname: String,
-    @field:Json(name = "profileImageBase64Encoded") val profileImage: String?,
+    @field:Json(name = "profileImageDateUpdated") val profileImageDateUpdated: ZonedDateTime?,
+    @field:Json(name = "profileImageUri") val profileImageUri: Uri?,
     @field:Json(name = "totalLikesReceived") val totalLikesReceived: Int,
     @field:Json(name = "totalFollowers") val totalFollowers: Int,
     @field:Json(name = "totalFollowing") val totalFollowing: Int,
@@ -35,7 +38,8 @@ fun UserWithStatsEntity.mapToDomain(): UserWithStats = UserWithStats(
     gender = Gender.values()[gender],
     country = country,
     nickname = nickname,
-    profileImage = profileImage,
+    profileImageDateUpdated = profileImageDateUpdated,
+    profileImageUri = profileImageUri,
     totalLikesReceived = totalLikesReceived,
     totalFollowers = totalFollowers,
     totalFollowing = totalFollowing,

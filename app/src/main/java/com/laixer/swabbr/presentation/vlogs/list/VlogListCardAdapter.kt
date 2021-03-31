@@ -12,7 +12,7 @@ import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.utils.diffcallback.VlogWrapperDiffCallback
-import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.loadAvatarFromUser
 import kotlinx.android.synthetic.main.include_user_large.view.*
 import kotlinx.android.synthetic.main.include_usernames.view.*
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
@@ -52,7 +52,7 @@ class VlogListCardAdapter(
                 .placeholder(R.drawable.thumbnail_placeholder)
                 .into(image_view_vlog_thumbnail)
 
-            user_profile_image.loadAvatar(item.user.profileImage, item.user.id)
+            user_profile_image.loadAvatarFromUser(item.user)
             user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
             text_view_vlog_date_created.text =
                 item.vlog.dateCreated.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))

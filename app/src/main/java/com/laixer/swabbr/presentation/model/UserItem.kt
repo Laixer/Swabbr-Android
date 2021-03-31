@@ -1,8 +1,10 @@
 package com.laixer.swabbr.presentation.model
 
+import android.net.Uri
 import com.laixer.swabbr.domain.model.User
 import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.domain.types.Gender
+import java.time.ZonedDateTime
 import java.util.*
 
 // TODO Look at inheritance
@@ -13,7 +15,8 @@ open class UserItem(
     val gender: Gender,
     val country: String?,
     val nickname: String,
-    val profileImage: String?
+    val profileImageDateUpdated: ZonedDateTime?,
+    val profileImageUri: Uri?
 ) {
     /**
      *  Gets the user display name. When no first name and
@@ -56,7 +59,8 @@ fun UserItem.mapToUserWithRelationItem(
         gender = gender,
         country = country,
         nickname = nickname,
-        profileImage = profileImage
+        profileImageDateUpdated = profileImageDateUpdated,
+        profileImageUri = profileImageUri
     )
 )
 
@@ -82,7 +86,8 @@ fun UserItem.mapToDomain(): User = User(
     gender = gender,
     country = country,
     nickname = nickname,
-    profileImage = profileImage
+    profileImageDateUpdated = profileImageDateUpdated,
+    profileImageUri = profileImageUri
 )
 
 /**
@@ -95,7 +100,8 @@ fun User.mapToPresentation(): UserItem = UserItem(
     gender,
     country,
     nickname,
-    profileImage
+    profileImageDateUpdated,
+    profileImageUri
 )
 
 /**

@@ -1,7 +1,9 @@
 package com.laixer.swabbr.presentation.model
 
+import android.net.Uri
 import com.laixer.swabbr.domain.model.UserWithStats
 import com.laixer.swabbr.domain.types.Gender
+import java.time.ZonedDateTime
 import java.util.*
 
 /**
@@ -14,7 +16,8 @@ class UserWithStatsItem(
     gender: Gender,
     country: String?,
     nickname: String,
-    profileImage: String?,
+    profileImageDateUpdated: ZonedDateTime?,
+    profileImageUri: Uri?,
     val totalLikesReceived: Int,
     var totalFollowers: Int, // TODO Modified for auth user view model, suboptimal. Can't use copy anymore due to non-data classes and polymorphism...
     val totalFollowing: Int,
@@ -22,7 +25,7 @@ class UserWithStatsItem(
     val totalReactionsReceived: Int,
     val totalVlogs: Int,
     val totalViews: Int
-) : UserItem (id, firstName, lastName, gender, country, nickname, profileImage)
+) : UserItem (id, firstName, lastName, gender, country, nickname, profileImageDateUpdated, profileImageUri)
 
 /**
  * Map a user with stats from domain to presentation.
@@ -34,7 +37,8 @@ fun UserWithStats.mapToPresentation(): UserWithStatsItem = UserWithStatsItem(
     gender = gender,
     country = country,
     nickname = nickname,
-    profileImage = profileImage,
+    profileImageDateUpdated = profileImageDateUpdated,
+    profileImageUri = profileImageUri,
     totalLikesReceived = totalLikesReceived,
     totalFollowers = totalFollowers,
     totalFollowing = totalFollowing,

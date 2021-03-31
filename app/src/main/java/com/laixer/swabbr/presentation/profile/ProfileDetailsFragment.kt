@@ -12,25 +12,22 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
-import com.laixer.swabbr.extensions.clearText
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.model.UserCompleteItem
 import com.laixer.swabbr.presentation.model.UserUpdatablePropertiesItem
 import com.laixer.swabbr.presentation.model.extractUpdatableProperties
+import com.laixer.swabbr.presentation.model.extractUser
 import com.laixer.swabbr.presentation.utils.onActivityResult
 import com.laixer.swabbr.presentation.utils.selectProfileImage
-import com.laixer.swabbr.presentation.utils.todosortme.gone
-import com.laixer.swabbr.presentation.utils.todosortme.visible
-import com.laixer.swabbr.utils.clearAvatar
-import com.laixer.swabbr.utils.encodeToBase64
-import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.loadAvatarFromUser
 import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.fragment_profile_details.*
 import kotlinx.android.synthetic.main.fragment_registration.*
 import kotlinx.android.synthetic.main.fragment_registration.fab_set_profile_image
 import kotlinx.android.synthetic.main.fragment_registration.inputNickname
+import java.io.File
 import java.util.*
 
 // TODO This doesn't allow us to set any properties to null. Maybe we want this for first name and last name?
@@ -90,6 +87,7 @@ class ProfileDetailsFragment(
         super.onViewCreated(view, savedInstanceState)
 
         /** This launches the ImagePicker activity and is resumed in [onActivityResult]. */
+        fab_set_profile_image.isEnabled = false // Only enable after init
         fab_set_profile_image.setOnClickListener { ImagePicker.selectProfileImage(this) }
 
         // Get a date picker popup for modifying our birth date.
@@ -199,26 +197,11 @@ class ProfileDetailsFragment(
 
     /**
      *  Function that stores and sets our profile image if we select one.
-     *  This
-     *
-     *  @param selectedBitmap The selected profile image.
      */
-    private fun onProfileImageSelected(selectedBitmap: Bitmap) {
-        user_profile_profile_image_insettings.setImageBitmap(selectedBitmap)
-        userUpdatableProperties.profileImage = selectedBitmap.encodeToBase64()
-    }
-
-    private fun clearFormValues() {
-        user_profile_profile_image_insettings.clearAvatar()
-        inputBirthDate.clearDate()
-        inputNickname.clearText()
-        inputFirstName.clearText()
-        inputLastName.clearText()
-
-        switchIsPrivate.isChecked = false
-
-        spinnerGender.gone()
-        spinnerDailyVlogRequestLimit.gone()
+    private fun onProfileImageSelected(imageFile: File, imageBitmap: Bitmap) {
+        user_profile_profile_image_insettings.setImageBitmap(imageBitmap)
+        user_profile_profile_image_insettings.setImageBitmap(imageBitmap)
+        userUpdatableProperties.profileImageFile = imageFile
     }
 
     /**
@@ -227,17 +210,16 @@ class ProfileDetailsFragment(
      *  @param user The user to extract properties from.
      */
     private fun setFormValues(user: UserCompleteItem) {
-        user_profile_profile_image_insettings.loadAvatar(user.profileImage, user.id)
+        // Enable again
+        fab_set_profile_image.isEnabled = true
+
+        user_profile_profile_image_insettings.loadAvatarFromUser(user.extractUser())
         inputBirthDate.setDate(user.birthDate)
         inputNickname.setText(user.nickname)
         inputFirstName.setText(user.firstName)
         inputLastName.setText(user.lastName)
-
         switchIsPrivate.isChecked = user.isPrivate
-
-        spinnerGender.visible()
         spinnerGender.setSelection(user.gender.ordinal)
-        spinnerDailyVlogRequestLimit.visible()
         spinnerDailyVlogRequestLimit.setSelection(user.dailyVlogRequestLimit)
     }
 
@@ -263,13 +245,12 @@ class ProfileDetailsFragment(
     private fun onUserCompleteUpdated(res: Resource<UserCompleteItem>) {
         when (res.state) {
             ResourceState.LOADING -> {
-                clearFormValues()
             }
             ResourceState.SUCCESS -> {
                 res.data?.let { user ->
                     /** First the updatable properties, then the other. This is because
                     we check the userOriginal during calls in [onViewCreated]. */
-                    userUpdatableProperties = user.extractUpdatableProperties() // TODO Not null assignment?
+                    userUpdatableProperties = user.extractUpdatableProperties()
                     userOriginal = user.copy()
                     setFormValues(user)
                 }

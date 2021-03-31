@@ -9,7 +9,7 @@ import com.laixer.swabbr.presentation.utils.todosortme.inflate
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.presentation.utils.diffcallback.UserWithRelationDiffCallback
-import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.loadAvatarFromUser
 import kotlinx.android.synthetic.main.include_user_large.view.*
 import kotlinx.android.synthetic.main.include_usernames.view.*
 
@@ -42,7 +42,7 @@ open class UserWithRelationAdapter(
          *  Binds a single [UserWithRelationItem].
          */
         fun bind(item: UserWithRelationItem) {
-            itemView.user_profile_image.loadAvatar(item.user.profileImage, item.user.id)
+            itemView.user_profile_image.loadAvatarFromUser(item.user)
             itemView.user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
 
             itemView.setOnClickListener { onClickProfile.invoke(item) }

@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.github.dhaval2404.imagepicker.ImagePicker
+import java.io.File
 
 /**
  *  Extends the [ImagePicker] to select a profile image for us.
@@ -17,7 +19,7 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 fun ImagePicker.Companion.selectProfileImage(fragment: Fragment) = ImagePicker
     .with(fragment)
     .cropSquare()
-    .compress(1024)
+    .compress(512)
     .maxResultSize(512, 512)
     .galleryMimeTypes(  //Exclude gif images
         mimeTypes = arrayOf(
@@ -47,24 +49,24 @@ fun ImagePicker.Companion.onActivityResult(
     context: Context,
     resultCode: Int,
     data: Intent?,
-    successCallback: (selectedBitmap: Bitmap) -> Unit
+    successCallback: (imageFile: File, imageBitmap: Bitmap) -> Unit
 ) {
     when (resultCode) {
         Activity.RESULT_OK -> {
             // If we have data, decode the image, store and assign it.
             data?.let {
-                val bitmap = BitmapFactory.decodeFile(ImagePicker.getFilePath(it))
+                val file = getFile(it)
+                val bitmap = BitmapFactory.decodeFile(getFilePath(it))
 
-                if (bitmap != null) {
-                    successCallback(bitmap)
+                if (file != null && bitmap != null) {
+                    successCallback(file, bitmap)
                 } else {
-                    // TODO Correct format
-                    println("Could not decode bitmap using ImagePicker")
+                    Log.e("ImagePickerExtensions", "Could not decode bitmap using ImagePicker")
                 }
             }
         }
-        ImagePicker.RESULT_ERROR -> {
-            Toast.makeText(context, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+        RESULT_ERROR -> {
+            Toast.makeText(context, getError(data), Toast.LENGTH_SHORT).show()
         }
         Activity.RESULT_CANCELED -> {
             return

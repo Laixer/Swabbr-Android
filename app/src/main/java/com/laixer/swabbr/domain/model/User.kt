@@ -1,6 +1,8 @@
 package com.laixer.swabbr.domain.model
 
+import android.net.Uri
 import com.laixer.swabbr.domain.types.Gender
+import java.time.ZonedDateTime
 import java.util.*
 
 /**
@@ -15,7 +17,8 @@ data class User(
     val gender: Gender,
     val country: String?,
     val nickname: String,
-    val profileImage: String?
+    val profileImageDateUpdated: ZonedDateTime?,
+    val profileImageUri: Uri?
 ) {
     companion object {
         /**
@@ -28,7 +31,8 @@ data class User(
             gender = Gender.UNSPECIFIED,
             country = null,
             nickname = "emptynickname",
-            profileImage = null
+            profileImageDateUpdated = null,
+            profileImageUri = null
         )
     }
 }

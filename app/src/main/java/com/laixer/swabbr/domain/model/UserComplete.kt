@@ -1,5 +1,6 @@
 package com.laixer.swabbr.domain.model
 
+import android.net.Uri
 import com.laixer.swabbr.domain.types.FollowMode
 import com.laixer.swabbr.domain.types.Gender
 import java.time.LocalDate
@@ -20,7 +21,9 @@ data class UserComplete(
     val birthDate: LocalDate?,
     val timeZone: ZoneOffset?,
     val nickname: String,
-    val profileImage: String?,
+    val profileImageDateUpdated: ZonedDateTime?,
+    val profileImageUri: Uri?,
+    val profileImageUploadUri: Uri?,
     val latitude: Double?,
     val longitude: Double?,
     val isPrivate: Boolean,

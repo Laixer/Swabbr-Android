@@ -24,7 +24,7 @@ import com.laixer.swabbr.presentation.utils.todosortme.gone
 import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.presentation.video.WatchVideoFragment
 import com.laixer.swabbr.utils.formatNumber
-import com.laixer.swabbr.utils.loadAvatar
+import com.laixer.swabbr.utils.loadAvatarFromUser
 import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.utils.resources.ResourceState
 import com.plattysoft.leonids.ParticleSystem
@@ -244,7 +244,7 @@ class WatchVlogFragment : WatchVideoFragment() {
 
                 data?.let {
                     // Display the user info
-                    user_profile_image.loadAvatar(it.user.profileImage, it.user.id)
+                    user_profile_image.loadAvatarFromUser(it.user)
                     video_user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
 
                     // Display the vlog info and start playback

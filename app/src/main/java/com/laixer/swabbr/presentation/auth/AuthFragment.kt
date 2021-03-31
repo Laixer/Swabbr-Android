@@ -39,7 +39,9 @@ abstract class AuthFragment : Fragment() {
         injectFeature()
 
         // Check for authentication at the first possible moment.
-        checkIfAuthenticated()
+        if (checkIfAuthenticated()) {
+            getData()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,17 +50,6 @@ abstract class AuthFragment : Fragment() {
         // Observe the authentication fail resource in the vm.
         authVm.getNewAuthenticationRequiredResource()
             .observe(viewLifecycleOwner, Observer { onShouldRedirectToLogin(it) })
-    }
-
-    /**
-     *  TODO When is this called again?
-     */
-    override fun onResume() {
-        super.onResume()
-
-        if (checkIfAuthenticated()) {
-           getData()
-        }
     }
 
     /**

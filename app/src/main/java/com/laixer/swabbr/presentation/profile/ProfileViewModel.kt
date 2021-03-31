@@ -14,7 +14,9 @@ import com.laixer.swabbr.extensions.cascadeFollowAction
 import com.laixer.swabbr.extensions.setSuccessAgain
 import com.laixer.swabbr.presentation.abstraction.ViewModelBase
 import com.laixer.swabbr.presentation.model.*
-import com.laixer.swabbr.presentation.utils.todosortme.*
+import com.laixer.swabbr.presentation.utils.todosortme.setError
+import com.laixer.swabbr.presentation.utils.todosortme.setLoading
+import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
 import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.utils.resources.ResourceState
 import io.reactivex.schedulers.Schedulers
@@ -212,7 +214,6 @@ class ProfileViewModel constructor(
                 .map { it.mapToPresentation() }
                 .subscribe(
                     {
-                        val id = it.id
                         user.setSuccess(it)
                     },
                     {
@@ -236,10 +237,12 @@ class ProfileViewModel constructor(
             compositeDisposable.add(authUserUseCase
                 .getSelf(refresh)
                 .subscribeOn(Schedulers.io())
+                .doOnSubscribe { selfComplete.setLoading() } // TODO Add this everywhere?
                 .map { it.mapToPresentation() }
                 .subscribe(
-                    // TODO Maybe have this always cascade to the userWithStats resource as well?
-                    { selfComplete.setSuccess(it) },
+                    {
+                        selfComplete.setSuccess(it)
+                    },
                     {
                         selfComplete.setError(it.message)
                         Log.e(TAG, "Could not get complete user - ${it.message}")
@@ -468,10 +471,12 @@ class ProfileViewModel constructor(
     fun updateGetSelf(user: UserUpdatablePropertiesItem) =
         viewModelScope.launch {
             compositeDisposable.add(authUserUseCase
-                .updateSelf(user.mapToDomain())
+                // URI can be null, in this case no upload will take place.
+                .updateSelf(user.mapToDomain(), selfComplete.value?.data?.profileImageUploadUri)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
+                        // TODO Double call
                         getSelfComplete(true)
                         getUser(authUserUseCase.getSelfId(), true)
                     },
@@ -488,7 +493,7 @@ class ProfileViewModel constructor(
      *  existent follow request between the current user
      *  and a user with id [receiverId].
      *
-     *  @param Follow request receiver user id.
+     *  @param receiverId request receiver user id.
      */
     private fun setFollowRequestAsNonExistent(receiverId: UUID) =
         followRequestAsCurrentUser.setSuccess(
