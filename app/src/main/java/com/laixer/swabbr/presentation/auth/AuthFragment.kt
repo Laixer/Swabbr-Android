@@ -29,11 +29,9 @@ abstract class AuthFragment : Fragment() {
     protected var defaultRefresh: Boolean = false
 
     /**
-     *  Set this to true if our authentication has failed before. This
-     *  is used to also try to trigger [getData] in [onResume] if we
-     *  were redirected to the login page by [checkIfAuthenticated].
+     *  Flag to help us trigger [getData] in [onResume].
      */
-    private var wasUnauthenticatedBefore = false
+    private var wasRedirectedToLogin: Boolean = false
 
     /**
      *  Attaches an error handler to our API calls whenever a
@@ -66,15 +64,23 @@ abstract class AuthFragment : Fragment() {
      */
     private fun checkIfAuthenticated(): Boolean =
         if (!authVm.isAuthenticated()) {
-            wasUnauthenticatedBefore = true
 
-            findNavController().navigate(R.id.action_global_loginFragment)
+            toLogin()
+
             false
         } else {
-            wasUnauthenticatedBefore = false
 
+            wasRedirectedToLogin = false
             true
         }
+
+    /**
+     *  Takes us to the login screen.
+     */
+    private fun toLogin() {
+        wasRedirectedToLogin = true
+        findNavController().navigate(R.id.action_global_loginFragment)
+    }
 
     /**
      *  Override this method to only get data if we are authenticated.
@@ -89,15 +95,7 @@ abstract class AuthFragment : Fragment() {
      *  can't get the id this will return a random value and simulate
      *  a back press.
      */
-    protected fun getSelfId(): UUID {
-        val id = authVm.getSelfIdOrNull()
-        return if (id == null) {
-            findNavController().popBackStack()
-            UUID.randomUUID()
-        } else {
-            id
-        }
-    }
+    protected fun getSelfId(): UUID = authVm.getSelfIdOrNull() ?: UUID.randomUUID()
 
     /**
      *  If our [authVm] determines we can't stay authenticated for
@@ -108,9 +106,9 @@ abstract class AuthFragment : Fragment() {
             ResourceState.LOADING -> {
             }
             ResourceState.SUCCESS -> { // If this resource is true we require new authentication by the user.
-                res.data?.let {
-                    if (it) {
-                        findNavController().navigate(R.id.action_global_loginFragment)
+                res.data?.let { newAuthenticationRequired ->
+                    if (newAuthenticationRequired) {
+                        toLogin()
                     }
                 }
             }
@@ -125,10 +123,10 @@ abstract class AuthFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if (wasUnauthenticatedBefore) {
-            if (checkIfAuthenticated()) {
-                getData()
-            }
+        // Only get data if we are authenticated.
+        if (wasRedirectedToLogin && authVm.isAuthenticated()) {
+            wasRedirectedToLogin = false
+            getData()
         }
     }
 

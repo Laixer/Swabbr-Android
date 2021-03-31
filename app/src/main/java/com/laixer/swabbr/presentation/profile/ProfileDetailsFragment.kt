@@ -8,6 +8,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowMode
@@ -162,7 +164,8 @@ class ProfileDetailsFragment(
 
         button_profile_details_save.setOnClickListener { confirmChanges() }
         button_profile_logout.setOnClickListener {
-            // Perform logout operation which take us back to the login screen.
+            // This triggers the user manager which will update its resources.
+            // The auth fragment we inherit from will take us back to login.
             authVm.logout(requireContext())
         }
 

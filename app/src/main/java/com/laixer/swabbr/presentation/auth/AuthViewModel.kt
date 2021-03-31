@@ -140,23 +140,21 @@ open class AuthViewModel constructor(
      *  future notifications through firebase.
      */
     fun logout(context: Context) {
-        // Scoped function to also cancel existing jobs.
-        fun onLogout() {
-            // First cancel, then logout. These jobs expect us to be logged in.
-            WorkManager.getInstance(context).cancelAllWorkByTag(ReactionUploadWorker.WORK_TAG)
-            WorkManager.getInstance(context).cancelAllWorkByTag(VlogUploadWorker.WORK_TAG)
+        // First cancel, then logout. These jobs expect us to be logged in.
+        WorkManager.getInstance(context).cancelAllWorkByTag(ReactionUploadWorker.WORK_TAG)
+        WorkManager.getInstance(context).cancelAllWorkByTag(VlogUploadWorker.WORK_TAG)
 
-            userService.logout()
-        }
+        // Then logout locally
+        userService.logout()
 
+        // Then remote
         viewModelScope.launch {
             compositeDisposable.add(authUseCase
                 .logout()
                 .subscribeOn(Schedulers.io())
                 .subscribe(
-                    { onLogout() },
+                    { },
                     {
-                        onLogout()
                         Log.e(TAG, "Could not logout properly - ${it.message}")
                     }
                 )

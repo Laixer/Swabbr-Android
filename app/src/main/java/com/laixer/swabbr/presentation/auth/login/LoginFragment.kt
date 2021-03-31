@@ -28,6 +28,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  *  permissions to use the app. On decline, we can't log the user in.
  */
 class LoginFragment : Fragment() {
+
     private val authVm: AuthViewModel by sharedViewModel()
 
     /**

@@ -40,7 +40,8 @@ class UserService(cache: Cache) : TokenService(cache) {
     /**
      *  Checks if we are authenticated or not.
      */
-    fun isAuthenticated() = hasValidToken(TOKEN_BUFFER_SECONDS_IS_AUTHENTICATED)
+    fun isAuthenticated() = hasValidToken(TOKEN_BUFFER_SECONDS_IS_AUTHENTICATED) ||
+        hasValidRefreshToken()
 
     /**
      *  Checks if we have a valid token available. If we should have
@@ -112,8 +113,10 @@ class UserService(cache: Cache) : TokenService(cache) {
 
         clearTokenCacheCompletely()
 
-        // Do the state change last.
+        // Do the state change before dispatch
         state = UserServiceState.NO_USER
+
+        newAuthenticationRequiredResource.setSuccess(true)
     }
 
     /**
