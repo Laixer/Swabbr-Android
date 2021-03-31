@@ -16,7 +16,7 @@ class UserWithStatsItem(
     gender: Gender,
     country: String?,
     nickname: String,
-    profileImageDateUpdated: ZonedDateTime?,
+    hasProfileImage: Boolean,
     profileImageUri: Uri?,
     val totalLikesReceived: Int,
     var totalFollowers: Int, // TODO Modified for auth user view model, suboptimal. Can't use copy anymore due to non-data classes and polymorphism...
@@ -25,7 +25,7 @@ class UserWithStatsItem(
     val totalReactionsReceived: Int,
     val totalVlogs: Int,
     val totalViews: Int
-) : UserItem (id, firstName, lastName, gender, country, nickname, profileImageDateUpdated, profileImageUri)
+) : UserItem (id, firstName, lastName, gender, country, nickname, hasProfileImage, profileImageUri)
 
 /**
  * Map a user with stats from domain to presentation.
@@ -37,7 +37,7 @@ fun UserWithStats.mapToPresentation(): UserWithStatsItem = UserWithStatsItem(
     gender = gender,
     country = country,
     nickname = nickname,
-    profileImageDateUpdated = profileImageDateUpdated,
+    hasProfileImage = hasProfileImage,
     profileImageUri = profileImageUri,
     totalLikesReceived = totalLikesReceived,
     totalFollowers = totalFollowers,

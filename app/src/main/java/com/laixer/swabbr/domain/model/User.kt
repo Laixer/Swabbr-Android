@@ -17,7 +17,7 @@ data class User(
     val gender: Gender,
     val country: String?,
     val nickname: String,
-    val profileImageDateUpdated: ZonedDateTime?,
+    val hasProfileImage: Boolean,
     val profileImageUri: Uri?
 ) {
     companion object {
@@ -31,7 +31,7 @@ data class User(
             gender = Gender.UNSPECIFIED,
             country = null,
             nickname = "emptynickname",
-            profileImageDateUpdated = null,
+            hasProfileImage = false,
             profileImageUri = null
         )
     }

@@ -18,7 +18,7 @@ data class UserEntity(
     @field:Json(name = "gender") val gender: Int,
     @field:Json(name = "country") val country: String?,
     @field:Json(name = "nickname") val nickname: String,
-    @field:Json(name = "profileImageDateUpdated") val profileImageDateUpdated: ZonedDateTime?,
+    @field:Json(name = "hasProfileImage") val hasProfileImage: Boolean,
     @field:Json(name = "profileImageUri") val profileImageUri: Uri?
 )
 
@@ -32,7 +32,7 @@ fun UserEntity.mapToDomain(): User = User(
     Gender.values()[gender],
     country,
     nickname,
-    profileImageDateUpdated,
+    hasProfileImage,
     profileImageUri
 )
 
@@ -46,7 +46,7 @@ fun User.mapToData(): UserEntity = UserEntity(
     gender.ordinal,
     country,
     nickname,
-    profileImageDateUpdated,
+    hasProfileImage,
     profileImageUri
 )
 

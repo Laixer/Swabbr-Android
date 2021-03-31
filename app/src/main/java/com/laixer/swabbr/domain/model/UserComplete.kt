@@ -21,7 +21,7 @@ data class UserComplete(
     val birthDate: LocalDate?,
     val timeZone: ZoneOffset?,
     val nickname: String,
-    val profileImageDateUpdated: ZonedDateTime?,
+    val hasProfileImage: Boolean,
     val profileImageUri: Uri?,
     val profileImageUploadUri: Uri?,
     val latitude: Double?,

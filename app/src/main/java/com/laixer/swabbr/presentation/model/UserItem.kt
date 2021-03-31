@@ -15,7 +15,7 @@ open class UserItem(
     val gender: Gender,
     val country: String?,
     val nickname: String,
-    val profileImageDateUpdated: ZonedDateTime?,
+    val hasProfileImage: Boolean,
     val profileImageUri: Uri?
 ) {
     /**
@@ -59,7 +59,7 @@ fun UserItem.mapToUserWithRelationItem(
         gender = gender,
         country = country,
         nickname = nickname,
-        profileImageDateUpdated = profileImageDateUpdated,
+        hasProfileImage = hasProfileImage,
         profileImageUri = profileImageUri
     )
 )
@@ -86,7 +86,7 @@ fun UserItem.mapToDomain(): User = User(
     gender = gender,
     country = country,
     nickname = nickname,
-    profileImageDateUpdated = profileImageDateUpdated,
+    hasProfileImage = hasProfileImage,
     profileImageUri = profileImageUri
 )
 
@@ -100,7 +100,7 @@ fun User.mapToPresentation(): UserItem = UserItem(
     gender,
     country,
     nickname,
-    profileImageDateUpdated,
+    hasProfileImage,
     profileImageUri
 )
 

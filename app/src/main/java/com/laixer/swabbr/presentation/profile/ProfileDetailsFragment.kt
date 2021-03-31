@@ -200,7 +200,6 @@ class ProfileDetailsFragment(
      */
     private fun onProfileImageSelected(imageFile: File, imageBitmap: Bitmap) {
         user_profile_profile_image_insettings.setImageBitmap(imageBitmap)
-        user_profile_profile_image_insettings.setImageBitmap(imageBitmap)
         userUpdatableProperties.profileImageFile = imageFile
     }
 

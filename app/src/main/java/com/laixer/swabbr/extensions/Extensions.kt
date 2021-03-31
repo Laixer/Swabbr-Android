@@ -32,7 +32,7 @@ fun ImageView.loadAvatarFromUser(user: UserItem) = loadAvatarFromUser(user.mapTo
  */
 fun ImageView.loadAvatarFromUser(user: User) =
     try {
-        if (user.profileImageDateUpdated != null && user.profileImageUri != null) {
+        if (user.hasProfileImage && user.profileImageUri != null) {
             loadImageUrl(URL(user.profileImageUri.toString()))
         } else {
             loadImageUrl(URL("https://api.hello-avatar.com/adorables/285/${user.id}"))

@@ -16,7 +16,7 @@ data class UserWithStats(
     val gender: Gender,
     val country: String?,
     val nickname: String,
-    val profileImageDateUpdated: ZonedDateTime?,
+    val hasProfileImage: Boolean,
     val profileImageUri: Uri?,
     val totalLikesReceived: Int,
     val totalFollowers: Int,
