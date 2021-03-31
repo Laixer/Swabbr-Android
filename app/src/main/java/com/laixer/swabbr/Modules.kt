@@ -21,7 +21,7 @@ import com.laixer.swabbr.presentation.vlogs.playback.VlogViewModel
 import com.laixer.swabbr.services.moshi.buildWithCustomAdapters
 import com.laixer.swabbr.services.okhttp.AuthInterceptor
 import com.laixer.swabbr.services.okhttp.CacheInterceptor
-import com.laixer.swabbr.services.users.UserManager
+import com.laixer.swabbr.services.users.UserService
 import com.laixer.swabbr.utils.cache.Cache
 import com.squareup.moshi.Moshi
 import io.reactivex.schedulers.Schedulers
@@ -65,14 +65,14 @@ val firebaseModule: Module = module {
 }
 
 val authModule: Module = module {
-    single { UserManager(get()) } // This must be a singleton!
+    single { UserService(get()) } // This must be a singleton!
 }
 
 val viewModelModule: Module = module {
     viewModel { LikeOverviewViewModel(vlogLikeOverviewUseCase = get(), followUseCase = get()) }
     viewModel {
         AuthViewModel(
-            userManager = get(),
+            userService = get(),
             authUseCase = get(),
             firebaseMessaging = get()
         )
@@ -93,7 +93,7 @@ val viewModelModule: Module = module {
 }
 
 val useCaseModule: Module = module {
-    factory { AuthUserUseCase(userRepository = get(), userManager = get()) }
+    factory { AuthUserUseCase(userRepository = get(), userService = get()) }
     factory { AuthUseCase(authRepository = get()) }
     factory { UsersUseCase(userRepository = get()) }
     factory {
@@ -163,7 +163,7 @@ val networkModule: Module = module {
     }
 
     single { CacheInterceptor() }
-    single { AuthInterceptor(userManager = get()) }
+    single { AuthInterceptor(userService = get()) }
 
     single<AuthApi> { get<Retrofit>().create(AuthApi::class.java) }
     single<UserApi> { get<Retrofit>().create(UserApi::class.java) }

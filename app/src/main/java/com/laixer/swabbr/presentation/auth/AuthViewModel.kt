@@ -16,7 +16,7 @@ import com.laixer.swabbr.presentation.utils.todosortme.setLoading
 import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
 import com.laixer.swabbr.services.uploading.ReactionUploadWorker
 import com.laixer.swabbr.services.uploading.VlogUploadWorker
-import com.laixer.swabbr.services.users.UserManager
+import com.laixer.swabbr.services.users.UserService
 import com.laixer.swabbr.utils.resources.Resource
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -25,13 +25,13 @@ import java.util.*
 
 /**
  *  View model for managing user login, logout and registration.
- *  Note that this relies on the [UserManager]. This view model
+ *  Note that this relies on the [UserService]. This view model
  *  triggers our API calls with regards to authentication, but
  *  the refreshing of any tokens is beyond it's scope. This is
- *  handled by our [UserManager].
+ *  handled by our [UserService].
  */
 open class AuthViewModel constructor(
-    private val userManager: UserManager,
+    private val userService: UserService,
     private val authUseCase: AuthUseCase,
     private val firebaseMessaging: FirebaseMessaging
 ) : ViewModelBase() {
@@ -42,7 +42,7 @@ open class AuthViewModel constructor(
      *  is the case, the value in this mutable resource is true. In
      *  this case we need the user to log in again.
      */
-    fun getNewAuthenticationRequiredResource() = userManager.newAuthenticationRequiredResource
+    fun getNewAuthenticationRequiredResource() = userService.newAuthenticationRequiredResource
 
     /**
      *  Will be updated after we have either logged in or registered. The
@@ -53,19 +53,18 @@ open class AuthViewModel constructor(
     /**
      *  Checks if we are authenticated.
      */
-    fun isAuthenticated(): Boolean = userManager.hasValidToken()
-        || (userManager.hasToken() && userManager.hasValidRefreshToken())
+    fun isAuthenticated(): Boolean = userService.isAuthenticated()
 
     /**
      *  Returns the user id of the currently authenticated user, or
      *  null if we don't have an authenticated user.
      */
-    fun getSelfIdOrNull(): UUID? = userManager.getUserIdOrNull()
+    fun getSelfIdOrNull(): UUID? = userService.getUserIdOrNull()
 
     /**
      *  Gets the cached user account name if we have one.
      */
-    fun getCachedEmailOrNull(): String? = userManager.getCachedEmailOrNull()
+    fun getCachedEmailOrNull(): String? = userService.getCachedEmailOrNull()
 
     // TODO Optimize firebase token get operation. Is this the way to go? Maybe it is though...
     /**
@@ -91,7 +90,7 @@ open class AuthViewModel constructor(
                             .subscribeOn(Schedulers.io())
                             .subscribe(
                                 {
-                                    userManager.login(
+                                    userService.login(
                                         email = email,
                                         tokenWrapper = it
                                     )
@@ -147,7 +146,7 @@ open class AuthViewModel constructor(
             WorkManager.getInstance(context).cancelAllWorkByTag(ReactionUploadWorker.WORK_TAG)
             WorkManager.getInstance(context).cancelAllWorkByTag(VlogUploadWorker.WORK_TAG)
 
-            userManager.logout()
+            userService.logout()
         }
 
         viewModelScope.launch {

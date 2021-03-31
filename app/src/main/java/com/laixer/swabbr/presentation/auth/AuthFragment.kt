@@ -5,10 +5,10 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.laixer.swabbr.utils.resources.Resource
-import com.laixer.swabbr.utils.resources.ResourceState
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
 
@@ -27,6 +27,13 @@ abstract class AuthFragment : Fragment() {
      *  for the first [getData] call. Defaults to false.
      */
     protected var defaultRefresh: Boolean = false
+
+    /**
+     *  Set this to true if our authentication has failed before. This
+     *  is used to also try to trigger [getData] in [onResume] if we
+     *  were redirected to the login page by [checkIfAuthenticated].
+     */
+    private var wasUnauthenticatedBefore = false
 
     /**
      *  Attaches an error handler to our API calls whenever a
@@ -59,16 +66,20 @@ abstract class AuthFragment : Fragment() {
      */
     private fun checkIfAuthenticated(): Boolean =
         if (!authVm.isAuthenticated()) {
+            wasUnauthenticatedBefore = true
+
             findNavController().navigate(R.id.action_global_loginFragment)
             false
         } else {
+            wasUnauthenticatedBefore = false
+
             true
         }
 
     /**
      *  Override this method to only get data if we are authenticated.
      */
-    protected open fun getData(refresh: Boolean = defaultRefresh) { }
+    protected open fun getData(refresh: Boolean = defaultRefresh) {}
 
     // TODO Is this the right solution? Probably not...
     /**
@@ -108,6 +119,18 @@ abstract class AuthFragment : Fragment() {
         }
     }
 
+    /**
+     *  Re-trigger [getData] if we were redirected before.
+     */
+    override fun onResume() {
+        super.onResume()
+
+        if (wasUnauthenticatedBefore) {
+            if (checkIfAuthenticated()) {
+                getData()
+            }
+        }
+    }
 
     companion object {
         const val TAG = "AuthActivity"

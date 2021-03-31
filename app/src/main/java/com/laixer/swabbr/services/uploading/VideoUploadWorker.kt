@@ -1,19 +1,14 @@
 package com.laixer.swabbr.services.uploading
 
 import android.content.Context
-import android.net.Uri
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.laixer.swabbr.domain.model.UploadWrapper
 import com.laixer.swabbr.services.uploading.UploadHelper.Companion.uploadFile
-import com.laixer.swabbr.services.users.UserManager
+import com.laixer.swabbr.services.users.UserService
 import com.laixer.swabbr.utils.files.ThumbnailHelper
 import com.laixer.swabbr.utils.media.MediaConstants
-import okhttp3.MediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.io.File
@@ -27,7 +22,7 @@ import java.util.*
 abstract class VideoUploadWorker(appContext: Context, workerParameters: WorkerParameters) :
     Worker(appContext, workerParameters), KoinComponent {
 
-    private val userManager: UserManager by inject()
+    private val userService: UserService by inject()
 
     override fun doWork(): Result {
         // Retry check
@@ -36,7 +31,7 @@ abstract class VideoUploadWorker(appContext: Context, workerParameters: WorkerPa
         }
 
         // First validate if we should execute this work in the first place.
-        if (userManager.getUserIdOrNull() == null) {
+        if (userService.getUserIdOrNull() == null) {
             throw Exception("User isn't logged in - this should have been cancelled")
         }
 
@@ -44,7 +39,7 @@ abstract class VideoUploadWorker(appContext: Context, workerParameters: WorkerPa
             inputData.getString(KEY_USER_ID)
                 ?: throw Exception("Input data did not contain user id")
         )
-        if (userId != userManager.getUserId()) {
+        if (userId != userService.getUserId()) {
             throw Exception("Specified user id doesn't match current user")
         }
 
