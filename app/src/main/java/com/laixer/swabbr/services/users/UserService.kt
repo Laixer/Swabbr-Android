@@ -99,7 +99,7 @@ class UserService(cache: Cache) : TokenService(cache) {
 
         false
     } catch (e: Exception) {
-        Log.e(TAG, "Couldn't check for valid token, returning false")
+        Log.e(TAG, "Couldn't check for valid token, returning false", e)
         false
     }
 
@@ -169,7 +169,7 @@ class UserService(cache: Cache) : TokenService(cache) {
 
         false
     } catch (e: Exception) {
-        Log.e(TAG, "Couldn't check if we have a valid refresh token, returning false")
+        Log.e(TAG, "Couldn't check if we have a valid refresh token, returning false", e)
         false
     }
 
@@ -255,7 +255,12 @@ class UserService(cache: Cache) : TokenService(cache) {
      *  Gets the cached user id. Only call this if we can guarantee
      *  that we are currently logged in.
      */
-    fun getUserId(): UUID = cache.get<UUID>(KEY_ACCOUNT_USER_ID)!!
+    fun getUserId(): UUID = try {
+        cache.get<UUID>(KEY_ACCOUNT_USER_ID)!!
+    } catch (e: Exception) {
+        Log.e(TAG, "Could not get user id, can't recover. Throwing custom error", e)
+        throw Exception("Could not get user id from cache", e)
+    }
 
     companion object {
         private val TAG = UserService::class.java.simpleName
