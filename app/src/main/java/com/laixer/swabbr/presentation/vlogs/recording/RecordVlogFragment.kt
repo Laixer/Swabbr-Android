@@ -39,6 +39,11 @@ class RecordVlogFragment : RecordVideoWithPreviewFragment() {
     private var isCountingDown = false
 
     /**
+     *  Timer used to count us down.
+     */
+    private var timer: CountDownTimer? = null
+
+    /**
      *  Set durations at create time.
      */
     init {
@@ -135,8 +140,13 @@ class RecordVlogFragment : RecordVideoWithPreviewFragment() {
     private fun startRecordingCountdown() = lifecycleScope.launch(Dispatchers.Main) {
         text_view_record_vlog_countdown?.visible()
 
+        // Cancel any existing timer
+        if (timer != null) {
+            timer?.cancel()
+        }
+
         // Timer object handling our UI.
-        val timer = object : CountDownTimer(COUNTDOWN_MILLISECONDS, COUNTDOWN_INTERVAL_MILLISECONDS) {
+        timer = object : CountDownTimer(COUNTDOWN_MILLISECONDS, COUNTDOWN_INTERVAL_MILLISECONDS) {
             override fun onTick(millisUntilFinished: Long) {
                 // Only proceed if we are ready or switching camera.
                 if (getCurrentState() != VideoRecordingState.READY &&
@@ -170,7 +180,29 @@ class RecordVlogFragment : RecordVideoWithPreviewFragment() {
             }
         }
 
-        timer.start()
+        timer?.start()
+    }
+
+    /**
+     *  Catch us exiting the countdown.
+     */
+    override fun onPause() {
+        super.onPause()
+
+        // If we are in the countdown, cancel the timer
+        if (getCurrentState() == VideoRecordingState.READY && isCountingDown) {
+            timer?.cancel()
+            text_view_record_vlog_countdown.gone()
+        }
+    }
+
+    /**
+     *  Clean up resources.
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+
+        timer = null
     }
 
     companion object {

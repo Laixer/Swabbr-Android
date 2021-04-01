@@ -45,17 +45,13 @@ class UserService(cache: Cache) : TokenService(cache) {
         val hasToken = getTokenOrNull() != null
         val hasValidRefreshToken = hasValidRefreshToken()
 
-        if (hasToken && hasValidRefreshToken) {
+        state = if (hasToken && hasValidRefreshToken) {
             // If we have any token and have a valid refresh token we
             // can maintain authentication. Set the flag to logged in.
-            state = UserServiceState.LOGGED_IN
-
-            //newAuthenticationRequiredResource.setSuccess(false)
+            UserServiceState.LOGGED_IN
         } else {
             // If we reach this point we should re-login.
-            state = UserServiceState.NO_USER
-
-            //newAuthenticationRequiredResource.setSuccess(true)
+            UserServiceState.NO_USER
         }
     }
 
@@ -66,11 +62,12 @@ class UserService(cache: Cache) : TokenService(cache) {
         getTokenOrNull() != null &&
             hasValidRefreshToken()
 
+    // TODO https://github.com/pilgr/Paper/issues/4
     /**
      *  Checks if we have a valid token available. If we should have
      *  one but don't, this will trigger a refresh operation.
      */
-    fun hasValidToken(tokenBufferInSeconds: Long = TOKEN_BUFFER_SECONDS_REQUIRES_REFRESH): Boolean {
+    fun hasValidToken(tokenBufferInSeconds: Long = TOKEN_BUFFER_SECONDS_REQUIRES_REFRESH): Boolean = try {
         cache.get<JWT>(KEY_ACCOUNT_TOKEN)?.let { token ->
             // TODO Clean
             // We don't use jwt.isExpired() here since this method has a leeway parameter
@@ -95,8 +92,12 @@ class UserService(cache: Cache) : TokenService(cache) {
             }
         }
 
-        return false
+        false
+    } catch (e: Exception) {
+        Log.e(TAG, "Couldn't check for valid token, returning false")
+        false
     }
+
 
     /**
      *  Stores who we are and stores the provided tokens.
@@ -142,10 +143,11 @@ class UserService(cache: Cache) : TokenService(cache) {
         newAuthenticationRequiredResource.setSuccess(true)
     }
 
+    // TODO https://github.com/pilgr/Paper/issues/4
     /**
      *  Checks if we have a valid refresh token available.
      */
-    private fun hasValidRefreshToken(): Boolean {
+    private fun hasValidRefreshToken(): Boolean = try {
         cache.get<String>(KEY_ACCOUNT_REFRESH_TOKEN)?.let { refreshToken ->
             cache.get<JWT>(KEY_ACCOUNT_TOKEN)?.let { token ->
                 // TODO Clean
@@ -161,7 +163,10 @@ class UserService(cache: Cache) : TokenService(cache) {
             }
         }
 
-        return false
+        false
+    } catch (e: Exception) {
+        Log.e(TAG, "Couldn't check if we have a valid refresh token, returning false")
+        false
     }
 
     /**
@@ -242,16 +247,11 @@ class UserService(cache: Cache) : TokenService(cache) {
         private val TAG = UserService::class.java.simpleName
 
         /**
-         *  Used to determine if our token is still valid for the outside world.
-         */
-        private const val TOKEN_BUFFER_SECONDS_IS_AUTHENTICATED = 30L
-
-        /**
          *  Used to determine if we require a token refresh or not.
          */
-        private const val TOKEN_BUFFER_SECONDS_REQUIRES_REFRESH = 52L
+        private const val TOKEN_BUFFER_SECONDS_REQUIRES_REFRESH = 24 * 60L // One hour
 
-        private const val REFRESH_TOKEN_BUFFER_SECONDS = 30L
+        private const val REFRESH_TOKEN_BUFFER_SECONDS = 24 * 60 * 60L // One day
 
         const val KEY_ACCOUNT_EMAIL = "account_email"
     }

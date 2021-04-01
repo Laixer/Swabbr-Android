@@ -16,16 +16,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@id/user_profile_image"
+        app:layout_constraintBottom_toBottomOf="@id/reaction_list_user_profile_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintGuide_percent="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/user_profile_image" />
+        app:layout_constraintTop_toTopOf="@id/reaction_list_user_profile_image" />
 
     <!-- User profile image -->
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/user_profile_image"
+        android:id="@+id/reaction_list_user_profile_image"
         android:layout_width="@dimen/medium_profile_image_size"
         android:layout_height="@dimen/medium_profile_image_size"
         android:layout_gravity="center"
@@ -37,14 +37,14 @@
 
     <!-- The @nickname tag. -->
     <TextView
-        android:id="@+id/video_user_nickname"
+        android:id="@+id/reaction_list_user_nickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/content_margin_small"
         android:textAppearance="@style/NicknameTextAppearance"
         app:layout_constraintBottom_toBottomOf="@+id/reaction_overlay"
-        app:layout_constraintStart_toEndOf="@+id/user_profile_image"
+        app:layout_constraintStart_toEndOf="@+id/reaction_list_user_profile_image"
         app:layout_constraintTop_toTopOf="@+id/reaction_overlay"
         tools:text="@string/placeholder_nickname"
         tools:visibility="visible" />
@@ -59,9 +59,9 @@
         android:layout_marginEnd="@dimen/content_margin_small"
         android:background="@color/transparent"
         android:src="@drawable/ic_delete"
-        app:layout_constraintBottom_toBottomOf="@+id/user_profile_image"
+        app:layout_constraintBottom_toBottomOf="@+id/reaction_list_user_profile_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/user_profile_image" />
+        app:layout_constraintTop_toTopOf="@+id/reaction_list_user_profile_image" />
 
 
     <!-- Background fill, pushed to the background using translationZ. -->
@@ -73,10 +73,10 @@
         android:background="@color/transparentOverlay"
         android:translationZ="-1dp"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/user_profile_image"
+        app:layout_constraintBottom_toBottomOf="@+id/reaction_list_user_profile_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/user_profile_image"
+        app:layout_constraintTop_toTopOf="@+id/reaction_list_user_profile_image"
         app:layout_constraintVertical_bias="0.51" />
 
 

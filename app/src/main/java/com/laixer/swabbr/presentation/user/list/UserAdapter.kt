@@ -35,7 +35,7 @@ class UserAdapter(
          *  Method that specifies the binding for a [UserItem].
          */
         fun bind(item: UserItem) {
-            itemView.user_profile_image.loadAvatarFromUser(item)
+            itemView.user_profile_image_large.loadAvatarFromUser(item)
             itemView.user_nickname.text = context.getString(R.string.nickname, item.nickname)
 
             itemView.setOnClickListener { onClick.invoke(item) }

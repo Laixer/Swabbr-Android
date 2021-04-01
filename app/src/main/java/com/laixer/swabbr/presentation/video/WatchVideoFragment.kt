@@ -205,14 +205,6 @@ abstract class WatchVideoFragment : Player.EventListener, AuthFragment() {
     }
 
     /**
-     *  This method guarantees that we have an instantiated
-     *  view and is called after said instantiation.
-     */
-    override fun onStart() {
-        super.onStart()
-    }
-
-    /**
      *  Called when the fragment is ready for user interaction.
      *  This will also be called when a swiping animation has
      *  finished. This will attempt to start video playback.

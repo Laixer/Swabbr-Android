@@ -74,6 +74,7 @@ val viewModelModule: Module = module {
         AuthViewModel(
             userService = get(),
             authUseCase = get(),
+            authUserUseCase = get(),
             firebaseMessaging = get()
         )
     }

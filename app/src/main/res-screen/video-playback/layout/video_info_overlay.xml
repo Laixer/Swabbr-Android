@@ -35,7 +35,7 @@
 
         <!-- The @nickname tag. -->
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/user_profile_image"
+            android:id="@+id/video_user_profile_image"
             android:layout_width="@dimen/small_profile_image_size"
             android:layout_height="@dimen/small_profile_image_size"
             android:src="@drawable/ic_person_large_256"
@@ -51,9 +51,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/content_margin_small"
             android:textAppearance="@style/NicknameTextAppearance"
-            app:layout_constraintBottom_toBottomOf="@+id/user_profile_image"
-            app:layout_constraintStart_toEndOf="@+id/user_profile_image"
-            app:layout_constraintTop_toTopOf="@+id/user_profile_image"
+            app:layout_constraintBottom_toBottomOf="@+id/video_user_profile_image"
+            app:layout_constraintStart_toEndOf="@+id/video_user_profile_image"
+            app:layout_constraintTop_toTopOf="@+id/video_user_profile_image"
             tools:text="@string/placeholder_nickname" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

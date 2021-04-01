@@ -42,7 +42,7 @@ open class UserWithRelationAdapter(
          *  Binds a single [UserWithRelationItem].
          */
         fun bind(item: UserWithRelationItem) {
-            itemView.user_profile_image.loadAvatarFromUser(item.user)
+            itemView.user_profile_image_large.loadAvatarFromUser(item.user)
             itemView.user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
 
             itemView.setOnClickListener { onClickProfile.invoke(item) }

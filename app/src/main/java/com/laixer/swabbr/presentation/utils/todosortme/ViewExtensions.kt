@@ -38,6 +38,6 @@ fun ViewGroup.inflate(layoutId: Int, attachToRoot: Boolean = false): View =
 fun ImageView.loadImageUrl(url: URL) = Glide
     .with(this)
     .load(GlideUrl(url))
-    .diskCacheStrategy(DiskCacheStrategy.ALL)
+    // .diskCacheStrategy(DiskCacheStrategy.ALL) // TODO Re-enable?
     .into(this)
 

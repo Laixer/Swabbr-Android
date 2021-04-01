@@ -244,7 +244,7 @@ class WatchVlogFragment : WatchVideoFragment() {
 
                 data?.let {
                     // Display the user info
-                    user_profile_image.loadAvatarFromUser(it.user)
+                    video_user_profile_image.loadAvatarFromUser(it.user)
                     video_user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
 
                     // Display the vlog info and start playback

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
+import android.util.Log
 import android.util.SparseArray
 import android.widget.ImageView
 import androidx.core.util.forEach
@@ -38,7 +39,7 @@ fun ImageView.loadAvatarFromUser(user: User) =
             loadImageUrl(URL("https://api.hello-avatar.com/adorables/285/${user.id}"))
         }
     } catch (e: Exception) {
-        println("Exception while loading profile image")
+        Log.e("loadAvatarFromUser", "Exception while loading profile image for user ${user.id} - ${user.hasProfileImage} - ${user.profileImageUri}")
     }
 
 /**

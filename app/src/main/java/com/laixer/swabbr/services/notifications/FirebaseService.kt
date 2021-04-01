@@ -100,7 +100,7 @@ class FirebaseService : FirebaseMessagingService() {
     }
 
     companion object {
-        private const val TAG = "FirebaseService"
+        private val TAG = FirebaseService::class.java.simpleName
         private const val NOTIFICATION_CHANNEL_ID = "nh-demo-channel-id"
         private const val NOTIFICATION_CHANNEL_NAME = "Notification Hubs Demo Channel"
         private const val NOTIFICATION_CHANNEL_DESCRIPTION = "Notification Hubs Demo Channel"

@@ -51,10 +51,10 @@ open class RecordVideoWithPreviewFragment : RecordMinMaxVideoFragment() {
     }
 
     /**
-     *  Dispose our popup to prevent memory leaks.
+     *  Prevent memory leak.
      */
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
 
         popup = null
     }

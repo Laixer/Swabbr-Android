@@ -40,11 +40,11 @@ class ReactionsAdapter(
          *  Binds a single [ReactionWrapperItem] to the UI.
          */
         fun bind(item: ReactionWrapperItem) = with(itemView) {
-            user_profile_image.loadAvatarFromUser(item.user)
-            video_user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
+            reaction_list_user_profile_image.loadAvatarFromUser(item.user)
+            reaction_list_user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
 
             // Take us to the user if we click the profile image.
-            user_profile_image.setOnClickListener { onProfileClick.invoke(item.user) }
+            reaction_list_user_profile_image.setOnClickListener { onProfileClick.invoke(item.user) }
 
             // Take us to the reaction if we click the item.
             itemView.setOnClickListener { onReactionClick.invoke(item) }
