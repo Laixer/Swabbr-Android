@@ -4,9 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
+import com.laixer.swabbr.presentation.MainActivity
 import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.utils.resources.ResourceState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -44,8 +43,11 @@ abstract class AuthFragment : Fragment() {
         injectFeature()
 
         // Check for authentication at the first possible moment.
-        if (checkIfAuthenticated()) {
+        if (authVm.isAuthenticated()) {
             getData()
+        } else {
+            (requireActivity() as MainActivity?)?.tryRedirectToLogin()
+            wasRedirectedToLogin = true
         }
     }
 
@@ -55,31 +57,6 @@ abstract class AuthFragment : Fragment() {
         // Observe the authentication fail resource in the vm.
         authVm.getNewAuthenticationRequiredResource()
             .observe(viewLifecycleOwner, Observer { onShouldRedirectToLogin(it) })
-    }
-
-    /**
-     *  Navigates to the login fragment if we aren't authenticated.
-     *
-     *  @return Whether or not we are authenticated.
-     */
-    private fun checkIfAuthenticated(): Boolean =
-        if (!authVm.isAuthenticated()) {
-
-            toLogin()
-
-            false
-        } else {
-
-            wasRedirectedToLogin = false
-            true
-        }
-
-    /**
-     *  Takes us to the login screen.
-     */
-    private fun toLogin() {
-        wasRedirectedToLogin = true
-        findNavController().navigate(R.id.action_global_loginFragment)
     }
 
     /**
@@ -99,7 +76,8 @@ abstract class AuthFragment : Fragment() {
 
     /**
      *  If our [authVm] determines we can't stay authenticated for
-     *  whatever reason, redirect the user to the login page.
+     *  whatever reason, notify [MainActivity] and tell it to try
+     *  to redirect us to the login page.
      */
     private fun onShouldRedirectToLogin(res: Resource<Boolean>) {
         when (res.state) {
@@ -108,7 +86,12 @@ abstract class AuthFragment : Fragment() {
             ResourceState.SUCCESS -> { // If this resource is true we require new authentication by the user.
                 res.data?.let { newAuthenticationRequired ->
                     if (newAuthenticationRequired) {
-                        toLogin()
+                        // Notify our activity that we should be redirected.
+                        (requireActivity() as MainActivity?)?.tryRedirectToLogin()
+                        wasRedirectedToLogin = true
+                    } else {
+                        // Notify our activity that we have logged back in.
+                        (requireActivity() as MainActivity?)?.hasLoggedIn()
                     }
                 }
             }

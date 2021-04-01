@@ -19,6 +19,7 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.hideSoftKeyboard
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
+import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
