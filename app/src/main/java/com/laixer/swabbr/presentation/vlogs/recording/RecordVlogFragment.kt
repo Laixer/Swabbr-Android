@@ -212,7 +212,7 @@ class RecordVlogFragment : RecordVideoWithPreviewFragment() {
         private const val COUNTDOWN_INTERVAL_MILLISECONDS = 1_000L
         private const val MAXIMUM_RECORD_ATTEMPTS = 2
 
-        private val MINIMUM_RECORD_TIME = Duration.ofSeconds(2) // TODO 10 seconds
+        private val MINIMUM_RECORD_TIME = Duration.ofSeconds(10)
         private val MAXIMUM_RECORD_TIME = Duration.ofMinutes(10)
     }
 
