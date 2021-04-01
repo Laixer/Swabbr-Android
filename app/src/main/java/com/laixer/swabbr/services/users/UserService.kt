@@ -11,6 +11,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.*
 
+// TODO https://github.com/pilgr/Paper/issues/4 caching crashes the app
 // TODO Should this be a background service? Maybe yes?
 // TODO This shouldn't care about email.
 /**
@@ -42,16 +43,21 @@ class UserService(cache: Cache) : TokenService(cache) {
      *  Set the initial state based on what we have.
      */
     init {
-        val hasToken = getTokenOrNull() != null
-        val hasValidRefreshToken = hasValidRefreshToken()
+        try {
+            val hasToken = getTokenOrNull() != null
+            val hasValidRefreshToken = hasValidRefreshToken()
 
-        state = if (hasToken && hasValidRefreshToken) {
-            // If we have any token and have a valid refresh token we
-            // can maintain authentication. Set the flag to logged in.
-            UserServiceState.LOGGED_IN
-        } else {
-            // If we reach this point we should re-login.
-            UserServiceState.NO_USER
+            state = if (hasToken && hasValidRefreshToken) {
+                // If we have any token and have a valid refresh token we
+                // can maintain authentication. Set the flag to logged in.
+                UserServiceState.LOGGED_IN
+            } else {
+                // If we reach this point we should re-login.
+                UserServiceState.NO_USER
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Could not init user service. Setting state to NO_USER", e)
+            state = UserServiceState.NO_USER
         }
     }
 
@@ -62,7 +68,6 @@ class UserService(cache: Cache) : TokenService(cache) {
         getTokenOrNull() != null &&
             hasValidRefreshToken()
 
-    // TODO https://github.com/pilgr/Paper/issues/4
     /**
      *  Checks if we have a valid token available. If we should have
      *  one but don't, this will trigger a refresh operation.
@@ -143,7 +148,6 @@ class UserService(cache: Cache) : TokenService(cache) {
         newAuthenticationRequiredResource.setSuccess(true)
     }
 
-    // TODO https://github.com/pilgr/Paper/issues/4
     /**
      *  Checks if we have a valid refresh token available.
      */
@@ -228,14 +232,24 @@ class UserService(cache: Cache) : TokenService(cache) {
     /**
      *  Gets the cached user account name if we have one.
      */
-    fun getCachedEmailOrNull(): String? = cache.get<String>(KEY_ACCOUNT_EMAIL)
+    fun getCachedEmailOrNull(): String? = try {
+        cache.get<String>(KEY_ACCOUNT_EMAIL)
+    } catch (e: Exception) {
+        Log.e(TAG, "Could not get cached email, returning null", e)
+        null
+    }
 
     /**
      *  Gets the cached user id if we have one. Note that whenever
      *  we are logged in this should return. If we can guarantee
      *  that we are logged in, call [getUserId] instead.
      */
-    fun getUserIdOrNull(): UUID? = cache.get<UUID>(KEY_ACCOUNT_USER_ID)
+    fun getUserIdOrNull(): UUID? = try {
+        cache.get<UUID>(KEY_ACCOUNT_USER_ID)
+    } catch (e: Exception) {
+        Log.e(TAG, "Could not get cached user id, returning null", e)
+        null
+    }
 
     /**
      *  Gets the cached user id. Only call this if we can guarantee

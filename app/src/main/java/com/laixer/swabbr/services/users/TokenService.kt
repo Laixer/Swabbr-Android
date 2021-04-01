@@ -1,5 +1,6 @@
 package com.laixer.swabbr.services.users
 
+import android.util.Log
 import androidx.annotation.CallSuper
 import com.auth0.android.jwt.JWT
 import com.laixer.swabbr.BuildConfig
@@ -38,12 +39,22 @@ abstract class TokenService(protected val cache: Cache) {
     /**
      *  Gets the current jwt token.
      */
-    fun getTokenOrNull(): JWT? = cache.get(KEY_ACCOUNT_TOKEN)
+    fun getTokenOrNull(): JWT? = try {
+        cache.get(KEY_ACCOUNT_TOKEN)
+    } catch (e: Exception) {
+        Log.e(TAG, "Could not get token, returning null")
+        null
+    }
 
     /**
      *  Gets the current jwt token.
      */
-    private fun getRefreshTokenOrNull(): String? = cache.get(KEY_ACCOUNT_REFRESH_TOKEN)
+    private fun getRefreshTokenOrNull(): String? = try {
+        cache.get(KEY_ACCOUNT_REFRESH_TOKEN)
+    } catch (e: Exception) {
+        Log.e(TAG, "Could not get refresh token, returning null")
+        null
+    }
 
     /**
      *  Attempts to actually refresh the token. This dispatches to
