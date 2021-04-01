@@ -312,7 +312,7 @@ class ProfileViewModel constructor(
         viewModelScope.launch {
             compositeDisposable.add(followUseCase
                 .getFollowers(userId, refresh)
-                .doOnSubscribe { followingUsers.setLoading() }
+                .doOnSubscribe { followersAndFollowRequestingUsers.setLoading() }
                 .map { it.mapToPresentation() }
                 .subscribe(
                     {
@@ -325,7 +325,7 @@ class ProfileViewModel constructor(
                             )
                     },
                     {
-                        followingUsers.setError(it.message) // TODO Is this correct?
+                        followersAndFollowRequestingUsers.setError(it.message) // TODO Is this correct?
                         Log.e(TAG, "Could not get users that are following the current user - ${it.message}")
                     }
                 )

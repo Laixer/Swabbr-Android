@@ -19,7 +19,7 @@
     <style name="NicknameTextAppearance">
         <item name="android:textSize">@dimen/text_size_user_nickname</item>
         <item name="android:autoSizeMaxTextSize">@dimen/text_size_auto_size_max</item>
-        <item name="android:autoSizeMinTextSize">@dimen/text_size_user_nickname</item>
+        <item name="android:autoSizeMinTextSize">@dimen/text_size_auto_size_min</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/color_white</item>
     </style>
