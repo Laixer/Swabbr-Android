@@ -166,7 +166,12 @@ class ProfileDetailsFragment(
         button_profile_logout.setOnClickListener {
             // This triggers the user manager which will update its resources.
             // The auth fragment we inherit from will take us back to login.
-            authVm.logout(requireContext())
+            // TODO It doesn't because Android can't make a consistent navcontroller. This is ridiculous.
+            //      The nav to login only works ONCE, then never again.
+             authVm.logout(requireContext())
+
+            // TODO This is the fix. Beautiful.
+            requireActivity().finish()
         }
 
         // Setup spinner values

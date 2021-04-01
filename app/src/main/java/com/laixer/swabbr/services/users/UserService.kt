@@ -33,15 +33,38 @@ class UserService(cache: Cache) : TokenService(cache) {
     var newAuthenticationRequiredResource = MutableLiveData<Resource<Boolean>>()
 
     /**
-     *  State enum.
+     *  State enum. That will start by checking if
+     *  we have a user or not.
      */
-    private var state: UserServiceState = UserServiceState.NO_USER
+    private lateinit var state: UserServiceState
+
+    /**
+     *  Set the initial state based on what we have.
+     */
+    init {
+        val hasToken = getTokenOrNull() != null
+        val hasValidRefreshToken = hasValidRefreshToken()
+
+        if (hasToken && hasValidRefreshToken) {
+            // If we have any token and have a valid refresh token we
+            // can maintain authentication. Set the flag to logged in.
+            state = UserServiceState.LOGGED_IN
+
+            //newAuthenticationRequiredResource.setSuccess(false)
+        } else {
+            // If we reach this point we should re-login.
+            state = UserServiceState.NO_USER
+
+            //newAuthenticationRequiredResource.setSuccess(true)
+        }
+    }
 
     /**
      *  Checks if we are authenticated or not.
      */
-    fun isAuthenticated() = hasValidToken(TOKEN_BUFFER_SECONDS_IS_AUTHENTICATED) ||
-        hasValidRefreshToken()
+    fun isAuthenticated() =
+        getTokenOrNull() != null &&
+            hasValidRefreshToken()
 
     /**
      *  Checks if we have a valid token available. If we should have
