@@ -74,7 +74,7 @@ class WatchReactionFragment() : WatchVideoFragment() {
             ResourceState.SUCCESS -> {
                 video_content_loading_icon.visibility = View.GONE
                 data?.let {
-                    user_profile_image.loadAvatarFromUser(it.user.mapToDomain())
+                    video_user_profile_image.loadAvatarFromUser(it.user.mapToDomain())
                     video_user_nickname.text = requireContext().getString(R.string.nickname, it.user.nickname)
 
                     loadMediaSource(it.reaction.videoUri!!) // TODO This can be empty if our backend / mapping fails!

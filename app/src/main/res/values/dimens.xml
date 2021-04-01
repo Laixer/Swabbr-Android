@@ -9,18 +9,18 @@
     <dimen name="divider_margin_medium">24dp</dimen>
     <dimen name="divider_margin_large">32dp</dimen>
 
-    <dimen name="mini_icon_size">24dp</dimen>
-    <dimen name="small_icon_size">32dp</dimen>
-    <dimen name="medium_icon_size">48dp</dimen>
-    <dimen name="large_icon_size">64dp</dimen>
+    <dimen name="mini_icon_size">20dp</dimen>
+    <dimen name="small_icon_size">24dp</dimen>
+    <dimen name="medium_icon_size">38dp</dimen>
+    <dimen name="large_icon_size">56dp</dimen>
 
     <dimen name="small_profile_image_size">40dp</dimen>
-    <dimen name="medium_profile_image_size">84dp</dimen>
+    <dimen name="medium_profile_image_size">74dp</dimen>
     <dimen name="large_profile_image_size">150dp</dimen>
 
     <!-- Used for the reaction sheets. -->
     <!-- TODO Suboptimal -->
-    <dimen name="medium_profile_image_size_half">42dp</dimen>
+    <dimen name="medium_profile_image_size_half">37dp</dimen>
 
     <dimen name="profile_settings_side_margin">16dp</dimen>
 
@@ -31,7 +31,7 @@
     <dimen name="button_stroke_width">1.5dp</dimen>
     <dimen name="button_radius">8dp</dimen>
 
-    <dimen name="text_size_user_nickname">16sp</dimen>
+    <dimen name="text_size_user_nickname">14sp</dimen>
 
     <!-- TODO This is a beun fix, see issue #135. -->
     <!-- Reaction sheet peek height. -->
@@ -40,6 +40,7 @@
 
     <!-- All text sizes -->
     <dimen name="text_size_auto_size_max">24sp</dimen>
+    <dimen name="text_size_auto_size_min">10sp</dimen>
     <dimen name="button_text_size">14sp</dimen>
     <dimen name="text_size_settings">14sp</dimen>
     <dimen name="text_size_stats_large">16sp</dimen>

@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.fragment_registration.fab_set_profile_imag
 import kotlinx.android.synthetic.main.fragment_registration.inputNickname
 import java.io.File
 import java.util.*
+import kotlin.math.min
 
 // TODO This doesn't allow us to set any properties to null. Maybe we want this for first name and last name?
 /**
@@ -226,8 +227,8 @@ class ProfileDetailsFragment(
         inputFirstName.setText(user.firstName)
         inputLastName.setText(user.lastName)
         switchIsPrivate.isChecked = user.isPrivate
-        spinnerGender.setSelection(user.gender.ordinal)
-        spinnerDailyVlogRequestLimit.setSelection(user.dailyVlogRequestLimit)
+        spinnerGender.setSelection(min(Gender.values().size, user.gender.ordinal))
+        spinnerDailyVlogRequestLimit.setSelection(min(3, user.dailyVlogRequestLimit)) // TODO Hard coded limit
     }
 
     /**

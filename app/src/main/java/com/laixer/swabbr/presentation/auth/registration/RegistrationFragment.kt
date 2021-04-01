@@ -17,7 +17,6 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.hideSoftKeyboard
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
-import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.model.RegistrationItem
 import com.laixer.swabbr.presentation.utils.onActivityResult
@@ -34,8 +33,13 @@ import java.io.File
  *  Fragment for handling user registration.
  */
 class RegistrationFragment : Fragment() {
+
     private val authVm: AuthViewModel by sharedViewModel()
-    private var selectedProfileImage: Bitmap? = null
+
+    /**
+     *  Assigned by the image picker, optional.
+     */
+    private var selectedProfileImageFile: File? = null
 
     /**
      *  Inflates the view.
@@ -84,8 +88,6 @@ class RegistrationFragment : Fragment() {
         // Explicitly hide the input keyboard as Android doesn't do this for us.
         hideSoftKeyboard()
 
-        // TODO Clean this up.
-        // TODO Also pass the file to the profile image here.
         authVm.register(
             RegistrationItem(
                 email = emailInput.text.toString(),
@@ -96,14 +98,13 @@ class RegistrationFragment : Fragment() {
                 gender = null,
                 country = null,
                 birthDate = null,
-                // timeZone = //ZonedDateTime.now().offset,
-                timeZone = null, // Timezone doesn't work yet
+                timeZone = null, // TODO Timezone doesn't work yet
                 latitude = null,
                 longitude = null,
                 isPrivate = null,
                 dailyVlogRequestLimit = null,
                 followMode = null
-            )
+            ), selectedProfileImageFile
         )
     }
 
@@ -159,9 +160,7 @@ class RegistrationFragment : Fragment() {
      *  Function that stores and sets our profile image if we select one.
      */
     private fun onBitmapSelected(imageFile: File, imageBitmap: Bitmap) {
-        // this.selectedProfileImage = selectedBitmap
-        // TODO Profile image
-
+        selectedProfileImageFile = imageFile
         avatarPicker.setImageBitmap(imageBitmap)
     }
 

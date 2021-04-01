@@ -13,7 +13,7 @@
     android:orientation="horizontal">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/user_profile_image"
+        android:id="@+id/user_profile_image_large"
         android:layout_width="@dimen/medium_profile_image_size"
         android:layout_height="@dimen/medium_profile_image_size"
         android:layout_gravity="center"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/content_margin_medium"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/user_profile_image"
+        app:layout_constraintStart_toEndOf="@+id/user_profile_image_large"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
