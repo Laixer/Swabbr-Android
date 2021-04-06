@@ -10,13 +10,17 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.services.play.PlayServicesChecker
+import com.laixer.swabbr.services.users.UserService
 import io.reactivex.plugins.RxJavaPlugins
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.android.ext.android.inject
 
 /**
  *  Main activity in which everything is displayed using fragments.
  */
 class MainActivity : AppCompatActivity() {
+
+    private val userService: UserService by inject()
 
     /**
      *  Navigation fragment host, in which navigation can occur.
@@ -78,6 +82,16 @@ class MainActivity : AppCompatActivity() {
         if (hasRedirected) {
             hasRedirected = false
         }
+    }
+
+    /**
+     *  Triggers a token refresh if possible.
+     */
+    override fun onResume() {
+        super.onResume()
+
+        // TODO This caused a 404 --> investigate.
+        // userService.hasValidToken()
     }
 
     /**

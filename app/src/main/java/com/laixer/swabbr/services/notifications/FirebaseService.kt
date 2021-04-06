@@ -10,15 +10,16 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.laixer.swabbr.R
+import com.laixer.swabbr.services.users.UserService
 import org.koin.core.KoinComponent
+import org.koin.core.inject
 import java.util.*
 
 // TODO Use abstraction for user service
 class FirebaseService : FirebaseMessagingService(), KoinComponent {
 
+    private val userService: UserService by inject()
     private val notificationHandler by lazy { NotificationHandler() }
-
-    //private val userManager by injectFeature()
 
     /**
      * Called when message is received.
@@ -28,13 +29,13 @@ class FirebaseService : FirebaseMessagingService(), KoinComponent {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        // Try to refresh the auth token
-        //userService.hasValidToken() // TODO Ugly
-
         Log.d(TAG, "From: ${remoteMessage.from}")
         remoteMessage.data.values.first()?.let {
             try {
                 sendNotification(notificationHandler.parse(it))
+
+                // If possible, refresh the token
+                userService.hasValidToken() // TODO Ugly
             } catch (e: Exception) {
                 Log.e(TAG, e.message!!)
             }
