@@ -1,5 +1,6 @@
 package com.laixer.swabbr.presentation.vlogs.list
 
+import android.content.Intent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,7 @@ import com.laixer.swabbr.presentation.utils.todosortme.gone
 import com.laixer.swabbr.presentation.utils.todosortme.inflate
 import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.utils.loadAvatarFromUser
+import com.laixer.swabbr.utils.media.MediaConstants
 import kotlinx.android.synthetic.main.include_user_small.view.*
 import kotlinx.android.synthetic.main.include_usernames.view.*
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
@@ -30,11 +32,13 @@ import java.util.*
  *  @param onClickDelete Callback when we click the delete icon. Note that
  *                       this is only relevant if we own the vlog, hence
  *                       this being nullable.
+ *  @param onClickShare Callback when we click the share icon.
  */
 class VlogListCardAdapter(
     private val selfId: UUID,
     private val onClickVlog: (VlogWrapperItem) -> Unit,
-    private val onClickDelete: ((VlogWrapperItem) -> Unit)? = null
+    private val onClickDelete: ((VlogWrapperItem) -> Unit)? = null,
+    private val onClickShare: ((VlogWrapperItem) -> Unit)? = null
 ) : ListAdapter<VlogWrapperItem, VlogListCardAdapter.ViewHolder>(VlogWrapperDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent)
@@ -46,6 +50,9 @@ class VlogListCardAdapter(
          *  Actual binding functionality for a single [VlogWrapperItem] in the list.
          */
         fun bind(item: VlogWrapperItem): Unit = with(itemView) {
+            // Hide the loading icon
+            progress_bar_vlog_card.gone()
+
             // Load the thumbnail image.
             Glide.with(context)
                 .load(GlideUrl(item.vlog.thumbnailUri.toString()))
@@ -65,18 +72,29 @@ class VlogListCardAdapter(
             // Click listeners
             itemView.setOnClickListener { onClickVlog.invoke(item) }
 
-            // Conditional delete button binding
+            // Conditional delete and share button binding
             if (selfId == item.vlog.userId) {
                 if (onClickDelete == null) {
                     throw IllegalArgumentException("Specify onClickDelete when we own the vlog.")
+                }
+                if (onClickShare == null) {
+                    throw IllegalArgumentException("Specify onClickShare when we own the vlog.")
                 }
 
                 button_delete_vlog.visible()
                 button_delete_vlog.isEnabled = true
                 button_delete_vlog.setOnClickListener { onClickDelete.invoke(item) }
+
+                button_share_vlog.visible()
+                button_share_vlog.isEnabled = true
+                button_share_vlog.setOnClickListener { onClickShare.invoke(item) }
+
             } else {
                 button_delete_vlog.gone()
                 button_delete_vlog.isEnabled = false
+
+                button_share_vlog.gone()
+                button_share_vlog.isEnabled = false
             }
         }
     }

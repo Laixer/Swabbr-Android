@@ -10,11 +10,15 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.laixer.swabbr.R
-import java.lang.Exception
+import org.koin.core.KoinComponent
+import java.util.*
 
-class FirebaseService : FirebaseMessagingService() {
+// TODO Use abstraction for user service
+class FirebaseService : FirebaseMessagingService(), KoinComponent {
 
     private val notificationHandler by lazy { NotificationHandler() }
+
+    //private val userManager by injectFeature()
 
     /**
      * Called when message is received.
@@ -23,6 +27,10 @@ class FirebaseService : FirebaseMessagingService() {
      */
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
+
+        // Try to refresh the auth token
+        //userService.hasValidToken() // TODO Ugly
+
         Log.d(TAG, "From: ${remoteMessage.from}")
         remoteMessage.data.values.first()?.let {
             try {
@@ -68,9 +76,11 @@ class FirebaseService : FirebaseMessagingService() {
         val channelId = getString(R.string.default_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-        val title = notification?.data?.title?.let(this@FirebaseService::getString) ?: getString(R.string.default_notification_title)
+        val title = notification?.data?.title?.let(this@FirebaseService::getString)
+            ?: getString(R.string.default_notification_title)
 
-        val message = notification?.data?.message?.let(this@FirebaseService::getString) ?: getString(R.string.default_notification_message)
+        val message = notification?.data?.message?.let(this@FirebaseService::getString)
+            ?: getString(R.string.default_notification_message)
 
         // TODO How to catch invalid intents?
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
@@ -93,8 +103,9 @@ class FirebaseService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
 
+        // This will give each notification a unique id to prevent overwriting them.
         notificationManager.notify(
-            NOTIFICATION_ID,
+            Random().nextInt(),
             notificationBuilder.build()
         )
     }
@@ -104,7 +115,6 @@ class FirebaseService : FirebaseMessagingService() {
         private const val NOTIFICATION_CHANNEL_ID = "nh-demo-channel-id"
         private const val NOTIFICATION_CHANNEL_NAME = "Notification Hubs Demo Channel"
         private const val NOTIFICATION_CHANNEL_DESCRIPTION = "Notification Hubs Demo Channel"
-        private const val NOTIFICATION_ID = 1
 
         fun createChannelAndHandleNotifications(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
