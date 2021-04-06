@@ -30,7 +30,10 @@ class UserUpdatablePropertiesItem(
     var longitude: Double? = null,
     var isPrivate: Boolean? = null,
     var dailyVlogRequestLimit: Int? = null,
-    var followMode: FollowMode? = null
+    var followMode: FollowMode? = null,
+    var interest1 : String? = null,
+    var interest2 : String? = null,
+    var interest3 : String? = null
 )
 
 /**
@@ -49,7 +52,10 @@ fun UserUpdatablePropertiesItem.copy(): UserUpdatablePropertiesItem = UserUpdata
     longitude,
     isPrivate,
     dailyVlogRequestLimit,
-    followMode
+    followMode,
+    interest1,
+    interest2,
+    interest3
 )
 
 /**
@@ -68,7 +74,10 @@ fun UserCompleteItem.extractUpdatableProperties(): UserUpdatablePropertiesItem =
     longitude,
     isPrivate,
     dailyVlogRequestLimit,
-    followMode
+    followMode,
+    interest1,
+    interest2,
+    interest3
 )
 
 /**
@@ -87,7 +96,10 @@ fun UserUpdatableProperties.mapToPresentation(): UserUpdatablePropertiesItem = U
     longitude,
     isPrivate,
     dailyVlogRequestLimit,
-    followMode
+    followMode,
+    interest1,
+    interest2,
+    interest3
 )
 
 /**
@@ -106,6 +118,9 @@ fun UserUpdatablePropertiesItem.mapToDomain(): UserUpdatableProperties = UserUpd
     longitude,
     isPrivate,
     dailyVlogRequestLimit,
-    followMode
+    followMode,
+    interest1,
+    interest2,
+    interest3
 )
 

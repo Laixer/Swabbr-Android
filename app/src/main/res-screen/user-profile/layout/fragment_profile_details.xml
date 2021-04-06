@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -66,12 +67,12 @@
         <!-- Nickname -->
         <com.laixer.swabbr.presentation.utils.EditTextDatePicker
             android:id="@+id/inputBirthDate"
+            style="@style/TextInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="@string/register_date_of_birth"
 
-            style="@style/TextInput"
+            android:hint="@string/register_date_of_birth"
 
             app:layout_constraintBottom_toTopOf="@+id/inputNickname"
             app:layout_constraintEnd_toEndOf="@+id/inputNickname"
@@ -88,7 +89,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/register_nickname_hint"
             app:layout_constraintEnd_toStartOf="@+id/inputNickname"
-            app:layout_constraintHorizontal_bias="0.34"
+            app:layout_constraintHorizontal_bias="0.25"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 
@@ -97,7 +98,7 @@
             style="@style/TextInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="@dimen/content_margin_small"
             android:layout_marginEnd="@dimen/profile_settings_side_margin"
             android:hint="@string/register_nickname_hint"
             android:inputType="textPersonName"
@@ -114,7 +115,7 @@
             style="@style/TextProfileSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/content_margin_small"
             android:text="@string/register_firstName"
             app:layout_constraintStart_toStartOf="@+id/textViewNickname"
             app:layout_constraintTop_toBottomOf="@+id/textViewNickname" />
@@ -140,7 +141,7 @@
             style="@style/TextProfileSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/content_margin_small"
             android:text="@string/register_lastName"
             app:layout_constraintStart_toStartOf="@+id/textViewFirstName"
             app:layout_constraintTop_toBottomOf="@+id/textViewFirstName" />
@@ -159,12 +160,13 @@
 
 
         <!-- Gender -->
+
         <TextView
             android:id="@+id/textViewGender"
             style="@style/TextProfileSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/content_margin_small"
             android:text="@string/register_gender"
             app:layout_constraintStart_toStartOf="@+id/textViewLastName"
             app:layout_constraintTop_toBottomOf="@+id/textViewLastName" />
@@ -185,7 +187,7 @@
             style="@style/TextProfileItalicSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/content_margin_small"
             android:text="@string/is_profile_private"
             app:layout_constraintStart_toStartOf="@+id/textViewGender"
             app:layout_constraintTop_toBottomOf="@+id/textViewGender" />
@@ -199,12 +201,13 @@
 
 
         <!-- Vlog request limit -->
+
         <TextView
             android:id="@+id/textViewVlogRequests"
             style="@style/TextProfileItalicSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/content_margin_small"
             android:text="@string/daily_vlog_request_limit"
             app:layout_constraintStart_toStartOf="@+id/textViewPrivate"
             app:layout_constraintTop_toBottomOf="@+id/textViewPrivate" />
@@ -219,6 +222,56 @@
             app:layout_constraintTop_toTopOf="@+id/textViewVlogRequests" />
 
         <!-- Logs the user out. -->
+        <TextView
+            android:id="@+id/textViewInterests"
+            style="@style/TextProfileSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/interests"
+            app:layout_constraintBaseline_toBaselineOf="@+id/inputInterest1"
+            app:layout_constraintStart_toStartOf="@+id/textViewVlogRequests" />
+
+
+        <EditText
+            android:id="@+id/inputInterest1"
+            style="@style/TextInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/content_margin_small"
+            android:autofillHints="string/interest_hint"
+            android:hint="@string/interests_hint"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="@+id/inputFirstName"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/inputFirstName"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerDailyVlogRequestLimit" />
+
+        <EditText
+            android:id="@+id/inputInterest2"
+            style="@style/TextInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:autofillHints="string/interest_hint"
+            android:hint="@string/interests_hint"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="@+id/inputFirstName"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/inputFirstName"
+            app:layout_constraintTop_toBottomOf="@+id/inputInterest1" />
+
+        <EditText
+            android:id="@+id/inputInterest3"
+            style="@style/TextInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:autofillHints="string/interest_hint"
+            android:hint="@string/interests_hint"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="@+id/inputFirstName"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/inputFirstName"
+            app:layout_constraintTop_toBottomOf="@+id/inputInterest2" />
+
         <Button
             android:id="@+id/button_profile_logout"
             style="@style/SwabbrButton"
@@ -226,11 +279,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/profile_settings_side_margin"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="@dimen/content_margin_small"
             android:text="@string/logout"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewVlogRequests" />
+            app:layout_constraintTop_toBottomOf="@+id/inputInterest3"
+            tools:visibility="visible" />
 
         <!-- Saves all modified properties. -->
         <Button
@@ -238,11 +292,12 @@
             style="@style/SwabbrButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="@dimen/content_margin_small"
             android:text="@string/save"
             app:layout_constraintEnd_toEndOf="@+id/spinnerDailyVlogRequestLimit"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toTopOf="@+id/button_profile_logout" />
+            app:layout_constraintTop_toTopOf="@+id/button_profile_logout"
+            tools:visibility="visible" />
 
 
         <!-- Hidden by default, until everything has been loaded. -->

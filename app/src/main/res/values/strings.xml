@@ -98,6 +98,8 @@
     <string name="follow_mode">Follow mode</string>
     <string name="save">Save</string>
     <string name="logout">Logout</string>
+    <string name="interests">Interests</string>
+    <string name="interests_hint">Enter an interest...</string>
 
     <!-- Follow mode spinner options -->
     <string name="manual">Manual</string>

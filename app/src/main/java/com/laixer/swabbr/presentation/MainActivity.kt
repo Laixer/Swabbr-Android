@@ -1,6 +1,7 @@
 package com.laixer.swabbr.presentation
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -42,6 +43,9 @@ class MainActivity : AppCompatActivity() {
         if (!PlayServicesChecker.checkPlayServices(this)) {
             onBackPressed()
         }
+
+        // Keep the screen on
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         // Setup the layout for this main activity.
         setContentView(R.layout.activity_main)

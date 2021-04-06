@@ -189,6 +189,26 @@ class ProfileDetailsFragment(
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerDailyVlogRequestLimit.adapter = adapter
         }
+
+        // Setup interests
+        inputInterest1.doOnTextChanged { text, _, _, _ ->
+            if (!::userOriginal.isInitialized) return@doOnTextChanged
+            if (text?.isNotBlank() == true) {
+                userUpdatableProperties.interest1 = text.toString()
+            }
+        }
+        inputInterest2.doOnTextChanged { text, _, _, _ ->
+            if (!::userOriginal.isInitialized) return@doOnTextChanged
+            if (text?.isNotBlank() == true) {
+                userUpdatableProperties.interest2 = text.toString()
+            }
+        }
+        inputInterest3.doOnTextChanged { text, _, _, _ ->
+            if (!::userOriginal.isInitialized) return@doOnTextChanged
+            if (text?.isNotBlank() == true) {
+                userUpdatableProperties.interest3 = text.toString()
+            }
+        }
     }
 
     /**
@@ -229,6 +249,9 @@ class ProfileDetailsFragment(
         switchIsPrivate.isChecked = user.isPrivate
         spinnerGender.setSelection(min(Gender.values().size, user.gender.ordinal))
         spinnerDailyVlogRequestLimit.setSelection(min(3, user.dailyVlogRequestLimit)) // TODO Hard coded limit
+        inputInterest1.setText(user.interest1)
+        inputInterest2.setText(user.interest2)
+        inputInterest3.setText(user.interest3)
     }
 
     /**
