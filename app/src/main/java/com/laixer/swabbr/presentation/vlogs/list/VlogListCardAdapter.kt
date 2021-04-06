@@ -6,17 +6,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
-import com.laixer.swabbr.presentation.utils.todosortme.gone
-import com.laixer.swabbr.presentation.utils.todosortme.inflate
-import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.R
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.utils.diffcallback.VlogWrapperDiffCallback
+import com.laixer.swabbr.presentation.utils.todosortme.gone
+import com.laixer.swabbr.presentation.utils.todosortme.inflate
+import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.utils.loadAvatarFromUser
-import kotlinx.android.synthetic.main.include_user_large.view.*
 import kotlinx.android.synthetic.main.include_user_small.view.*
 import kotlinx.android.synthetic.main.include_usernames.view.*
 import kotlinx.android.synthetic.main.item_list_vlog.view.*
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
@@ -55,8 +56,11 @@ class VlogListCardAdapter(
 
             user_profile_image_small.loadAvatarFromUser(item.user)
             user_nickname.text = context.getString(R.string.nickname, item.user.nickname)
-            text_view_vlog_date_created.text =
-                item.vlog.dateCreated.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
+
+            // Date in the correct timezone
+            text_view_vlog_date_created.text = ZonedDateTime.ofInstant(
+                    item.vlog.dateCreated.toInstant(), TimeZone.getDefault().toZoneId()
+                ).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
 
             // Click listeners
             itemView.setOnClickListener { onClickVlog.invoke(item) }

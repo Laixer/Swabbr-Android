@@ -8,9 +8,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.laixer.swabbr.extensions.goBack
 import com.laixer.swabbr.extensions.reduceDragSensitivity
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.model.VlogWrapperItem
+import com.laixer.swabbr.presentation.types.VideoPlaybackState
 import com.laixer.swabbr.presentation.video.WatchVideoFragmentAdapter
 import com.laixer.swabbr.presentation.video.WatchVideoListFragment
 import com.laixer.swabbr.presentation.vlogs.list.VlogListViewModel
@@ -61,8 +63,29 @@ class WatchUserVlogsFragment : WatchVideoListFragment() {
      */
     override fun getWatchVideoFragmentAdapter(): WatchVideoFragmentAdapter = WatchVlogFragmentAdapter(
         fragment = this@WatchUserVlogsFragment,
-        vlogListResource = vlogListVm.vlogs
+        vlogListResource = vlogListVm.vlogs,
+        onVideoCompletedCallback = ::onVideoPlaybackStateChanged
     )
+
+    /**
+     *  Go to the next vlog if one finishes playback. This callback is subscribed
+     *  and managed by the adapter created in [getWatchVideoFragmentAdapter].
+     *  This class doesn't need to do anything with regards to subscription.
+     *
+     *  @param vlogId The vlog that ended playback.
+     *  @param position The position in the [video_viewpager].
+     *  @param videoPlaybackState The new playback state.
+     */
+    private fun onVideoPlaybackStateChanged(vlogId: UUID, position: Int, videoPlaybackState: VideoPlaybackState) {
+        if (videoPlaybackState == VideoPlaybackState.FINISHED) {
+            video_viewpager.adapter?.let { adapter ->
+                if (position < adapter.itemCount - 1) {
+                    // Go to the next item if we have more items.
+                    video_viewpager.currentItem = position + 1
+                }
+            }
+        }
+    }
 
     // TODO Pull up to WatchVideoListFragment
     /**

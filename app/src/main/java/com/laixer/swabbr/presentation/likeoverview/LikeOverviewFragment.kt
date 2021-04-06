@@ -46,7 +46,8 @@ class LikeOverviewFragment : AuthFragment() {
         likingUserAdapter = UserFollowableAdapter(
             context = requireContext(),
             onClickProfile = onClickProfileWithRelation(),
-            onClickFollow = onFollowClick
+            onClickFollow = onFollowClick,
+            currentUserId = authVm.getSelfIdOrNull()
         )
 
         recycler_view_liking_users.apply {
