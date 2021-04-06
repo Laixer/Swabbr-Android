@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_main_activity"
-    app:startDestination="@id/profileFragment">
+    app:startDestination="@id/dashboardFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -29,7 +29,11 @@
         android:id="@+id/likeOverviewFragment"
         android:name="com.laixer.swabbr.presentation.likeoverview.LikeOverviewFragment"
         android:label="fragment_like_overview"
-        tools:layout="@layout/fragment_like_overview" />
+        tools:layout="@layout/fragment_like_overview" >
+        <action
+            android:id="@+id/action_likeOverviewFragment_to_watchUserVlogsFragment"
+            app:destination="@id/watchUserVlogsFragment" />
+    </fragment>
     <action
         android:id="@+id/action_global_likeOverviewFragment"
         app:destination="@id/likeOverviewFragment" />

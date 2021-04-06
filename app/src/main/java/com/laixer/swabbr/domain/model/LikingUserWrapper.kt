@@ -9,6 +9,6 @@ import java.util.*
 data class LikingUserWrapper(
     val vlogOwnerId: UUID,
     val followRequestStatus: FollowRequestStatus,
-    val vlogLikeEntity: VlogLike,
+    val vlogLike: VlogLike,
     val vlogLikingUser: User
 )

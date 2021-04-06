@@ -1,21 +1,23 @@
 package com.laixer.swabbr.presentation.likeoverview
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.laixer.swabbr.utils.resources.Resource
-import com.laixer.swabbr.presentation.utils.todosortme.startRefreshing
-import com.laixer.swabbr.presentation.utils.todosortme.stopRefreshing
+import androidx.navigation.fragment.findNavController
 import com.laixer.swabbr.R
-import com.laixer.swabbr.domain.types.FollowRequestStatus
 import com.laixer.swabbr.extensions.onClickProfileWithRelation
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.presentation.auth.AuthFragment
+import com.laixer.swabbr.presentation.model.LikingUserWrapperItem
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
-import com.laixer.swabbr.presentation.user.list.UserFollowableAdapter
 import com.laixer.swabbr.presentation.user.list.UserWithRelationAdapter
+import com.laixer.swabbr.presentation.user.list.UserWithVlogAdapter
+import com.laixer.swabbr.presentation.utils.todosortme.startRefreshing
+import com.laixer.swabbr.presentation.utils.todosortme.stopRefreshing
+import com.laixer.swabbr.utils.resources.Resource
 import com.laixer.swabbr.utils.resources.ResourceState
 import kotlinx.android.synthetic.main.fragment_like_overview.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -43,10 +45,10 @@ class LikeOverviewFragment : AuthFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        likingUserAdapter = UserFollowableAdapter(
+        likingUserAdapter = UserWithVlogAdapter(
             context = requireContext(),
             onClickProfile = onClickProfileWithRelation(),
-            onClickFollow = onFollowClick,
+            onClickVlog = onClickVlog,
             currentUserId = authVm.getSelfIdOrNull()
         )
 
@@ -68,12 +70,16 @@ class LikeOverviewFragment : AuthFragment() {
     /**
      *  Callback for when we click a follow button.
      */
-    private val onFollowClick: (UserWithRelationItem) -> Unit = {
-        when (it.followRequestStatus) {
-            FollowRequestStatus.PENDING -> likeOverviewVm.cancelFollowRequest(it.user.id)
-            FollowRequestStatus.ACCEPTED -> likeOverviewVm.unfollow(it.user.id)
-            FollowRequestStatus.DECLINED -> likeOverviewVm.follow(it.user.id)
-            FollowRequestStatus.NONEXISTENT -> likeOverviewVm.follow(it.user.id)
+    private val onClickVlog: (UserWithRelationItem) -> Unit = {
+        try {
+            val cast = it as LikingUserWrapperItem
+            val action = LikeOverviewFragmentDirections.actionLikeOverviewFragmentToWatchUserVlogsFragment(
+                initialVlogId = cast.vlogLikeItem.vlogId.toString(),
+                userId = authVm.getSelfIdOrNull()!!.toString() // TODO Ugly - but we always go to our own profile.
+            )
+            findNavController().navigate(action)
+        } catch (e: Exception) {
+            Log.e(TAG, "Could not navigate to vlog", e)
         }
     }
 
