@@ -17,6 +17,7 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.hideSoftKeyboard
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
+import com.laixer.swabbr.presentation.MainActivity
 import com.laixer.swabbr.presentation.auth.AuthViewModel
 import com.laixer.swabbr.presentation.model.RegistrationItem
 import com.laixer.swabbr.presentation.utils.onActivityResult
@@ -53,6 +54,9 @@ class RegistrationFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Hide the bottom swabbr navigation bar.
+        (requireActivity() as MainActivity).tryHideBottomBar()
 
         injectFeature()
 
@@ -120,6 +124,9 @@ class RegistrationFragment : Fragment() {
             ResourceState.SUCCESS -> {
                 if (res.data == true) {
                     loading_icon_registration.gone()
+
+                    // Show the bottom swabbr navigation bar.
+                    (requireActivity() as MainActivity).tryShowBottomBar()
 
                     // Go back, as this will always be put on top of the original app stack.
                     // Look at the nav graph for further understanding of how this works,

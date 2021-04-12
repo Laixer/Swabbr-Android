@@ -19,8 +19,11 @@ import com.laixer.swabbr.R
 import com.laixer.swabbr.extensions.hideSoftKeyboard
 import com.laixer.swabbr.extensions.showMessage
 import com.laixer.swabbr.injectFeature
+import com.laixer.swabbr.presentation.MainActivity
 import com.laixer.swabbr.presentation.auth.AuthFragment
 import com.laixer.swabbr.presentation.auth.AuthViewModel
+import com.laixer.swabbr.presentation.utils.todosortme.invisible
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -44,6 +47,10 @@ class LoginFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Hide the bottom swabbr navigation bar.
+        (requireActivity() as MainActivity).tryHideBottomBar()
+
         injectFeature()
 
         authVm.authenticationResultResource.observe(viewLifecycleOwner, Observer { onAuthenticationResult(it) })
@@ -95,11 +102,15 @@ class LoginFragment : Fragment() {
                 loading_icon_login.gone()
 
                 if (res.data == true) {
+                    // Show the bottom swabbr navigation bar.
+                    (requireActivity() as MainActivity).tryShowBottomBar()
+
                     // Go back, as this will always be put on top of the original app stack.
                     // Look at the nav graph for further understanding of how this works,
                     // along with the AuthFragment class.
                     findNavController().popBackStack()
                 }
+
                 // No else case is required, as a failure to login/register will
                 // result in the resource error state. TODO Kind of suboptimal.
             }

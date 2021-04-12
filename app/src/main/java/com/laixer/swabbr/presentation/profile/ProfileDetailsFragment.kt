@@ -2,6 +2,7 @@ package com.laixer.swabbr.presentation.profile
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
@@ -208,6 +209,16 @@ class ProfileDetailsFragment(
             if (text?.isNotBlank() == true) {
                 userUpdatableProperties.interest3 = text.toString()
             }
+        }
+
+        // TODO
+        // Delete account button
+
+        // Report abuse button
+        text_clickable_profile_details_report_abuse.setOnClickListener {
+            // TODO Move to some config file, even though this is probably temporary.
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://swabbr.com/abuse"))
+            requireActivity().startActivity(browserIntent)
         }
     }
 

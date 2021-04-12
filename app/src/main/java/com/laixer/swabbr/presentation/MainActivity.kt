@@ -9,6 +9,9 @@ import com.laixer.swabbr.NavGraphMainActivityDirections
 import com.laixer.swabbr.R
 import com.laixer.swabbr.injectFeature
 import com.laixer.swabbr.presentation.auth.AuthFragment
+import com.laixer.swabbr.presentation.utils.todosortme.gone
+import com.laixer.swabbr.presentation.utils.todosortme.invisible
+import com.laixer.swabbr.presentation.utils.todosortme.visible
 import com.laixer.swabbr.services.play.PlayServicesChecker
 import com.laixer.swabbr.services.users.UserService
 import io.reactivex.plugins.RxJavaPlugins
@@ -59,6 +62,16 @@ class MainActivity : AppCompatActivity() {
             NavigationUI.setupWithNavController(bottom_navigation_view_main_activity, navHostFragment.navController)
         }
     }
+
+    /**
+     *  Attempts to show the bottom navigation bar.
+     */
+    fun tryShowBottomBar() = bottom_navigation_view_main_activity?.visible()
+
+    /**
+     *  Attempts to hide the bottom navigation bar.
+     */
+    fun tryHideBottomBar() = bottom_navigation_view_main_activity?.gone()
 
     /**
      *  Called to try to redirect us to the login by [AuthFragment].

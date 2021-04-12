@@ -32,8 +32,7 @@
             android:name="com.laixer.swabbr.presentation.MainActivity"
             android:configChanges="orientation"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

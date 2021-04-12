@@ -98,6 +98,8 @@
     <string name="follow_mode">Follow mode</string>
     <string name="save">Save</string>
     <string name="logout">Logout</string>
+    <string name="delete_account"><u><i>Delete account</i></u></string>
+    <string name="report_abuse"><u><i>Report abuse</i></u></string>
     <string name="interests">Interests</string>
     <string name="interests_hint">Enter an interest...</string>
 
