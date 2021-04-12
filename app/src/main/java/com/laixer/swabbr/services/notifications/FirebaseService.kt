@@ -91,6 +91,7 @@ class FirebaseService : FirebaseMessagingService(), KoinComponent {
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
+            .setTimeoutAfter(NOTIFICATION_TIMEOUT_IN_MILLIS)
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -116,6 +117,7 @@ class FirebaseService : FirebaseMessagingService(), KoinComponent {
         private const val NOTIFICATION_CHANNEL_ID = "nh-demo-channel-id"
         private const val NOTIFICATION_CHANNEL_NAME = "Notification Hubs Demo Channel"
         private const val NOTIFICATION_CHANNEL_DESCRIPTION = "Notification Hubs Demo Channel"
+        private const val NOTIFICATION_TIMEOUT_IN_MILLIS = 1_800_000L // 30 minutes (30 * 60 * 1000 ms)
 
         fun createChannelAndHandleNotifications(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

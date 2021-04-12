@@ -111,8 +111,8 @@ class RecordVlogFragment : RecordVideoWithPreviewFragment() {
             isPrivate = false
         )
 
-        // Go to our own vlogs.
-        findNavController().navigate(RecordVlogFragmentDirections.actionGlobalProfileFragment()) // User id defaults to self
+        // Go to our own vlogs, removing this from the back stack
+        findNavController().navigate(RecordVlogFragmentDirections.actionRecordVlogFragmentToProfileFragment("self"))
     }
 
     /**
