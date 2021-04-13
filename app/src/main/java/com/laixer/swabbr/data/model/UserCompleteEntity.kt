@@ -29,7 +29,10 @@ data class UserCompleteEntity(
     @field:Json(name = "longitude") val longitude: Double?,
     @field:Json(name = "isPrivate") val isPrivate: Boolean,
     @field:Json(name = "dailyVlogRequestLimit") val dailyVlogRequestLimit: Int,
-    @field:Json(name = "followMode") val followMode: Int
+    @field:Json(name = "followMode") val followMode: Int,
+    @field:Json(name = "interest1") val interest1: String?,
+    @field:Json(name = "interest2") val interest2: String?,
+    @field:Json(name = "interest3") val interest3: String?
 )
 
 /**
@@ -51,5 +54,8 @@ fun UserCompleteEntity.mapToDomain(): UserComplete = UserComplete(
     longitude,
     isPrivate,
     dailyVlogRequestLimit,
-    FollowMode.values()[followMode]
+    FollowMode.values()[followMode],
+    interest1,
+    interest2,
+    interest3
 )

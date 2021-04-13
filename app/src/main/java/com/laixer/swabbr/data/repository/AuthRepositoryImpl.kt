@@ -23,4 +23,6 @@ class AuthRepositoryImpl constructor(
     override fun register(registration: Registration): Completable = remoteDataSource.register(registration)
 
     override fun logout(): Completable = remoteDataSource.logout()
+
+    override fun delete(): Completable = remoteDataSource.delete()
 }

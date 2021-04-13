@@ -27,7 +27,7 @@ import java.util.*
 /**
  *  Wrapper around a single [WatchVideoFragment] used for [ReactionItem] playback.
  */
-class WatchReactionFragment() : WatchVideoFragment() {
+class WatchReactionFragment : WatchVideoFragment() {
     private val args by navArgs<WatchReactionFragmentArgs>()
     private val reactionVm: ReactionViewModel by viewModel()
 

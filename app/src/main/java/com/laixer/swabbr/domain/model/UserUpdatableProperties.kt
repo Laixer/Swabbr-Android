@@ -25,5 +25,8 @@ class UserUpdatableProperties(
     val longitude: Double?,
     val isPrivate: Boolean?,
     val dailyVlogRequestLimit: Int?,
-    val followMode: FollowMode?
+    val followMode: FollowMode?,
+    val interest1 : String? = null,
+    val interest2 : String? = null,
+    val interest3 : String? = null
 )

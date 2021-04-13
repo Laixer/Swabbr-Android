@@ -27,7 +27,7 @@ data class VlogLikingUserWrapperEntity(
 fun VlogLikingUserWrapperEntity.mapToDomain(): LikingUserWrapper = LikingUserWrapper(
     vlogOwnerId = vlogOwnerId,
     followRequestStatus = if (followRequestStatus == null) FollowRequestStatus.NONEXISTENT else FollowRequestStatus.values()[followRequestStatus],
-    vlogLikeEntity = vlogLikeEntity.mapToDomain(),
+    vlogLike = vlogLikeEntity.mapToDomain(),
     vlogLikingUser = vlogLikingUser.mapToDomain()
 )
 

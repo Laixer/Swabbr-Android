@@ -190,11 +190,10 @@ open class AuthViewModel constructor(
      *  future notifications through firebase.
      */
     fun logout(context: Context) {
-        // First cancel, then logout. These jobs expect us to be logged in.
-        WorkManager.getInstance(context).cancelAllWorkByTag(ReactionUploadWorker.WORK_TAG)
-        WorkManager.getInstance(context).cancelAllWorkByTag(VlogUploadWorker.WORK_TAG)
+        // First cancel locally.
+        cancelBackgroundWork(context)
 
-        // Then remote
+        // Then execute remote.
         viewModelScope.launch {
             compositeDisposable.add(authUseCase
                 .logout()
@@ -213,6 +212,42 @@ open class AuthViewModel constructor(
             )
         }
     }
+
+    /**
+     *  Deletes the user account and logs the user out.
+     */
+    fun deleteAccount(context: Context) {
+        // First cancel locally
+        cancelBackgroundWork(context)
+
+        // Then perform remote
+        viewModelScope.launch {
+            compositeDisposable.add(authUseCase
+                .deleteAccount()
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    {
+                        // Then logout locally
+                        userService.logout()
+                    },
+                    {
+                        // Then logout locally
+                        userService.logout()
+                        Log.e(TAG, "Could not delete account - ${it.message}")
+                    }
+                )
+            )
+        }
+    }
+
+    /**
+     *  Cancel any background work. These jobs expect us to be logged in.
+     */
+    private fun cancelBackgroundWork(context: Context) {
+        WorkManager.getInstance(context).cancelAllWorkByTag(ReactionUploadWorker.WORK_TAG)
+        WorkManager.getInstance(context).cancelAllWorkByTag(VlogUploadWorker.WORK_TAG)
+    }
+
 
     companion object {
         private val TAG = AuthViewModel::class.java.simpleName

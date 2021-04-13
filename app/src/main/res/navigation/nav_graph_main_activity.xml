@@ -29,7 +29,11 @@
         android:id="@+id/likeOverviewFragment"
         android:name="com.laixer.swabbr.presentation.likeoverview.LikeOverviewFragment"
         android:label="fragment_like_overview"
-        tools:layout="@layout/fragment_like_overview" />
+        tools:layout="@layout/fragment_like_overview">
+        <action
+            android:id="@+id/action_likeOverviewFragment_to_watchUserVlogsFragment"
+            app:destination="@id/watchUserVlogsFragment" />
+    </fragment>
     <action
         android:id="@+id/action_global_likeOverviewFragment"
         app:destination="@id/likeOverviewFragment" />
@@ -117,7 +121,13 @@
     <fragment
         android:id="@+id/recordVlogFragment"
         android:name="com.laixer.swabbr.presentation.vlogs.recording.RecordVlogFragment"
-        android:label="RecordVlogFragment" />
+        android:label="RecordVlogFragment">
+        <action
+            android:id="@+id/action_recordVlogFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/nav_graph_main_activity"
+            app:popUpToInclusive="true"/>
+    </fragment>
     <action
         android:id="@+id/action_global_recordVlogFragment"
         app:destination="@id/recordVlogFragment" />

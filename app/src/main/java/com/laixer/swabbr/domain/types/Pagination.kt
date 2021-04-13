@@ -1,5 +1,6 @@
 package com.laixer.swabbr.domain.types
 
+// TODO Add better limits
 /**
  *  Used to control segmentation and sorting of result sets.
  */
@@ -14,7 +15,7 @@ data class Pagination (
          */
         fun default(): Pagination = Pagination (
             sortingOrder = SortingOrder.UNSORTED,
-            limit = 25,
+            limit = 1000,
             offset = 0)
 
         /**
@@ -22,7 +23,7 @@ data class Pagination (
          */
         fun latest(): Pagination = Pagination (
             sortingOrder = SortingOrder.DESCENDING,
-            limit = 25,
+            limit = 1000,
             offset = 0)
     }
 }

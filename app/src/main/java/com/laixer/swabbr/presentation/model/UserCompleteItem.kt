@@ -29,7 +29,10 @@ data class UserCompleteItem(
     val longitude: Double?,
     var isPrivate: Boolean,
     val dailyVlogRequestLimit: Int,
-    val followMode: FollowMode
+    val followMode: FollowMode,
+    val interest1 : String? = null,
+    val interest2 : String? = null,
+    val interest3 : String? = null
 )
 
 /**
@@ -51,7 +54,10 @@ fun UserComplete.mapToPresentation(): UserCompleteItem = UserCompleteItem(
     longitude,
     isPrivate,
     dailyVlogRequestLimit,
-    followMode
+    followMode,
+    interest1,
+    interest2,
+    interest3
 )
 
 /**
@@ -73,7 +79,10 @@ fun UserCompleteItem.mapToDomain(): UserComplete = UserComplete(
     longitude,
     isPrivate,
     dailyVlogRequestLimit,
-    followMode
+    followMode,
+    interest1,
+    interest2,
+    interest3
 )
 
 fun UserCompleteItem.extractUser(): UserItem = UserItem(

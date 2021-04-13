@@ -23,4 +23,7 @@ interface AuthApi {
 
     @POST("authentication/logout")
     fun logout(): Completable
+
+    @POST("authentication/delete")
+    fun delete(): Completable
 }

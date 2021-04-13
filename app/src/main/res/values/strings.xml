@@ -98,6 +98,10 @@
     <string name="follow_mode">Follow mode</string>
     <string name="save">Save</string>
     <string name="logout">Logout</string>
+    <string name="delete_account"><u><i>Delete account</i></u></string>
+    <string name="report_abuse"><u><i>Report abuse</i></u></string>
+    <string name="interests">Interests</string>
+    <string name="interests_hint">Enter an interest...</string>
 
     <!-- Follow mode spinner options -->
     <string name="manual">Manual</string>
@@ -123,5 +127,9 @@
     <string name="dialog_ok">Post</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_date_picker_birth_date">Select your birth date</string>
+
+
+    <!-- Sharing -->
+    <string name="chooser_share_title">Share your Swabbr vlog</string>
 
 </resources>

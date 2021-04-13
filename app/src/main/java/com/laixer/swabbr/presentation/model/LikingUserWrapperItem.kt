@@ -13,7 +13,7 @@ import java.util.*
 class LikingUserWrapperItem(
     requestingUserId: UUID,
     followRequestStatus: FollowRequestStatus,
-    val vlogLikeEntity: VlogLikeItem,
+    val vlogLikeItem: VlogLikeItem,
     user: UserItem
 ) : UserWithRelationItem(
     requestingUserId = requestingUserId,
@@ -27,7 +27,7 @@ class LikingUserWrapperItem(
 fun LikingUserWrapper.mapToDomain(): LikingUserWrapperItem = LikingUserWrapperItem(
     requestingUserId = vlogOwnerId,
     followRequestStatus = followRequestStatus,
-    vlogLikeEntity = vlogLikeEntity.mapToPresentation(),
+    vlogLikeItem = vlogLike.mapToPresentation(),
     user = vlogLikingUser.mapToPresentation()
 )
 

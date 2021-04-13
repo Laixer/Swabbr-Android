@@ -24,7 +24,10 @@ data class UserUpdateEntity(
     @field:Json(name = "longitude") val longitude: Double?,
     @field:Json(name = "isPrivate") val isPrivate: Boolean?,
     @field:Json(name = "dailyVlogRequestLimit") val dailyVlogRequestLimit: Int?,
-    @field:Json(name = "followMode") val followMode: Int?
+    @field:Json(name = "followMode") val followMode: Int?,
+    @field:Json(name = "interest1") val interest1: String?,
+    @field:Json(name = "interest2") val interest2: String?,
+    @field:Json(name = "interest3") val interest3: String?
 )
 
 /**
@@ -43,5 +46,8 @@ fun UserUpdatableProperties.mapToData(): UserUpdateEntity = UserUpdateEntity(
     longitude,
     isPrivate,
     dailyVlogRequestLimit,
-    followMode?.ordinal
+    followMode?.ordinal,
+    interest1,
+    interest2,
+    interest3
 )

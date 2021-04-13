@@ -1,15 +1,15 @@
 package com.laixer.swabbr.presentation.profile
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowMode
@@ -37,7 +37,7 @@ import kotlin.math.min
 /**
  *  Fragment for displaying profile details of the current user
  *  which includes update functionality for all properties displayed.
- *  Getting the initial vm data is done by [ProfileFragment].
+ *  Getting the initial vm da\a is done by [ProfileFragment].
  *
  *  Note that the follow mode is controlled by [switchIsPrivate].
  *
@@ -169,7 +169,7 @@ class ProfileDetailsFragment(
             // The auth fragment we inherit from will take us back to login.
             // TODO It doesn't because Android can't make a consistent navcontroller. This is ridiculous.
             //      The nav to login only works ONCE, then never again.
-             authVm.logout(requireContext())
+            authVm.logout(requireContext())
 
             // TODO This is the fix. Beautiful.
             requireActivity().finish()
@@ -188,6 +188,52 @@ class ProfileDetailsFragment(
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerDailyVlogRequestLimit.adapter = adapter
+        }
+
+        // Setup interests
+        inputInterest1.doOnTextChanged { text, _, _, _ ->
+            if (!::userOriginal.isInitialized) return@doOnTextChanged
+            if (text?.isNotBlank() == true) {
+                userUpdatableProperties.interest1 = text.toString()
+            }
+        }
+        inputInterest2.doOnTextChanged { text, _, _, _ ->
+            if (!::userOriginal.isInitialized) return@doOnTextChanged
+            if (text?.isNotBlank() == true) {
+                userUpdatableProperties.interest2 = text.toString()
+            }
+        }
+        inputInterest3.doOnTextChanged { text, _, _, _ ->
+            if (!::userOriginal.isInitialized) return@doOnTextChanged
+            if (text?.isNotBlank() == true) {
+                userUpdatableProperties.interest3 = text.toString()
+            }
+        }
+
+        // TODO Hard coded text here. Probably temporary.
+        // Delete account button
+        text_clickable_profile_details_delete_account.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setMessage("Are you sure you want to delete your profile? This is irreversible!")
+                .setPositiveButton(
+                    "Yes"
+                ) { _, _ ->
+                    authVm.deleteAccount(requireContext())
+                }
+                .setNegativeButton(
+                    "Cancel"
+                ) { _, _ ->
+                    // User cancelled the dialog
+                }
+                .create()
+                .show()
+        }
+
+        // Report abuse button
+        text_clickable_profile_details_report_abuse.setOnClickListener {
+            // TODO Move to some config file, even though this is probably temporary.
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://swabbr.com/abuse"))
+            requireActivity().startActivity(browserIntent)
         }
     }
 
@@ -229,6 +275,9 @@ class ProfileDetailsFragment(
         switchIsPrivate.isChecked = user.isPrivate
         spinnerGender.setSelection(min(Gender.values().size, user.gender.ordinal))
         spinnerDailyVlogRequestLimit.setSelection(min(3, user.dailyVlogRequestLimit)) // TODO Hard coded limit
+        inputInterest1.setText(user.interest1)
+        inputInterest2.setText(user.interest2)
+        inputInterest3.setText(user.interest3)
     }
 
     /**

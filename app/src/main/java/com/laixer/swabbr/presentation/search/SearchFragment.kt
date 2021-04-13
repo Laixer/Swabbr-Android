@@ -59,7 +59,8 @@ class SearchFragment : AuthFragment(), SearchView.OnQueryTextListener {
         userAdapter = UserFollowableAdapter(
             context = requireContext(),
             onClickProfile = onClickProfileWithRelation(),
-            onClickFollow = onClickFollow
+            onClickFollow = onClickFollow,
+            currentUserId = authVm.getSelfIdOrNull()
         )
 
         searchRecyclerView.apply {
