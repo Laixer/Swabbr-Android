@@ -16,4 +16,6 @@ interface AuthRepository {
     fun register(registration: Registration): Completable
 
     fun logout(): Completable
+
+    fun delete(): Completable
 }

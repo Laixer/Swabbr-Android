@@ -20,4 +20,6 @@ class AuthRemoteDataSourceImpl constructor(
         authApi.register(registration.mapToData())
 
     override fun logout(): Completable = authApi.logout()
+
+    override fun delete(): Completable = authApi.delete()
 }

@@ -36,4 +36,9 @@ class AuthUseCase constructor(
      *  Log the currently authenticated user out.
      */
     fun logout(): Completable = authRepository.logout()
+
+    /**
+     *  Deletes the current users account.
+     */
+    fun deleteAccount(): Completable = authRepository.delete()
 }

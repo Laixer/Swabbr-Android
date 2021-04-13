@@ -1,5 +1,6 @@
 package com.laixer.swabbr.presentation.profile
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -9,8 +10,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.laixer.swabbr.R
 import com.laixer.swabbr.domain.types.FollowMode
@@ -38,7 +37,7 @@ import kotlin.math.min
 /**
  *  Fragment for displaying profile details of the current user
  *  which includes update functionality for all properties displayed.
- *  Getting the initial vm data is done by [ProfileFragment].
+ *  Getting the initial vm da\a is done by [ProfileFragment].
  *
  *  Note that the follow mode is controlled by [switchIsPrivate].
  *
@@ -170,7 +169,7 @@ class ProfileDetailsFragment(
             // The auth fragment we inherit from will take us back to login.
             // TODO It doesn't because Android can't make a consistent navcontroller. This is ridiculous.
             //      The nav to login only works ONCE, then never again.
-             authVm.logout(requireContext())
+            authVm.logout(requireContext())
 
             // TODO This is the fix. Beautiful.
             requireActivity().finish()
@@ -211,8 +210,24 @@ class ProfileDetailsFragment(
             }
         }
 
-        // TODO
+        // TODO Hard coded text here. Probably temporary.
         // Delete account button
+        text_clickable_profile_details_delete_account.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setMessage("Are you sure you want to delete your profile? This is irreversible!")
+                .setPositiveButton(
+                    "Yes"
+                ) { _, _ ->
+                    authVm.deleteAccount(requireContext())
+                }
+                .setNegativeButton(
+                    "Cancel"
+                ) { _, _ ->
+                    // User cancelled the dialog
+                }
+                .create()
+                .show()
+        }
 
         // Report abuse button
         text_clickable_profile_details_report_abuse.setOnClickListener {
