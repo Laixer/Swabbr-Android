@@ -6,18 +6,22 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.laixer.swabbr.presentation.MainActivity
 import com.laixer.swabbr.presentation.model.UserItem
 import com.laixer.swabbr.presentation.model.UserWithRelationItem
 import com.laixer.swabbr.presentation.profile.ProfileFragmentDirections
-import java.lang.Exception
 
 /**
  *  Builds a generic toast message and displays it.
  *
  *  @param message The message to display.
  */
-fun Fragment.showMessage(message: String) = Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
+fun Fragment.showMessage(message: String) {
+    try {
+        Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
+    } catch (e: Exception) {
+        Log.e("FragmentExtensions", "Could not show message", e)
+    }
+}
 
 /**
  *  Callback which navigates us to a profile of a user.
