@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Top level nav graph for our app.
+-->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_main_activity"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.laixer.swabbr.presentation.auth.login.LoginFragment"
+        android:label="LoginFragment">
+        <action
+            android:id="@+id/action_loginFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.laixer.swabbr.presentation.dashboard.DashboardFragment"
+        android:label="DashboardFragment" />
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment" />
+    <action
+        android:id="@+id/action_global_dashboardFragment"
+        app:destination="@id/dashboardFragment" />
+    <fragment
+        android:id="@+id/likeOverviewFragment"
+        android:name="com.laixer.swabbr.presentation.likeoverview.LikeOverviewFragment"
+        android:label="fragment_like_overview"
+        tools:layout="@layout/fragment_like_overview">
+        <action
+            android:id="@+id/action_likeOverviewFragment_to_watchUserVlogsFragment"
+            app:destination="@id/watchUserVlogsFragment" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_likeOverviewFragment"
+        app:destination="@id/likeOverviewFragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.laixer.swabbr.presentation.profile.ProfileFragment"
+        android:label="ProfileFragment">
+        <argument
+            android:name="userId"
+            android:defaultValue="self"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_profileFragment_to_watchUserVlogsFragment"
+            app:destination="@id/watchUserVlogsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_recordVlogFragment"
+            app:destination="@id/recordVlogFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <action
+        android:id="@+id/action_global_profileFragment"
+        app:destination="@id/profileFragment" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.laixer.swabbr.presentation.search.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+    <action
+        android:id="@+id/action_global_searchFragment"
+        app:destination="@id/searchFragment" />
+    <fragment
+        android:id="@+id/recordReactionFragment"
+        android:name="com.laixer.swabbr.presentation.reaction.recording.RecordReactionFragment"
+        android:label="RecordReactionFragment">
+        <argument
+            android:name="targetVlogId"
+            app:argType="string"
+            app:nullable="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/watchVlogFragment"
+        android:name="com.laixer.swabbr.presentation.vlogs.playback.WatchVlogFragment"
+        android:label="WatchVlogFragment">
+        <argument
+            android:name="vlogId"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_watchVlogFragment_to_watchReactionFragment"
+            app:destination="@id/watchReactionFragment" />
+        <action
+            android:id="@+id/action_watchVlogFragment_to_recordReactionFragment"
+            app:destination="@id/recordReactionFragment" />
+        <action
+            android:id="@+id/action_watchVlogFragment_to_watchReactionsForVlogFragment"
+            app:destination="@id/watchReactionsForVlogFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/watchReactionFragment"
+        android:name="com.laixer.swabbr.presentation.reaction.playback.WatchReactionFragment"
+        android:label="WatchReactionFragment">
+        <argument
+            android:name="reactionId"
+            app:argType="string" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_watchVlogFragment"
+        app:destination="@id/watchVlogFragment" />
+    <fragment
+        android:id="@+id/watchUserVlogsFragment"
+        android:name="com.laixer.swabbr.presentation.vlogs.playback.WatchUserVlogsFragment"
+        android:label="WatchUserVlogsFragment">
+        <argument
+            android:name="initialVlogId"
+            app:argType="string"
+            app:nullable="false" />
+        <argument
+            android:name="userId"
+            app:argType="string"
+            app:nullable="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/recordVlogFragment"
+        android:name="com.laixer.swabbr.presentation.vlogs.recording.RecordVlogFragment"
+        android:label="RecordVlogFragment">
+        <action
+            android:id="@+id/action_recordVlogFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/nav_graph_main_activity"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <action
+        android:id="@+id/action_global_recordVlogFragment"
+        app:destination="@id/recordVlogFragment" />
+    <action
+        android:id="@+id/action_global_watchReactionFragment"
+        app:destination="@id/watchReactionFragment" />
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.laixer.swabbr.presentation.auth.registration.RegistrationFragment"
+        android:label="RegistrationFragment" />
+    <action
+        android:id="@+id/action_global_recordReactionFragment"
+        app:destination="@id/recordReactionFragment" />
+    <fragment
+        android:id="@+id/watchReactionsForVlogFragment"
+        android:name="com.laixer.swabbr.presentation.reaction.list.WatchReactionsForVlogFragment"
+        android:label="WatchReactionsForVlogFragment">
+        <argument
+            android:name="vlogId"
+            app:argType="string" />
+        <argument
+            android:name="initialReactionId"
+            app:argType="string" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_watchReactionsForVlogFragment"
+        app:destination="@id/watchReactionsForVlogFragment" />
+
+</navigation>

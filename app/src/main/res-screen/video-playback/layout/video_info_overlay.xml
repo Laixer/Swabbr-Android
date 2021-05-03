@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Overlay containing basic information about a video.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/top_overlay"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/content_margin_small">
+
+    <!--
+        TODO This was an include, but we couldn't pass variables. The text color
+         had to be controlled, so that's why this is copy-pasted here.
+    -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <!-- Clickable view to go to the user. -->
+        <View
+            android:id="@+id/view_clickable_video_user"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/video_user_nickname"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <!-- The @nickname tag. -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/video_user_profile_image"
+            android:layout_width="@dimen/small_profile_image_size"
+            android:layout_height="@dimen/small_profile_image_size"
+            android:src="@drawable/ic_person_large_256"
+            android:transitionName="userAvatar"
+            app:civ_circle_background_color="@color/color_grey_300"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- @nickname for the user. -->
+        <TextView
+            android:id="@+id/video_user_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/content_margin_small"
+            android:textAppearance="@style/NicknameTextAppearance"
+            app:layout_constraintBottom_toBottomOf="@+id/video_user_profile_image"
+            app:layout_constraintStart_toEndOf="@+id/video_user_profile_image"
+            app:layout_constraintTop_toTopOf="@+id/video_user_profile_image"
+            tools:text="@string/placeholder_nickname" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

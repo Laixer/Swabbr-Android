@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    TODO Don't hard-code the divider spacing (layout_height). This
+         didn't want to wrap content with a transparent divider view.
+    Displays a single reaction item in the reaction overlay. Each
+    item is displayed on top of a card view.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="108dp">
+
+    <!-- Center guideline -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_reaction_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/reaction_list_user_profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/reaction_list_user_profile_image" />
+
+    <!-- User profile image -->
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/reaction_list_user_profile_image"
+        android:layout_width="@dimen/medium_profile_image_size"
+        android:layout_height="@dimen/medium_profile_image_size"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_person_large_256"
+        android:transitionName="userAvatar"
+        app:civ_circle_background_color="@color/color_grey_300"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- The @nickname tag. -->
+    <TextView
+        android:id="@+id/reaction_list_user_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/content_margin_small"
+        android:textAppearance="@style/NicknameTextAppearance"
+        app:layout_constraintBottom_toBottomOf="@+id/reaction_overlay"
+        app:layout_constraintStart_toEndOf="@+id/reaction_list_user_profile_image"
+        app:layout_constraintTop_toTopOf="@+id/reaction_overlay"
+        tools:text="@string/placeholder_nickname"
+        tools:visibility="visible" />
+
+
+    <!-- Delete button, only shows for your own reactions. -->
+    <ImageButton
+        android:id="@+id/button_reaction_delete"
+        android:layout_width="@dimen/medium_icon_size"
+        android:layout_height="@dimen/medium_icon_size"
+        android:layout_gravity="center"
+        android:layout_marginEnd="@dimen/content_margin_small"
+        android:background="@color/transparent"
+        android:src="@drawable/ic_delete"
+        app:layout_constraintBottom_toBottomOf="@+id/reaction_list_user_profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/reaction_list_user_profile_image" />
+
+
+    <!-- Background fill, pushed to the background using translationZ. -->
+    <View
+        android:id="@+id/reaction_overlay"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/medium_profile_image_size"
+        android:layout_marginStart="@dimen/medium_profile_image_size_half"
+        android:translationZ="-1dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/reaction_list_user_profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/reaction_list_user_profile_image"
+        app:layout_constraintVertical_bias="0.51" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

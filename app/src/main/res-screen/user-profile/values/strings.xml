@@ -1,0 +1,4 @@
+<resources>
+    <string name="profile_no_vlogs">This user has not published any vlogs yet.\nPull down to refresh.</string>
+    <string name="profile_self_no_vlogs">You have not published any vlogs yet.\nPull down to refresh.</string>
+</resources>

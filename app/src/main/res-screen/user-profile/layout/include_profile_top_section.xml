@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Fragment layout for displaying the profile of a user. This layout
+    is used for all users, including the authenticated user.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_layout_profile_top"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <!-- Layout displaying profile image, nickname and (optional) follow button. -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_profile_profile_image"
+            android:layout_width="@dimen/large_profile_image_size"
+            android:layout_height="@dimen/large_profile_image_size"
+            android:padding="3dp"
+            android:src="@drawable/ic_person_large_256"
+            android:transitionName="circleImage"
+            app:civ_circle_background_color="@color/color_grey_200" />
+
+        <TextView
+            android:id="@+id/user_profile_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAlignment="center"
+            android:textAppearance="@style/NicknameTextAppearance"
+            android:textColor="@color/primaryDark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_profile_profile_image" />
+
+        <!-- Follow request status related button. -->
+        <Button
+            android:id="@+id/button_profile_follow"
+            style="@style/SwabbrButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/follow_request_follow"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+    <!-- Followers. -->
+    <TextView
+        android:id="@+id/user_profile_followers_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:autoSizeMaxTextSize="16sp"
+        android:autoSizeMinTextSize="6sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:text="@string/placeholder_number"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_display_followers_count"
+        app:layout_constraintEnd_toStartOf="@+id/text_display_followers_count" />
+
+    <TextView
+        android:id="@+id/text_display_followers_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/content_margin_medium"
+        android:layout_marginEnd="@dimen/content_margin_medium"
+        android:autoSizeMaxTextSize="16sp"
+        android:autoSizeMinTextSize="6sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:text="@string/followers_count"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- Following -->
+    <TextView
+        android:id="@+id/user_profile_following_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoSizeMaxTextSize="16sp"
+        android:autoSizeMinTextSize="6sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:text="@string/placeholder_number"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_display_following_count"
+        app:layout_constraintStart_toStartOf="@+id/user_profile_followers_count" />
+
+    <TextView
+        android:id="@+id/text_display_following_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/content_margin_small"
+        android:autoSizeMaxTextSize="16sp"
+        android:autoSizeMinTextSize="6sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:text="@string/following_count"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/text_display_followers_count"
+        app:layout_constraintTop_toBottomOf="@+id/text_display_followers_count" />
+
+
+    <!-- Vlog count.-->
+    <TextView
+        android:id="@+id/user_profile_vlog_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/content_margin_medium"
+        android:autoSizeMaxTextSize="16sp"
+        android:autoSizeMinTextSize="6sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:text="@string/placeholder_number"
+        android:textAlignment="center"
+        android:textColor="@color/primaryLight"
+        app:layout_constraintBottom_toBottomOf="@+id/image_view_vlog_count"
+        app:layout_constraintEnd_toStartOf="@+id/image_view_vlog_count"
+        app:layout_constraintTop_toTopOf="@+id/image_view_vlog_count" />
+
+    <ImageView
+        android:id="@+id/image_view_vlog_count"
+        android:layout_width="@dimen/mini_icon_size"
+        android:layout_height="@dimen/mini_icon_size"
+        android:layout_marginTop="@dimen/content_margin_small"
+        android:layout_marginEnd="@dimen/content_margin_medium"
+        android:src="@drawable/exo_notification_small_icon"
+        android:tint="@color/primaryLight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_display_following_count" />
+
+
+    <!-- Love-its received. -->
+    <TextView
+        android:id="@+id/user_profile_likes_received"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/content_margin_medium"
+        android:autoSizeMaxTextSize="16sp"
+        android:autoSizeMinTextSize="6sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:text="@string/placeholder_number"
+        android:textAlignment="center"
+        android:textColor="@color/primaryLight"
+        app:layout_constraintBottom_toBottomOf="@+id/image_view_likes_received"
+        app:layout_constraintEnd_toStartOf="@+id/image_view_likes_received"
+        app:layout_constraintTop_toTopOf="@+id/image_view_likes_received" />
+
+    <ImageView
+        android:id="@+id/image_view_likes_received"
+        android:layout_width="@dimen/mini_icon_size"
+        android:layout_height="@dimen/mini_icon_size"
+        android:layout_marginTop="@dimen/content_margin_small"
+        android:layout_marginEnd="@dimen/content_margin_medium"
+        android:src="@drawable/ic_love_it_outline"
+        android:tint="@color/primaryLight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_view_vlog_count" />
+
+
+    <!-- Views. -->
+    <TextView
+        android:id="@+id/user_profile_views"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/content_margin_medium"
+        android:autoSizeMaxTextSize="16sp"
+        android:autoSizeMinTextSize="6sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:text="@string/placeholder_number"
+        android:textAlignment="center"
+        android:textColor="@color/primaryLight"
+        app:layout_constraintBottom_toBottomOf="@+id/image_view_views"
+        app:layout_constraintEnd_toStartOf="@+id/image_view_views"
+        app:layout_constraintTop_toTopOf="@+id/image_view_views" />
+
+    <ImageView
+        android:id="@+id/image_view_views"
+        android:layout_width="@dimen/mini_icon_size"
+        android:layout_height="@dimen/mini_icon_size"
+        android:layout_marginTop="@dimen/content_margin_small"
+        android:layout_marginEnd="@dimen/content_margin_medium"
+        android:src="@drawable/ic_eye"
+        android:tint="@color/primaryLight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_view_likes_received" />
+
+
+    <!-- Reactions received. -->
+    <TextView
+        android:id="@+id/user_profile_reactions_received"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/content_margin_medium"
+        android:autoSizeMaxTextSize="16sp"
+        android:autoSizeMinTextSize="6sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:text="@string/placeholder_number"
+        android:textAlignment="center"
+        android:textColor="@color/primaryLight"
+        app:layout_constraintEnd_toStartOf="@+id/image_view_reactions_received"
+        app:layout_constraintTop_toTopOf="@+id/image_view_reactions_received" />
+
+    <ImageView
+        android:id="@+id/image_view_reactions_received"
+        android:layout_width="@dimen/mini_icon_size"
+        android:layout_height="@dimen/mini_icon_size"
+        android:layout_marginTop="@dimen/content_margin_small"
+        android:layout_marginEnd="@dimen/content_margin_medium"
+        android:src="@drawable/ic_reaction"
+        android:tint="@color/primaryLight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_view_views" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

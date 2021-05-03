@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Single video playback. This contains an ExoPlayer
+    viewer and a progress bar. This contains no other
+    display functionality such as likes and reactions.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_black">
+
+    <!--
+        TODO Docs recommend surface_view instead of texture_view.
+             The first one does however trigger flickering, the last
+             one doesn't. Look into this.
+             Issue: https://github.com/Laixer/Swabbr-Android/issues/132
+             Docs:  https://exoplayer.dev/ui-components.html
+    -->
+    <!-- The ExoPlayer layout gets inflated in this player view. -->
+    <!-- This layout is located in exo_player_view.xml -->
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/video_player"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:keep_content_on_player_reset="true"
+        app:resize_mode="fit"
+        app:show_buffering="always"
+        app:buffered_color="@color/reactionPost"
+        app:surface_type="texture_view" />
+
+
+    <!-- Indicates we are loading. -->
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/video_content_loading_icon"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="@dimen/large_icon_size"
+        android:layout_height="@dimen/large_icon_size"
+        android:layout_gravity="center"
+        android:indeterminate="true" />
+
+
+    <!-- Can be used for error display. -->
+    <TextView
+        android:id="@+id/text_display_video_playback_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/error_playback_video"
+        android:textColor="@color/color_white"
+        android:textSize="16sp" />
+
+</FrameLayout>
+
+

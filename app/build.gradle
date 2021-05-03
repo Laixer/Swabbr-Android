@@ -1,66 +1,175 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'io.fabric'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion Versions.compileSdk
-    defaultConfig {
-        applicationId ApplicationId.id
-        minSdkVersion Versions.minSdk
-        targetSdkVersion Versions.targetSdk
-        versionCode Releases.versionCode
-        versionName Releases.versionName
-        multiDexEnabled true
+  compileSdkVersion DefaultConfig.compileSdk
+
+  ndkVersion "21.3.6528147"
+
+  defaultConfig {
+    applicationId App.swabbr
+
+    minSdkVersion DefaultConfig.minSdk
+    targetSdkVersion DefaultConfig.targetSdk
+
+    versionCode Releases.versionCode
+    versionName Releases.versionName
+
+    multiDexEnabled true
+  }
+
+  buildFeatures {
+    buildConfig = true
+  }
+
+  lintOptions {
+    abortOnError false
+    checkReleaseBuilds false
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_1_8.toString()
+  }
+
+  buildTypes {
+    release {
+      debuggable false
+      minifyEnabled true
+      shrinkResources true
+
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+      buildConfigField "Boolean", "DEBUG_MODE", "false"
+      buildConfigField "String", "API_ENDPOINT", "\"https://staging.swabbr.com/api/\""
     }
 
-    buildTypes {
-        release {
-            minifyEnabled true
-        }
-    }
+    debug {
+      debuggable true
+      minifyEnabled false
+      shrinkResources false
 
-    testOptions {
-        unitTests.returnDefaultValues = true
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+      buildConfigField "Boolean", "DEBUG_MODE", "true"
+      buildConfigField "String", "API_ENDPOINT", "\"https://staging.swabbr.com/api/\""
     }
-    dynamicFeatures = [Modules.sample]
+  }
+
+  sourceSets {
+    main {
+      file('src/main/res-screen')
+        .listFiles()
+        .each { res.srcDirs += it.path }
+    }
+  }
+
+  testOptions {
+    unitTests.returnDefaultValues = true
+  }
 }
 
 dependencies {
-    implementation project(Modules.cache)
-    implementation project(Modules.network)
-    implementation project(Modules.navigation)
-    implementation project(Modules.presentation)
+  // Kotlin
+  implementation Libs.kotlin_stdlib_jdk8
+  implementation Libs.kotlin_reflect
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    implementation Libraries.kotlin
-    implementation FirebaseLibraries.analytics
-    implementation FirebaseLibraries.messaging
-    implementation Libraries.crashlytics
+  // Koin
+  implementation Libs.koin_android
+  implementation Libs.koin_androidx_viewmodel
 
-    implementation MicrosoftLibraries.notificationshub
+  // Retrofit
+  implementation Libs.retrofit
 
-    implementation SupportLibraries.design
-    implementation SupportLibraries.cardview
-    implementation SupportLibraries.appcompat
-    implementation SupportLibraries.recyclerview
+  // Moshi
+  implementation Libs.moshi_kotlin
+  implementation Libs.converter_moshi
+  implementation Libs.moshi_adapters
 
-    implementation Libraries.koinAndroid
-    implementation Libraries.koinViewModel
+  // Rxjava
+  implementation Libs.rxjava
+  implementation Libs.rxkotlin
+  implementation Libs.okhttp
+  implementation Libs.logging_interceptor
+  implementation Libs.adapter_rxjava2
+  implementation Libs.work_rxjava2
 
-    implementation Libraries.lifecycleExtensions
+  // UI
+  implementation Libs.swiperefreshlayout
+  implementation Libs.constraintlayout
+  implementation Libs.camera_camera2
+  implementation Libs.viewpager2
+  implementation Libs.material
+  implementation Libs.exoplayer
+  implementation Libs.imagepicker
+  implementation Libs.circleimageview
+  implementation Libs.leonidslib
 
-    implementation Libraries.rxjava
-    implementation Libraries.rxkotlin
+  // AndroidX
+  implementation Libs.work_runtime_ktx
+  implementation Libs.lifecycle_extensions
+  implementation Libs.core_ktx
+  implementation Libs.appcompat
+  implementation Libs.fragment_ktx
+  implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-    implementation Libraries.moshiConverter
-    implementation Libraries.workmanager
-    implementation Libraries.workmanagerRxjava // RxJava2 compatibility
+  // Navigation component
+  implementation "androidx.navigation:navigation-fragment-ktx:2.3.4"
+  implementation "androidx.navigation:navigation-ui-ktx:2.3.4"
+  implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.4"
 
-    debugImplementation Libraries.leakCanaryAndroid
+  // Others
+  implementation 'com.gu.android:toolargetool:0.3.0@aar'
+  implementation Libs.runtime_permission_kotlin
+  implementation Libs.jwtdecode
+
+  // Firebase (including other Firebase products)
+  implementation platform('com.google.firebase:firebase-bom:26.7.0')
+  implementation 'com.google.firebase:firebase-analytics-ktx'
+  implementation 'com.google.firebase:firebase-crashlytics-ktx'
+  implementation 'com.google.firebase:firebase-messaging-ktx'
+
+  // Background work using WorkManager
+  implementation "androidx.work:work-runtime-ktx:2.5.0" // Kotlin + coroutines
+
+  // Leak analysis
+  debugImplementation Libs.leakcanary_android
+
+  // TODO Look into this - do we need all of these?
+  // Some UI components
+  implementation Libs.lifecycle_extensions
+  kapt Libs.lifecycle_compiler
+  testImplementation Libs.core_testing
+
+  implementation Libs.navigation_ui_ktx
+  implementation Libs.swiperefreshlayout
+
+  api Libs.glide
+  kapt Libs.com_github_bumptech_glide_compiler
+  implementation Libs.core_ktx
+  implementation Libs.kotlin_stdlib_jdk8
+
+  // Caching
+  implementation Libs.rxpaper2
+
+  // Testing dependencies
+  testImplementation Libs.junit
+  testImplementation Libs.assertj_core
+  testImplementation Libs.mockito_kotlin
+  testImplementation Libs.mockito_inline
+  testImplementation Libs.core_testing
 }
 
 repositories {
-    google()
+  google()
+  mavenCentral()
 }
-
-apply plugin: 'com.google.gms.google-services'

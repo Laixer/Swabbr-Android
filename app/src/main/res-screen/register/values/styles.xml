@@ -1,0 +1,10 @@
+<resources>
+    <style name="FabStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">end|bottom</item>
+        <item name="srcCompat">@drawable/ic_baseline_edit_24</item>
+        <item name="backgroundTint">@color/primary</item>
+        <item name="tint">@color/color_white</item>
+    </style>
+</resources>

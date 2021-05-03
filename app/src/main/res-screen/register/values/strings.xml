@@ -1,0 +1,22 @@
+<resources>
+    <!-- Fragment text -->
+    <string name="register_firstName">First name</string>
+    <string name="register_lastName">Last name</string>
+    <string name="register_gender">Gender</string>
+    <string name="register_country">Country</string>
+    <string name="register_date_of_birth">Date of Birth</string>
+    <string name="register_phoneNumber">Phone number</string>
+    <string name="register_emailAddress">Email address</string>
+    <string name="register_confirmPassword">Confirm password</string>
+    <string name="register_birthDatePicker">%1$s/%2$s/%3$s</string>
+    <string name="register_usernameEmail">Email</string>
+    <string name="register_nickname_hint">Nickname</string>
+    <string name="register_rememberMe">Remember me</string>
+    <string name="register_registerText">Register</string>
+    <string name="register_password">Password</string>
+
+    <!-- Gender spinner options -->
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other">Other</string>
+</resources>

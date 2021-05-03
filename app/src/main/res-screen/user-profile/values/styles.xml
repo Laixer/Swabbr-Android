@@ -1,0 +1,5 @@
+<resources>
+    <style name="Divider">
+        <item name="android:background">@color/divider</item>
+    </style>
+</resources>

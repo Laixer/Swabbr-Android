@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Used to allow us to swipe left and right to switch videos. This
+    acts as the swiping container to view vlogs or reactions in. Any
+    playback functionality exists in the adapter used to fill this
+    video_viewpager, see any fragment implementing this xml for details.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraint_layout_watch_video_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <!-- Will contain the actual video fragments. -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/video_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_grey_900"
+        android:backgroundTint="@color/color_white"
+        android:animateLayoutChanges="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- Displayed if we have no items in our viewpager. -->
+    <TextView
+        android:id="@+id/text_display_empty_video_collection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/empty_vlog_collection"
+        android:textColor="@color/primaryDark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- TODO Fix -->
+    <!-- Fullscreen swipe refresh layout-->
+<!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+<!--        android:id="@+id/swipe_refresh_layout_watch_video_list"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.5"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

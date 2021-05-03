@@ -1,5 +1,5 @@
 apply plugin: 'kotlin'
 
 dependencies {
-    implementation Libraries.kotlin
+    implementation Libs.kotlin_stdlib_jdk8
 }

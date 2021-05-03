@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Selector for our recording button. This does not control the
+    red circular progress bar indicating our recording progress.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- If we can click the button that means we are
+         past our minimum recording time.
+    -->
+    <item android:drawable="@drawable/ic_recording_button_enabled" android:state_enabled="true" />
+
+    <!--
+        If we can't click we have not reached the minimum
+        recording time, or we are not recording at all.
+    -->
+    <item android:drawable="@drawable/ic_recording_button_disabled" android:state_enabled="false" />
+
+    <!-- Default. -->
+    <item android:drawable="@drawable/ic_recording_button_disabled" />
+</selector>

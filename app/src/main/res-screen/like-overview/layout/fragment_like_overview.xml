@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Fragment displaying all users that have liked any of the
+    vlogs that belong to the current user.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.likeoverview.LikeOverviewFragment">
+
+    <!-- Top display text. -->
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_margin_medium"
+        android:layout_marginTop="@dimen/content_margin_small"
+        android:text="@string/info_love_its"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- Allows us to swipe down for refreshing calls. -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout_liking_users"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/content_margin_small"
+        android:layout_marginTop="@dimen/content_margin_medium"
+        android:layout_marginStart="@dimen/content_margin_large"
+        android:layout_marginEnd="@dimen/content_margin_medium"
+        android:animateLayoutChanges="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3">
+
+        <!-- Contains the actual liking users. -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_liking_users"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:animateLayoutChanges="false"
+            tools:listitem="@layout/item_list_user_followable" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Fragment layout for displaying the profile of a user. This layout
+    is used for all users, including the authenticated user.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Top section for basic user info. -->
+    <include
+        android:id="@+id/include3"
+        layout="@layout/include_profile_top_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- Displays the profile tabs. -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout_user_profile"
+        style="@style/AppTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include3"
+        app:tabIndicatorFullWidth="false"
+        app:tabTextAppearance="@style/AppTabTextAppearance" />
+
+
+    <!-- Viewpager containing different tabs about the displayed user. -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager_user_profile"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:animateLayoutChanges="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tab_layout_user_profile" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

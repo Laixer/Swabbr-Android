@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Note that this must match the order of the Gender enum. -->
+<resources>
+    <string-array name="gender_array">
+        <item>@string/female</item>
+        <item>@string/male</item>
+        <item>@string/other</item>
+    </string-array>
+</resources>

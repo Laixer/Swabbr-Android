@@ -1,26 +1,82 @@
 <resources>
+    <!-- TODO Fix -->
+    <!--
+        Main theme, which has the top (status) bar enabled
+        means we are not in full screen mode.
+    -->
+    <style name="Base.Theme.Swabbr" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="android:colorBackground">@color/windowBackground</item>
 
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accent</item>
 
-        <item name="android:windowBackground">@color/color_window_background</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
-    <style name="Divider">
-        <item name="android:background">@color/color_divider</item>
+    <!-- Controls how we display the nickname. -->
+    <style name="NicknameTextAppearance">
+        <item name="android:textSize">@dimen/text_size_user_nickname</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/text_size_auto_size_max</item>
+        <item name="android:autoSizeMinTextSize">@dimen/text_size_auto_size_min</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/color_white</item>
     </style>
 
-    <style name="SmallTextAppearance" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textColor">@color/color_body</item>
+    <!-- Text appearance for the tab text. -->
+    <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">@dimen/text_size_tabs</item>
+        <item name="textAllCaps">true</item>
     </style>
 
-    <style name="TitleTextAppearance" parent="TextAppearance.AppCompat.Large">
-        <item name="android:textColor">@color/color_title</item>
+    <!-- Used to display regular settings. -->
+    <style name="TextProfileSettings">
+        <item name="android:textColor">@color/primaryDark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_settings</item>
     </style>
 
-    <style name="SubtitleTextAppearance" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textColor">@color/color_subtitle</item>
+    <!-- Used to display italic settings. -->
+    <style name="TextProfileItalicSettings" parent="Base.Theme.Swabbr">
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:textSize">@dimen/text_size_settings</item>
     </style>
+
+    <!-- Used for input fields. -->
+    <style name="TextInput" parent="Base.Theme.Swabbr">
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/text_size_settings</item>
+    </style>
+
+    <!-- Used to style Swabbr buttons -->
+    <style name="SwabbrButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textSize">@dimen/button_text_size</item>
+        <item name="backgroundTint">@color/transparent</item>
+        <item name="android:textColor">@color/primaryLight</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="strokeColor">@color/primaryLight</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="rippleColor">@color/primary</item>
+    </style>
+
+    <!-- Tab layout -->
+    <style name="AppTabLayout" parent="Widget.Design.TabLayout">
+        <!-- TODO Do we need any of these? -->
+<!--        <item name="tabIndicatorColor">?attr/colorAccent</item>-->
+<!--        <item name="tabIndicatorHeight">4dp</item>-->
+<!--        <item name="tabPaddingStart">6dp</item>-->
+<!--        <item name="tabPaddingEnd">6dp</item>-->
+<!--        <item name="tabBackground">?attr/selectableItemBackground</item>-->
+        <item name="tabTextAppearance">@style/AppTabTextAppearance</item>
+    </style>
+
+    <!-- Tab text layout -->
+    <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">@dimen/text_size_tabs</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
 </resources>
