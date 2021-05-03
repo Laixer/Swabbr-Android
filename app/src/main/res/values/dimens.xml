@@ -1,11 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="content_margin">8dp</dimen>
+    <dimen name="content_margin_small">8dp</dimen>
+    <dimen name="content_margin_medium">16dp</dimen>
+    <dimen name="content_margin_large">32dp</dimen>
     <dimen name="item_margin">8dp</dimen>
     <dimen name="image_text_horizontal_margin">8dp</dimen>
-    <dimen name="divider_margin">8dp</dimen>
+    <dimen name="divider_margin_small">16dp</dimen>
+    <dimen name="divider_margin_medium">24dp</dimen>
+    <dimen name="divider_margin_large">32dp</dimen>
 
-    <dimen name="small_icon_size">32dp</dimen>
-    <dimen name="medium_icon_size">48dp</dimen>
-    <dimen name="large_icon_size">64dp</dimen>
+    <dimen name="mini_icon_size">20dp</dimen>
+    <dimen name="small_icon_size">24dp</dimen>
+    <dimen name="medium_icon_size">38dp</dimen>
+    <dimen name="large_icon_size">56dp</dimen>
+
+    <dimen name="small_profile_image_size">40dp</dimen>
+    <dimen name="medium_profile_image_size">74dp</dimen>
+    <dimen name="large_profile_image_size">150dp</dimen>
+
+    <!-- Used for the reaction sheets. -->
+    <!-- TODO Suboptimal -->
+    <dimen name="medium_profile_image_size_half">37dp</dimen>
+
+    <dimen name="profile_settings_side_margin">16dp</dimen>
+
+    <dimen name="vlog_stats_icon_margin">64dp</dimen>
+
+    <dimen name="button_width">100dp</dimen>
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="button_stroke_width">1.5dp</dimen>
+    <dimen name="button_radius">8dp</dimen>
+
+    <dimen name="text_size_user_nickname">14sp</dimen>
+
+    <!-- TODO This is a beun fix, see issue #135. -->
+    <!-- Reaction sheet peek height. -->
+    <dimen name="reaction_sheet_peek_height">400dp</dimen>
+    <dimen name="reaction_sheet_peek_height_negative">-400dp</dimen>
+
+    <!-- All text sizes -->
+    <dimen name="text_size_auto_size_max">24sp</dimen>
+    <dimen name="text_size_auto_size_min">10sp</dimen>
+    <dimen name="button_text_size">14sp</dimen>
+    <dimen name="text_size_settings">14sp</dimen>
+    <dimen name="text_size_stats_large">16sp</dimen>
+    <dimen name="text_size_stats_small">14sp</dimen>
+    <dimen name="text_size_tabs">13sp</dimen>
+
+    <!-- Custom recording button dimensions -->
+    <dimen name="recording_button_size">96dp</dimen>
+
 </resources>

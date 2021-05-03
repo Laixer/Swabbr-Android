@@ -1,37 +1,55 @@
 package com.laixer.swabbr.domain.usecase
 
-import com.laixer.swabbr.domain.model.*
-import com.laixer.swabbr.domain.repository.AuthRepository
-import com.laixer.swabbr.domain.repository.UserRepository
-import com.laixer.swabbr.presentation.model.UserItem
-import com.laixer.swabbr.presentation.model.mapToDomain
+import android.net.Uri
+import com.laixer.swabbr.domain.interfaces.UserRepository
+import com.laixer.swabbr.domain.model.UserComplete
+import com.laixer.swabbr.domain.model.UserUpdatableProperties
+import com.laixer.swabbr.services.uploading.UploadHelper.Companion.uploadFile
+import com.laixer.swabbr.services.users.UserService
+import com.laixer.swabbr.utils.media.MediaConstants
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.rxkotlin.toFlowable
-import io.reactivex.schedulers.Schedulers
+import java.util.*
 
+/**
+ *  Use case with regards to the currently authenticated user.
+ *  This is responsible for operations on said user.
+ */
 class AuthUserUseCase constructor(
-    private val authRepository: AuthRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userService: UserService
 ) {
+    /**
+     *  Gets the id of the currently authenticated user. Only call this if
+     *  we are authenticated.
+     */
+    fun getSelfId(): UUID = userService.getUserIdOrNull() ?: UUID.randomUUID() // TODO Horrible solution
 
-    fun getSelf(refresh: Boolean): Single<AuthUser> = authRepository.getAuthenticatedUser(refresh)
+    /**
+     *  Get the currently authenticated user. This contains
+     *  personal details as well.
+     *
+     *  @param refresh Force a data refresh.
+     */
+    fun getSelf(refresh: Boolean): Single<UserComplete> = userRepository.getSelf(refresh)
 
-    fun updateSelf(user: UserItem): Single<AuthUser> = authRepository.updateAuthenticatedUser(user.mapToDomain())
+    /**
+     *  Update the currently authenticated user.
+     *
+     *  @param user User with updated properties.
+     *  @param imageUploadUri If the [user] also contains a profile image file, also
+     *                        specify the uri to upload to. Else nothing happens.
+     */
+    fun updateSelf(user: UserUpdatableProperties, imageUploadUri: Uri? = null): Completable =
+        if (user.profileImageFile != null && imageUploadUri != null) {
+            Completable.fromAction {
+                uploadFile(user.profileImageFile, imageUploadUri, MediaConstants.IMAGE_JPEG_MIME_TYPE)
+            }.andThen(userRepository.update(user))
+        } else {
+            userRepository.update(user)
+        }
 
-    fun getStatistics(refresh: Boolean) = authRepository.getStatistics(refresh)
-
-    fun getIncomingFollowRequestsWithUser(): Single<List<Pair<FollowRequest, User>>> =
-        authRepository.getIncomingFollowRequests()
-            .flattenAsObservable { followRequests -> followRequests }
-            .flatMap { request ->
-                userRepository.get(request.requesterId, true).map { user ->
-                    Pair(request, user)
-                }.toObservable()
-            }.toList()
-
-
+    companion object {
+        val TAG = AuthUserUseCase::class.java.simpleName
+    }
 }
-
-

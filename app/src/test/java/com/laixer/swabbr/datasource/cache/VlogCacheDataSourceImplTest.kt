@@ -2,7 +2,7 @@ package com.laixer.swabbr.datasource.cache
 
 import com.laixer.cache.ReactiveCache
 import com.laixer.swabbr.Models
-import com.laixer.swabbr.data.datasource.cache.VlogCacheDataSourceImpl
+import com.laixer.swabbr.data.cache.VlogCacheDataSourceImpl
 import com.laixer.swabbr.domain.model.Vlog
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -15,7 +15,7 @@ class VlogCacheDataSourceImplTest {
 
     private lateinit var dataSource: VlogCacheDataSourceImpl
     private val key by lazy { dataSource.key }
-    private val recommendedKey by lazy { dataSource.recommendedKey }
+    private val recommendedKey by lazy { dataSource.keyRecommended }
 
     private val mockCache: ReactiveCache<List<Vlog>> = mock()
 

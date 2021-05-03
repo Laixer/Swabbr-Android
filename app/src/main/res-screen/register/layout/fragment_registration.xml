@@ -26,20 +26,20 @@
                 app:civ_circle_background_color="@color/color_grey_200" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_add_photo"
+                android:id="@+id/fab_set_profile_image"
                 style="@style/FabStyle"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true" />
         </RelativeLayout>
 
         <EditText
-            android:id="@+id/nicknameInput"
+            android:id="@+id/inputNickname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:drawableStart="@drawable/ic_person_24dp"
+            android:drawableStart="@drawable/ic_person"
             android:drawablePadding="5dp"
-            android:drawableTint="@color/colorPrimary"
+            android:drawableTint="@color/primary"
             android:ems="10"
             android:hint="@string/register_nickname_hint"
             android:inputType="textPersonName"
@@ -49,9 +49,9 @@
             android:id="@+id/emailInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_baseline_email_24"
+            android:drawableStart="@drawable/ic_email"
             android:drawablePadding="5dp"
-            android:drawableTint="@color/colorPrimary"
+            android:drawableTint="@color/primary"
             android:ems="10"
             android:hint="@string/register_usernameEmail"
             android:inputType="textEmailAddress"
@@ -62,9 +62,9 @@
             android:id="@+id/passwordInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_lock_24dp"
+            android:drawableStart="@drawable/ic_lock"
             android:drawablePadding="5dp"
-            android:drawableTint="@color/colorPrimary"
+            android:drawableTint="@color/primary"
             android:ems="10"
             android:hint="@string/register_password"
             android:inputType="textPassword" />
@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="5dp"
-            android:drawableTint="@color/colorPrimary"
+            android:drawableTint="@color/primary"
             android:ems="10"
             android:hint="@string/register_confirmPassword"
             android:inputType="textPassword"
@@ -90,12 +90,14 @@
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/content_margin"
+            android:layout_margin="@dimen/content_margin_small"
             android:enabled="false"
+            style="@style/SwabbrButton"
             android:text="@string/register_registerText" />
 
+        <!-- Loading icon. -->
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/loading_icon_registration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

@@ -9,7 +9,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/content_margin">
+        android:layout_margin="@dimen/content_margin_small">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/logo"
@@ -24,16 +24,16 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/content_margin"
+        android:layout_margin="@dimen/content_margin_small"
         android:orientation="vertical">
 
         <EditText
             android:id="@+id/emailInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_baseline_email_24"
+            android:drawableStart="@drawable/ic_email"
             android:drawablePadding="5dp"
-            android:drawableTint="@color/colorPrimary"
+            android:drawableTint="@color/primary"
             android:ems="10"
             android:hint="@string/login_usernameEmail"
             android:inputType="textEmailAddress"
@@ -44,9 +44,9 @@
             android:id="@+id/passwordInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_lock_24dp"
+            android:drawableStart="@drawable/ic_lock"
             android:drawablePadding="5dp"
-            android:drawableTint="@color/colorPrimary"
+            android:drawableTint="@color/primary"
             android:ems="10"
             android:hint="@string/login_password"
             android:inputType="textPassword" />
@@ -61,7 +61,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/content_margin"
+        android:layout_margin="@dimen/content_margin_small"
         android:orientation="vertical">
 
         <Button
@@ -69,16 +69,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@color/material_on_primary_emphasis_high_type"
+            style="@style/SwabbrButton"
             android:enabled="false"
+
             android:text="@string/login_signin" />
 
         <Button
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/material_on_primary_emphasis_medium"
             android:text="@string/login_register"
+            style="@style/SwabbrButton"
             android:textAlignment="center" />
     </LinearLayout>
 
@@ -91,8 +92,9 @@
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         android:visibility="gone" />
 
+    <!-- Circular loading icon. -->
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/loading_icon_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

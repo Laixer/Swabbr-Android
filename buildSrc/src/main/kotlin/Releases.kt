@@ -1,4 +1,4 @@
 object Releases {
-    const val versionCode = 1
-    const val versionName = "1.0"
+    const val versionCode = 15
+    const val versionName = "1.7.6"
 }

@@ -2,7 +2,7 @@ package com.laixer.swabbr.datasource.cache
 
 import com.laixer.cache.ReactiveCache
 import com.laixer.swabbr.Models
-import com.laixer.swabbr.data.datasource.cache.UserCacheDataSourceImpl
+import com.laixer.swabbr.data.cache.UserCacheDataSourceImpl
 import com.laixer.swabbr.domain.model.User
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify

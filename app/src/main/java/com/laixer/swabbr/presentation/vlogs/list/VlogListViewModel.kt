@@ -1,48 +1,87 @@
 package com.laixer.swabbr.presentation.vlogs.list
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.laixer.presentation.Resource
-import com.laixer.presentation.setError
-import com.laixer.presentation.setLoading
-import com.laixer.presentation.setSuccess
-import com.laixer.swabbr.domain.usecase.UsersVlogsUseCase
-import com.laixer.swabbr.domain.usecase.VlogsUseCase
-import com.laixer.swabbr.presentation.model.LikeListItem
-import com.laixer.swabbr.presentation.model.UserVlogItem
+import androidx.lifecycle.viewModelScope
+import com.laixer.swabbr.domain.usecase.VlogUseCase
+import com.laixer.swabbr.presentation.abstraction.ViewModelBase
+import com.laixer.swabbr.presentation.model.VlogWrapperItem
 import com.laixer.swabbr.presentation.model.mapToPresentation
-import io.reactivex.disposables.CompositeDisposable
+import com.laixer.swabbr.presentation.utils.todosortme.setError
+import com.laixer.swabbr.presentation.utils.todosortme.setLoading
+import com.laixer.swabbr.presentation.utils.todosortme.setSuccess
+import com.laixer.swabbr.utils.resources.Resource
 import io.reactivex.schedulers.Schedulers
-import java.util.UUID
+import kotlinx.coroutines.launch
+import java.util.*
 
+/**
+ *  View model for vlog list display.
+ */
 class VlogListViewModel constructor(
-    private val usersVlogsUseCase: UsersVlogsUseCase,
-    private val vlogsUseCase: VlogsUseCase
-) : ViewModel() {
+    private val usersVlogsUseCase: VlogUseCase,
+    private val vlogUseCase: VlogUseCase
+) : ViewModelBase() {
+    /**
+     *  Used as resource to store vlogs. Note that all get list
+     *  functions use this as their storage target.
+     */
+    val vlogs = MutableLiveData<Resource<List<VlogWrapperItem>>>()
 
-    val vlogs = MutableLiveData<Resource<List<UserVlogItem>>>()
-    private val compositeDisposable = CompositeDisposable()
+    // TODO Implement optional vlog wrapper? Bind to backend? Probably that last one.
 
+    /**
+     *  Gets the recommended vlogs and stores them in [vlogs].
+     *
+     *  @param refresh Force a data refresh.
+     */
     fun getRecommendedVlogs(refresh: Boolean) =
-        compositeDisposable.add(
-            usersVlogsUseCase.getRecommendedVlogs(refresh)
-                .doOnSubscribe { vlogs.setLoading() }
-                .subscribeOn(Schedulers.io())
-                .map { list ->
-                    list.map { pair -> Pair(pair.first, pair.second) }
-                        .sortedByDescending { it.second.data.dateStarted }
-                        .mapToPresentation()
-                }
-                .subscribe(
-                    { vlogs.setSuccess(it) },
-                    { vlogs.setError(it.message) }
-                )
-        )
+        viewModelScope.launch {
+            compositeDisposable.add(
+                usersVlogsUseCase.getRecommendedVlogs(refresh)
+                    .doOnSubscribe { vlogs.setLoading() }
+                    .subscribeOn(Schedulers.io())
+                    .map { list ->
+                        list//.sortedByDescending { it.vlog.dateStarted } // TODO Is this sort really required?
+                            .mapToPresentation()
+                    }
+                    .subscribe(
+                        { vlogs.setSuccess(it) },
+                        {
+                            vlogs.setError(it.message)
+                            Log.e(TAG, "Could not get recommended vlogs - ${it.message}")
+                        }
+                    )
+            )
+        }
 
-    fun getReactionCount(vlogId: UUID) = vlogsUseCase.getReactionCount(vlogId)
+    /**
+     *  Gets vlogs for a user and stores them in [vlogs].
+     *
+     *  @param userId The user to get the vlogs for.
+     *  @param refresh Force a data refresh.
+     */
+    fun getVlogsForUser(userId: UUID, refresh: Boolean = false) =
+        viewModelScope.launch {
+            compositeDisposable.add(
+                vlogUseCase.getAllForUser(userId, refresh)
+                    .doOnSubscribe { vlogs.setLoading() }
+                    .subscribeOn(Schedulers.io())
+                    .map { list ->
+                        list//.sortedByDescending { it.vlog.dateStarted } // TODO Is this sort really required?
+                            .mapToPresentation()
+                    }
+                    .subscribe(
+                        { vlogs.setSuccess(it) },
+                        {
+                            vlogs.setError(it.message)
+                            Log.e(TAG, "Could not get vlogs for user - ${it.message}")
+                        }
+                    )
+            )
+        }
 
-    override fun onCleared() {
-        compositeDisposable.dispose()
-        super.onCleared()
+    companion object {
+        private val TAG = VlogListViewModel::class.java.simpleName
     }
 }

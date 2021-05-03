@@ -1,8 +1,8 @@
 package com.laixer.swabbr.presentation.profile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import com.laixer.swabbr.Items
 import com.laixer.swabbr.Models
 import com.laixer.swabbr.domain.usecase.FollowUseCase
@@ -42,7 +42,7 @@ class ProfileViewModelTest {
 
     private val followStatusModel = Models.followStatus
     private val followStatusItem = Items.followStatus
-    
+
     private val profileVlogs = Pair(model, vlogModelList)
     private val userId = Models.user.id
     private val throwable = Throwable()
@@ -66,40 +66,40 @@ class ProfileViewModelTest {
         whenever(mockUsersUseCase.get(userId, false))
             .thenReturn(Single.just(model))
         // when
-        viewModel.getProfile(userId, false)
+        viewModel.getUser(userId, false)
         // then
         verify(mockUsersUseCase).get(userId, false)
-        assertTrue(ReflectionEquals(item).matches(viewModel.profile.value))
+        assertTrue(ReflectionEquals(item).matches(viewModel.user.value))
     }
 
     @Test
     fun `get profilevlogs succeeds`() {
         // given
-        whenever(mockUserVlogsUseCase.get(userId, false)).thenReturn(Single.just(profileVlogs.second))
+        whenever(mockUserVlogsUseCase.getAllFromUser(userId, false)).thenReturn(Single.just(profileVlogs.second))
         // when
-        viewModel.getProfileVlogs(userId, false)
+        viewModel.getVlogsByUser(userId, false)
         // then
-        verify(mockUserVlogsUseCase).get(userId, false)
+        verify(mockUserVlogsUseCase).getAllFromUser(userId, false)
         assertEquals(
             Resource(
                 state = ResourceState.SUCCESS,
                 data = vlogItemList,
                 message = null
-            ), viewModel.profileVlogs.value
+            ), viewModel.userVlogs.value
         )
     }
 
     @Test
     fun `get profilevlogs fails`() {
         // given
-        whenever(mockUserVlogsUseCase.get(userId, true)).thenReturn(Single.error(throwable))
+        whenever(mockUserVlogsUseCase.getAllFromUser(userId, true)).thenReturn(Single.error(throwable))
         // when
-        viewModel.getProfileVlogs(userId, true)
+        viewModel.getVlogsByUser(userId, true)
         // then
-        verify(mockUserVlogsUseCase).get(userId, true)
+        verify(mockUserVlogsUseCase).getAllFromUser(userId, true)
         assertEquals(
             Resource(state = ResourceState.ERROR, data = null, message = throwable.message),
-            viewModel.profileVlogs.value
+            viewModel.userVlogs.value
         )
     }
 
@@ -109,7 +109,7 @@ class ProfileViewModelTest {
         whenever(mockFollowUseCase.getFollowStatus(userId))
             .thenReturn(Single.just(followStatusModel))
         // when
-        viewModel.getFollowStatus(userId)
+        viewModel.getFollowRequestAsCurrentUser(userId)
 
         // then
         verify(mockFollowUseCase).getFollowStatus(userId)
@@ -118,7 +118,7 @@ class ProfileViewModelTest {
                 state = ResourceState.SUCCESS,
                 data = followRequestItem,
                 message = null
-            ), viewModel.followStatus.value
+            ), viewModel.followRequestAsCurrentUser.value
         )
     }
 
@@ -127,12 +127,12 @@ class ProfileViewModelTest {
         // given
         whenever(mockFollowUseCase.getFollowStatus(userId)).thenReturn(Single.error(throwable))
         // when
-        viewModel.getFollowStatus(userId)
+        viewModel.getFollowRequestAsCurrentUser(userId)
         // then
         verify(mockFollowUseCase).getFollowStatus(userId)
         assertEquals(
             Resource(state = ResourceState.ERROR, data = null, message = throwable.message),
-            viewModel.followStatus.value
+            viewModel.followRequestAsCurrentUser.value
         )
     }
 }

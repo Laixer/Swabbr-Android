@@ -1,33 +1,38 @@
 package com.laixer.swabbr.domain.model
 
-import java.time.LocalDate
-import java.util.TimeZone
-import java.util.UUID
+import android.net.Uri
+import com.laixer.swabbr.domain.types.Gender
+import java.time.ZonedDateTime
+import java.util.*
 
+/**
+ * Object representing a single user. Note that this
+ * user does not contain any personal properties. See
+ * UserComplete for the complete package.
+ */
 data class User(
     val id: UUID,
     val firstName: String?,
     val lastName: String?,
     val gender: Gender,
     val country: String?,
-    val email: String,
-    val timezone: TimeZone,
-    val totalVlogs: Int,
-    val totalFollowers: Int,
-    val totalFollowing: Int,
     val nickname: String,
-    val profileImage: String?,
-    val birthdate: LocalDate?,
-    val isPrivate: Boolean
-)
-
-data class SimplifiedUser(
-    val id: UUID,
-    val nickname: String
-)
-
-enum class Gender(val value: String) {
-    FEMALE("female"),
-    MALE("male"),
-    UNSPECIFIED("unspecified")
+    val hasProfileImage: Boolean,
+    val profileImageUri: Uri?
+) {
+    companion object {
+        /**
+         *  Represents an empty user object.
+         */
+        fun emptyObject() = User(
+            id = UUID.randomUUID(),
+            firstName = null,
+            lastName = null,
+            gender = Gender.UNSPECIFIED,
+            country = null,
+            nickname = "emptynickname",
+            hasProfileImage = false,
+            profileImageUri = null
+        )
+    }
 }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Reaction display as overlay for vlog playback. Note that
+    this is used in [exo_player_view] and invisible by default.
+    The top layout has a layout_behavior defined which makes
+    this act as a bottom sheet.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint_layout_reactions"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <!-- This will only be displayed if we have no reactions to show. -->
+    <TextView
+        android:id="@+id/no_reactions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_bg"
+        android:padding="@dimen/content_margin_small"
+        android:text="@string/empty_reaction_collection"
+        android:textAlignment="center"
+        android:textColor="@color/color_white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Scrollview containing reactions recycler view. -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/reaction_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fadeScrollbars="false"
+        android:requiresFadingEdge="vertical"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarThumbVertical="@drawable/rounded_bg"
+        android:scrollbars="vertical"
+        android:visibility="visible"
+        android:animateLayoutChanges="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Contains the actual reactions. -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reactionsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:animateLayoutChanges="false"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="25sp"
+            tools:listitem="@layout/item_list_reaction" />
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

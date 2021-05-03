@@ -1,12 +1,14 @@
 package com.laixer.swabbr.presentation.model
 
-import com.laixer.swabbr.domain.model.FollowStatus
+//import com.laixer.swabbr.domain.model.FollowRequestStatus
 
-data class FollowStatusItem(
-    val status: FollowStatus?
+// TODO Can we remove this?
+data class FollowStatusItem2(
+    val x: Int
+   // val requestStatus: FollowRequestStatus?
 )
-
-fun FollowStatus.mapToPresentation(): FollowStatusItem =
-    FollowStatusItem(this)
-
-fun FollowStatusItem.mapToDomain(): FollowStatus? = this.status
+//
+//fun FollowRequestStatus.mapToPresentation(): FollowStatusItem =
+//    FollowStatusItem(this)
+//
+//fun FollowStatusItem.mapToDomain(): FollowRequestStatus? = this.requestStatus

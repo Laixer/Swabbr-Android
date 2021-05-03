@@ -1,8 +1,8 @@
 package com.laixer.swabbr.presentation.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import com.laixer.swabbr.Items
 import com.laixer.swabbr.Models
 import com.laixer.swabbr.domain.usecase.UsersUseCase
@@ -55,7 +55,7 @@ class SearchViewModelTest {
         verify(mockUsersUseCase).search(query)
         assertEquals(
             Resource(ResourceState.SUCCESS, itemList, null),
-            viewModel.profiles.value
+            viewModel.users.value
         )
     }
 
@@ -69,7 +69,7 @@ class SearchViewModelTest {
         verify(mockUsersUseCase).search(query)
         assertEquals(
             Resource(state = ResourceState.ERROR, data = null, message = throwable.message),
-            viewModel.profiles.value
+            viewModel.users.value
         )
     }
 }

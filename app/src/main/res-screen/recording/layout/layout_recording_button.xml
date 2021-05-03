@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Layout representing our custom recording button.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recording_button_relative_layout"
+    android:layout_width="@dimen/recording_button_size"
+    android:layout_height="@dimen/recording_button_size"
+    android:layout_gravity="center">
+
+    <ImageButton
+        android:id="@+id/recording_button_button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/selector_button_recording"
+        android:contentDescription="@string/capture"
+        android:scaleType="fitCenter"
+        android:visibility="visible" />
+
+    <ProgressBar
+        android:id="@+id/recording_button_outline"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/circle_shape"
+        android:indeterminate="false"
+        android:progress="0"
+        android:progressDrawable="@drawable/circular_progress_bar" />
+
+</RelativeLayout>

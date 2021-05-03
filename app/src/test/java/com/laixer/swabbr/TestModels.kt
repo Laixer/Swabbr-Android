@@ -1,11 +1,12 @@
 package com.laixer.swabbr
 
-import com.laixer.swabbr.data.datasource.model.*
+import com.laixer.swabbr.data.model.*
 import com.laixer.swabbr.domain.model.*
+import com.laixer.swabbr.domain.types.FollowRequestStatus
+import com.laixer.swabbr.domain.types.Gender
 import com.laixer.swabbr.presentation.model.*
-import com.laixer.swabbr.services.notifications. ActionType
-import com.laixer.swabbr.services.notifications.protocols.BaseNotification
 import com.laixer.swabbr.services.notifications.V1
+import com.laixer.swabbr.services.notifications.protocols.BaseNotification
 import java.time.LocalDate
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -19,7 +20,7 @@ val reactionId: UUID = UUID.randomUUID()
 val followRequestId: UUID = UUID.randomUUID()
 
 object Models {
-    val followStatus = FollowStatus.NOT_FOLLOWING
+    val followStatus = FollowRequestStatus.NONEXISTENT
     val user = User(
         id = userId,
         firstName = "name",
@@ -27,7 +28,7 @@ object Models {
         gender = Gender.MALE,
         country = "country",
         email = "email",
-        timezone = TimeZone.getDefault(),
+        timezone = ZoneOffset.systemDefault(),
         totalVlogs = 0,
         totalFollowers = 0,
         totalFollowing = 0,
@@ -35,7 +36,7 @@ object Models {
         profileImage = "base64string",
         birthdate = LocalDate.parse("1996-06-13")
     )
-    val like = Like(
+    val like = VlogLike(
         id = likeId,
         vlogId = vlogId,
         userId = userId,
@@ -63,8 +64,8 @@ object Models {
     val followRequest = FollowRequest(
         requesterId = userId,
         receiverId = userId,
-        status = FollowStatus.FOLLOWING,
-        timeCreated = ZonedDateTime.parse("2020-03-09T12:36:02.171Z")
+        followRequestStatus = FollowRequestStatus.FOLLOWING,
+        dateCreated = ZonedDateTime.parse("2020-03-09T12:36:02.171Z")
     )
     val login = Login(
         email = "username",
@@ -88,8 +89,8 @@ object Models {
         handle = "handle",
         pushNotificationPlatform = PushNotificationPlatform.FCM
     )
-    val authUser = AuthUser(
-        jwtToken = "token",
+    val authUser = TokenWrapper(
+        token = "token",
         user = user,
         userSettings = settings
     )
@@ -142,11 +143,11 @@ object Items {
         Models.settings.followMode
     )
     val authUser = AuthUserItem(
-        Models.authUser.jwtToken,
+        Models.authUser.token,
         settings,
         user
     )
-    val like = LikeItem(
+    val like = VlogLikeItem(
         Models.like.id,
         Models.like.vlogId,
         Models.like.userId,
@@ -156,8 +157,8 @@ object Items {
 //        Models.followRequest.id,
         Models.followRequest.requesterId,
         Models.followRequest.receiverId,
-        Models.followRequest.status,
-        Models.followRequest.timeCreated
+        Models.followRequest.followRequestStatus,
+        Models.followRequest.dateCreated
     )
     val reaction = ReactionUserItem(
         Models.reaction.id,
@@ -177,7 +178,7 @@ object Items {
         Models.vlog.dateStarted,
         Models.vlog.views
     )
-    val vlog = VlogItem(
+    val vlog = VlogWrapperItem(
         Models.vlog.id,
         Models.vlog.userId,
         Models.vlog.isPrivate,
@@ -202,7 +203,7 @@ object Entities {
         Models.user.profileImage,
         Models.user.birthdate?.atStartOfDay()?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
     )
-    val like = LikeEntity(
+    val like = VlogLikeEntity(
         Models.like.id.toString(),
         Models.like.vlogId.toString(),
         Models.like.userId.toString(),
@@ -230,10 +231,10 @@ object Entities {
     val followRequest = FollowRequestEntity(
         Models.followRequest.requesterId.toString(),
         Models.followRequest.requesterId.toString(),
-        Models.followRequest.status.value,
-        Models.followRequest.timeCreated.toString()
+        Models.followRequest.followRequestStatus.value,
+        Models.followRequest.dateCreated.toString()
     )
-    val authUser = AuthUserEntity(
+    val authUser = TokenWrapperEntity(
         "token",
         user,
         settings

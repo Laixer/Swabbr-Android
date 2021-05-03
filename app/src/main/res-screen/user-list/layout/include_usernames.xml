@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <!-- The @nickname tag. -->
+    <TextView
+        android:id="@+id/user_nickname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAppearance="@style/NicknameTextAppearance"
+        android:textColor="@color/primaryDark"
+        tools:text="@string/placeholder_nickname" />
+
+</LinearLayout>

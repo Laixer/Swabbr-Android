@@ -2,7 +2,7 @@ package com.laixer.swabbr.data.repository
 
 import com.laixer.swabbr.Models
 import com.laixer.swabbr.data.datasource.UserCacheDataSource
-import com.laixer.swabbr.data.datasource.UserRemoteDataSource
+import com.laixer.swabbr.data.datasource.UserDataSource
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -15,7 +15,7 @@ class UserRepositoryImplTest {
 
     private lateinit var repository: UserRepositoryImpl
     private val mockCacheDataSource: UserCacheDataSource = mock()
-    private val mockRemoteDataSource: UserRemoteDataSource = mock()
+    private val mockRemoteDataSource: UserDataSource = mock()
 
     private val userId = Models.user.id
 

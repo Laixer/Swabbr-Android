@@ -1,44 +1,82 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--
+    TODO Don't hard-code the divider spacing (layout_height). This
+         didn't want to wrap content with a transparent divider view.
+    Displays a single reaction item in the reaction overlay. Each
+    item is displayed on top of a card view.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/content_margin"
-    app:cardBackgroundColor="@color/color_window_background_transparent"
-    app:cardCornerRadius="40dp"
-    app:cardElevation="20dp">
+    android:layout_height="108dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Center guideline -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_reaction_item"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/content_margin"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/reaction_list_user_profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/reaction_list_user_profile_image" />
 
-        <include
-            layout="@layout/include_user_info"
-            android:layout_width="200dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center" />
+    <!-- User profile image -->
 
-        <View
-            style="@style/Divider"
-            android:layout_width="4px"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="@dimen/divider_margin" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/reaction_list_user_profile_image"
+        android:layout_width="@dimen/medium_profile_image_size"
+        android:layout_height="@dimen/medium_profile_image_size"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_person_large_256"
+        android:transitionName="userAvatar"
+        app:civ_circle_background_color="@color/color_grey_300"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/reactionPostDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_marginEnd="@dimen/content_margin"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:gravity="center_horizontal"
-            tools:text="Reaction Post Date" />
+    <!-- The @nickname tag. -->
+    <TextView
+        android:id="@+id/reaction_list_user_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/content_margin_small"
+        android:textAppearance="@style/NicknameTextAppearance"
+        app:layout_constraintBottom_toBottomOf="@+id/reaction_overlay"
+        app:layout_constraintStart_toEndOf="@+id/reaction_list_user_profile_image"
+        app:layout_constraintTop_toTopOf="@+id/reaction_overlay"
+        tools:text="@string/placeholder_nickname"
+        tools:visibility="visible" />
 
-    </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+    <!-- Delete button, only shows for your own reactions. -->
+    <ImageButton
+        android:id="@+id/button_reaction_delete"
+        android:layout_width="@dimen/medium_icon_size"
+        android:layout_height="@dimen/medium_icon_size"
+        android:layout_gravity="center"
+        android:layout_marginEnd="@dimen/content_margin_small"
+        android:background="@color/transparent"
+        android:src="@drawable/ic_delete"
+        app:layout_constraintBottom_toBottomOf="@+id/reaction_list_user_profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/reaction_list_user_profile_image" />
+
+
+    <!-- Background fill, pushed to the background using translationZ. -->
+    <View
+        android:id="@+id/reaction_overlay"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/medium_profile_image_size"
+        android:layout_marginStart="@dimen/medium_profile_image_size_half"
+        android:translationZ="-1dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/reaction_list_user_profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/reaction_list_user_profile_image"
+        app:layout_constraintVertical_bias="0.51" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

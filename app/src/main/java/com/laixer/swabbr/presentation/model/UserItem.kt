@@ -1,77 +1,115 @@
 package com.laixer.swabbr.presentation.model
 
-import android.os.Parcel
-import android.os.Parcelable
-import com.laixer.swabbr.domain.model.Gender
+import android.net.Uri
 import com.laixer.swabbr.domain.model.User
-import java.time.LocalDate
-import java.util.TimeZone
-import java.util.UUID
+import com.laixer.swabbr.domain.types.FollowRequestStatus
+import com.laixer.swabbr.domain.types.Gender
+import java.time.ZonedDateTime
+import java.util.*
 
-data class UserItem(
+// TODO Look at inheritance
+open class UserItem(
     val id: UUID,
-    var firstName: String?,
-    var lastName: String?,
-    var gender: Gender,
-    var country: String?,
-    val email: String,
-    val timezone: TimeZone,
-    val totalVlogs: Int,
-    val totalFollowers: Int,
-    val totalFollowing: Int,
-    var nickname: String,
-    var profileImage: String?,
-    var birthdate: LocalDate?,
-    var isPrivate: Boolean
+    val firstName: String?,
+    val lastName: String?,
+    val gender: Gender,
+    val country: String?,
+    val nickname: String,
+    val hasProfileImage: Boolean,
+    val profileImageUri: Uri?
 ) {
+    /**
+     *  Gets the user display name. When no first name and
+     *  last name are present, this returns the nickname.
+     */
+    fun getDisplayName(): String {
+        if (!firstName.isNullOrBlank() && !lastName.isNullOrBlank()) {
+            return "$firstName $lastName"
+        }
 
-    fun equals(otheritem: UserItem): Boolean =
-        firstName == otheritem.firstName
-            && lastName == otheritem.lastName
-            && gender == otheritem.gender
-            && country == otheritem.country
-            && birthdate == otheritem.birthdate
-            && nickname == otheritem.nickname
-            && profileImage == otheritem.profileImage
-            && isPrivate == otheritem.isPrivate
+        if (!firstName.isNullOrBlank()) {
+            return firstName
+        }
 
+        if (!lastName.isNullOrBlank()) {
+            return lastName
+        }
+
+        return nickname
+    }
 }
 
-fun User.mapToPresentation(): UserItem = UserItem(
-    this.id,
-    this.firstName,
-    this.lastName,
-    this.gender,
-    this.country,
-    this.email,
-    this.timezone,
-    this.totalVlogs,
-    this.totalFollowers,
-    this.totalFollowing,
-    this.nickname,
-    this.profileImage,
-    this.birthdate,
-    this.isPrivate
+/**
+ *  Maps a single [UserItem] to a [UserWithRelationItem] based on a
+ *  specified [requestingUserId] and [followRequestStatus].
+ *
+ *  @param requestingUserId The user on which the relation is based.
+ *  @param followRequestStatus The follow request status of the relation.
+ */
+fun UserItem.mapToUserWithRelationItem(
+    requestingUserId: UUID,
+    followRequestStatus: FollowRequestStatus
+): UserWithRelationItem = UserWithRelationItem(
+    requestingUserId = requestingUserId,
+    followRequestStatus = followRequestStatus,
+    user = UserItem(
+        id = id,
+        firstName = firstName,
+        lastName = lastName,
+        gender = gender,
+        country = country,
+        nickname = nickname,
+        hasProfileImage = hasProfileImage,
+        profileImageUri = profileImageUri
+    )
 )
 
+/**
+ *  Maps a single [UserItem] to a [UserWithRelationItem] based on a
+ *  specified [requestingUserId] and [followRequestStatus].
+ *
+ *  @param requestingUserId The user on which the relation is based for each item.
+ *  @param followRequestStatus The follow request status of the relation for each item.
+ */
+fun List<UserItem>.mapToUserWithRelationItem(
+    requestingUserId: UUID,
+    followRequestStatus: FollowRequestStatus
+): List<UserWithRelationItem> = map { it.mapToUserWithRelationItem(requestingUserId, followRequestStatus) }
+
+/**
+ * Map a user from presentation to domain.
+ */
 fun UserItem.mapToDomain(): User = User(
-    this.id,
-    this.firstName,
-    this.lastName,
-    this.gender,
-    this.country,
-    this.email,
-    this.timezone,
-    this.totalVlogs,
-    this.totalFollowers,
-    this.totalFollowing,
-    this.nickname,
-    this.profileImage,
-    this.birthdate,
-    this.isPrivate
+    id = id,
+    firstName = firstName,
+    lastName = lastName,
+    gender = gender,
+    country = country,
+    nickname = nickname,
+    hasProfileImage = hasProfileImage,
+    profileImageUri = profileImageUri
 )
 
-fun List<UserItem>.mapToDomain(): List<User> = map { it.mapToDomain() }
+/**
+ * Map a user from domain to presentation.
+ */
+fun User.mapToPresentation(): UserItem = UserItem(
+    id,
+    firstName,
+    lastName,
+    gender,
+    country,
+    nickname,
+    hasProfileImage,
+    profileImageUri
+)
+
+/**
+ * Map a collection of users from domain to presentation.
+ */
 fun List<User>.mapToPresentation(): List<UserItem> = map { it.mapToPresentation() }
 
-
+/**
+ * Map a collection of users from presentation to domain
+ */
+fun List<UserItem>.mapToDomain(): List<User> = map { it.mapToDomain() }

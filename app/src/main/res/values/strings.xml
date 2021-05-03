@@ -1,9 +1,20 @@
 <resources>
+    <!-- TODO This is a complete mess. Split up / clean up / etc. -->
     <string name="app_name">Swabbr</string>
     <string name="error">Error</string>
     <string name="retry">Retry</string>
 
-    <string name="nickname"><b>\@%1$s</b></string>
+    <!-- Tab names -->
+    <string name="tab_vlogs">Vlogs</string>
+    <string name="tab_profile">Profile</string>
+    <string name="tab_following">Following</string>
+    <string name="tab_followers">Followers</string>
+
+    <!-- Tab top text -->
+    <string name="info_love_its">LOVE ITS!</string>
+    <string name="info_search">Search</string>
+
+    <string name="nickname"><i>\@%1$s</i></string>
     <string name="full_name">%1$s %2$s</string>
 
     <string name="logo">Logo</string>
@@ -11,14 +22,14 @@
     <string name="search">Search</string>
     <string name="myProfile">My Profile</string>
     <string name="userProfile">User Profile</string>
-    <string name="vlogs">Vlogs</string>
+    <string name="like_overview">Love Its</string>
     <string name="dashboard">Dashboard</string>
     <string name="settings">Settings</string>
 
-    <string name="followStatusError">…</string>
-    <string name="requested">Requested</string>
-    <string name="following">Following</string>
-    <string name="follow">Follow</string>
+    <!-- Follow request button. -->
+    <string name="follow_request_requested">Requested</string>
+    <string name="follow_request_accepted">Following</string>
+    <string name="follow_request_follow">Follow</string>
 
     <string name="switch_camera">Switch Camera</string>
     <string name="torch">Torch</string>
@@ -31,9 +42,10 @@
     <string name="react">React</string>
 
     <string name="google_play_unsupported_device">This device is not supported by Google Play Services.</string>
-    <string name="followers_count"><b>%1$d</b> Followers</string>
-    <string name="following_count"><b>%1$d</b> Following</string>
-    <string name="count"><b>%1$d</b></string>
+    <string name="followers_count">Followers</string>
+    <string name="following_count">Following</string>
+    <string name="count">%1$d</string>
+    <string name="count_bold"><b>%1$d</b></string>
     <string name="vlog_count"><b>%1$d</b> Vlogs</string>
     <string name="view_count"><b>%1$d</b>  Views</string>
 
@@ -50,12 +62,11 @@
     <string name="default_notification_title">New Swabbr Notification</string>
     <string name="default_notification_message">Click here!</string>
 
-
     <string name="status_error">An error occurred.</string>
     <string name="timer_value">%1$02d:%2$02d</string>
 
     <string name="notification_title_vlogrecordrequest">It\'s time to vlog!</string>
-    <string name="notification_message_vlogrecordrequest">"Don't let your followers wait, click here to start streaming.</string>
+    <string name="notification_message_vlogrecordrequest">"Don't let your followers wait, click here to start vlogging.</string>
 
     <string name="notification_title_followedprofilelive">One of your friends just started streaming!</string>
     <string name="notification_message_followedprofilelive">Click here to catch them live.</string>
@@ -71,6 +82,54 @@
     <string name="processing">Processing…</string>
     <string name="accept">accept</string>
     <string name="decline">decline</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- Design placeholders -->
+    <string name="placeholder_number">0</string>
+    <string name="placeholder_text">sometext</string>
+    <string name="placeholder_date">9 january 1995 13:37</string>
+    <string name="placeholder_display_name">Displayed Name</string>
+    <string name="placeholder_nickname">\@nickname</string>
+
+    <!-- Profile settings texts -->
+    <string name="is_profile_private">Is profile private?</string>
+    <string name="daily_vlog_request_limit">Daily vlog request limit</string>
+    <string name="follow_mode">Follow mode</string>
+    <string name="save">Save</string>
+    <string name="logout">Logout</string>
+    <string name="delete_account"><u><i>Delete account</i></u></string>
+    <string name="report_abuse"><u><i>Report abuse</i></u></string>
+    <string name="interests">Interests</string>
+    <string name="interests_hint">Enter an interest...</string>
+
+    <!-- Follow mode spinner options -->
+    <string name="manual">Manual</string>
+    <string name="accept_all">Accept all</string>
+    <string name="decline_all">Deny all</string>
+
+    <!-- Empty collections -->
+    <string name="empty_vlog_collection">No vlogs to display</string>
+    <string name="empty_reaction_collection">No reactions yet</string>
+
+
+    <!-- Error messages -->
+    <string name="error_playback_video">Could not play video</string>
+    <string name="error_playback_vlog">Could not play vlog</string>
+    <string name="error_playback_reaction">Could not play reaction</string>
+
+    <string name="error_load_video">Could not download video</string>
+    <string name="error_load_vlog">Could not download vlog</string>
+    <string name="error_load_reaction">Could not download reaction</string>
+
+
+    <!-- Dialog popup messages -->
+    <string name="dialog_ok">Post</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_date_picker_birth_date">Select your birth date</string>
+
+
+    <!-- Sharing -->
+    <string name="chooser_share_title">Share your Swabbr vlog</string>
 
 </resources>

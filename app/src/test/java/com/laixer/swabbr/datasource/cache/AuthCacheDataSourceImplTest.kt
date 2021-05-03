@@ -3,8 +3,8 @@ package com.laixer.swabbr.datasource.cache
 import com.laixer.cache.MemoryCache
 import com.laixer.cache.ReactiveCache
 import com.laixer.swabbr.Models
-import com.laixer.swabbr.data.datasource.cache.AuthCacheDataSourceImpl
-import com.laixer.swabbr.domain.model.AuthUser
+import com.laixer.swabbr.data.cache.AuthCacheDataSourceImpl
+import com.laixer.swabbr.domain.model.TokenWrapper
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
@@ -17,8 +17,8 @@ class AuthCacheDataSourceImplTest {
 
     private lateinit var dataSource: AuthCacheDataSourceImpl
     private val key by lazy { dataSource.key }
-    private val mockAuthCache: ReactiveCache<AuthUser> = mock()
-    private val mockAuthMemory: MemoryCache<AuthUser> = mock()
+    private val mockAuthCache: ReactiveCache<TokenWrapper> = mock()
+    private val mockAuthMemory: MemoryCache<TokenWrapper> = mock()
     private val model = Models.authUser
     private val throwable = Throwable()
 

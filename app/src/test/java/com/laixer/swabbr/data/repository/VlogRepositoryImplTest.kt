@@ -2,7 +2,7 @@ package com.laixer.swabbr.data.repository
 
 import com.laixer.swabbr.Models
 import com.laixer.swabbr.data.datasource.VlogCacheDataSource
-import com.laixer.swabbr.data.datasource.VlogRemoteDataSource
+import com.laixer.swabbr.data.datasource.VlogDataSource
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -15,7 +15,7 @@ class VlogRepositoryImplTest {
 
     private lateinit var repository: VlogRepositoryImpl
     private val mockCacheDataSource: VlogCacheDataSource = mock()
-    private val mockRemoteDataSource: VlogRemoteDataSource = mock()
+    private val mockRemoteDataSource: VlogDataSource = mock()
 
     private val vlogId = Models.vlog.id
 
@@ -48,13 +48,13 @@ class VlogRepositoryImplTest {
     fun `get featured vlogs cache fail fallback remote succeeds`() {
         // given
         whenever(mockCacheDataSource.getRecommendedVlogs()).thenReturn(Single.error(cacheThrowable))
-        whenever(mockRemoteDataSource.getRecommendedVlogs()).thenReturn(Single.just(remoteList))
+        whenever(mockRemoteDataSource.getRecommended()).thenReturn(Single.just(remoteList))
         whenever(mockCacheDataSource.setRecommendedVlogs(remoteList)).thenReturn(Single.just(remoteList))
         // when
         val test = repository.getRecommendedVlogs(false).test()
         // then
         verify(mockCacheDataSource).getRecommendedVlogs()
-        verify(mockRemoteDataSource).getRecommendedVlogs()
+        verify(mockRemoteDataSource).getRecommended()
         verify(mockCacheDataSource).setRecommendedVlogs(remoteList)
         test.assertValue(remoteList)
     }
@@ -63,24 +63,24 @@ class VlogRepositoryImplTest {
     fun `get featured vlogs cache fail fallback remote fails`() {
         // given
         whenever(mockCacheDataSource.getRecommendedVlogs()).thenReturn(Single.error(cacheThrowable))
-        whenever(mockRemoteDataSource.getRecommendedVlogs()).thenReturn(Single.error(remoteThrowable))
+        whenever(mockRemoteDataSource.getRecommended()).thenReturn(Single.error(remoteThrowable))
         // when
         val test = repository.getRecommendedVlogs(false).test()
         // then
         verify(mockCacheDataSource).getRecommendedVlogs()
-        verify(mockRemoteDataSource).getRecommendedVlogs()
+        verify(mockRemoteDataSource).getRecommended()
         test.assertError(remoteThrowable)
     }
 
     @Test
     fun `get featured vlogs remote success`() {
         // given
-        whenever(mockRemoteDataSource.getRecommendedVlogs()).thenReturn(Single.just(remoteList))
+        whenever(mockRemoteDataSource.getRecommended()).thenReturn(Single.just(remoteList))
         whenever(mockCacheDataSource.setRecommendedVlogs(remoteList)).thenReturn(Single.just(remoteList))
         // when
         val test = repository.getRecommendedVlogs(true).test()
         // then
-        verify(mockRemoteDataSource).getRecommendedVlogs()
+        verify(mockRemoteDataSource).getRecommended()
         verify(mockCacheDataSource).setRecommendedVlogs(remoteList)
         test.assertValue(remoteList)
     }
@@ -88,11 +88,11 @@ class VlogRepositoryImplTest {
     @Test
     fun `get featured vlogs remote fail`() {
         // given
-        whenever(mockRemoteDataSource.getRecommendedVlogs()).thenReturn(Single.error(remoteThrowable))
+        whenever(mockRemoteDataSource.getRecommended()).thenReturn(Single.error(remoteThrowable))
         // when
         val test = repository.getRecommendedVlogs(true).test()
         // then
-        verify(mockRemoteDataSource).getRecommendedVlogs()
+        verify(mockRemoteDataSource).getRecommended()
         test.assertError(remoteThrowable)
     }
 

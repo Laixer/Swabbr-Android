@@ -1,8 +1,8 @@
 package com.laixer.swabbr.presentation.profile.settings
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.laixer.presentation.Resource
-import com.laixer.presentation.ResourceState
+import com.laixer.swabbr.utils.resources.Resource
+import com.laixer.swabbr.utils.resources.ResourceState
 import com.laixer.swabbr.Items
 import com.laixer.swabbr.Models
 import com.laixer.swabbr.domain.usecase.SettingsUseCase
@@ -46,7 +46,7 @@ class SettingsViewModelTest {
         whenever(mockSettingsUseCase.get(false))
             .thenReturn(Single.just(model))
         // when
-        viewModel.getSettings(false)
+        viewModel.getUpdatableProperties(false)
         // then
         verify(mockSettingsUseCase).get(false)
         assertEquals(
@@ -60,7 +60,7 @@ class SettingsViewModelTest {
         // given
         whenever(mockSettingsUseCase.get(true)).thenReturn(Single.error(throwable))
         // when
-        viewModel.getSettings(true)
+        viewModel.getUpdatableProperties(true)
         // then
         verify(mockSettingsUseCase).get(true)
         assertEquals(

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Contains stats about our vlog and a button which allows
+    us to post a reaction. Note that this is included in
+    [exo_player_view] and invisible by default.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Displays the likes. -->
+    <ToggleButton
+        android:id="@+id/button_vlog_like"
+        android:layout_width="@dimen/small_icon_size"
+        android:layout_height="@dimen/small_icon_size"
+        android:background="@drawable/selector_love_it"
+        android:backgroundTint="@color/color_white"
+        android:text=""
+        android:textOff=""
+        android:textOn=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/vlog_like_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_margin_small"
+        android:autoSizeMaxTextSize="16sp"
+        android:autoSizeMinTextSize="6sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:text="@string/placeholder_number"
+        android:textAlignment="center"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/text_size_stats_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_vlog_like"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- Displays the views. -->
+    <ImageView
+        android:id="@+id/icon_view_count"
+        android:layout_width="@dimen/small_icon_size"
+        android:layout_height="@dimen/small_icon_size"
+        android:layout_marginStart="@dimen/vlog_stats_icon_margin"
+        android:src="@drawable/ic_eye"
+        android:tint="@color/color_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_vlog_like"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/vlog_view_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_margin_small"
+        android:autoSizeMaxTextSize="16sp"
+        android:autoSizeMinTextSize="6sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:text="@string/placeholder_number"
+        android:textAlignment="center"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/text_size_stats_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/icon_view_count"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Displays the reaction count (not clickable). -->
+    <ImageView
+        android:id="@+id/icon_reaction_count"
+        android:layout_width="@dimen/small_icon_size"
+        android:layout_height="@dimen/small_icon_size"
+        android:layout_marginStart="@dimen/vlog_stats_icon_margin"
+        android:src="@drawable/ic_message"
+        android:tint="@color/color_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/icon_view_count"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/vlog_reaction_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_margin_small"
+        android:autoSizeMaxTextSize="16sp"
+        android:autoSizeMinTextSize="6sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:text="@string/placeholder_number"
+        android:textAlignment="center"
+        android:textColor="@color/color_white"
+        android:textSize="@dimen/text_size_stats_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/icon_reaction_count"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Allows us to post reactions. -->
+    <ImageButton
+        android:id="@+id/button_post_reaction"
+        android:layout_width="@dimen/small_icon_size"
+        android:layout_height="@dimen/small_icon_size"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_reaction"
+        android:tint="@color/reactionPost"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
