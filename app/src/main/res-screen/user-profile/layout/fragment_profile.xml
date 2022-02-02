@@ -32,7 +32,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include3"
         app:tabIndicatorFullWidth="false"
-        app:tabTextAppearance="@style/AppTabTextAppearance" />
+        app:tabMode="scrollable"
+        app:tabTextAppearance="@style/AppTabTextAppearance"/>
 
 
     <!-- Viewpager containing different tabs about the displayed user. -->
