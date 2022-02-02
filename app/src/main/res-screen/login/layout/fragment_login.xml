@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="3dp"
-            android:src="@mipmap/ic_logo_round"
+            android:src="@drawable/ic_app_icon"
             android:transitionName="circleImage" />
     </RelativeLayout>
 
