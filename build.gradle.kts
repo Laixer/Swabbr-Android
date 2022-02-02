@@ -28,9 +28,8 @@ dependencies {
 allprojects {
     repositories {
         maven("https://plugins.gradle.org/m2/")
-        maven("https://dl.bintray.com/microsoftazuremobile/SDK")
         maven("https://jitpack.io")
-        maven("https://dl.bintray.com/guardian/android")
+        maven("https://maven.google.com/")
 
         google()
         jcenter()
