@@ -85,7 +85,7 @@ class FirebaseService : FirebaseMessagingService(), KoinComponent {
 
         // TODO How to catch invalid intents?
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_swabbr)
+            .setSmallIcon(R.drawable.ic_logo_icon)
             .setContentTitle(title)
             .setContentText(message)
             .setAutoCancel(true)
