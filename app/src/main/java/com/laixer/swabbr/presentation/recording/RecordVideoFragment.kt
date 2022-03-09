@@ -164,7 +164,7 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
                 /**
                  *  Called immediately after the surface is first created.
                  */
-                override fun surfaceCreated(holder: SurfaceHolder?) {
+                override fun surfaceCreated(holder: SurfaceHolder) {
                     // Get an object representing the size of our auto fit surface view,
                     // then assign the aspect ratio of said size to the surface view.
                     val previewSize: Size = getPreviewOutputSize(
@@ -207,8 +207,8 @@ abstract class RecordVideoFragment : RecordVideoInnerMethods() {
                 }
 
                 // These are irrelevant for us, but required by the callback object interface.
-                override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) = Unit
-                override fun surfaceDestroyed(holder: SurfaceHolder?) = Unit
+                override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) = Unit
+                override fun surfaceDestroyed(holder: SurfaceHolder) = Unit
             })
         }.onDeclined { onPermissionsDeclined() }
     }
