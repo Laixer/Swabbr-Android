@@ -31,19 +31,19 @@ class NotificationJsonAdapterFactory : JsonAdapter.Factory {
                 // First explicitly extract the data object.
                 @Suppress("UNCHECKED_CAST")
                 val value = jsonValue as Map<String, Any>
-                val notificationAction = NotificationAction.values()[(value["NotificationAction"] as Double).toInt()]
+                val notificationAction = NotificationAction.values()[(value["notificationAction"] as Double).toInt()]
                 val data = moshi.adapter(notificationAction.getDerivedDataClass())
-                    .fromJsonValue(value["Data"])
+                    .fromJsonValue(value["data"])
                     ?: throw JsonDataException()
 
                 // Then build the json object, attaching the extracted data object.
                 return V1.Notification(
-                    protocol = value["Protocol"] as String,
-                    protocolVersion = value["ProtocolVersion"] as String,
+                    protocol = value["protocol"] as String,
+                    protocolVersion = value["protocolVersion"] as String,
                     notificationAction = notificationAction,
-                    notificationActionString = value["NotificationActionString"] as String,
-                    timestamp = ZonedDateTime.parse(value["Timestamp"] as String),
-                    userAgent = value["UserAgent"] as String,
+                    notificationActionString = value["notificationActionString"] as String,
+                    timestamp = ZonedDateTime.parse(value["timestamp"] as String),
+                    userAgent = value["userAgent"] as String,
                     data = data
                 )
             }

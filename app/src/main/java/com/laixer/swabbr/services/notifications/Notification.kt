@@ -20,13 +20,13 @@ class V1 {
      *  Notification base class.
      */
     data class Notification(
-        @Json(name = "Protocol") val protocol: String,
-        @Json(name = "ProtocolVersion") val protocolVersion: String,
-        @Json(name = "NotificationAction") var notificationAction: NotificationAction,
-        @Json(name = "NotificationActionString") var notificationActionString: String,
-        @Json(name = "Timestamp") val timestamp: ZonedDateTime,
-        @Json(name = "UserAgent") val userAgent: String,
-        @Json(name = "Data") val data: NotificationData
+        @Json(name = "protocol") val protocol: String,
+        @Json(name = "protocolVersion") val protocolVersion: String,
+        @Json(name = "notificationAction") var notificationAction: NotificationAction,
+        @Json(name = "notificationActionString") var notificationActionString: String,
+        @Json(name = "timestamp") val timestamp: ZonedDateTime,
+        @Json(name = "userAgent") val userAgent: String,
+        @Json(name = "data") val data: NotificationData
     )
 
     /**
@@ -34,8 +34,8 @@ class V1 {
      *  possible implementations.
      */
     sealed class NotificationData(
-        @Json(name = "Title") open val title: Int,
-        @Json(name = "Message") open val message: Int
+        @Json(name = "title") open val title: Int,
+        @Json(name = "message") open val message: Int
     ) {
         /**
          *  Function indicating where the notification should take us.
@@ -46,9 +46,9 @@ class V1 {
          *  Notification for recording a new vlog.
          */
         data class VlogRecordRequest(
-            @Json(name = "RequestMoment") val requestMoment: String,
-            @Json(name = "RequestTimeout") val requestTimeout: String,
-            @Json(name = "VlogId") val vlogId: String
+            @Json(name = "requestMoment") val requestMoment: String,
+            @Json(name = "requestTimeout") val requestTimeout: String,
+            @Json(name = "vlogId") val vlogId: String
         ) : NotificationData(
             R.string.notification_title_vlogrecordrequest,
             R.string.notification_message_vlogrecordrequest
@@ -68,8 +68,8 @@ class V1 {
          *  Indicates a user that the current user is following has posted a vlog.
          */
         data class FollowedProfileVlogPosted(
-            @Json(name = "VlogId") val vlogId: String,
-            @Json(name = "VlogOwnerUserId") val vlogOwnerUserId: String
+            @Json(name = "vlogId") val vlogId: String,
+            @Json(name = "vlogOwnerUserId") val vlogOwnerUserId: String
         ) : NotificationData(
             R.string.notification_title_followedprofilevlogposted,
             R.string.notification_message_followedprofilevlogposted
@@ -87,8 +87,8 @@ class V1 {
          *  Indicates one of the current users vlogs has gained a like.
          */
         data class VlogGainedLikes(
-            @Json(name = "VlogId") val vlogId: String,
-            @Json(name = "UserThatLikedId") val userThatLikedId: String
+            @Json(name = "vlogId") val vlogId: String,
+            @Json(name = "userThatLikedId") val userThatLikedId: String
         ) : NotificationData(
             R.string.notification_title_vloggainedlikes,
             R.string.notification_message_vloggainedlikes
@@ -106,8 +106,8 @@ class V1 {
          *  Indicates a reaction was posted to one of the current users vlogs.
          */
         data class VlogNewReaction(
-            @Json(name = "VlogId") val vlogId: String,
-            @Json(name = "ReactionId") val reactionId: String
+            @Json(name = "vlogId") val vlogId: String,
+            @Json(name = "reactionId") val reactionId: String
         ) : NotificationData(
             R.string.notification_title_vlognewreaction,
             R.string.notification_message_vlognewreaction
