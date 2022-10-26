@@ -28,23 +28,27 @@ class NotificationJsonAdapterFactory : JsonAdapter.Factory {
             override fun fromJson(reader: JsonReader): V1.Notification {
                 val jsonValue = reader.readJsonValue()
 
+
                 // First explicitly extract the data object.
                 @Suppress("UNCHECKED_CAST")
-                val value = jsonValue as Map<String, Any>
-                val notificationAction = NotificationAction.values()[(value["notificationAction"] as Double).toInt()]
-                val data = moshi.adapter(notificationAction.getDerivedDataClass())
-                    .fromJsonValue(value["data"])
+                val valueMap = jsonValue as Map<String, Any>
+                val normalizedValueMap = valueMap.entries.associate { it.key.toLowerCase() to it.value }
+
+                val notificationAction = NotificationAction.values()[(normalizedValueMap["notificationaction"] as Double).toInt()]
+                val normalizedRawData = (normalizedValueMap["data"] as Map<String, Any>).entries.associate { it.key.toLowerCase() to it.value }
+                val notificationData = moshi.adapter(notificationAction.getDerivedDataClass())
+                    .fromJsonValue(normalizedRawData)
                     ?: throw JsonDataException()
 
                 // Then build the json object, attaching the extracted data object.
                 return V1.Notification(
-                    protocol = value["protocol"] as String,
-                    protocolVersion = value["protocolVersion"] as String,
+                    protocol = normalizedValueMap["protocol"] as String,
+                    protocolVersion = normalizedValueMap["protocolversion"] as String,
                     notificationAction = notificationAction,
-                    notificationActionString = value["notificationActionString"] as String,
-                    timestamp = ZonedDateTime.parse(value["timestamp"] as String),
-                    userAgent = value["userAgent"] as String,
-                    data = data
+                    notificationActionString = normalizedValueMap["notificationactionstring"] as String,
+                    timestamp = ZonedDateTime.parse(normalizedValueMap["timestamp"] as String),
+                    userAgent = normalizedValueMap["useragent"] as String,
+                    data = notificationData
                 )
             }
 
